@@ -37,6 +37,29 @@ impl Hermite {
     }
 }
 
+pub(super) fn ease_phase(phase: f32, no_start: bool, no_end: bool) -> f32 {
+    // REL .text 3c12b4..3c1434 integrates a speed ramp over each enabled
+    // endpoint window. Preserve the single-precision operation order.
+    const WINDOW: f32 = 0.1;
+    const END_SPEED: f32 = 0.01;
+    if no_start && no_end {
+        return phase;
+    }
+    let window_sum = if !no_start && !no_end { WINDOW } else { 0.5 * WINDOW };
+    let speed = (-window_sum).mul_add(END_SPEED, 1.) / (1. - window_sum);
+    let eased_average = |ratio: f32| 0.5 * (END_SPEED + ratio.mul_add(speed - END_SPEED, END_SPEED));
+    if !no_start && phase < WINDOW {
+        phase * eased_average(phase / WINDOW)
+    } else if !no_end && phase > 1. - WINDOW {
+        let remaining = 1. - phase;
+        (-remaining).mul_add(eased_average(remaining / WINDOW), 1.)
+    } else if no_start {
+        phase * speed
+    } else {
+        speed.mul_add(phase - WINDOW, WINDOW * (0.5 * (END_SPEED + speed)))
+    }
+}
+
 pub(super) struct Path {
     curve: Hermite,
     main_path: bool,
@@ -133,6 +156,16 @@ pub(super) fn validate() -> anyhow::Result<()> {
     }), "Main spline did not use the chord-length table: {point:?}");
     anyhow::ensure!(branch.sample(start, end, 0.25) == [2.34375, 1.6875, 0.],
         "Branch spline remapped the cubic phase");
-    println!("PASS: 27 spline position samples match the decoded Wii kernel at every coordinate bit");
+    let samples: Vec<(bool, bool, Vec<(f32, String)>)> = serde_json::from_str(include_str!(
+        "../../tools/blotworx/fixtures/spline_easing_kernel.json"
+    ))?;
+    for (no_start, no_end, phases) in samples {
+        for (phase, expected) in phases {
+            let actual = ease_phase(phase, no_start, no_end).to_bits();
+            anyhow::ensure!(actual == u32::from_str_radix(&expected, 16)?,
+                "Spline easing differs at phase {phase}, flags {no_start}/{no_end}: {actual:08x} vs {expected}");
+        }
+    }
+    println!("PASS: 27 position and 52 easing samples match the decoded Wii spline kernels bit for bit");
     Ok(())
 }

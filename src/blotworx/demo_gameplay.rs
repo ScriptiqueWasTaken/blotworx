@@ -599,10 +599,24 @@ impl World {
                     let fraction = segment.advance(travel_delta);
                     let destination = if fraction == 1. {
                         target
-                    } else if segment.reversed {
-                        segment.path.sample(target, origin, 1. - fraction)
                     } else {
-                        segment.path.sample(origin, target, fraction)
+                        let (start, end, start_pos, end_pos, phase) = if segment.reversed {
+                            (m.target, segment.origin, target, origin, 1. - fraction)
+                        } else {
+                            (segment.origin, m.target, origin, target, fraction)
+                        };
+                        let phase = if property(&self.entities[owner], "SplineFollowerComponent", "EaseInOut")
+                            .and_then(serde_json::Value::as_bool).unwrap_or(false)
+                        {
+                            let no_ease = |knot: usize| {
+                                property(&self.entities[knot], "SplineKnotComponent", "Do Not Ease In/Out")
+                                    .and_then(serde_json::Value::as_bool).unwrap_or(false)
+                            };
+                            spline_curve::ease_phase(phase, no_ease(start), no_ease(end))
+                        } else {
+                            phase
+                        };
+                        segment.path.sample(start_pos, end_pos, phase)
                     };
                     (destination, fraction)
                 } else {

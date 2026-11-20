@@ -292,11 +292,11 @@
       },
       {
         "scope": "Authored preview spline segment timing",
-        "state": "Preview traversal uses authored durations and Hermite handles for timed links. Curved main paths use a 200-chord distance table. Branch paths sample cubic phase directly. Zero-handle main paths retain straight distance sampling, and fractional stops retain the existing stop behavior.",
-        "source": "REL .text 3bc7dc..3bc8a4 supplies the duration and phase arithmetic. 3c06dc assembles the endpoint and handle vectors, 3c0f98 evaluates their cubic, and 3c10bc remaps main-path phase by cached lengths from 3c177c..3c1824.",
-        "evidence": "The headless spline validation compares every coordinate bit in 27 decoded Wii kernel samples and checks main-path distance remapping and branch sampling. The Zone S and Zone I fixtures cover the straight platform and an imported cloud route with nonzero handles.",
+        "state": "Preview traversal uses authored durations and Hermite handles for timed links. Curved main paths use a 200-chord distance table. Branch paths sample cubic phase directly. The follower easing flag and knot overrides control a speed ramp over the first and last 10% of each timed segment. Zero-handle main paths retain straight distance sampling, and fractional stops retain the existing stop behavior.",
+        "source": "REL .text 3bc7dc..3bc8a4 supplies the duration and phase arithmetic. 3c06dc assembles the endpoint and handle vectors, 3c0f98 evaluates their cubic, 3c10bc remaps main-path phase by cached lengths from 3c177c..3c1824, and 3c11f0 applies the authored endpoint easing.",
+        "evidence": "The headless spline validation compares every coordinate bit in 27 decoded Wii kernel samples and 52 decoded Wii easing cases across all four knot-flag combinations. The Zone S fixture covers the straight platform, and the Zone I fixture measures the eased departure and follows an imported cloud route with nonzero handles.",
         "open": [
-          "Original easing and native distance-estimator rounding, duration clamping during knot preparation, un-timed curved traversal, reverse branch topology, elapsed time carried across a knot arrival and traversal outside preview mode."
+          "Native distance-estimator rounding, duration clamping during knot preparation, untimed curved traversal and easing, reverse branch topology, elapsed time carried across a knot arrival and traversal outside preview mode."
         ]
       },
       {

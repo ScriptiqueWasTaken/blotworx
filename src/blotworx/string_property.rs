@@ -1,4 +1,4 @@
-//! Lua265c68: String type admission, getter dispatch and one-result semantics.
+//! REL .text 265b24: String type admission, getter dispatch and result count.
 //! Custom/omitted getter adapters remain explicit, rather than reading a stale
 //! editor field as if every native component stored its strings identically.
 use super::assets::World;
@@ -52,6 +52,13 @@ impl World {
                 .map(|field| (component, field))
         });
         let Some((component, field)) = first else {
+            // JPSTransformation constructs the registered Bone Attach Name
+            // slot with a null handle, even when the scene omits the field.
+            if property == "Bone Attach Name" && entity.components.iter()
+                .any(|component| component.class_name == "JPSTransformationComponent")
+            {
+                return Ok(MultiValue::from_vec(vec![Value::Nil]));
+            }
             if entity.components.iter().any(|component| {
                 crate::component_schema::CATALOG
                     .components
@@ -80,8 +87,8 @@ impl World {
                 component.class_name
             )));
         }
-        //131988 declines a scalar's nonzero index.265de0 ignores that
-        //boolean. DOL80696390 is NULL;2784ac ->3f688c pushes ONE nil.
+        // The scalar getter declines a nonzero index. REL .text 265ca0
+        // pushes the unchanged null handle as one nil.
         if index != 0 {
             return Ok(MultiValue::from_vec(vec![Value::Nil]));
         }
@@ -92,10 +99,13 @@ impl World {
                 .ok_or_else(|| mlua::Error::external("AIType getter has no initialized AI brain"))?
                 .ai_type
                 .as_str(),
+            ("JPSTransformationComponent", "Bone Attach Name") if field.value.is_null() => {
+                return Ok(MultiValue::from_vec(vec![Value::Nil]));
+            }
             ("TemplateSpawnerComponent", "Spawn Group") | ("JPSTransformationComponent", "Bone Attach Name") => field
                 .value
                 .as_str()
-                .ok_or_else(|| mlua::Error::external("Spawn Group is not a scalar string"))?,
+                .ok_or_else(|| mlua::Error::external(format!("{property} is not a scalar string")))?,
             _ => {
                 return Err(mlua::Error::external(format!(
                     "Native string getter for {}.{property} is not connected",

@@ -3913,18 +3913,20 @@ impl World {
                     Ok(value as i32)
                 };
                 let index = args.get(3).cloned().map(integer).transpose()?.unwrap_or(0) as u32;
-                let value = if name == "SetPropertyString" {
+                let (value, null_string) = if name == "SetPropertyString" {
                     let text = lua.coerce_string(args[2].clone())?;
-                    serde_json::Value::String(
+                    let null_string = text.is_none();
+                    let value = serde_json::Value::String(
                         text.map(|text| {
                             text.to_str()
                                 .map(|text| text.split('\0').next().unwrap_or("").to_owned())
                         })
                         .transpose()?
                         .unwrap_or_default(),
-                    )
+                    );
+                    (value, null_string)
                 } else {
-                    serde_json::json!(integer(args[2].clone())?)
+                    (serde_json::json!(integer(args[2].clone())?), false)
                 };
                 let property = lua.coerce_string(args[1].clone())?;
                 let Some(property) = property else {
@@ -3976,7 +3978,8 @@ impl World {
                         _ => None,
                     };
                     if let Some((component, field)) = transform.filter(|_| index == 0) {
-                        self.set_bone_attachment_name(entity, component, field, value.as_str().unwrap_or_default())
+                        let name = if null_string { None } else { value.as_str() };
+                        self.set_bone_attachment_name(entity, component, field, name)
                             .map_err(mlua::Error::external)?;
                     }
                     return Ok(mlua::MultiValue::new());

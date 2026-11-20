@@ -233,22 +233,22 @@ impl super::assets::World {
         entity: usize,
         component: usize,
         field: Option<usize>,
-        name: &str,
+        name: Option<&str>,
     ) -> Result<()> {
         if self.removed_entities.contains(&entity) {
             return Ok(());
         }
         let parent = self.transform_hierarchy.get(&entity).map(|local| local.parent);
         let component = &mut self.entities[entity].components[component];
-        if field.is_some_and(|field| component.properties[field].value.as_str() == Some(name)) {
+        if field.and_then(|field| component.properties[field].value.as_str()) == name {
             return Ok(());
         }
         let socket = if parent.is_some() {
-            Socket::load_with_name(component, name)?
+            Socket::load_with_name(component, name.unwrap_or_default())?
         } else {
             None
         };
-        let value = serde_json::json!(socket.as_ref().map_or(name, |socket| socket.name.as_str()));
+        let value = serde_json::json!(socket.as_ref().map(|socket| socket.name.as_str()).or(name));
         if let Some(field) = field {
             component.properties[field].value = value;
         } else {

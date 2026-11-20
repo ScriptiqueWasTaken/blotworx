@@ -302,9 +302,9 @@
       },
       {
         "scope": "Live bone attachment name writes",
-        "state": "SetPropertyString handles Bone Attach Name in both runtime modes. It updates the active socket when a parent is bound and restores ordinary parent following when the name is cleared.",
-        "source": "Wii REL .text 3526a8..352748 registers the property. Setter 35392c changes its interned name and refreshes the parent binding through 353aa0. The binding normalizes the socket name at 356fa4.",
-        "evidence": "Four isolated Wii setter calls distinguish changed, cleared, unchanged and initialization-only writes. The dbc_bone_attachment Lua fixture streams the castle scene and checks the reflected write, invalid index and restore.",
+        "state": "Bone Attach Name can be read and written in both runtime modes. An omitted field or an explicit null write reads back as one Lua nil. An explicit empty string stays distinct. Clearing a live socket restores ordinary parent following.",
+        "source": "Wii REL .text 3526a8..352748 registers the field, 352ecc initializes it through 124da4 using the DOL null handle at 80696390, and getter 353924 reads it. The Lua getter at 265b24 pushes one nil for a null handle. Setter 35392c refreshes the parent binding through 353aa0, and 356fa4 normalizes the bound socket name.",
+        "evidence": "Four isolated Wii setter calls distinguish changed, cleared, unchanged and initialization-only writes. The dbc_bone_attachment Lua fixture streams the castle scene and checks getter result counts, null and empty strings, writes, invalid indices and restore.",
         "open": [
           "Exact socket pose and body refresh parity across every attachment mode."
         ]

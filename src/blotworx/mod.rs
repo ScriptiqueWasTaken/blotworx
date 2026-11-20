@@ -3728,7 +3728,7 @@ impl Engine {
                 return;
             }
         }
-        if let Err(error) = world.apply_model_poses(&mut draws) {
+        if let Err(error) = world.apply_model_geometry(&mut draws) {
             self.error = Some(format!("Model presentation: {error:#}"));
             self.paused = true;
             return;
@@ -3769,6 +3769,13 @@ impl Engine {
                     return;
                 }
             }
+        }
+        // Lighting can replace the material program and its image bindings.
+        // Publish NIF controller output against those final bindings.
+        if let Err(error) = world.apply_model_materials(&mut draws) {
+            self.error = Some(format!("Model material animation: {error:#}"));
+            self.paused = true;
+            return;
         }
         record_phase(&mut self.frame_phases, "lighting_cpu", lighting_started);
         // Filter only after animation/attachment updates, which use stable draw
@@ -4938,7 +4945,9 @@ impl Engine {
             return false;
         }
         screen.paint(ui);
-        self.capture_frame(ui, false);
+        if screen.has_presented() {
+            self.capture_frame(ui, false);
+        }
         true
     }
 

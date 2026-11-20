@@ -6744,7 +6744,13 @@ impl World {
         self.publish_authored_camera()?;
         Ok(())
     }
+    #[cfg(any(test, debug_assertions))]
     pub fn apply_model_poses(&self, draws: &mut [GpuDrawCommand]) -> Result<()> {
+        self.apply_model_geometry(draws)?;
+        self.apply_model_materials(draws)
+    }
+
+    pub(super) fn apply_model_geometry(&self, draws: &mut [GpuDrawCommand]) -> Result<()> {
         self.authored_havok.apply(self, draws)?;
         for (&entity, (template, actor)) in &self.havok_actors {
             if !self.entity_scene_active(entity) {
@@ -6776,10 +6782,6 @@ impl World {
                 || self.actors.get(&entity).is_some_and(|actor| actor.pose.is_some());
             let runtime = &self.entities[entity];
             for (&mesh, indices) in &runtime.mesh_draws {
-                for &index in indices {
-                    let draw = draws.get_mut(index).context("Animated draw missing")?;
-                    animation.apply_material(mesh, draw)?;
-                }
                 if uses_actor_pose || !animation.affected.contains(&mesh) {
                     continue;
                 }
@@ -6804,20 +6806,7 @@ impl World {
                 }
             }
         }
-        let manual = self
-            .actor_playback
-            .as_ref()
-            .filter(|playback| self.entity_scene_active(playback.entity))
-            .map(|p| (p.entity, &p.pose, &p.world));
-        let automatic = self
-            .actors
-            .iter()
-            .filter(|(entity, _)| self.entity_scene_active(**entity))
-            .filter(|(entity, _)| manual.as_ref().is_none_or(|p| p.0 != **entity))
-            .filter_map(|(&entity, actor)| {
-                actor.pose.as_ref().map(|pose| (entity, pose, &actor.world))
-            });
-        for (entity, pose, transforms) in automatic.chain(manual) {
+        for (entity, pose, transforms) in self.presented_actor_poses() {
             for (&mesh, indices) in &self.entities[entity].mesh_draws {
                 let world = super::nif_runtime::matrix(
                     transforms
@@ -6875,23 +6864,6 @@ impl World {
                     }
                 }
             }
-            for (&(mesh, slot), &color) in &pose.colors {
-                let color = super::nif_properties::packed_color(color)?;
-                for &index in self.entities[entity]
-                    .mesh_draws
-                    .get(&mesh)
-                    .into_iter()
-                    .flatten()
-                {
-                    let draw = &mut draws[index];
-                    if let Some(defaults) = draw.preview.as_ref()
-                        .and_then(|program| program.as_ref().ok())
-                        .and_then(|program| program.register_defaults)
-                    {
-                        draw.material_registers.get_or_insert(defaults)[slot] = color;
-                    }
-                }
-            }
             if pose.visibility.values().any(|&v| v < 0.5) {
                 let hierarchy = &self.model_bounds[self.entities[entity]
                     .model_asset
@@ -6924,6 +6896,57 @@ impl World {
         }
         Ok(())
     }
+    fn presented_actor_poses(&self) -> impl Iterator<Item = (usize, &super::nif_sequence::ActorPose, &BTreeMap<u32, epic_mickey_lib_rs::nif_file::NiTransform>)> {
+        let manual = self
+            .actor_playback
+            .as_ref()
+            .filter(|playback| self.entity_scene_active(playback.entity))
+            .map(|p| (p.entity, &p.pose, &p.world));
+        let automatic = self
+            .actors
+            .iter()
+            .filter(|(entity, _)| self.entity_scene_active(**entity))
+            .filter(move |(entity, _)| manual.as_ref().is_none_or(|p| p.0 != **entity))
+            .filter_map(|(&entity, actor)| {
+                actor.pose.as_ref().map(|pose| (entity, pose, &actor.world))
+            });
+        automatic.chain(manual)
+    }
+
+    pub(super) fn apply_model_materials(&self, draws: &mut [GpuDrawCommand]) -> Result<()> {
+        for (&entity, animation) in &self.model_animation {
+            if !self.entity_scene_active(entity) {
+                continue;
+            }
+            for (&mesh, indices) in &self.entities[entity].mesh_draws {
+                for &index in indices {
+                    let draw = draws.get_mut(index).context("Animated draw missing")?;
+                    animation.apply_material(mesh, draw)?;
+                }
+            }
+        }
+        for (entity, pose, _) in self.presented_actor_poses() {
+            for (&(mesh, slot), &color) in &pose.colors {
+                let color = super::nif_properties::packed_color(color)?;
+                for &index in self.entities[entity]
+                    .mesh_draws
+                    .get(&mesh)
+                    .into_iter()
+                    .flatten()
+                {
+                    let draw = &mut draws[index];
+                    if let Some(defaults) = draw.preview.as_ref()
+                        .and_then(|program| program.as_ref().ok())
+                        .and_then(|program| program.register_defaults)
+                    {
+                        draw.material_registers.get_or_insert(defaults)[slot] = color;
+                    }
+                }
+            }
+        }
+        Ok(())
+    }
+
     pub(super) fn actor_has_local_nif_draws(&self, entity: usize) -> bool {
         self.entities[entity]
             .draws

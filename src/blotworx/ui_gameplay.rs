@@ -190,6 +190,14 @@ pub(super) fn validate_pause_menu() -> Result<()> {
         ensure!(matches!(read(&mut player, "_root.GENERIC_DIALOG.dialogBox.scroll"), Value::Number(line) if line >= 2.),
             "A consumed the dialogue without moving the text");
     }
+    let mut reached_end = false;
+    for _ in 0..32 {
+        if !hud.scroll_dialogue()? {
+            reached_end = true;
+            break;
+        }
+    }
+    ensure!(reached_end, "The last dialogue page did not release A");
     input.dialogue = None;
     input.popups.push(super::collectibles::Notification::new(
         super::collectibles::Route::UiEventManager, "UI_QuestAdded", "UI_QuestAdded", "quest_generic",
@@ -487,22 +495,23 @@ impl Gameplay {
     fn scroll_dialogue(&mut self) -> Result<bool> {
         let mut player = lock(&self.handle)?;
         let path = "_root.GENERIC_DIALOG.dialogBox.scroll";
-        let position = read(&mut player, path);
+        let (Value::Number(current), Value::Number(end)) = (
+            read(&mut player, path),
+            read(&mut player, "_root.GENERIC_DIALOG.dialogBox.maxscroll"),
+        ) else { return Ok(false) };
+        if current >= end {
+            return Ok(false);
+        }
         let can_scroll = player.call_internal_interface(&format!("__bwx_{CAN_SCROLL_DIALOGUE}"), []);
         if matches!(can_scroll, Value::Bool(true) | Value::Number(1.)) {
             player.call_internal_interface(&format!("__bwx_{SCROLL_DIALOGUE}"), []);
         }
-        if let (Value::Number(current), Value::Number(end)) = (position, read(&mut player, "_root.GENERIC_DIALOG.dialogBox.maxscroll")) {
-            if current < end {
-                // The movie's hasShifted flag can reject another shift even
-                // while the actual text field still has unread lines.
-                if read(&mut player, path) == Value::Number(current) {
-                    write(&mut player, path, Value::Number((current + 2.).min(end)));
-                }
-                return Ok(true);
-            }
+        // The movie's hasShifted flag can reject another shift even while
+        // the actual text field still has unread lines.
+        if read(&mut player, path) == Value::Number(current) {
+            write(&mut player, path, Value::Number((current + 2.).min(end)));
         }
-        Ok(matches!(can_scroll, Value::Bool(true) | Value::Number(1.)))
+        Ok(true)
     }
     fn render_frame(&mut self,input:&HudFrameInput,messages:&mut Vec<HudMessage>)->Result<Option<egui::ColorImage>> {
         self.render_frame_acknowledged(input,messages,|_,_,_|{})

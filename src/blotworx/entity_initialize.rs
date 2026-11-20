@@ -1,6 +1,77 @@
 //! Component initialization for newly published entities only.
 use super::*;
 impl World {
+    fn bind_resource_phantom(
+        &mut self,
+        index: usize,
+        resource: super::super::phantom_assets::Resource,
+        filter: u32,
+        nif_path: &str,
+        hkx_path: &str,
+    ) -> Result<()> {
+        let entity = &self.entities[index];
+        let shapes = resource.shapes;
+        let reference = resource.reference;
+        let shape = resource.shape_identity;
+        let bounds_cache = resource.bounds;
+        ensure!(
+            !self.resource_phantom_shapes.contains_key(&index),
+            "Multiple resource phantoms on one entity"
+        );
+        let motion =
+            super::super::native_motion_step::MotionState::shape_phantom_initial(
+                entity.runtime_rotation,
+                entity.transform[12..15].try_into().unwrap(),
+            )?;
+        let mut monitor = super::super::hk_reference::Monitor {
+            mutex: &self.pickup_reference_monitor,
+            held: None,
+        };
+        let handle = self.physics_objects.allocate_simple_phantom(
+            shape,
+            filter,
+            &mut monitor,
+        )?;
+        let system = self.physics_objects.allocate_phantom_system()?;
+        self.physics_objects
+            .system_add_phantom(system, handle, &mut monitor)?;
+        self.physics_objects.bind_phantom_entity(
+            handle,
+            index
+                .checked_add(1)
+                .context("Physics entity token overflow")?,
+        )?;
+        self.resource_phantom_handles.insert(index, handle);
+        self.phantom_systems.insert(index, system);
+        self.report.geometry.push(serde_json::json!({"kind":"resource_phantom_shapes","entity":entity.name,
+        "nif":nif_path,"hkx":hkx_path,"parts":shapes.len(),
+        "shape_section":reference.section,"shape_offset":reference.offset,
+        "constructor_transform":motion.transform,
+        "convex_radii":shapes.iter().map(|s|s.triangle_radius).collect::<Vec<_>>(),
+        "phantom":handle,"physics_system":system,"shape_reference":shape,"filter_info":filter,
+        "allocation_initialized":true,"physics_world_admitted":false,"overlap_dispatch":false}));
+        self.resource_phantom_shapes.insert(index, shapes);
+        self.resource_phantom_motion.insert(index, motion);
+        self.resource_phantom_bounds.insert(index, bounds_cache);
+        Ok(())
+    }
+
+    pub(super) fn bind_cloned_phantom(&mut self, source: usize, target: usize) -> Result<()> {
+        let Some(shapes) = self.resource_phantom_shapes.get(&source) else {
+            return Ok(());
+        };
+        let resource = self.phantom_resources.find_shapes(shapes)
+            .context("Source phantom resource missing from world cache")?;
+        let component = self.entities[target].components.iter().find(|c| c.class_name == "PhysicsPhantomComponent")
+            .context("Clone missing its resource phantom component")?;
+        let filter = super::super::phantom_bounds::authored_size_filter(component)?;
+        let path = |name| component.properties.iter().find(|p| p.name == name)
+            .and_then(|p| p.value.as_str()).unwrap_or_default().to_owned();
+        let nif = path("Phantom NIF File");
+        let hkx = path("Phantom HKX File");
+        self.bind_resource_phantom(target, resource, filter, &nif, &hkx)
+    }
+
     /// Scene model metadata is decoded once per asset identity, but the world
     /// outlives streamed scenes. Keep only identities still referenced by a
     /// live entity so a sequence of scene transitions does not accumulate
@@ -254,6 +325,9 @@ impl World {
                     })?;
                 self.report.geometry.push(serde_json::json!({"kind":"paint_thinner_counter","entity":entity.name,
                 "counter":counter,"status":counter.status(),"stimulus_and_regeneration_connected":false}));
+                if self.demo_story.enabled {
+                    self.demo_story.counters.states.insert(index, counter.status());
+                }
                 self.paint_counters.insert(index, counter);
                 self.counter_materials.insert(index, Default::default());
             }
@@ -443,17 +517,15 @@ impl World {
             }
             self.report.unsupported.push(format!("{} pickup overlap receivers loaded; physics overlap production, command dispatch and pickup lifecycle remain unimplemented.",self.pickup_receivers.len()));
         }
-        for (index, entity) in self
-            .entities
-            .iter()
-            .enumerate()
-            .filter(|(index, _)| range.contains(index))
-        {
-            for component in entity
-                .components
-                .iter()
+        for index in range.clone() {
+            if self.resource_phantom_shapes.contains_key(&index) {
+                continue;
+            }
+            let components = self.entities[index].components.iter()
                 .filter(|c| c.class_name == "PhysicsPhantomComponent")
-            {
+                .cloned()
+                .collect::<Vec<_>>();
+            for component in &components {
                 let result = (|| -> Result<()> {
                     let resource_path = |name: &str| -> Result<&str> {
                         let properties: Vec<_> = component
@@ -484,50 +556,8 @@ impl World {
                             &file.data,
                             &mut self.physics_objects,
                         )?;
-                        let shapes = resource.shapes;
-                        let reference = resource.reference;
-                        let shape = resource.shape_identity;
-                        let bounds_cache = resource.bounds;
-                        ensure!(
-                            !self.resource_phantom_shapes.contains_key(&index),
-                            "Multiple resource phantoms on one entity"
-                        );
-                        let motion =
-                            super::super::native_motion_step::MotionState::shape_phantom_initial(
-                                entity.runtime_rotation,
-                                entity.transform[12..15].try_into().unwrap(),
-                            )?;
                         let filter = super::super::phantom_bounds::authored_size_filter(component)?;
-                        let mut monitor = super::super::hk_reference::Monitor {
-                            mutex: &self.pickup_reference_monitor,
-                            held: None,
-                        };
-                        let handle = self.physics_objects.allocate_simple_phantom(
-                            shape,
-                            filter,
-                            &mut monitor,
-                        )?;
-                        let system = self.physics_objects.allocate_phantom_system()?;
-                        self.physics_objects
-                            .system_add_phantom(system, handle, &mut monitor)?;
-                        self.physics_objects.bind_phantom_entity(
-                            handle,
-                            index
-                                .checked_add(1)
-                                .context("Physics entity token overflow")?,
-                        )?;
-                        self.resource_phantom_handles.insert(index, handle);
-                        self.phantom_systems.insert(index, system);
-                        self.report.geometry.push(serde_json::json!({"kind":"resource_phantom_shapes","entity":entity.name,
-                        "nif":nif.path,"hkx":file.path,"parts":shapes.len(),
-                        "shape_section":reference.section,"shape_offset":reference.offset,
-                        "constructor_transform":motion.transform,
-                        "convex_radii":shapes.iter().map(|s|s.triangle_radius).collect::<Vec<_>>(),
-                        "phantom":handle,"physics_system":system,"shape_reference":shape,"filter_info":filter,
-                        "allocation_initialized":true,"physics_world_admitted":false,"overlap_dispatch":false}));
-                        self.resource_phantom_shapes.insert(index, shapes);
-                        self.resource_phantom_motion.insert(index, motion);
-                        self.resource_phantom_bounds.insert(index, bounds_cache);
+                        self.bind_resource_phantom(index, resource, filter, &nif.path, &file.path)?;
                         return Ok(());
                     }
                     let Some(volume) =
@@ -539,6 +569,7 @@ impl World {
                         !self.size_phantoms.contains_key(&index),
                         "Multiple size phantoms on one entity"
                     );
+                    let entity = &self.entities[index];
                     let bounds = volume.bounds(
                         entity.transform[12..15].try_into().unwrap(),
                         entity.runtime_rotation,
@@ -588,7 +619,7 @@ impl World {
                 if let Err(error) = result {
                     self.report
                         .unsupported
-                        .push(format!("Phantom bounds {}: {error:#}", entity.name));
+                        .push(format!("Phantom bounds {}: {error:#}", self.entities[index].name));
                 }
             }
         }

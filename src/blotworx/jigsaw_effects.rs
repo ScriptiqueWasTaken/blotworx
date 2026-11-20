@@ -73,6 +73,23 @@ pub fn prepare(
     files: &[VirtualFile],
     cache: &mut HashMap<String, Option<DecodedImage>>,
 ) -> Result<[Draw; 2]> {
+    let composed = prepare_surface(original, alpha, templates, files, cache, true);
+    if composed.is_err() && original.material.as_ref().is_some_and(|bindings| {
+        bindings.textures.iter().any(|texture| texture.slot == 0)
+    }) {
+        return prepare_surface(original, alpha, templates, files, cache, false);
+    }
+    composed
+}
+
+fn prepare_surface(
+    original: &GpuDrawCommand,
+    alpha: u16,
+    templates: &HashMap<String, Arc<Template>>,
+    files: &[VirtualFile],
+    cache: &mut HashMap<String, Option<DecodedImage>>,
+    prefer_composed: bool,
+) -> Result<[Draw; 2]> {
     let mut states = Vec::new();
     for scalar in [2., 0.] {
         let name = super::jigsaw_material::transition_material(alpha, Some(scalar))?.shader;
@@ -83,21 +100,35 @@ pub fn prepare(
             .context("Missing transition base material")?
             .as_ref()
             .clone();
-        if !bindings.textures.iter().any(|t| t.slot == 0) {
-            let base = original
-                .preview
-                .as_ref()
-                .and_then(|p| p.as_ref().ok())
-                .with_context(|| {
+        let has_diffuse = bindings.textures.iter().any(|t| t.slot == 0);
+        let base = original.preview.as_ref().and_then(|preview| preview.as_ref().ok());
+        let compose_base = !has_diffuse || (prefer_composed && base.is_some_and(|base| {
+            base.fragment.contains(crate::tev::EFFECT_HOOK)
+                && base.fragment.contains("void main(){")
+                && base.fragment.contains("float alpha=")
+        }));
+        bindings.shader = Some(name.into());
+        bindings.textures.retain(|t| !compose_base && t.slot == 0);
+        bindings.textures.push(MaterialTexture {
+            shader_id: Some(0),
+            slot: 1,
+            uv_set: 0,
+            path: template.texture.clone(),
+            transform: None,
+            sampler: TextureSampler {
+                wrap_u: glow::REPEAT,
+                wrap_v: glow::REPEAT,
+                min_filter: glow::LINEAR,
+                mag_filter: glow::LINEAR,
+            },
+        });
+        let images = if compose_base {
+            let base = base.with_context(|| {
                     format!(
                         "Untextured transition base shader unavailable: {:?}",
                         bindings.shader
                     )
                 })?;
-            anyhow::ensure!(
-                !base.textured && base.register_defaults.is_none(),
-                "Untextured transition base needs separate sampled-material composition"
-            );
             let mut program = template.program.as_ref().clone();
             let start = base
                 .fragment
@@ -113,44 +144,65 @@ pub fn prepare(
                 + main;
             let function = base.fragment[start..main].replace("bt_combiner", "bt_base_combiner");
             let body = base.fragment[main + 12..end].replace("bt_combiner", "bt_base_combiner");
-            let base_function =
+            let mut base_function =
                 format!("{function}\nvec4 bt_base_surface(){{{body}return result;}}\n");
-            let sample = "textureProj(u_tex[0],u_tex_uv[0]*vec3(bw_uv(0),1.0))";
-            anyhow::ensure!(
-                program.fragment.contains(sample),
-                "Unsupported transition diffuse expression"
-            );
-            program.fragment = program.fragment.replace(sample, "bt_base_surface()");
-            let insertion = program
-                .fragment
-                .find("vec4 bt_combiner(")
-                .context("Missing transition combiner")?;
-            program.fragment.insert_str(insertion, &base_function);
+            if let Some(registers) = base.presentation_registers(original.material_registers.as_ref()) {
+                for (index, color) in registers.into_iter().enumerate() {
+                    let uniform = if index < 3 { format!("bt_colors[{index}]") }
+                        else { format!("bt_constants[{}]", index - 3) };
+                    let [r, g, b, a] = color;
+                    base_function = base_function.replace(&uniform, &format!("vec4({r:.9},{g:.9},{b:.9},{a:.9})"));
+                }
+            }
+            replace_diffuse_samples(&mut program.fragment)?;
             program.texture_slots.retain(|&slot| slot != 0);
             program.uv_textures.retain(|&slot| slot != 0);
+            let mut images = material::images(&program, &bindings, files, cache).map_err(anyhow::Error::msg)?;
+            // The transition reserves map 1 for its noise texture. Preserve
+            // the other authored base samples, including default shader maps.
+            for &from in &base.texture_slots {
+                let to = if from == 1 {
+                    (2..8).find(|slot| !base.texture_slots.contains(slot))
+                        .context("Transition has no free texture map for its base shader")?
+                } else { from };
+                for (before, after) in [
+                    (format!("u_tex[{from}]"), format!("u_tex[{to}]")),
+                    (format!("u_tex_uv[{from}]"), format!("u_tex_uv[{to}]")),
+                    (format!("bw_uv({from})"), format!("bw_uv({to})")),
+                ] {
+                    if from == 1 { base_function = base_function.replace(&before, &after); }
+                }
+                let mut image = original.material_images.iter().find(|image| image.slot == from)
+                    .with_context(|| format!("Missing base transition image in map {from}"))?.clone();
+                image.slot = to;
+                images.push(image);
+                if let Some(mut binding) = original.material.as_ref().unwrap().textures.iter().rev()
+                    .find(|binding| binding.slot == u32::from(from)).cloned() {
+                    binding.slot = u32::from(to);
+                    bindings.textures.push(binding);
+                }
+                program.texture_slots.push(to);
+                if base.uv_textures.contains(&from) { program.uv_textures.push(to); }
+                program.uv_sets[to as usize] = base.uv_sets[from as usize];
+                if let Some(name) = base.texture_names.get(from as usize) {
+                    program.texture_names.resize(program.texture_names.len().max(to as usize + 1), String::new());
+                    program.texture_names[to as usize] = name.clone();
+                }
+            }
+            let insertion = program.fragment.find("vec4 bt_combiner(").context("Missing transition combiner")?;
+            program.fragment.insert_str(insertion, &base_function);
+            program.vertex = base.vertex.clone();
+            program.linear_clip_source = base.linear_clip_source.clone();
+            program.pinned_projection |= base.pinned_projection;
             template = Arc::new(Template {
                 program: Arc::new(program),
                 animation: template.animation.clone(),
                 texture: template.texture.clone(),
             });
-        }
-        bindings.shader = Some(name.into());
-        bindings.textures.retain(|t| t.slot == 0);
-        bindings.textures.push(MaterialTexture {
-            shader_id: Some(0),
-            slot: 1,
-            uv_set: 0,
-            path: template.texture.clone(),
-            transform: None,
-            sampler: TextureSampler {
-                wrap_u: glow::REPEAT,
-                wrap_v: glow::REPEAT,
-                min_filter: glow::LINEAR,
-                mag_filter: glow::LINEAR,
-            },
-        });
-        let images = material::images(&template.program, &bindings, files, cache)
-            .map_err(anyhow::Error::msg)?;
+            images
+        } else {
+            material::images(&template.program, &bindings, files, cache).map_err(anyhow::Error::msg)?
+        };
         states.push(Draw {
             template,
             images,
@@ -158,6 +210,25 @@ pub fn prepare(
         });
     }
     Ok(states.try_into().ok().unwrap())
+}
+
+fn replace_diffuse_samples(fragment: &mut String) -> Result<()> {
+    let sample = "textureProj(u_tex[0],";
+    anyhow::ensure!(fragment.contains(sample), "Transition has no diffuse sample");
+    while let Some(begin) = fragment.find(sample) {
+        let coordinate = begin + sample.len();
+        let mut depth = 1;
+        let end = fragment.as_bytes()[coordinate..].iter().position(|&byte| {
+            match byte {
+                b'(' => depth += 1,
+                b')' => depth -= 1,
+                _ => {}
+            }
+            depth == 0
+        }).context("Unterminated transition texture expression")?;
+        fragment.replace_range(begin..=coordinate + end, "bt_base_surface()");
+    }
+    Ok(())
 }
 // Whole-model targets use entity indices; jigsaw targets use instance indices.
 // Preserve native key -1 without aliasing the two internal namespaces.
@@ -223,6 +294,9 @@ impl World {
             // whole-body paint state and subsequent command admission.
             let node = self.jigsaw_instances[i].node;
             self.entities[entity].jigsaw_states[node].painted.fill(painted);
+            if changed {
+                self.jigsaw_endpoint_pending.insert(entity);
+            }
         }
         if let Some(body) = self.entities[entity].components.iter_mut().find(|c|matches!(c.class_name.as_str(),
             "PhysicsRigidBodyDynamicComponent"|"PhysicsRigidBodyStaticComponent"|"PhysicsJigsawComponent")) {
@@ -337,7 +411,10 @@ impl World {
             .collision
             .set_painted(source.piece, painted, &mut self.collision)?;
         let state = &mut self.entities[instance.entity].jigsaw_states[instance.node];
-        state.painted[source.piece] = painted;
+        if state.painted[source.piece] != painted {
+            state.painted[source.piece] = painted;
+            self.jigsaw_endpoint_pending.insert(instance.entity);
+        }
         let word = state
             .filter(source.piece, 5)
             .context("Painted solver piece missing")?;
@@ -350,7 +427,23 @@ impl World {
         let mut queue = std::mem::take(&mut self.jigsaw_effect_queue);
         let result = queue.update(dt, self);
         self.jigsaw_effect_queue = queue;
-        result
+        result?;
+        for entity in std::mem::take(&mut self.jigsaw_endpoint_pending) {
+            if self.removed_entities.contains(&entity) {
+                continue;
+            }
+            if self.jigsaw_effect_queue.has_owner(entity) {
+                self.jigsaw_endpoint_pending.insert(entity);
+                continue;
+            }
+            let mut pieces = self.entities[entity].jigsaw_states.iter().flat_map(|state| state.painted.iter());
+            let Some(&painted) = pieces.next() else { continue; };
+            if pieces.all(|&piece| piece == painted) {
+                let output = if painted { "OnFullyPainted" } else { "OnFullySketched" };
+                self.emit_entity_output(entity, output, self.player_entity);
+            }
+        }
+        Ok(())
     }
 }
 impl Host for World {

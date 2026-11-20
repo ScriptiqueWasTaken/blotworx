@@ -26,6 +26,36 @@ impl Trace {
     }
 }
 impl World {
+    pub(super) fn npc_animation_state_lua(
+        &mut self,
+        lua: &mlua::Lua,
+        mut args: mlua::MultiValue,
+    ) -> mlua::Result<mlua::MultiValue> {
+        let state = super::score_state::integer_argument(
+            lua,
+            args.pop_back().unwrap_or(mlua::Value::Nil),
+        )?;
+        if let Some(entity) = self.scripts.resolve_world_argument(
+            &args.pop_back().unwrap_or(mlua::Value::Nil),
+        )?.filter(|entity| !self.removed_entities.contains(entity)) {
+            // EM1's verified animation table maps slot 0x30 to VAR_NPC_State.
+            self.write_animation_variable(entity, 0x30, 1, state as u32)
+                .map_err(mlua::Error::external)?;
+            // The caged prefab uses a non-supporting collision layer. Keep its
+            // authored pose on the preview backend until the cage's release
+            // callback explicitly enables motion.
+            if state == 1 && self.relative_prefab_entity(entity, ".caged_gremlin")
+                .map_err(mlua::Error::external)? == Some(entity)
+                && self.character_physics.get(&entity).is_some_and(Result::is_ok)
+            {
+                self.clear_character_linear_velocity(entity)
+                    .and_then(|()| self.set_entity_motion_enabled(entity, false))
+                    .map_err(mlua::Error::external)?;
+            }
+        }
+        Ok(mlua::MultiValue::new())
+    }
+
     pub(super) fn animation_variable_lua(
         &mut self,
         lua: &mlua::Lua,

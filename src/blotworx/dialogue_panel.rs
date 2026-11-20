@@ -3,11 +3,13 @@ pub(super) fn draw(
     ui: &egui::Ui,
     speaker: &str,
     text: &str,
-    choices: &[String],
+    choices: Option<&[String]>,
     selected: &mut usize,
     pad_edges: u16,
 ) -> Option<usize> {
     let mut answer = None;
+    let interactive = choices.is_some();
+    let choices = choices.unwrap_or_default();
     *selected = (*selected).min(choices.len().saturating_sub(1));
     if !choices.is_empty() {
         if ui.input(|i| i.key_pressed(egui::Key::ArrowDown)) || pad_edges & 2 != 0 {
@@ -25,6 +27,9 @@ pub(super) fn draw(
         .show(ui.ctx(), |ui| {
             ui.strong(speaker);
             ui.label(text);
+            if !interactive {
+                return;
+            }
             ui.add_space(8.);
             if choices.is_empty() {
                 if ui.button("Continue [Enter / A]").clicked()

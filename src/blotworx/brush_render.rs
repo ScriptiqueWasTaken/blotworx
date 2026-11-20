@@ -421,6 +421,7 @@ impl Brush {
                 extra_uvs: mesh.extra_uvs.clone(),
                 projection_bound: None,
                 projected_shadow: false,
+                skybox: false,
                 material_registers: None,
                 material_indirect: None,
                 material_images: Arc::new(images),

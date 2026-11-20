@@ -22,6 +22,7 @@ pub struct Clip {
     pub low_pass: f32,
     pub pitch_cents:f32,
     pub random_ranges:Arc<[[[f32;2];4]]>,
+    pub pitch_controls: Arc<[super::audio_bank::Rtpc]>,
     pub spatial:Option<Arc<super::audio_spatial::Definition>>,
     pub admission:Option<Arc<super::audio_limits::Definition>>,
     pub layout:Option<super::audio_loop::Layout>,
@@ -37,6 +38,7 @@ struct ActiveVoice {
     spatial:Option<ActiveSpatial>,
     admission:Option<Arc<super::audio_limits::Definition>>,
     stopping:bool,
+    ui: bool,
 }
 struct ActiveSpatial {definition:Arc<super::audio_spatial::Definition>,frozen:Option<super::audio_distance::Emitter>,channels:[u32;4],low_pass:u32}
 #[derive(Clone)]
@@ -50,6 +52,7 @@ struct PendingPlan {
     event: String,
     owner: usize,
     reported_failure:std::sync::atomic::AtomicBool,
+    control: Option<(u32, f32)>,
 }
 fn owner_key(owner: &Option<Owner>) -> Option<usize> {
     owner.as_ref().map(|owner| owner.handle as usize)
@@ -75,6 +78,7 @@ pub struct Playback {
     banks: BTreeMap<u32, Arc<[u8]>>,
     event_banks: BTreeMap<u32, u32>,
     pub submitted: u64,
+    pub controlled_pitch_submitted: u64,
     pub completed: u64,
     pub stop_actions: u64,
     pub stopped_voices: u64,
@@ -95,9 +99,36 @@ pub struct Playback {
     listener_pose:Option<super::audio_listener::Pose>,
     pub spatial_updates:u64,
     media_root:Option<std::path::PathBuf>,
+    music: super::audio_music::Runtime,
+    game_paused: bool,
+    sfx_level: f32,
 }
 impl Playback {
-    pub fn set_media_root(&mut self,root:std::path::PathBuf){self.media_root=Some(root);self.plans.clear();self.source_nodes.clear();}
+    pub(super) fn set_state(&mut self, group: &str, value: &str) -> Result<()> {
+        let group = super::audio_bank::event_id(group)?;
+        let value = super::audio_bank::event_id(value)?;
+        self.containers.set_state(group, value);
+        self.music.set_state(group, value);
+        Ok(())
+    }
+    pub fn set_media_root(&mut self,root:std::path::PathBuf){self.music.set_root(&root);self.media_root=Some(root);self.plans.clear();self.source_nodes.clear();}
+    pub(super) fn set_game_music(&mut self, paused: bool, volume: i32) -> Result<()> {
+        self.music.set_controls(paused, volume, &mut self.output)
+    }
+    pub(super) fn set_game_audio(&mut self, paused: bool, music: i32, sfx: i32) -> Result<()> {
+        self.set_game_music(paused, music)?;
+        let level = sfx.clamp(0,100) as f32 / 100.;
+        if paused != self.game_paused || level != self.sfx_level {
+            for voice in self.voices.values() {
+                voice.device.set_paused(paused && !voice.ui);
+                self.output.set_level(&voice.device, level)?;
+            }
+            self.game_paused = paused;
+            self.sfx_level = level;
+        }
+        Ok(())
+    }
+    pub(super) fn music_summary(&self) -> serde_json::Value { self.music.summary() }
     pub fn audio_tick(&self)->u32 {self.output.tick()}
     pub fn pending_audio_actions(&self)->usize {self.objects.pending()}
     pub fn load(bytes: Arc<[u8]>) -> Result<Self> {
@@ -116,6 +147,7 @@ impl Playback {
             plans: BTreeMap::new(),
             pending_plans: BTreeMap::new(),
             submitted: 0,
+            controlled_pitch_submitted: 0,
             completed: 0,
             stop_actions: 0,
             stopped_voices: 0,
@@ -130,6 +162,9 @@ impl Playback {
             parameter_controls_prepared: 0,
             containers:Default::default(),source_nodes:Default::default(),audition_random:Default::default(),
             spatial_tables:super::audio_transition::Tables::retail()?,source_positions:Default::default(),listener_pose:None,spatial_updates:0,media_root:None,
+            music: Default::default(),
+            game_paused: false,
+            sfx_level: 1.,
         };
         playback.register_bank(bytes)?;
         Ok(playback)
@@ -289,6 +324,7 @@ impl Playback {
             next_voice: &mut self.next_voice,
             pending: &self.pending_plans,
             submitted: &mut self.submitted,
+            controlled_pitch_submitted: &mut self.controlled_pitch_submitted,
             stop_actions: &mut self.stop_actions,
             stopped: &mut self.stopped_voices,
             stopped_before_render: &mut self.stopped_before_render,
@@ -296,6 +332,9 @@ impl Playback {
             parameter_controls_prepared: &mut self.parameter_controls_prepared,
             containers:&mut self.containers,rejected_posts:&mut self.rejected_posts,rejected_post_count:&mut self.rejected_post_count,
             spatial_tables:&self.spatial_tables,
+            music: &mut self.music,
+            game_paused: self.game_paused,
+            sfx_level: self.sfx_level,
         };
         // The worker owns audible fade updates. Drain matching manager ticks
         // here for pending-action lifetime/completion accounting, never use
@@ -306,7 +345,8 @@ impl Playback {
         let batch = self
             .objects
             .process_commands(&mut host, &mut completion, &mut *random)?;
-        self.pending_plans.clear();
+        self.pending_plans.retain(|id, _| self.objects.has_pending_event(*id));
+        self.music.update(&mut self.output, random);
         if !batch.events.is_empty() {
             self.last_consumer_event_count = batch.events.len();
         }
@@ -328,10 +368,10 @@ impl Playback {
         Ok(())
     }
     pub fn post(&mut self, event: &str) -> Result<u32> {
-        self.post_with_owner(event, None)
+        self.post_with_owner(event, None, None)
     }
     pub fn post_on(&mut self, event: &str, owner: usize) -> Result<u32> {
-        self.post_with_owner(event, Some(owner))
+        self.post_with_owner(event, Some(owner), None)
     }
     /// A mono device preview cannot stand in for Wwise multi-source playback.
     /// Preserve native AK_INVALID_PLAYING_ID and an explicit rejection record
@@ -349,8 +389,11 @@ impl Playback {
     /// AK_INVALID_PLAYING_ID (0), not a thrown Lua exception. Aggregate failed
     /// preview attempts; do not claim they were played or replay them later.
     pub fn post_from_game(&mut self, event: &str, owner: usize) -> u32 {
+        self.post_from_game_with_control(event, owner, None)
+    }
+    pub(super) fn post_from_game_with_control(&mut self, event: &str, owner: usize, control: Option<(u32, f32)>) -> u32 {
         self.game_post_requests += 1;
-        match self.post_on(event, owner) {
+        match self.post_with_owner(event, Some(owner), control) {
             Ok(id) => id,
             Err(error) => {
                 let rejected = self
@@ -368,7 +411,7 @@ impl Playback {
             }
         }
     }
-    fn post_with_owner(&mut self, event: &str, owner: Option<usize>) -> Result<u32> {
+    fn post_with_owner(&mut self, event: &str, owner: Option<usize>, control: Option<(u32, f32)>) -> Result<u32> {
         // Posting enqueues only. Consuming here splits one game-frame command
         // batch into individual renders and races a subsequent Stop.
         self.output.check()?;
@@ -380,15 +423,22 @@ impl Playback {
                 // Repeated actions are meaningful: retain the authored order.
                 for action_id in bank.event_actions(id)? {
                     let action=self.objects.action_definition(action_id).context("Missing registered event action")?.action()?;
-                    ensure!(action.delay==[0;3] || (matches!(action.kind,0x6010|0x7010|0xa010|0xb010|0xe010|0xf010) && action.delay[1]==action.delay[2]),"Delayed/randomized audio action is not admitted");
+                    let music_play = action.kind == 0x4011 && bank.objects.get(&action.target).is_some_and(|node| matches!(node.kind,10|12|13));
+                    ensure!(action.delay==[0;3] || ((music_play || matches!(action.kind,0x6010|0x7010) || action.is_float_parameter()) && action.delay[1]==action.delay[2]),"Delayed/randomized audio action is not admitted");
                     if action.kind==0x4011 {
                         let play=action.play()?;
-                        ensure!(play.transition==[0;3] && play.exceptions.is_empty() && self.banks.contains_key(&play.bank),
-                            "Direct sound has unsupported transition, exception or bank routing");
+                        ensure!(play.exceptions.is_empty(), "Play exceptions are not supported");
+                        ensure!(self.banks.contains_key(&play.bank), "Play bank {:08x} is unavailable", play.bank);
+                        ensure!((play.fade_flags & 31) <= 8, "Play fade curve is not supported");
+                        ensure!(play.transition[1] == play.transition[2] && play.transition[0].checked_add(play.transition[1]).is_some_and(|d| d >= 0),
+                            "Randomized or negative Play fades are not supported");
                         let node=super::audio_graph::prepare_with_root(&bank,&self.banks,*self.event_banks.get(&id).unwrap(),action.target,&mut sources,self.media_root.as_deref())?;
                         actions.push(ImmediateAction::Play{target:action.target,node});
-                    }else if matches!(action.kind,0xa010|0xb010|0xe010|0xf010) {
-                        let p=action.global_parameter()?;
+                    }else if action.kind == 0x12020 {
+                        action.set_state()?;
+                        actions.push(ImmediateAction::Mute);
+                    }else if action.is_float_parameter() {
+                        let p=action.parameter()?;
                         ensure!(p.mode<=2 && p.curve<=8 && p.exceptions.is_empty() && p.transition[1]==p.transition[2] && p.value[1]==p.value[2],"Randomized/exception SIS parameter is not connected");
                         self.output.has_sis_node(action.target)?;
                         if let Some(o)=bank.objects.get(&action.target) {ensure!(matches!(o.kind,2|5|6|7|9),"SIS parameter target class {} is not connected",o.kind);}
@@ -436,6 +486,7 @@ impl Playback {
             PendingPlan {
                 actions: plan,
                 event:event.into(),owner:owner.unwrap_or(u32::MAX as usize),
+                control,
                 reported_failure:std::sync::atomic::AtomicBool::new(false),
             },
         );
@@ -487,6 +538,7 @@ struct ImmediateHost<'a> {
     next_voice: &'a mut u64,
     pending: &'a BTreeMap<u32, PendingPlan>,
     submitted: &'a mut u64,
+    controlled_pitch_submitted: &'a mut u64,
     stop_actions: &'a mut u64,
     stopped: &'a mut u64,
     stopped_before_render: &'a mut u64,
@@ -496,6 +548,9 @@ struct ImmediateHost<'a> {
     rejected_posts:&'a mut BTreeMap<(usize,String),RejectedPost>,
     rejected_post_count:&'a mut u64,
     spatial_tables:&'a super::audio_transition::Tables,
+    music: &'a mut super::audio_music::Runtime,
+    game_paused: bool,
+    sfx_level: f32,
 }
 struct DirectPlay<'a, 'b> {
     host: &'a mut ImmediateHost<'b>,
@@ -522,7 +577,7 @@ impl super::audio_play_action::Control for DirectPlay<'_, '_> {
         random: &mut dyn FnMut() -> u16,
     ) -> Result<u32> {
         ensure!(
-            request.kind == 0 && request.transition == 0 && request.context.sample_offset == 0,
+            request.kind == 0 && request.transition >= 0,
             "Unsupported direct voice request"
         );
         let graph = self
@@ -533,6 +588,11 @@ impl super::audio_play_action::Control for DirectPlay<'_, '_> {
                 _ => None,
             })
             .context("Prepared sound missing")?;
+        if let super::audio_graph::Node::Music(graph) = graph.as_ref() {
+            self.host.music.play(graph.clone(), self.owner.clone(), self.host.output.tick());
+            return Ok(1);
+        }
+        ensure!(request.context.sample_offset == 0, "Sub-block sound effect start is not connected");
         let mut containers=std::mem::take(self.host.containers);
         if let Some(owner)=&self.owner {containers.retain_owner(owner);}
         let result=containers.play(&graph,request,owner_key(&self.owner),random,self);
@@ -554,6 +614,16 @@ impl super::audio_graph::Sink for DirectPlay<'_, '_> {
         }
     }
     fn sound(&mut self,clip:Arc<Clip>,request:&super::audio_play_action::Request,random:&mut dyn FnMut()->u16)->Result<u32> {
+        let controlled_pitch = !clip.pitch_controls.is_empty();
+        let mut pitch_delta = 0.;
+        for curve in clip.pitch_controls.iter() {
+            let control = self.host.pending.get(&self.playing_id).and_then(|plan| plan.control);
+            let Some((_, value)) = control.filter(|(id, _)| *id == curve.control) else {
+                super::audio_graph::Sink::reject(self, "Missing playback value for authored pitch RTPC");
+                return Ok(2);
+            };
+            pitch_delta += curve.evaluate(value, self.host.spatial_tables)?;
+        }
         if let Some(definition)=&clip.admission {
             let limit=definition.limit;let key=owner_key(&self.owner);
             let count=self.host.voices.values().filter(|v|owner_key(&v.owner)==key && v.admission.as_ref().is_some_and(|a|a.limit.node==limit.node)).count();
@@ -586,8 +656,8 @@ impl super::audio_graph::Sink for DirectPlay<'_, '_> {
         }
         let offsets=super::audio_parameters::random_offsets(&clip.random_ranges,random)?;
         if offsets[1]!=0. {super::audio_graph::Sink::reject(self,"Randomized LFE playback is not connected");return Ok(2);}
-        let clip=if offsets.iter().all(|v|*v==0.) {clip}else {
-            let mut instance=(*clip).clone();instance.gain_db+=offsets[0];instance.pitch_cents+=offsets[2];instance.low_pass+=offsets[3];
+        let clip=if pitch_delta == 0. && offsets.iter().all(|v|*v==0.) {clip}else {
+            let mut instance=(*clip).clone();instance.gain_db+=offsets[0];instance.pitch_cents+=offsets[2] + pitch_delta;instance.low_pass+=offsets[3];
             instance.pitch_ratio=super::audio_parameters::pitch_ratio(instance.pitch_cents)?;Arc::new(instance)
         };
         let clip=if let Some(layout)=clip.signal.silence_layout(clip.rate,clip.source_passes,random)? {let mut instance=(*clip).clone();instance.layout=Some(layout);Arc::new(instance)}else {clip};
@@ -602,7 +672,18 @@ impl super::audio_graph::Sink for DirectPlay<'_, '_> {
             let low_pass=definition.low_pass(&emitter,self.listeners,self.host.spatial_tables)?;
             Some((channels,ActiveSpatial{definition:definition.clone(),frozen:(!definition.dynamic).then_some(emitter),channels:channels.map(f32::to_bits),low_pass:low_pass.to_bits()}))
         }else {None};
-        let device = self.host.output.start_spatial_filtered(&clip,spatial.as_ref().map(|(channels,_)|*channels),spatial.as_ref().map_or(0.,|(_,s)|f32::from_bits(s.low_pass)))?;
+        let fade = (request.transition > 0).then_some((request.curve, request.transition));
+        let device = self.host.output.start_owned(
+            &clip,
+            spatial.as_ref().map(|(channels, _)| *channels),
+            spatial.as_ref().map_or(0., |(_, state)| f32::from_bits(state.low_pass)),
+            fade,
+            self.owner.clone(),
+        )?;
+        let ui = self.host.pending.get(&self.playing_id).is_some_and(|plan|
+            plan.event.get(0..12).is_some_and(|prefix| prefix.eq_ignore_ascii_case("play_sfx_ui_")));
+        device.set_paused(self.host.game_paused && !ui);
+        self.host.output.set_level(&device, self.host.sfx_level)?;
         *self.host.next_voice = id;
         self.host.voices.insert(
             id,
@@ -615,22 +696,28 @@ impl super::audio_graph::Sink for DirectPlay<'_, '_> {
                 spatial:spatial.map(|(_,state)|state),
                 admission:clip.admission.clone(),
                 stopping:false,
+                ui,
             },
         );
         self.playing.add_voice(request.context.playing_id);
         *self.host.submitted += 1;
+        *self.host.controlled_pitch_submitted += u64::from(controlled_pitch);
         Ok(1)
     }
 }
 impl super::audio_events::NodeHost for ImmediateHost<'_> {
-    fn prepare_parameter(&mut self,action:&super::audio_bank::Action<'_>,due:u32)->Result<()> {
-        if matches!(action.kind,0xa010|0xb010|0xe010|0xf010) {
-            let p=action.global_parameter()?;let known=self.output.has_sis_node(action.target)?;
+    fn prepare_parameter(&mut self,action:&super::audio_bank::Action<'_>,due:u32,owner:Option<Owner>)->Result<()> {
+        if action.is_float_parameter() {
+            let owner = if matches!(action.kind,0xa011|0xb011) {
+                let Some(owner)=owner else { return Ok(()); };
+                Some(owner)
+            } else { None };
+            let p=action.parameter()?;let known=self.output.has_sis_node(action.target)?;
             if !known && action.delay_samples(||unreachable!("No random SIS delay"))?==0 {return Ok(());}
             if known {*self.parameter_controls_prepared+=1;}
-            let resetting=matches!(action.kind,0xb010|0xf010);
+            let resetting=matches!(action.kind,0xb010|0xb011|0xf010);
             let duration=p.transition_time(||unreachable!("No random SIS duration"))?;
-            return self.output.sis(super::audio_sis::Command{node:action.target,property:super::audio_sis::Property::from_action(action.kind)?,mode:if resetting {0}else {p.mode},value:if resetting {0.}else {p.randomized_value(||unreachable!("No random SIS value"))?},curve:p.curve,duration,due});
+            return self.output.sis(super::audio_sis::Command{node:action.target,owner,property:super::audio_sis::Property::from_action(action.kind)?,mode:if resetting {0}else {p.mode},value:if resetting {0.}else {p.randomized_value(||unreachable!("No random SIS value"))?},curve:p.curve,duration,due});
         }
         let mute=action.global_mute()?;
         if !self.output.has_mute_node(action.target) && action.delay_samples(||unreachable!("No random mute delay"))?==0 {return Ok(());}
@@ -651,8 +738,15 @@ impl super::audio_events::NodeHost for ImmediateHost<'_> {
         random: &mut dyn FnMut() -> u16,
     ) -> Result<super::audio_schedule::Execution> {
         use super::audio_schedule::Execution;
-        if matches!(action.kind,0xa010|0xb010|0xe010|0xf010) {
-            return Ok(Execution::Parameter(if self.output.has_sis_node(action.target)? {super::audio_control::Delivery::Applied}else {super::audio_control::Delivery::MissingTarget}));
+        if action.kind == 0x12020 {
+            let (group, state) = action.set_state()?;
+            self.containers.set_state(group, state);
+            self.music.set_state(group, state);
+            return Ok(Execution::Parameter(super::audio_control::Delivery::Applied));
+        }
+        if action.is_float_parameter() {
+            let has_owner = !matches!(action.kind,0xa011|0xb011) || owner.is_some();
+            return Ok(Execution::Parameter(if has_owner && self.output.has_sis_node(action.target)? {super::audio_control::Delivery::Applied}else {super::audio_control::Delivery::MissingTarget}));
         }else if matches!(action.kind,0x6010|0x7010) {
             // Audible execution was prepared for its exact worker deadline.
             // This return completes the existing native manager accounting.
@@ -682,6 +776,8 @@ impl super::audio_events::NodeHost for ImmediateHost<'_> {
             let stop = action.object_stop()?;
             let transition = stop.transition_time(random)?;
             let key = owner_key(&owner);
+            let key = if action.kind == 0x1010 { None } else { key };
+            self.music.stop(action.target, key.map(|key| key as u32), stop.curve, transition, self.output)?;
             let matches = self
                 .voices
                 .iter()
@@ -746,6 +842,7 @@ fn same_voice_scope(
 }
 fn resolve_direct(bank: &Bank<'_>, sound: u32) -> Result<Clip> {
     let (mut clip,bytes)=prepare_direct(bank,sound)?;
+    ensure!(clip.pitch_controls.is_empty(), "WAV audition requires a value for the authored pitch RTPC");
     clip.samples=Media::parse(bytes)?.decode()?.into();Ok(clip)
 }
 pub(super) fn prepare_direct<'a>(bank:&Bank<'a>,sound:u32)->Result<(Clip,&'a [u8])> {
@@ -791,7 +888,7 @@ fn prepare_parameters(bank:&Bank<'_>,sound:u32)->Result<(Clip,SoundTail)> {
     ensure!(
         tail.loops[0]>=0 && tail.loops[1..]==[0,0]
             && tail.states.is_empty()
-            && tail.rtpc.is_empty()
+            && tail.rtpc.iter().all(|curve| curve.plugin == 0 && curve.rendered == 0 && curve.parameter == 2)
             && tail.feedback.is_none(),
         "Unsupported direct sound loop/state/RTPC/feedback"
     );
@@ -848,7 +945,7 @@ fn prepare_parameters(bank:&Bank<'_>,sound:u32)->Result<(Clip,SoundTail)> {
         lineage: parameters.iter().map(|node|node.id).collect::<Vec<_>>().into(),
         pitch_ratio: super::audio_parameters::pitch_ratio(pitch)?,
         low_pass,
-        pitch_cents:pitch,random_ranges:random_ranges.into(),spatial,admission:Some(admission),layout:None,signal:super::audio_signal::Signal::Pcm,source_passes:tail.loops[0] as u16,
+        pitch_cents:pitch,random_ranges:random_ranges.into(),pitch_controls:tail.rtpc.clone().into(),spatial,admission:Some(admission),layout:None,signal:super::audio_signal::Signal::Pcm,source_passes:tail.loops[0] as u16,
     },tail))
 }
 

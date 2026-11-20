@@ -346,6 +346,9 @@ pub fn model_pose(
     Ok(worlds)
 }
 
+// Keep the palette loop separate from actor admission. Rust 1.98's MSVC
+// codegen emitted an invalid stack offset when it inlined this routine there.
+#[inline(never)]
 pub fn palette_from_model_pose(skin: &Skin, worlds: &[[f32; 16]]) -> Result<Vec<[f32; 16]>> {
     ensure!(
         skin.transform_floats.len()

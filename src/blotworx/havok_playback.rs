@@ -452,6 +452,13 @@ fn modify_output(
 ) -> Result<()> {
     let object = graph.objects.get(id).context("Missing preview modifier")?;
     match object.klass.as_str() {
+        "hkbEventDrivenModifier" => {
+            if object.fields["enable"].as_bool() == Some(true) && prepared.event_modifiers.contains(id) {
+                let child = object.fields["modifier"]["ref"].as_str().context("Missing event-driven modifier child")?;
+                modify_output(graph, prepared, attachments, rig, properties, child, output)?;
+            }
+            Ok(())
+        }
         "hkbModifierList" => {
             ensure!(
                 object.fields["variableBindingSet"].is_null(),

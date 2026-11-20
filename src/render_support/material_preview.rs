@@ -825,13 +825,71 @@ pub fn compile_native_with_registers(
         bindings.integers.get("R3MTLightingFlags").copied(),
         flags,
     );
-    compile_register_mode(
+    let program = compile_register_mode(
         text,
         false,
         registers,
         true,
         Some(state.mesh_flag && bindings.has_vertex_colors),
-    )
+    )?;
+    Ok(Arc::unwrap_or_clone(apply_native_pixel_engine(Arc::new(program), bindings)?))
+}
+
+fn apply_native_pixel_engine(
+    mut program: Arc<Program>,
+    bindings: &super::nif::MaterialBindings,
+) -> Result<Arc<Program>> {
+    let flags = bindings.integers.get("R3MTStateOverrideFlags").copied()
+        .or_else(|| bindings.integers.get("R3MTStateOverride").map(|&enabled| if enabled == 0 { 0 } else { 7 }))
+        .unwrap_or(7);
+    if flags & 7 == 7 {
+        return Ok(program);
+    }
+    // REL179c00 dispatches separate blend, alpha compare and depth workers.
+    // Each clear bit selects the corresponding inherited NiProperty state.
+    let alpha = bindings.legacy_alpha_flags.unwrap_or(0);
+    let depth = if flags & 4 == 0 {
+        bindings.legacy_depth_flags.clone().transpose().map_err(anyhow::Error::msg)?.unwrap_or(15)
+    } else {
+        15
+    };
+    let state = super::wii_default::pe(
+        if flags & 1 == 0 { alpha } else { alpha & !1 },
+        bindings.legacy_alpha_threshold.unwrap_or(0), depth,
+    )?;
+    let blend = if flags & 1 == 0 {
+        state.blend.map(|[src,dst]| -> Result<_> {
+            Ok((super::wii_default::blend_factor(src,true)?,
+                super::wii_default::blend_factor(dst,false)?, glow::FUNC_ADD))
+        }).transpose()?
+    } else { program.blend };
+    let depth_state = if flags & 4 == 0 {
+        (state.depth_test,state.depth_write,super::wii_default::comparison(state.depth_compare))
+    } else { (program.depth_test,program.depth_write,program.depth_func) };
+    let test = if flags & 2 == 0 {
+        let names = ["Never", "Less", "Equal", "Lequal", "Greater", "Nequal", "Gequal", "Always"];
+        Some(alpha_test(names[state.alpha_compare as usize], &state.alpha_reference.to_string())?)
+    } else {
+        None
+    };
+    let replacement = test.and_then(|test| {
+        let (begin, rest) = program.fragment.split_once("+0.5);")?;
+        let (current, _) = rest.split_once("frag_color=")?;
+        let test = format!("if(!({test}))discard;");
+        let default_pass = test == "if(!(true))discard;" && current == "if(!((true) && (true)))discard;";
+        (current != test && !default_pass).then_some((begin.len()+6,current.len(),test))
+    });
+    if blend != program.blend || depth_state != (program.depth_test,program.depth_write,program.depth_func)
+        || replacement.is_some()
+    {
+        let program = Arc::make_mut(&mut program);
+        program.blend = blend;
+        (program.depth_test,program.depth_write,program.depth_func) = depth_state;
+        if let Some((start,length,test)) = replacement {
+            program.fragment.replace_range(start..start+length,&test);
+        }
+    }
+    Ok(program)
 }
 fn collect_sources(
     _ctx: &egui::Context,
@@ -901,7 +959,12 @@ pub fn prepare(
     } else {
         baked as usize
     };
-    source.variant(variant)
+    let program = source.variant(variant)?;
+    if source.native {
+        apply_native_pixel_engine(program, bindings).map_err(|error| format!("{name}: {error:#}"))
+    } else {
+        Ok(program)
+    }
 }
 /// Dynamic object-property overrides use uniforms, while retaining the same
 /// EM1 vertex-color/lighting selection as the ordinary material path.
@@ -933,6 +996,7 @@ pub fn prepare_uniform(
         source.native_support.as_ref().map(|_| variant),
     )
     .map(Arc::new)
+    .and_then(|program| if source.native {apply_native_pixel_engine(program,bindings)} else {Ok(program)})
     .map_err(|e| format!("{name}: {e:#}"))
 }
 

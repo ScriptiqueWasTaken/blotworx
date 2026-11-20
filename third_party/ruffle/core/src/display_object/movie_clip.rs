@@ -46,7 +46,9 @@ use gc_arena::lock::{Lock, RefLock};
 use gc_arena::{Collect, DynamicRoot, Gc, GcWeak, Mutation, Rootable};
 use ruffle_common::utils::HasPrefixField;
 use ruffle_macros::istr;
+use ruffle_render::commands::CommandHandler;
 use ruffle_render::perspective_projection::PerspectiveProjection;
+use ruffle_render::transform::Transform;
 use smallvec::SmallVec;
 use std::borrow::Cow;
 use std::cell::{Cell, OnceCell, Ref, RefCell, RefMut};
@@ -59,6 +61,25 @@ use super::BitmapClass;
 use super::interactive::Avm2MousePick;
 
 type FrameNumber = u16;
+
+// The render stack already contains the clip's transform. Express the split
+// in clip space, compensating for that local scale on the outer slices.
+fn scaling_grid_axis(source: [Twips; 4], scale: f32) -> Option<[Twips; 4]> {
+    if !scale.is_finite() || scale <= 0.0 || !source.windows(2).all(|p| p[0] < p[1]) {
+        return None;
+    }
+    let low = source[0].get() as f64;
+    let high = source[3].get() as f64;
+    let leading = source[1].get() as f64 - low;
+    let trailing = high - source[2].get() as f64;
+    let factor = f64::from(scale).recip().min((high - low) / (leading + trailing));
+    Some([
+        source[0],
+        Twips::new((low + leading * factor).round() as i32),
+        Twips::new((high - trailing * factor).round() as i32),
+        source[3],
+    ])
+}
 
 /// Indication of what frame `run_frame` should jump to next.
 #[derive(PartialEq, Eq)]
@@ -2655,10 +2676,63 @@ impl<'gc> TDisplayObject<'gc> for MovieClip<'gc> {
     }
 
     fn render_self(self, context: &mut RenderContext<'_, 'gc>) {
-        if let Some(drawing) = self.drawing() {
-            drawing.render(context);
+        let render = |context: &mut RenderContext<'_, 'gc>| {
+            if let Some(drawing) = self.drawing() {
+                drawing.render(context);
+            }
+            self.render_children(context);
+        };
+        let grid = self.scaling_grid();
+        if grid.x_min >= grid.x_max || grid.y_min >= grid.y_max {
+            render(context);
+            return;
         }
-        self.render_children(context);
+        let bounds = self.bounds(BoundsMode::Engine);
+        let xs = [bounds.x_min, grid.x_min, grid.x_max, bounds.x_max];
+        let ys = [bounds.y_min, grid.y_min, grid.y_max, bounds.y_max];
+        let local = self.base().matrix();
+        let (Some(dx), Some(dy)) = (
+            scaling_grid_axis(xs, local.a.hypot(local.b)),
+            scaling_grid_axis(ys, local.c.hypot(local.d)),
+        ) else {
+            render(context);
+            return;
+        };
+        if (xs, ys) == (dx, dy) {
+            render(context);
+            return;
+        }
+        let world = context.transform_stack.transform().matrix;
+        for y in 0..3 {
+            for x in 0..3 {
+                let rect = Rectangle {
+                    x_min: dx[x], x_max: dx[x + 1], y_min: dy[y], y_max: dy[y + 1],
+                };
+                if rect.x_min == rect.x_max || rect.y_min == rect.y_max {
+                    continue;
+                }
+                let a = rect.width().get() as f32 / (xs[x + 1] - xs[x]).get() as f32;
+                let d = rect.height().get() as f32 / (ys[y + 1] - ys[y]).get() as f32;
+                let mask = world * Matrix::create_box_from_rectangle(&rect);
+                context.commands.push_mask();
+                context.commands.draw_rect(Color::WHITE, mask);
+                context.commands.activate_mask();
+                context.transform_stack.push(&Transform {
+                    matrix: Matrix {
+                        a, d,
+                        tx: rect.x_min - Twips::new((xs[x].get() as f32 * a).round() as i32),
+                        ty: rect.y_min - Twips::new((ys[y].get() as f32 * d).round() as i32),
+                        ..Matrix::IDENTITY
+                    },
+                    ..Transform::default()
+                });
+                render(context);
+                context.transform_stack.pop();
+                context.commands.deactivate_mask();
+                context.commands.draw_rect(Color::WHITE, mask);
+                context.commands.pop_mask();
+            }
+        }
     }
 
     fn self_bounds(self, mode: BoundsMode) -> Rectangle<Twips> {

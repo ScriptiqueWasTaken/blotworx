@@ -4,8 +4,7 @@ use super::{assets::World,entity_visibility};
 struct Binding<'a> { world:&'a World, hits:&'a [(usize,u32)] }
 impl entity_visibility::Host for Binding<'_> {
     fn entity(&mut self,hit:usize)->Result<Option<usize>> {
-        Ok(self.world.collision_entity(self.hits[hit].0).and_then(|entity|
-            self.world.entities.iter().position(|e|std::ptr::eq(e,entity))))
+        Ok(self.world.collision_entity_index(self.hits[hit].0))
     }
     fn root(&mut self,entity:Option<usize>)->Result<Option<usize>> {
         let Some(mut current)=entity else {return Ok(None)};

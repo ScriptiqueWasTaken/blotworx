@@ -27,6 +27,10 @@ impl Cache {
     pub fn len(&self) -> usize {
         self.entries.len()
     }
+    pub fn find_shapes(&self, shapes: &Arc<Vec<StaticMesh>>) -> Option<Resource> {
+        self.entries.values().find(|resource| Arc::ptr_eq(&resource.shapes, shapes)).cloned()
+    }
+
     /// Path is the resolved archive filename, after platform aliases have been
     /// resolved. Distinct exact .hkx and .hkx_wii files must not be conflated.
     /// Data imported into a World is immutable. Explicit asset reload must

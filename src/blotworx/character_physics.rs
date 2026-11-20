@@ -357,6 +357,13 @@ impl World {
         if change == super::body_motion::Change::Unchanged {
             return Ok(());
         }
+        if suspended {
+            // A Box3D kinematic body integrates its velocity even while the
+            // character controller is suspended. The saved dynamic record
+            // remains owned by the motion transition.
+            body.motion.current.set_linear_velocity([0.; 4]);
+            body.motion.current.set_angular_velocity([0.; 4]);
+        }
         if body.motion.current.motion_type() == 7 {
             let (inertia, mass) = body.motion.current.solver_inverse_mass()?;
             let center = body.motion.current.swept_state().local_center;

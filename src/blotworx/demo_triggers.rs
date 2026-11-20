@@ -213,6 +213,12 @@ impl World {
             return Ok(false);
         }
         property.value = serde_json::json!(next);
+        if item == "ETicket" && next > previous as f32 {
+            let serial = self.ticket_hud_gain.map_or(1, |(serial, _, _)| serial.wrapping_add(1));
+            self.ticket_hud_gain = Some((serial, previous as f32, next));
+        } else if item == "ETicket" {
+            self.ticket_hud_gain = None;
+        }
         if let Some(ammo) = &mut self.ammo.inventory {
             if item == "Paint" {
                 ammo.amounts[0] = next as f32;
@@ -347,7 +353,11 @@ impl World {
                             .find(|p| p.name == name)
                             .map(|p| &p.value)
                     };
-                    let disabled = self
+                    let melee_enabled = (class == "TriggerDamageComponent"
+                        && self.entities[entity].components.iter().any(|c| c.class_name == "WeaponComponent"))
+                        .then(|| self.demo_melee_trigger_enabled(entity))
+                        .flatten();
+                    let disabled = melee_enabled.map(|enabled| !enabled).unwrap_or_else(|| self
                         .component_control
                         .disabled
                         .get(&entity)
@@ -357,7 +367,7 @@ impl World {
                             component_value("TVCStartDisabled")
                                 .and_then(|v| v.as_bool())
                                 .unwrap_or(false)
-                        });
+                        }));
                     if disabled {
                         if let Some(visit) = state.visits.get_mut(&(entity, index)) {
                             visit.inside = false;
@@ -489,24 +499,9 @@ impl World {
                                         }
                                     })
                                     .collect::<Vec<_>>();
-                                let before = self
-                                    .runtime_health
-                                    .get(&self.player_entity)
-                                    .map(|h| h.health);
                                 self.receive_combat(self.player_entity, &emissions)?;
-                                let hurt = before
-                                    != self
-                                        .runtime_health
-                                        .get(&self.player_entity)
-                                        .map(|h| h.health);
-                                if hurt
-                                    && damage.alias == "ThinnerOcean"
-                                    && self.script_player_available
-                                {
-                                    // Demo hazard recovery, pending original swim/action state.
-                                    self.script_player.velocity[1] =
-                                        self.script_player.velocity[1].max(9.);
-                                    self.script_player.grounded = false;
+                                if melee_enabled == Some(true) {
+                                    self.record_demo_melee_contact(entity);
                                 }
                             }
                         }

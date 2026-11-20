@@ -60,7 +60,7 @@ mod authored_path_tests {
 
 #[derive(Debug)]
 pub enum Command {
-    Sequence { entity: usize, name: String },
+    Sequence { entity: usize, name: String, notify: bool },
     Reset { entity: usize },
     Output { entity: usize, name: String },
     Retire { entity: usize },
@@ -632,11 +632,12 @@ impl Scripts {
         };
         let sequence_queue = commands.clone();
         let sequence_resolve = resolve.clone();
-        lua.globals().set("AnimGBSequence",lua.create_function(move |_,args:mlua::MultiValue| {
-            if args.len()!=2 {return Err(mlua::Error::external("AnimGBSequence currently supports the verified entity/name form; optional callback/rate parameters are not yet implemented"))}
+        lua.globals().set("AnimGBSequence",lua.create_function(move |lua,args:mlua::MultiValue| {
+            if !(2..=3).contains(&args.len()) {return Err(mlua::Error::external("AnimGBSequence requires an entity, a sequence and an optional end-event flag"))}
             let entity=sequence_resolve(args[0].clone())?;
             let Value::String(name)=&args[1] else{return Err(mlua::Error::external("Animation sequence name must be a string"))};
-            sequence_queue.lock().map_err(|_|mlua::Error::external("Script command queue poisoned"))?.push(Command::Sequence{entity,name:name.to_str()?.to_owned()});Ok(())
+            let notify = args.get(2).cloned().map(|value| native_boolean(lua, value)).transpose()?.unwrap_or(false);
+            sequence_queue.lock().map_err(|_|mlua::Error::external("Script command queue poisoned"))?.push(Command::Sequence{entity,name:name.to_str()?.to_owned(),notify});Ok(())
         })?)?;
         let reset_queue = commands.clone();
         let reset_resolve = resolve.clone();
@@ -654,11 +655,25 @@ impl Scripts {
         )?;
         for number in 1..=4 {
             let queue = commands.clone();
-            let resolve = resolve.clone();
+            let bindings = entities.clone();
             lua.globals().set(
                 format!("FireUser{number}"),
-                lua.create_function(move |_, value: Value| {
-                    let entity = resolve(value)?;
+                lua.create_function(move |lua, value: Value| {
+                    // An authored target can be absent in the current visit's
+                    // streamed layer. The native broadcast then has no source.
+                    let entity = {
+                        let entities = bindings.lock().map_err(|_| mlua::Error::external("Entity registry lock poisoned"))?;
+                        match value {
+                            Value::LightUserData(token) => entities.handles.resolve(token.0 as usize),
+                            Value::String(_) | Value::Integer(_) | Value::Number(_) => {
+                                let text = lua.coerce_string(value)?.ok_or_else(|| mlua::Error::external("Lua string conversion failed"))?;
+                                let text = text.to_str()?;
+                                entities.registry.first(text.split('\0').next().unwrap_or(""))
+                            }
+                            _ => None,
+                        }
+                    };
+                    let Some(entity) = entity else { return Ok(()) };
                     queue
                         .lock()
                         .map_err(|_| mlua::Error::external("Script command queue poisoned"))?
@@ -970,6 +985,8 @@ impl Scripts {
         scripts.bind_world_api("Unhide")?;
         scripts.bind_world_api("RemovePhysicsFromWorld")?;
         scripts.bind_world_api("EnableMotion")?;
+        scripts.bind_world_api("SetNPCState")?;
+        scripts.bind_world_api("AIBB_SetReevaluateRequired")?;
         scripts.bind_world_api("AI_ClearTarget")?;
         scripts.bind_world_api("DisableMotion")?;
         scripts.bind_world_api("EnableComponent")?;
@@ -990,10 +1007,15 @@ impl Scripts {
         scripts.bind_world_api("SetR3MTConstRegOnSubGraph")?;
         scripts.bind_world_api("SetR3MTColorReg")?;
         scripts.bind_world_api("SetR3MTConstReg")?;
+        scripts.bind_world_api("SetR3MTLockAnimation")?;
+        scripts.bind_world_api("SetR3MTUnlockAnimation")?;
         scripts.bind_world_api("StartEmitterByName")?;
         scripts.bind_world_api("StartEmitterByNameFireForget")?;
         scripts.bind_world_api("StopEmitterByName")?;
         scripts.bind_world_api("AudioPostEventOn")?;
+        for name in ["SetCombatIntensityBias", "GetCombatIntensityBias", "CombatIntensity_SetBias", "CombatIntensity_GetBias"] {
+            scripts.bind_world_api(name)?;
+        }
         scripts.bind_world_api("Rumble")?;
         scripts.bind_world_api("ShakeCamera")?;
         scripts.bind_world_api("AudioSetSwitch")?;
@@ -1094,6 +1116,7 @@ impl Scripts {
         scripts.bind_world_api("GetConfigVariableBool")?;
         scripts.bind_world_api("GetConfigVariableString")?;
         scripts.bind_world_api("SetShadowScale")?;
+        scripts.bind_world_api("RestoreShadowScale")?;
         scripts.bind_world_api("SetHudFor2D")?;
         scripts.bind_world_api("ForcePainted")?;
         scripts.bind_world_api("ForceSketched")?;
@@ -1121,6 +1144,7 @@ impl Scripts {
         // game callback or claim AI selection is connected by invoking it.
         scripts.bind_world_api("BwxNativeAnimationEvent")?;
         scripts.bind_world_api("AnimEvent")?;
+        scripts.bind_world_api("PlayerPickup_SetPendingActivation")?;
         scripts.bind_world_api("ForceSpawn")?;
         scripts.bind_world_api("SetOverrideTurnRate")?;
         scripts.bind_world_api("ResetOverrideTurnRate")?;
@@ -1141,6 +1165,7 @@ impl Scripts {
         scripts.bind_world_api("BwxQueueMovie")?;
         scripts.bind_world_api("TransitionToLevel")?;
         scripts.bind_world_api("ForceSequence")?;
+        scripts.bind_world_api("Bark")?;
         // Demo gameplay scripts are compiled into per-script environments
         // during level import. Bind these adapters before loading those
         // environments so their closures never capture nil API globals.
@@ -1176,6 +1201,7 @@ impl Scripts {
             "ClearAllCameraAttributesSD",
             "ClearAllCameraAttributesTimedSD",
             "SaveCameraOverride",
+            "SaveCurrentCameraOverride",
             "LoadSavedCameraOverride",
             "NativeAudioSetState",
             "NativeAudioSetSwitch",
@@ -2566,7 +2592,7 @@ mod tests {
         assert_eq!(scripts.resolve_name("actors"), Some(0));
         let commands = scripts.advance(1.)?;
         assert!(
-            matches!(commands.as_slice(),[super::Command::Sequence{entity:1,name}] if name=="Spawn")
+            matches!(commands.as_slice(),[super::Command::Sequence{entity:1,name,..}] if name=="Spawn")
         );
         scripts.unregister_entity(1)?;
         assert!(scripts.register_entity(1, "replacement", &[]).is_err());
@@ -2818,7 +2844,7 @@ mod tests {
         scripts.load("original-prefab-semantics.lua", &chunk)?;
         assert!(scripts.advance(0.)?.is_empty());
         assert!(
-            matches!(&scripts.advance(0.1)?[..],[Command::Sequence{entity:0,name}] if name=="Open")
+            matches!(&scripts.advance(0.1)?[..],[Command::Sequence{entity:0,name,..}] if name=="Open")
         );
         assert!(scripts.errors.is_empty(), "{:?}", scripts.errors);
         Ok(())
@@ -2838,7 +2864,7 @@ mod tests {
         )?;
         scripts.load("ordered-groups.lua", &chunk)?;
         assert!(
-            matches!(&scripts.advance(0.)?[..],[Command::Sequence{entity:17,name}] if name=="Open")
+            matches!(&scripts.advance(0.)?[..],[Command::Sequence{entity:17,name,..}] if name=="Open")
         );
         assert!(scripts.errors.is_empty());
         assert_eq!(scripts.resolve_name("doors"), Some(17));
@@ -3030,7 +3056,7 @@ mod tests {
         let bytecode=crate::lua_cook::compile("assert(type(GetPlayer()) == 'userdata'); assert(GetPlayer() == _player()); assert(GetPlayer() == GetEntity('mickey')); assert(GetName(GetPlayer()) == 'mickey'); assert(GetEntity('missing') == nil); AnimGBSequence(GetEntity('pipe'), 'Spawn')")?;
         scripts.load("entity-abi.lua", &bytecode)?;
         assert!(
-            matches!(&scripts.advance(0.)?[..],[Command::Sequence{entity:17,name}] if name=="Spawn")
+            matches!(&scripts.advance(0.)?[..],[Command::Sequence{entity:17,name,..}] if name=="Spawn")
         );
         assert!(scripts.errors.is_empty(), "{:?}", scripts.errors);
         Ok(())
@@ -3049,7 +3075,7 @@ mod tests {
         let chunk=crate::lua_cook::compile("assert(GetName(GetEntity('missing')) == nil); assert(GetName('missing') == nil); assert(GetName(GetEntity('mickey')) == 'mickey'); AnimGBSequence('mickey', 'Idle')")?;
         scripts.load("nullable-name.lua", &chunk)?;
         assert!(
-            matches!(&scripts.advance(0.)?[..],[Command::Sequence{entity:0,name}] if name=="Idle")
+            matches!(&scripts.advance(0.)?[..],[Command::Sequence{entity:0,name,..}] if name=="Idle")
         );
         assert!(scripts.errors.is_empty(), "{:?}", scripts.errors);
         Ok(())
@@ -3094,7 +3120,7 @@ mod tests {
         assert!(scripts.advance(0.)?.is_empty());
         scripts.call("GV_ZoneA_SteamFixing01", 0)?;
         assert!(
-            matches!(&scripts.advance(0.)?[..],[Command::Sequence{entity:0,name}] if name=="rest")
+            matches!(&scripts.advance(0.)?[..],[Command::Sequence{entity:0,name,..}] if name=="rest")
         );
         assert!(scripts.errors.is_empty());
         Ok(())

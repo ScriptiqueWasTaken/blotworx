@@ -3,6 +3,8 @@
 //! Never write camera-facing transforms into simulation/serialized objects.
 use super::native_matrix::{Matrix, multiply, transform};
 use anyhow::{Context, Result, ensure};
+use epic_mickey_lib_rs::nif_file::NiTransform;
+use std::collections::BTreeMap;
 type V = [f32; 3];
 fn dot(a: V, b: V) -> f32 {
     a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
@@ -163,6 +165,55 @@ pub(super) fn camera_delta(
         &record_matrix(&super::native_transform_record::inverse(&record)),
     ))
 }
+
+impl super::scene_bounds::Hierarchy {
+    /// Apply the presentation rotations before merging bounds for lighting.
+    pub(super) fn face_billboard_bounds(
+        &self,
+        world: &mut BTreeMap<u32, NiTransform>,
+        view: &[f32; 16],
+    ) -> Result<()> {
+        if !self.nodes.values().any(|node| node.billboard_mode.is_some()) {
+            return Ok(());
+        }
+        let right = [view[0], view[4], view[8]];
+        let up = [view[1], view[5], view[9]];
+        let eye = std::array::from_fn(|axis| {
+            -(0..3).map(|row| view[axis * 4 + row] * view[12 + row]).sum::<f32>()
+        });
+        let mut pending: Vec<_> = self.roots.iter().flatten()
+            .map(|&id| (id, None)).collect();
+        while let Some((id, inherited)) = pending.pop() {
+            let node = &self.nodes[&id];
+            let frame = world.get_mut(&id).context("Billboard bound transform missing")?;
+            let frame_matrix = super::nif_runtime::matrix(frame);
+            let mut delta = inherited;
+            if let Some(mode) = node.billboard_mode {
+                let before = inherited.as_ref().map_or(frame_matrix, |parent| {
+                    super::skin::matrix_product(parent, &frame_matrix)
+                });
+                let facing = camera_delta(mode, before, frame.scale, eye, right, up)?;
+                delta = Some(inherited.as_ref().map_or(facing, |parent| {
+                    super::skin::matrix_product(&facing, parent)
+                }));
+            }
+            if let Some(delta) = delta {
+                let rotation = std::array::from_fn(|i| delta[(i % 3) * 4 + i / 3]);
+                let previous = std::array::from_fn(|i| frame.rotation.rows[i / 3][i % 3]);
+                let oriented = multiply(&rotation, &previous);
+                frame.rotation.rows = std::array::from_fn(|row| {
+                    std::array::from_fn(|col| oriented[row * 3 + col])
+                });
+                let [x, y, z] = super::physics::point(&delta, frame_matrix[12..15].try_into()?);
+                frame.translation.x = x;
+                frame.translation.y = y;
+                frame.translation.z = z;
+            }
+            pending.extend(node.children.iter().flatten().map(|&child| (child, delta)));
+        }
+        Ok(())
+    }
+}
 impl super::assets::World {
     /// Runs after animated model poses and before lighting/culling/submission.
     /// Accumulated ancestor deltas preserve mesh offsets and nested billboards.
@@ -188,6 +239,7 @@ impl super::assets::World {
                 .any(|c| c.class_name == "SkyboxComponent")
             {
                 for index in entity.draws.clone() {
+                    draws[index].skybox = true;
                     for axis in 0..3 {
                         draws[index].trans_mat[12 + axis] +=
                             eye[axis] - entity.transform[12 + axis];

@@ -2,6 +2,8 @@
 //! not a claim of Havok solver, controller interaction or lifecycle parity.
 use super::{assets::World, body_filter, native_hk_transform as transform};
 use anyhow::{Context, Result};
+use epic_mickey_lib_rs::nif_file::{Matrix3, NiTransform, Vector3};
+use std::collections::BTreeMap;
 #[cfg(test)]
 mod random_tests {
     use super::*;
@@ -98,25 +100,10 @@ impl World {
         node: u32,
         animated: bool,
     ) -> Result<transform::Transform> {
-        use epic_mickey_lib_rs::nif_file::{Matrix3, NiTransform, Vector3};
-        let owner = &self.entities[entity];
         let hierarchy = self
             .entity_bound_hierarchy(entity)?
             .context("Rigid-body binding has no model")?;
-        let parent = NiTransform {
-            rotation: Matrix3 {
-                rows: std::array::from_fn(|r| {
-                    std::array::from_fn(|c| owner.runtime_rotation[r * 3 + c])
-                }),
-            },
-            translation: Vector3 {
-                x: owner.transform[12],
-                y: owner.transform[13],
-                z: owner.transform[14],
-            },
-            scale: owner.authored_scale,
-        };
-        let empty = std::collections::BTreeMap::new();
+        let empty = BTreeMap::new();
         let poses = if !animated {
             &empty
         } else if let Some(actor) = self
@@ -136,16 +123,41 @@ impl World {
         } else {
             &empty
         };
-        let frames = hierarchy.base_world_transforms_with_poses(Some(&parent), poses)?;
-        let frame = frames.get(&node).context("Bound rigid-body node missing")?;
-        Ok(transform::from_entity(
+        let frames = hierarchy.base_world_transforms_with_poses(
+            Some(&self.rigid_model_parent(entity)),
+            poses,
+        )?;
+        Ok(Self::rigid_frame(
+            frames.get(&node).context("Bound rigid-body node missing")?,
+        ))
+    }
+
+    fn rigid_model_parent(&self, entity: usize) -> NiTransform {
+        let owner = &self.entities[entity];
+        NiTransform {
+            rotation: Matrix3 {
+                rows: std::array::from_fn(|r| {
+                    std::array::from_fn(|c| owner.runtime_rotation[r * 3 + c])
+                }),
+            },
+            translation: Vector3 {
+                x: owner.transform[12],
+                y: owner.transform[13],
+                z: owner.transform[14],
+            },
+            scale: owner.authored_scale,
+        }
+    }
+
+    fn rigid_frame(frame: &NiTransform) -> transform::Transform {
+        transform::from_entity(
             std::array::from_fn(|i| frame.rotation.rows[i / 3][i % 3]),
             [
                 frame.translation.x,
                 frame.translation.y,
                 frame.translation.z,
             ],
-        ))
+        )
     }
 
     fn bind_dynamic_model_nodes(
@@ -161,6 +173,48 @@ impl World {
             .geometry
             .as_ref()
             .map_err(|e| anyhow::anyhow!(e.clone()))?;
+        if state.layouts.iter().all(|layout| {
+            parts[layout.parts[0]]
+                .body_name
+                .as_deref()
+                .is_none_or(str::is_empty)
+        }) {
+            return Ok(());
+        }
+        let components = &self.entities[imported.entity].components;
+        let is_mover = components
+            .iter()
+            .find(|c| c.link_id.to_u32() == imported.component)
+            .and_then(|c| c.properties.iter().find(|p| p.name == "Is Mover"))
+            .and_then(|p| p.value.as_bool())
+            .unwrap_or(false);
+        // A sequence-driven mover's Havok hull is exported in its starting
+        // pose. The NIF locals can instead contain a later animation frame.
+        // Sample the authored start ID even if map-load logic changed it.
+        let reference_pose = if is_mover {
+            (|| {
+                let resources = self.actor_sequences.get(&imported.entity)?;
+                let bindings = self.actor_bindings.get(&imported.entity)?;
+                let actor = components
+                    .iter()
+                    .find(|c| c.class_name == "AnimationComponentGB")?;
+                let id = actor
+                    .properties
+                    .iter()
+                    .find(|p| p.name.eq_ignore_ascii_case("Active Sequence ID"))
+                    .and_then(|p| p.value.as_u64())
+                    .unwrap_or(0) as u32;
+                resources.get(id)?;
+                bindings.sample(id, 0.).ok()
+            })()
+        } else {
+            None
+        };
+        let empty = BTreeMap::new();
+        let frames = graph.base_world_transforms_with_poses(
+            Some(&self.rigid_model_parent(imported.entity)),
+            reference_pose.as_ref().map_or(&empty, |pose| &pose.transforms),
+        )?;
         for (index, layout) in state.layouts.iter().enumerate() {
             let Some(name) = parts[layout.parts[0]]
                 .body_name
@@ -177,7 +231,9 @@ impl World {
                 }
             }
             if let Some(node) = node {
-                let frame = self.rigid_model_node_frame(imported.entity, node, false)?;
+                let frame = Self::rigid_frame(
+                    frames.get(&node).context("Bound rigid-body node missing")?,
+                );
                 // Preserve the authored collision-to-node offset: collision
                 // pivots need not be identical to the rendered mesh pivot.
                 state.node_bindings[index] = Some(super::dynamic_body::NodeBinding {
@@ -698,6 +754,7 @@ impl World {
         }
         let contacts = self.collision.simulation_begin_contacts()?;
         for contact in contacts {
+            self.record_ai_projectile_contact(&contact);
             for side in 0..2 {
                 // REL3a033c..434: the listener's first non-character contact
                 // latches even if Event on Collision is disabled. It does not
@@ -749,6 +806,162 @@ impl World {
         Ok(())
     }
 }
+#[cfg(debug_assertions)]
+pub(super) fn validate_dbc_hall_door() -> Result<()> {
+    let root = std::env::var_os("BLOTWORX_TEST_DATA").context("Set BLOTWORX_TEST_DATA")?;
+    let root = std::path::Path::new(&root);
+    let ctx = egui::Context::default();
+    let mut world = super::assets::load(root, "Levels/DBC_Start_1st.Level", &ctx)?;
+    world.enable_demo_story()?;
+    world.run_callback_fixture(
+        "ActivateScene('Environments/ThePark/DarkBeautyCastle/GSA/dbc_1st_zoneb.gsa')")?;
+    world.advance_models_with_delta(world.animation_time + super::STEP, super::STEP)?;
+    let find = |world: &World, name| world.scripts.resolve_name(name).context("Missing hallway entity");
+    let door = find(&world, "dbc_1st_zoneb_dynamic.DBC__1st_ZoneB_HallDoor01 01")?;
+    let gear = find(&world, "dbc_1st_zoneb_dynamic.DBC__1st_ZoneB_HallDoorGear01 01")?;
+    let source = world.dynamic_bodies.iter().position(|body| body.entity == door)
+        .context("Hallway door physics source missing")?;
+    let messages = |world: &World| world.report.unsupported.iter()
+        .filter(|line| line.contains("HallDoor01")).cloned().collect::<Vec<_>>();
+    let owner = *world.dynamic_runtime_sources.get(&source)
+        .with_context(|| format!("Hallway door physics is unavailable: {:?}", messages(&world)))?;
+    let snapshot = |world: &World| -> Result<Vec<_>> {
+        world.dynamic_constructions[&source].bodies.iter().enumerate().map(|(index, body)| {
+            let construction = &world.dynamic_constructions[&source];
+            let binding = construction.node_bindings[index];
+            let expected = binding.map(|binding| world.rigid_model_node_frame(door, binding.node, true)
+                .map(|frame| transform::compose(&frame, &binding.offset))).transpose()?;
+            let body_pose = world.collision.simulation_pose(body.shapes[0])?;
+            Ok((body_pose.position, expected.map(|pose| [pose[12], pose[13], pose[14]]),
+                body.motion.current.motion_type(), body.auxiliary.user_data.as_ref().map(|data| data.byte_08)))
+        }).collect()
+    };
+    let advance = |world: &mut World| -> Result<()> {
+        world.advance_models_with_delta(world.animation_time + super::STEP, super::STEP)?;
+        world.advance_dynamic_physics(super::STEP)?;
+        world.advance_jigsaw_effects(super::STEP)
+    };
+    for _ in 0..4 { advance(&mut world)?; }
+    let closed = snapshot(&world)?;
+    println!("Closed doorway {owner}: {closed:?}");
+    let leaf_indices = world.dynamic_constructions[&source].layouts.iter().enumerate()
+        .filter_map(|(index, layout)| {
+            let parts = world.dynamic_bodies[source].geometry.as_ref().ok()?;
+            parts[layout.parts[0]].body_name.as_deref()
+                .filter(|name| name.starts_with("REF:HallDoor01_Main|"))?;
+            Some(index)
+        }).collect::<Vec<_>>();
+    anyhow::ensure!(leaf_indices.len() == 2, "Expected two door leaves");
+    let [first, second] = [closed[leaf_indices[0]].0, closed[leaf_indices[1]].0];
+    let x = second[0] - first[0];
+    let z = second[2] - first[2];
+    let horizontal = x.hypot(z);
+    anyhow::ensure!(horizontal > 0.1, "Closed door leaves have no lateral spacing");
+    let across = [-z / horizontal, 0., x / horizontal];
+    let passage_hits = |world: &World| -> Result<Vec<usize>> {
+        let center = std::array::from_fn::<_, 3, _>(|axis| (first[axis] + second[axis]) * 0.5);
+        let mut hits = Vec::new();
+        for ratio in [0.3, 0.5, 0.7] {
+            let origin = std::array::from_fn(|axis| center[axis] + (ratio - 0.5)
+                * (second[axis] - first[axis]) - across[axis]);
+            hits.extend(world.collision.ray_hits(origin, across.map(|v| v * 2.))?
+                .into_iter().map(|hit| hit.owner));
+        }
+        hits.sort_unstable();
+        hits.dedup();
+        Ok(hits)
+    };
+    let blocked = passage_hits(&world)?;
+    println!("Closed passage hits: {blocked:?}");
+    let paint_owner = *world.model_paint.get(&gear).context("Hallway gear paint model missing")?
+        .owners.first().context("Hallway gear collision owner missing")?;
+    anyhow::ensure!(world.brush_model_hit(paint_owner, true, [10000.; 3])?, "Gear rejected paint");
+    for _ in 0..180 { advance(&mut world)?; }
+    let open = snapshot(&world)?;
+    println!("Opened doorway {owner}: {open:?}; diagnostics: {:?}", messages(&world));
+    let open_hits = passage_hits(&world)?;
+    println!("Open passage hits: {:?}", open_hits.iter().map(|part| (*part,
+        world.collision_entity(*part).map(|entity| entity.name.as_str()))).collect::<Vec<_>>());
+    for (index, (after, expected, _, _)) in open.into_iter().enumerate() {
+        let expected = expected.context("Missing hallway door model-node binding")?;
+        anyhow::ensure!((0..3).all(|axis| (after[axis] - expected[axis]).abs() < 0.005),
+            "Hallway solver body detached from animated pose: {after:?} vs {expected:?}");
+        if leaf_indices.contains(&index) {
+            anyhow::ensure!((0..3).any(|axis| (after[axis] - closed[index].0[axis]).abs() > 0.1),
+                "Hallway solver body stayed at its closed position");
+        }
+    }
+    anyhow::ensure!(blocked.contains(&owner) && !open_hits.contains(&owner),
+        "Hallway door failed the closed/open passage ray test");
+    let trim = find(&world, "dbc_1st_zoneb_static.DBC__1st_ZoneB_Toon01 01")?;
+    let second_door = find(&world, "dbc_1st_zoneb_dynamic.DBC__1st_ZoneB_HallDoor02 01")?;
+    let second_hull = find(&world, "dbc_1st_zoneb_static.DBC__1st_ZoneB_HallDoor02_Collision 01")?;
+    let trim_pieces = world.jigsaw_owners.iter().filter_map(|(&owner, piece)| {
+        let instance = &world.jigsaw_instances[piece.instance];
+        (instance.entity == trim
+            && world.entities[trim].jigsaw_states[instance.node].painted[piece.piece]).then_some(owner)
+    }).collect::<Vec<_>>();
+    anyhow::ensure!(trim_pieces.len() > 1, "Authored second-door trim has no painted pieces");
+    let (last, first) = trim_pieces.split_last().unwrap();
+    for &piece in first {
+        anyhow::ensure!(world.brush_jigsaw_contact(piece, false)?, "Trim rejected thinner");
+    }
+    for _ in 0..60 { advance(&mut world)?; }
+    anyhow::ensure!(!world.removed_entities.contains(&second_hull), "Partially thinned trim removed the doorway");
+    anyhow::ensure!(world.brush_jigsaw_contact(*last, false)?, "Final trim piece rejected thinner");
+    for _ in 0..100 { advance(&mut world)?; }
+    anyhow::ensure!(world.removed_entities.contains(&second_hull), "Second doorway still has its static hull");
+    let open_id = world.actor_sequences[&second_door].find_name("Open");
+    anyhow::ensure!(world.actors[&second_door].active_id() == Some(open_id), "Second door never played its falling sequence");
+    println!("PASS: fully thinned hallway trim plays the second door's Open sequence and removes its static blocker");
+    Ok(())
+}
+
+#[cfg(debug_assertions)]
+pub(super) fn validate_dbc_courtyard_armor() -> Result<()> {
+    let root = std::env::var_os("BLOTWORX_TEST_DATA").context("Set BLOTWORX_TEST_DATA")?;
+    let mut world = super::assets::load(
+        std::path::Path::new(&root),
+        "Levels/DBC_Start_1st.Level",
+        &egui::Context::default(),
+    )?;
+    world.enable_demo_story()?;
+    world.run_callback_fixture(
+        "ActivateScene('Environments/ThePark/DarkBeautyCastle/GSA/dbc_1st_zonec.gsa')",
+    )?;
+    world.advance_models_with_delta(world.animation_time + super::STEP, super::STEP)?;
+    world.advance_dynamic_physics(super::STEP)?;
+
+    let armor = world.scripts.resolve_name("dbc_scaletest.spawner_thinnerammo 08.Spawner_ThinnerAmmo_Toon")
+        .context("Missing courtyard armor")?;
+    let source = world.dynamic_bodies.iter().position(|body| body.entity == armor)
+        .context("Courtyard armor physics source missing")?;
+    let owner = *world.dynamic_runtime_sources.get(&source)
+        .context("Courtyard armor has no gameplay collision owner")?;
+    let state = &world.dynamic_constructions[&source];
+    anyhow::ensure!(state.bodies.len() == 2, "Expected both authored armor bodies");
+    anyhow::ensure!(world.collision.owner_in_world(owner)?, "Armor hull is inactive");
+    let mut positions = Vec::new();
+    for body in &state.bodies {
+        let shape = *body.shapes.first().context("Missing armor shape")?;
+        anyhow::ensure!(world.collision.simulation_filter_word(shape)? & 0x8000 != 0,
+            "Armor shape is missing its solid collision flag");
+        positions.push(world.collision.simulation_pose(shape)?.position);
+    }
+    let mut hits = std::collections::HashSet::new();
+    for position in positions {
+        world.dispatch_spin(position, &mut hits)?;
+    }
+    anyhow::ensure!(hits.contains(&armor), "Spin did not hit the authored armor");
+    world.advance_models_with_delta(world.animation_time + super::STEP, super::STEP)?;
+    world.run_callback_fixture(
+        r#"assert(GetPrefabData("dbc_scaletest.spawner_thinnerammo 08.Spawner_ThinnerAmmo_Toon").SpawnerFired == "True",
+            "The original armor callback did not fire")"#,
+    )?;
+    println!("PASS: both authored armor bodies are solid and the armor spin runs its pickup callback");
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

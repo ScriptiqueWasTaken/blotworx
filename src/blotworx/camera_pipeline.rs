@@ -116,7 +116,24 @@ impl super::assets::World {
             information,
             self.camera_lens.sample(information.field_of_view),
         )
-        .map(|frame|Some(self.script_feedback.apply(frame)))
+        .and_then(|mut frame| {
+            if !self.cutscene_input.restricted && !self.side_scroller.enabled {
+                // The active gameplay camera can still come from a level
+                // control point. Use the same material/owner obstruction
+                // policy as the free camera before publishing it to aim and rendering.
+                let target = super::physics::add(self.script_player.position, [0., 1., 0.]);
+                let offset = super::physics::sub(frame.eye, target);
+                let distance = super::physics::length(offset);
+                if distance > f32::EPSILON {
+                    let direction = offset.map(|lane| lane / distance);
+                    let clear = self.camera_preview_distance(target, direction, distance)?;
+                    if clear < distance {
+                        frame.eye = std::array::from_fn(|i| target[i] + direction[i] * clear);
+                    }
+                }
+            }
+            Ok(Some(self.script_feedback.apply(frame)))
+        })
     }
     /// Publish after model/controller and blend updates. Inspection cameras
     /// are presentation-only and never become the application source.

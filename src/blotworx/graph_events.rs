@@ -46,7 +46,7 @@ impl Prepared {
         &mut self,
         graph: &Document,
         index: usize,
-        _event: &Event,
+        event: &Event,
     ) -> Result<()> {
         let node = self.plan.nodes.get(index).context("Missing event node")?;
         let object = graph
@@ -68,6 +68,18 @@ impl Prepared {
             // Attribute activation, event and deactivation methods are all
             // inherited no-ops. Its assignments execute only in output modify.
             "hkbAttributeModifier" | "hkbTwistModifier" => Ok(()),
+            "hkbEventDrivenModifier" => {
+                if object.fields["enable"].as_bool() == Some(true) {
+                    let id = i64::from(event.id);
+                    let changed = if object.fields["activateEventId"].as_i64() == Some(id) {
+                        self.event_modifiers.insert(node.object.clone())
+                    } else if object.fields["deactivateEventId"].as_i64() == Some(id) {
+                        self.event_modifiers.remove(&node.object)
+                    } else { false };
+                    self.transitions.topology_changed |= changed;
+                }
+                Ok(())
+            }
             "hkbAttachmentModifier" => self
                 .attachment_modifiers
                 .synchronize(graph, &node.object)

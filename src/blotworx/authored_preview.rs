@@ -336,6 +336,13 @@ impl Preview {
             self.airborne_animation = false;
             return Ok(());
         }
+        if player.damage_leaping || player.damage_leap_landed {
+            self.airborne_animation = false;
+            if player.damage_leap_landed {
+                self.queue_named_event(graph, "EVENT_Damaged_Leap_Land")?;
+            }
+            return Ok(());
+        }
         self.apply_ground_motion(player, state)?;
         if player.ground_jump_started || player.air_first_jump_started {
             self.queue_named_event(graph, "EVENT_Start_Jump")?;

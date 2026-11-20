@@ -4,7 +4,7 @@ use anyhow::Result;
 use std::collections::BTreeMap;
 #[derive(Default)]
 pub struct State {
-    states: BTreeMap<usize, u32>,
+    pub(super) states: BTreeMap<usize, u32>,
     pub hits: u64,
     pub changes: u64,
 }
@@ -59,6 +59,9 @@ impl World {
                 self.demo_story.counters.hits += 1;
                 self.advance_counter_materials(entity..entity + 1);
                 self.activate_counter_impact(entity, change.scaled_amount)?;
+                if self.paint_counters[&entity].status() == self.demo_story.counters.states[&entity] {
+                    self.counter_actor_effect(entity, &["spatterimpactfx", "fx_npc_hit"], false);
+                }
                 if let Some(material) = self.counter_materials.get_mut(&entity) {
                     material.invulnerable_remaining = duration;
                 }
@@ -66,6 +69,34 @@ impl World {
             }
         }
         Ok(())
+    }
+    fn counter_actor_effect(&mut self, entity: usize, candidates: &[&str], detached: bool) {
+        if !self.entities[entity].has_character_body() {
+            return;
+        }
+        let Some(templates) = self.entities[entity].components.iter()
+            .find(|component| component.class_name == "FXComponent")
+            .and_then(|component| component.properties.iter().find(|p| p.name == "FXTemplate"))
+            .and_then(|property| property.value.as_array())
+        else {
+            return;
+        };
+        let Some(name) = candidates.iter().copied().find(|name| templates.iter().any(|value| {
+            value.as_str().is_some_and(|template| template.eq_ignore_ascii_case(name))
+        })) else {
+            return;
+        };
+        let result = if detached {
+            self.start_one_shot_effect(entity, name)
+        } else {
+            self.dispatch_animation_emitter(entity, 0x214, name)
+        };
+        if let Err(error) = result {
+            let warning = format!("Counter actor effect {} -> {name}: {error:#}", self.entities[entity].name);
+            if !self.report.unsupported.contains(&warning) {
+                self.report.unsupported.push(warning);
+            }
+        }
     }
     pub(super) fn advance_demo_counter_states(&mut self) -> Result<()> {
         if !self.demo_story.enabled {
@@ -102,6 +133,7 @@ impl World {
                 self.emit_entity_output(entity, "OnTeamChanged", entity);
             }
             if current == 2 {
+                self.counter_actor_effect(entity, &["blotlingpuddle_fx_small", "puddlesplash"], true);
                 self.emit_entity_output(entity, "OnFullySketched", self.player_entity);
                 self.emit_entity_output(entity, "OnCharacterPuddled", self.player_entity);
                 let zero = self.entities[entity]
@@ -141,6 +173,8 @@ impl World {
                     self.emit_entity_output(entity, "OnCharacterRestored", self.player_entity);
                 }
                 if current == 1 {
+                    self.counter_actor_effect(entity,
+                        &["fx_turn_good_gremlin", "fx_turn_good_seer", "fx_turn_good", "fx_turn_good_shared"], false);
                     self.emit_entity_output(entity, "OnFullyPainted", self.player_entity);
                     self.emit_entity_output(entity, "OnCharacterPainted", self.player_entity);
                 }

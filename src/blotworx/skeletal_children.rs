@@ -455,6 +455,7 @@ impl super::assets::World {
                         rotation
                     };
                     let entity = &mut self.entities[child];
+                    let previous = entity.transform;
                     entity.runtime_rotation = rotation;
                     let scale = if socket.multiplier > f32::EPSILON {
                         pose[12]
@@ -468,6 +469,9 @@ impl super::assets::World {
                     );
                     for draw in entity.draws.clone() {
                         self.draws[draw].trans_mat = entity.transform;
+                    }
+                    if entity.transform != previous && !entity.collision_parts.is_empty() {
+                        self.publish_static_collision_pose(child, pose[9..12].try_into().unwrap(), rotation)?;
                     }
                     super::rotator_runtime::propagate(
                         child,

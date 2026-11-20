@@ -296,6 +296,7 @@ impl Template {
             extra_uvs: None,
             projection_bound: None,
             projected_shadow: false,
+            skybox: false,
             material_registers: None,
             material_indirect: None,
             material_images: Arc::new(prepared.images.clone()),

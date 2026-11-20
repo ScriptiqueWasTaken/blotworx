@@ -4,9 +4,14 @@ use super::{audio_dsp::{Definition,Decoder},audio_loop::Layout};
 use anyhow::{ensure,Context,Result};
 use std::{fs::File,io::{Read,Seek,SeekFrom,BufReader},path::{Path,PathBuf},collections::{BTreeSet,VecDeque}};
 #[derive(Clone,Debug)]
-pub struct Spec {pub path:PathBuf,pub definition:Definition,data:u64,bytes:u64,file_bytes:u64}
+pub struct Spec {pub path:PathBuf,pub definition:Definition,data:u64,bytes:u64,file_bytes:u64,channels:u16,channel:u16}
 impl Spec {
     pub fn read(path:&Path)->Result<Self> {
+        let channels = Self::channels(path)?;
+        ensure!(channels.len() == 1, "Expected mono external DSP audio");
+        Ok(channels.into_iter().next().unwrap())
+    }
+    pub(super) fn channels(path:&Path)->Result<Vec<Self>> {
         let mut f=File::open(path).with_context(||format!("Open external audio {}",path.display()))?;let file_bytes=f.metadata()?.len();
         let mut header=[0;12];f.read_exact(&mut header)?;
         ensure!(&header[..4]==b"RIFX" && &header[8..]==b"WAVE","Expected external RIFX/WAVE audio");
@@ -18,7 +23,7 @@ impl Spec {
             let size=u32::from_be_bytes(h[4..].try_into()?) as u64;let body=at+8;let end=body.checked_add(size).context("External chunk overflow")?;ensure!(end<=file_bytes,"Truncated external audio chunk");
             match &tag {
                 b"fmt "=>{ensure!(size==40,"Unsupported external DSP fmt layout");let mut v=[0;40];f.read_exact(&mut v)?;fmt=Some(v);},
-                b"WiiH"=>{ensure!(size==46,"Unsupported external WiiH layout");let mut v=[0;46];f.read_exact(&mut v)?;wii=Some(v);},
+                b"WiiH"=>{ensure!(matches!(size,46|92),"Unsupported external WiiH layout");let mut v=vec![0;size as usize];f.read_exact(&mut v)?;wii=Some(v);},
                 b"smpl"=>{
                     ensure!(size>=36,"Truncated external sampler");let mut v=[0;36];f.read_exact(&mut v)?;
                     if u32::from_be_bytes(v[28..32].try_into()?)!=0 {let offset=u32::from_be_bytes(v[32..].try_into()?) as u64;ensure!(offset+52<=size,"External loop record exceeds sampler");f.seek(SeekFrom::Start(body+offset+44))?;let mut p=[0;8];f.read_exact(&mut p)?;points=Some([u32::from_be_bytes(p[..4].try_into()?),u32::from_be_bytes(p[4..].try_into()?)]);}
@@ -28,25 +33,47 @@ impl Spec {
             }
             at=if end==file_bytes {end}else {end+(size&1)};ensure!(at<=file_bytes,"Missing external RIFF padding");
         }
-        let mut definition=Definition::parse(&fmt.context("External audio fmt missing")?,&wii.context("External DSP coefficients missing")?,None)?;definition.loop_points=points;
+        let mut fmt = fmt.context("External audio fmt missing")?;
+        let wii = wii.context("External DSP coefficients missing")?;
+        let channels = u16::from_be_bytes([fmt[2], fmt[3]]);
+        ensure!(matches!(channels, 1|2) && wii.len() == usize::from(channels)*46, "External DSP channel count disagrees with WiiH");
+        fmt[2..4].copy_from_slice(&1u16.to_be_bytes());
         let (data,bytes)=data.context("External DSP data missing")?;
-        ensure!(definition.sample_count>0 && definition.sample_count as u64<=bytes/8*14,"External sample count exceeds DSP data");
-        Ok(Self{path:path.to_owned(),definition,data,bytes,file_bytes})
+        ensure!(bytes % (8*u64::from(channels)) == 0, "Partial external channel frame");
+        wii.chunks_exact(46).enumerate().map(|(channel, coefficients)| {
+            let mut definition = Definition::parse(&fmt, coefficients, None)?;
+            definition.loop_points = points;
+            ensure!(definition.sample_count>0 && definition.sample_count as u64<=bytes/(8*u64::from(channels))*14,"External sample count exceeds DSP data");
+            Ok(Self{path:path.to_owned(),definition,data,bytes,file_bytes,channels,channel:channel as u16})
+        }).collect()
     }
     pub fn open(&self,layout:Layout)->Result<Reader> {
         let f=File::open(&self.path).with_context(||format!("Open streaming voice {}",self.path.display()))?;
         ensure!(f.metadata()?.len()==self.file_bytes,"External audio changed after preparation");
         ensure!(layout.samples==self.definition.sample_count as usize,"External voice layout disagrees with media");
-        Ok(Reader{file:BufReader::with_capacity(8192,f),spec:self.clone(),layout,decoder:self.definition.decoder.clone(),time:0,next_raw:0,next_frame:None,encoded:None,cache:VecDeque::with_capacity(2),read_bytes:0})
+        Ok(Reader{file:BufReader::with_capacity(8192,f),spec:self.clone(),layout,decoder:self.definition.decoder.clone(),time:0,next_raw:0,next_frame:None,encoded:None,cache:VecDeque::with_capacity(2),read_bytes:0,window:None})
+    }
+    pub(super) fn open_window(&self, offset:u64, lead:u64, length:u64) -> Result<Reader> {
+        ensure!(offset.checked_add(length).is_some_and(|end| end <= u64::from(self.definition.sample_count)), "Music clip exceeds external DSP media");
+        let mut reader = self.open(Layout::new(self.definition.sample_count as usize, None, 1)?)?;
+        reader.window = Some((offset, lead, length));
+        Ok(reader)
     }
 }
 struct Chunk {time:u64,len:usize,samples:[i16;14]}
 pub struct Reader {
     file:BufReader<File>,spec:Spec,layout:Layout,decoder:Decoder,time:u64,next_raw:usize,
     next_frame:Option<u64>,encoded:Option<(u64,[u8;8])>,cache:VecDeque<Chunk>,pub read_bytes:u64,
+    window:Option<(u64,u64,u64)>,
 }
 impl Reader {
     pub fn sample(&mut self,time:u64)->Result<Option<i16>> {
+        let time = if let Some((offset, lead, length)) = self.window {
+            if time < lead { return Ok(Some(0)); }
+            let time = time - lead;
+            if time >= length { return Ok(None); }
+            offset + time
+        } else { time };
         if self.layout.index(time).is_none() {return Ok(None);}
         if self.cache.front().is_some_and(|c|time<c.time) {self.time=0;self.next_raw=0;self.decoder=self.spec.definition.decoder.clone();self.cache.clear();}
         while self.time<=time {
@@ -57,8 +84,13 @@ impl Reader {
             let frame=raw as u64/14;let first=raw%14;let mut len=1;
             while first+len<14 && self.layout.index(self.time+len as u64)==Some(raw+len) {len+=1;}
             let encoded=if let Some((_,bytes))=self.encoded.filter(|(id,_)|*id==frame) {bytes}else {
-                ensure!(frame*8+8<=self.spec.bytes,"External DSP address exceeds data");
-                if self.next_frame!=Some(frame) {self.file.seek(SeekFrom::Start(self.spec.data+frame*8))?;}
+                let offset = (frame * u64::from(self.spec.channels) + u64::from(self.spec.channel)) * 8;
+                ensure!(offset+8<=self.spec.bytes,"External DSP address exceeds data");
+                if self.next_frame!=Some(frame) {
+                    self.file.seek(SeekFrom::Start(self.spec.data+offset))?;
+                } else if self.spec.channels == 2 {
+                    self.file.seek_relative(8)?;
+                }
                 let mut bytes=[0;8];self.file.read_exact(&mut bytes).with_context(||format!("Read DSP frame {frame} in {}",self.spec.path.display()))?;self.read_bytes+=8;self.next_frame=Some(frame+1);self.encoded=Some((frame,bytes));bytes
             };
             let decoded=self.decoder.range(&encoded,first,first+len,context).with_context(||format!("Decode DSP frame {frame} in {}",self.spec.path.display()))?;

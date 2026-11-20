@@ -414,6 +414,17 @@ impl Hierarchy {
         direct: bool,
         managed: bool,
     ) -> Result<BTreeMap<u32, Sphere>> {
+        self.bounds_with_runtime_geometry(world, previous, direct, managed, &BTreeMap::new(), false)
+    }
+    pub(super) fn bounds_with_runtime_geometry(
+        &self,
+        world: &BTreeMap<u32, NiTransform>,
+        previous: &BTreeMap<u32, Sphere>,
+        direct: bool,
+        managed: bool,
+        runtime_geometry: &BTreeMap<u32, Sphere>,
+        billboards_resolved: bool,
+    ) -> Result<BTreeMap<u32, Sphere>> {
         let mut order = Vec::new();
         let mut pending: Vec<_> = self.roots.iter().rev().flatten().copied().collect();
         while let Some(id) = pending.pop() {
@@ -421,8 +432,9 @@ impl Hierarchy {
             // Native8042115c returns immediately for manager-controlled objects.
             // An owned controller with a null interpolator retains the current
             // local transform; it is not an unresolved transform producer.
-            let resolved = !node.runtime_geometry
-                && !node.controllers.is_empty()
+            let billboard = billboards_resolved && node.billboard_mode.is_some();
+            let resolved = (!node.runtime_geometry || billboard)
+                && (billboard || !node.controllers.is_empty())
                 && node.controllers.iter().all(|c| {
                     !c.affects_bound()
                         || (node.morph_bound && c.class_name == "NiMorphWeightsController")
@@ -431,7 +443,7 @@ impl Hierarchy {
                             && (managed || c.flags & 0x20 == 0 || c.transform.is_none()))
                 });
             ensure!(
-                !node.needs_runtime_bound || resolved,
+                !node.needs_runtime_bound || resolved || runtime_geometry.contains_key(&id),
                 "Node {id} ({}) requires runtime bound update; controllers: {:?}",
                 node.class_name,
                 node.controllers
@@ -445,7 +457,9 @@ impl Hierarchy {
         let mut bounds = BTreeMap::new();
         for id in order.into_iter().rev() {
             let node = &self.nodes[&id];
-            let bound = if self.cameras.contains_key(&id) {
+            let bound = if let Some(&bound) = runtime_geometry.get(&id) {
+                bound
+            } else if self.cameras.contains_key(&id) {
                 // EM1 Camera UpdateWorldBound8044d16c moves the center only.
                 let t = &world[&id].translation;
                 Sphere {

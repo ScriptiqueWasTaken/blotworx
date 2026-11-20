@@ -266,13 +266,11 @@ impl World {
             duration.is_finite(),
             "Camera handoff duration must be finite"
         );
-        ensure!(
-            mode == 1 || mode == 3,
-            "Camera transition mode {mode} is not connected"
-        );
+        let mode = if duration == 0. { 0 } else { mode };
+        ensure!(matches!(mode, 0 | 1 | 3), "Camera transition mode {mode} is not connected");
         let Some(entity) = entity else {
             ensure!(
-                duration == 0.,
+                mode == 0,
                 "Native default gameplay camera controller required for timed release"
             );
             self.nif_camera = None;
@@ -318,7 +316,7 @@ impl World {
         };
         let frame = self.sample_nif_camera(destination)?;
         frame.projection()?;
-        let transition = if duration != 0. {
+        let transition = if mode != 0 {
             let source = self.nif_camera.context(
                 "Native default gameplay camera controller required for timed camera acquisition",
             )?;
@@ -336,6 +334,7 @@ impl World {
         } else {
             None
         };
+        self.demo_story.owns_grabbed_camera = false;
         self.nif_camera = Some(destination);
         self.nif_camera_transition = transition;
         self.nif_camera_completed_frame = None;
@@ -359,9 +358,7 @@ impl World {
             // ReleaseCamera path. Native timed default-controller blending is
             // still unavailable; do not abort the remaining sequence events.
             self.demo_story.camera_override = None;
-            self.nif_camera = None;
-            self.nif_camera_transition = None;
-            self.nif_camera_completed_frame = None;
+            self.clear_grabbed_camera();
             return Ok(());
         }
         let entity = entity.context(
@@ -428,11 +425,19 @@ impl World {
         } else {
             None
         };
+        self.demo_story.owns_grabbed_camera = false;
         self.nif_camera = Some(destination);
         self.nif_camera_transition = transition;
         self.nif_camera_completed_frame = None;
         Ok(())
     }
+    pub(super) fn clear_grabbed_camera(&mut self) {
+        self.demo_story.owns_grabbed_camera = false;
+        self.nif_camera = None;
+        self.nif_camera_transition = None;
+        self.nif_camera_completed_frame = None;
+    }
+
     fn validate_entity_camera(&self, entity: usize) -> Result<()> {
         let source = self
             .entities

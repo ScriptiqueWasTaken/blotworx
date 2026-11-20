@@ -135,6 +135,7 @@ impl Program {
                         2 => boolean(a == 0.),
                         3 => -a,
                         4 => a,
+                        5 => a.sin(), // BlotlingKamikaze's cooked twist expression.
                         10 => a.abs(), // DOL80221414: fabs, then frsp.
                         14 => a * b,
                         15 => a / b,
@@ -202,7 +203,7 @@ pub struct RetailToken {
 fn arity(op: u8) -> Result<usize> {
     match op {
         1 => Ok(0),
-        2..=4 | 10 => Ok(1),
+        2..=5 | 10 => Ok(1),
         14..=25 | 27..=29 => Ok(2),
         43 => Ok(3),
         _ => bail!("Unsupported expression operator {op}"),
@@ -359,11 +360,11 @@ impl Parser<'_> {
                     ensure!(self.take(b")"), "cond requires exactly three arguments");
                     self.code.push(Instruction::Operator(43));
                 }
-                "fabs" => {
-                    ensure!(self.take(b"("), "fabs requires one parenthesized argument");
+                "fabs" | "sin" => {
+                    ensure!(self.take(b"("), "{name} requires one parenthesized argument");
                     self.expression(0)?;
-                    ensure!(self.take(b")"), "fabs requires exactly one argument");
-                    self.code.push(Instruction::Operator(10));
+                    ensure!(self.take(b")"), "{name} requires exactly one argument");
+                    self.code.push(Instruction::Operator(if name == "sin" { 5 } else { 10 }));
                 }
                 "randRange" => {
                     ensure!(

@@ -36,15 +36,26 @@ impl World {
         if admitted && !self.report.unsupported.iter().any(|line|line==limitation) {self.report.unsupported.push(limitation.into());}
         Ok(admitted)
     }
+    pub(super) fn deliver_entity_removal(&mut self, entity: usize) -> Result<()> {
+        // Retail REL1edf98..1edfc0 dispatches kind 44 through the ordinary
+        // event path while the source entity and its IO are still registered.
+        self.deferred_event_runtime.dispatch_ordinary_output(
+            &mut self.entity_event_registry,
+            super::super::entity_events::Basic { event_kind: 0x44, source: Some(entity), header: None },
+            &mut self.outputs, &self.entities, &self.scene_resources, self.animation_time,
+            &mut self.ai_brains, &self.robot_arm_controls, &self.cutscene_actions,
+        )?;
+        let deliveries = self.outputs.ready_for_owner_output(
+            self.animation_time, entity, "OnEntityRemovedFromWorld",
+        );
+        self.dispatch_actor_deliveries(deliveries);
+        Ok(())
+    }
     pub(in crate::blotworx) fn process_entity_cleanup(&mut self)->Result<()> {
         let mut cursor=0;
         while let Some(entity)=self.cleanup_queue.at(cursor) {
             if self.removed_entities.contains(&entity) {self.cleanup_queue.remove_at(cursor);continue;}
             if self.named_fx.live.get(&entity).is_some_and(|effect|!effect.ready) {cursor+=1;continue;}
-            //1edf44 queues kind44 before component/resource teardown. Use the
-            //real deferred event queue; receivers lacking subscriptions diagnose.
-            let event=super::super::entity_events::Basic{event_kind:0x44,source:Some(entity),header:None}.into();
-            self.entity_event_queue.enqueue_with(&event,None,&mut |_,_|anyhow::bail!("Basic cleanup event must not compare auxiliary references"))?;
             self.retire_entity(entity)?;
             if self.removed_entities.contains(&entity) {
                 self.cleanup_completed=self.cleanup_completed.wrapping_add(1);
@@ -73,10 +84,39 @@ pub(super) fn validate_owned_cleanup()->Result<()> {
     world.run_callback_fixture("assert(select('#',DestroyEntity('gremlinvillage_zonea.Breakable Barrel Health 03'))==0); assert(IsValidHandle(GetEntity('gremlinvillage_zonea.Breakable Barrel Health 03'))); DestroyEntity('gremlinvillage_zonea.Breakable Barrel Health 03')")?;
     ensure!((0..world.cleanup_queue.len()).filter_map(|i|world.cleanup_queue.at(i)).collect::<Vec<_>>()==[grandchild,child,parent],"Owned children were not prepared before parent publication, or duplicate admission failed");
     ensure!([grandchild,child,parent].iter().all(|entity|!world.removed_entities.contains(entity)),"Preparation destroyed an entity synchronously");
+    world.run_callback_fixture("BwxRemovalOrder={}; function BwxRecordRemoval(entity) table.insert(BwxRemovalOrder, GetName(entity)) end")?;
+    let events = [grandchild, parent, child];
+    let names = events.map(|owner| world.entities[owner].name.clone());
+    for (&owner, name) in events.iter().zip(&names) {
+        let mut io = world.entities[owner].components.iter().find(|c| c.class_name == "InputOutputComponent")
+            .context("Cleanup fixture owner has no IO component")?.clone();
+        for (key, value) in [
+            ("Output", serde_json::json!(["OnEntityRemovedFromWorld"])),
+            ("Input", serde_json::json!(["BwxRecordRemoval"])),
+            ("Target", serde_json::json!(["_self"])),
+            ("Parameters", serde_json::json!([""])),
+            ("DelayWait", serde_json::json!([0.])),
+            ("IoFlags", serde_json::json!([0])),
+            ("TargetGroup", serde_json::json!([""])),
+        ] {
+            if let Some(p) = io.properties.iter_mut().find(|p| p.name == key) {
+                p.value = value;
+            } else {
+                io.properties.push(epic_mickey_lib_rs::scene_file::Property::new(
+                    "Array".into(), key.into(), false, false, false, value,
+                ));
+            }
+        }
+        world.outputs.remove_owner(owner);
+        world.outputs.bind(owner, name, &[io])?;
+        world.bind_deferred_output_events(owner)?;
+    }
     world.process_entity_cleanup()?;
     ensure!(world.cleanup_queue.len()==0 && world.cleanup_completed==3,"Owned cleanup did not finish exactly three owners");
-    let events=world.entity_event_queue.entries().iter().filter_map(|entry|match &entry.event {super::super::entity_events::Event::Basic(event) if event.event_kind==0x44=>event.source,_=>None}).collect::<Vec<_>>();
-    ensure!(events==[grandchild,parent,child],"Cleanup did not use native swap-tail order: {events:?}");
+    world.run_callback_fixture(&format!(
+        "assert(#BwxRemovalOrder == 3 and BwxRemovalOrder[1] == {:?} and BwxRemovalOrder[2] == {:?} and BwxRemovalOrder[3] == {:?}, 'Incorrect removal callback order or invalid handle')",
+        names[0], names[1], names[2],
+    ))?;
     for entity in [grandchild,child,parent] {
         ensure!(world.removed_entities.contains(&entity),"Owned child survived source cleanup");
         ensure!(!world.actors.contains_key(&entity) && !world.pickup_receivers.contains_key(&entity),"Retired owned entity retained animation/pickup lifecycle");

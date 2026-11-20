@@ -26,7 +26,7 @@ use swf::avm1::{
     write::Writer,
 };
 
-const METHODS: [&str; 13] = [
+const METHODS: [&str; 24] = [
     "Init",
     "ShowHud",
     "HideHud",
@@ -38,10 +38,28 @@ const METHODS: [&str; 13] = [
     "Hide",
     "Close",
     "Open",
+    "SkipMovieUpdate",
+    "DropdownCounterCommand",
+    "GenericDialogCommand",
     "UpdateVariable",
     "Update",
+    "Cursor",
+    "PauseDropdownCounter",
+    "PauseMenuCommand",
+    "OptionsMenu",
+    "QuestCommand",
+    "SetPopupText",
+    "DisplayPopup",
+    "HidePopup",
 ];
 const GETTER: &str = "__bwx_read_property";
+const SETTER: &str = "__bwx_write_property";
+const CAN_SCROLL_DIALOGUE: &str = "__bwx_can_scroll_dialogue";
+const SCROLL_DIALOGUE: &str = "__bwx_scroll_dialogue";
+const LOAD_DIALOGUE_PORTRAIT: &str = "__bwx_load_dialogue_portrait";
+const LOAD_POPUP_ICON: &str = "__bwx_load_popup_icon";
+const PORTRAIT_SUFFIX: &str = ".bwx-portrait.png";
+const POPUP_ICON_SUFFIX: &str = ".bwx-popup.png";
 
 #[derive(Default)]
 struct Observation {
@@ -56,6 +74,14 @@ struct Observation {
     player: Option<Arc<PlayerData>>,
     native_updates: Vec<serde_json::Value>,
     native_errors: Vec<String>,
+    #[cfg(feature = "blotworx-ui-render")]
+    ticket_dings: Option<Vec<(i32, i32)>>,
+    #[cfg(feature = "blotworx-ui-render")]
+    ticket_closed: bool,
+    #[cfg(feature = "blotworx-ui-render")]
+    popup_done: bool,
+    #[cfg(feature = "blotworx-ui-render")]
+    pause_commands: Option<Vec<PauseCommand>>,
     effects: Option<Arc<Mutex<super::ui_effects::Runtime>>>,
     effect_events: Vec<serde_json::Value>,
 }
@@ -137,6 +163,35 @@ impl ExternalInterfaceProvider for Host {
         command: &str,
         args: &str,
     ) -> Option<bool> {
+        #[cfg(feature = "blotworx-ui-render")]
+        if command == "PopupDisplayDone" {
+            self.0.lock().unwrap().popup_done = true;
+            return Some(true);
+        }
+        #[cfg(feature = "blotworx-ui-render")]
+        if let Some(request) = PauseCommand::from_movie(command, args) {
+            if let Some(commands) = &mut self.0.lock().unwrap().pause_commands {
+                commands.push(request);
+                return Some(true);
+            }
+        }
+        #[cfg(feature = "blotworx-ui-render")]
+        if command == "DropdownCounterClosed" {
+            self.0.lock().unwrap().ticket_closed = true;
+            return Some(true);
+        }
+        #[cfg(feature = "blotworx-ui-render")]
+        if command == "DropdownCounterTicketUpDing" {
+            if let Some(pending) = &mut self.0.lock().unwrap().ticket_dings {
+                if let Some((previous, next)) = args.split_once(':').and_then(|(previous, next)| {
+                    Some((previous.parse().ok()?, next.parse().ok()?))
+                }) {
+                    pending.push((previous, next));
+                    return Some(true);
+                }
+                return Some(false);
+            }
+        }
         if super::ui_effects::recognizes(command) {
             let effects = self.0.lock().unwrap().effects.clone();
             let parsed = super::ui_effects::parse(command, args);
@@ -277,6 +332,11 @@ impl ExternalInterfaceProvider for Host {
 }
 impl FsCommandProvider for Host {
     fn on_fs_command(&self, command: &str, args: &str) -> bool {
+        #[cfg(feature = "blotworx-ui-render")]
+        if command == "PopupDisplayDone" {
+            self.0.lock().unwrap().popup_done = true;
+            return true;
+        }
         self.0
             .lock()
             .unwrap()
@@ -328,6 +388,34 @@ impl SuccessResponse for MovieResponse {
         Ok(Some(self.length))
     }
 }
+fn movie_resource_path(root: &Path, path: &Path) -> Result<String> {
+    // Canonicalize the deepest existing ancestor so an archive member can
+    // have a virtual suffix while symlinks still stay inside the game root.
+    let (ancestor, resolved) = path.ancestors()
+        .find_map(|ancestor| ancestor.canonicalize().ok().map(|resolved| (ancestor, resolved)))
+        .context("Movie path has no resolvable ancestor")?;
+    let prefix = resolved.strip_prefix(root).context("Movie reference escapes the game root")?;
+    let relative = prefix.join(path.strip_prefix(ancestor)?);
+    super::resource_path::canonical(&relative.to_string_lossy().replace('\\', "/"))
+}
+
+fn read_movie_resource(resources: &mut super::resource_store::Store, path: &str)
+    -> Result<epic_mickey_lib_rs::packfile::VirtualFile>
+{
+    // Each page admits its pack when the authored container requests it.
+    // This also admits the textures referenced by that page.
+    let pack = match path.rsplit('/').next().unwrap_or("").to_ascii_lowercase().as_str() {
+        "pausemenu_mainpage.gfx" | "options.gfx" => Some("pausemenu_main.pak"),
+        "pausemenu_map.gfx" => Some("pausemenu_map.pak"),
+        "pausemenu_pinmenu.gfx" => Some("pausemenu_pins.pak"),
+        "pausemenu_questmenu.gfx" => Some("pausemenu_quests.pak"),
+        _ => None,
+    };
+    if let Some(pack) = pack {
+        resources.admit_packs(&["pausemenu_base.pak".into(), pack.into()])?;
+    }
+    resources.read(path)
+}
 impl NavigatorBackend for Files {
     fn navigate_to_url(
         &self,
@@ -348,24 +436,72 @@ impl NavigatorBackend for Files {
     fn fetch(&self, mut request: Request) -> OwnedFuture<Box<dyn SuccessResponse>, ErrorResponse> {
         let requested = request.url().to_owned();
         let resolved = self.resolve_url(&requested).ok();
-        let admitted = resolved
-            .as_ref()
-            .and_then(|u| u.to_file_path().ok())
-            .and_then(|p| p.canonicalize().ok())
-            .is_some_and(|p| p.starts_with(&self.root));
-        if !admitted {
-            self.host.0.lock().unwrap().fetches.push(serde_json::json!({"url":requested,"result":"rejected","reason":"Missing local file or reference outside the selected game root"}));
+        let target = resolved.as_ref().and_then(|url| url.to_file_path().ok())
+            .and_then(|path| movie_resource_path(&self.root, &path).ok().map(|relative| (path, relative)));
+        let Some((local_path, relative)) = target else {
+            self.host.0.lock().unwrap().fetches.push(serde_json::json!({"url":requested,"result":"rejected","reason":"Reference outside the selected game root"}));
             return navigator::async_return(Err(navigator::create_fetch_error(
-                &requested,
-                "Missing local file or reference outside the selected game root",
+                &requested, "Reference outside the selected game root",
             )));
-        }
-        request.set_url(resolved.unwrap().to_string());
-        let future = self.inner.fetch(request);
+        };
+        let url = resolved.unwrap().to_string();
         let host = self.host.clone();
-        let images = self.images.clone();
-        let resources = self.resources.clone();
-        let root = self.root.clone();
+        let popup_icon = relative.strip_suffix(POPUP_ICON_SUFFIX);
+        if let Some(texture) = popup_icon.or_else(|| relative.strip_suffix(PORTRAIT_SUFFIX)) {
+            let bytes = (|| -> Result<Vec<u8>> {
+                let file = self.resources.borrow_mut().read(texture)?;
+                let (rgba, width, height) = crate::render_support::nif::decode_image_bytes(&file.data)
+                    .with_context(|| format!("Decode authored portrait {}", file.path))?;
+                let buffer = image::RgbaImage::from_raw(width, height, rgba)
+                    .context("Invalid portrait RGBA length")?;
+                // The authored popup scales its 4x4 placeholder to 74x74.
+                // Load the replacement at that size using the same slot.
+                let buffer = if popup_icon.is_some() {
+                    image::imageops::resize(&buffer, 74, 74, image::imageops::FilterType::Triangle)
+                } else { buffer };
+                let mut png = std::io::Cursor::new(Vec::new());
+                buffer.write_to(&mut png, image::ImageFormat::Png)?;
+                Ok(png.into_inner())
+            })();
+            return match bytes {
+                Ok(bytes) => {
+                    let length = bytes.len() as u64;
+                    host.0.lock().unwrap().fetches.push(serde_json::json!({"url":requested,"result":"opened","bytes":length}));
+                    navigator::async_return(Ok(Box::new(MovieResponse {
+                        url, bytes: Some(bytes), length,
+                    }) as Box<dyn SuccessResponse>))
+                }
+                Err(error) => {
+                    host.0.lock().unwrap().fetches.push(serde_json::json!({"url":requested,"result":"failed","error":format!("{error:#}")}));
+                    navigator::async_return(Err(navigator::create_fetch_error(&url, &format!("{error:#}"))))
+                }
+            };
+        }
+        if local_path.extension().is_some_and(|e| e.eq_ignore_ascii_case("gfx")) {
+            let images = self.images.clone();
+            let resources = self.resources.clone();
+            return Box::pin(async move {
+                let adapted = (|| -> Result<Vec<u8>> {
+                    let mut resources = resources.borrow_mut();
+                    let file = read_movie_resource(&mut resources, &relative)?;
+                    let mut movie = crate::gfx::GfxFile::load(&file.data)?;
+                    images.borrow_mut().adapt(&mut movie, &file.path, &mut resources)?;
+                    movie.save()
+                })();
+                let bytes = match adapted {
+                    Ok(bytes) => bytes,
+                    Err(error) => {
+                        host.0.lock().unwrap().fetches.push(serde_json::json!({"url":requested,"resolved":url,"result":"failed","error":format!("{error:#}")}));
+                        return Err(navigator::create_fetch_error(&url, &format!("{error:#}")));
+                    }
+                };
+                let length = bytes.len() as u64;
+                host.0.lock().unwrap().fetches.push(serde_json::json!({"url":requested,"resolved":url,"result":"opened","bytes":length}));
+                Ok(Box::new(MovieResponse { url, bytes: Some(bytes), length }) as Box<dyn SuccessResponse>)
+            });
+        }
+        request.set_url(url);
+        let future = self.inner.fetch(request);
         Box::pin(async move {
             let result = future.await;
             let event = match &result {
@@ -377,50 +513,7 @@ impl NavigatorBackend for Files {
                 }
             };
             host.0.lock().unwrap().fetches.push(event);
-            let response = result?;
-            let url = response.url().into_owned();
-            let path = url::Url::parse(&url)
-                .ok()
-                .and_then(|u| u.to_file_path().ok());
-            if let Some(path) =
-                path.filter(|p| p.extension().is_some_and(|e| e.eq_ignore_ascii_case("gfx")))
-            {
-                let adapted = (async {
-                    let canonical = path
-                        .canonicalize()
-                        .map_err(|e| ruffle_core::loader::Error::FetchError(e.to_string()))?;
-                    let relative = canonical
-                        .strip_prefix(&root)
-                        .map_err(|e| ruffle_core::loader::Error::FetchError(e.to_string()))?
-                        .to_string_lossy()
-                        .replace('\\', "/");
-                    let bytes = response.body().await?;
-                    let mut movie = crate::gfx::GfxFile::load(&bytes)
-                        .map_err(|e| ruffle_core::loader::Error::FetchError(e.to_string()))?;
-                    images
-                        .borrow_mut()
-                        .adapt(&mut movie, &relative, &mut resources.borrow_mut())
-                        .map_err(|e| ruffle_core::loader::Error::FetchError(e.to_string()))?;
-                    movie
-                        .save()
-                        .map_err(|e| ruffle_core::loader::Error::FetchError(e.to_string()))
-                })
-                .await;
-                let adapted = match adapted {
-                    Ok(bytes) => bytes,
-                    Err(error) => {
-                        host.0.lock().unwrap().fetches.push(serde_json::json!({"url":url,"result":"failed","phase":"movie-body-adapter","error":error.to_string()}));
-                        return Err(navigator::create_fetch_error(&url, &error.to_string()));
-                    }
-                };
-                let length = adapted.len() as u64;
-                return Ok(Box::new(MovieResponse {
-                    url,
-                    bytes: Some(adapted),
-                    length,
-                }) as Box<dyn SuccessResponse>);
-            }
-            Ok(response)
+            result
         })
     }
     fn resolve_url(&self, url: &str) -> Result<url::Url, url::ParseError> {
@@ -434,16 +527,15 @@ impl NavigatorBackend for Files {
                     .extension()
                     .is_some_and(|e| e.eq_ignore_ascii_case("swf"))
             {
-                if let Ok(cooked) = path.with_extension("gfx").canonicalize() {
-                    if cooked.starts_with(&self.root) {
-                        if let Ok(mut resolved) = url::Url::from_file_path(cooked) {
-                            resolved.set_query(original.query());
-                            resolved.set_fragment(original.fragment());
-                            self.host.0.lock().unwrap().aliases.push(
-                                serde_json::json!({"requested":url,"resolved":resolved.as_str()}),
-                            );
-                            return Ok(resolved);
-                        }
+                let cooked = path.with_extension("gfx");
+                if movie_resource_path(&self.root, &cooked).is_ok() {
+                    if let Ok(mut resolved) = url::Url::from_file_path(cooked) {
+                        resolved.set_query(original.query());
+                        resolved.set_fragment(original.fragment());
+                        self.host.0.lock().unwrap().aliases.push(
+                            serde_json::json!({"requested":url,"resolved":resolved.as_str()}),
+                        );
+                        return Ok(resolved);
                     }
                 }
             }
@@ -511,7 +603,54 @@ fn bridge_with_methods(version: u8, methods: &[&str]) -> Result<Vec<u8>> {
         params: vec![swf::SwfStr::from_utf8_str("path")],
         actions: &getter,
     }))?;
-    for method in METHODS.into_iter().chain(methods.iter().copied()).chain([GETTER]) {
+    let mut setter = Vec::new();
+    {
+        let mut w = Writer::new(&mut setter, version);
+        variable(&mut w, "path")?;
+        variable(&mut w, "value")?;
+        w.write_action(&Action::SetVariable)?;
+    }
+    w.write_action(&Action::DefineFunction(DefineFunction {
+        name: swf::SwfStr::from_utf8_str(SETTER),
+        params: vec![swf::SwfStr::from_utf8_str("path"), swf::SwfStr::from_utf8_str("value")],
+        actions: &setter,
+    }))?;
+    for (callback, method) in [(CAN_SCROLL_DIALOGUE, "CanScrollText"), (SCROLL_DIALOGUE, "ScrollText")] {
+        let mut actions = Vec::new();
+        let mut child = Writer::new(&mut actions, version);
+        push(&mut child, StackValue::Int(0))?;
+        variable(&mut child, "_root.GENERIC_DIALOG")?;
+        string(&mut child, method)?;
+        child.write_action(&Action::CallMethod)?;
+        child.write_action(&Action::Return)?;
+        w.write_action(&Action::DefineFunction(DefineFunction {
+            name: swf::SwfStr::from_utf8_str(callback), params: Vec::new(), actions: &actions,
+        }))?;
+    }
+    for (name, slot) in [
+        (LOAD_DIALOGUE_PORTRAIT, "_root.GENERIC_DIALOG.Portrait"),
+        (LOAD_POPUP_ICON, "_root.POPUP.Popup.icon"),
+    ] {
+        let mut bitmap = Vec::new();
+        let mut child = Writer::new(&mut bitmap, version);
+        for axis in ["_xscale", "_yscale"] {
+            variable(&mut child, slot)?;
+            string(&mut child, axis)?;
+            push(&mut child, StackValue::Int(100))?;
+            child.write_action(&Action::SetMember)?;
+        }
+        variable(&mut child, "url")?;
+        push(&mut child, StackValue::Int(1))?;
+        variable(&mut child, slot)?;
+        string(&mut child, "loadMovie")?;
+        child.write_action(&Action::CallMethod)?;
+        child.write_action(&Action::Return)?;
+        w.write_action(&Action::DefineFunction(DefineFunction {
+            name: swf::SwfStr::from_utf8_str(name),
+            params: vec![swf::SwfStr::from_utf8_str("url")], actions: &bitmap,
+        }))?;
+    }
+    for method in METHODS.into_iter().chain(methods.iter().copied()).chain([GETTER, SETTER, CAN_SCROLL_DIALOGUE, SCROLL_DIALOGUE, LOAD_DIALOGUE_PORTRAIT, LOAD_POPUP_ICON]) {
         // Arguments are popped by AVM1 in source order: name, this, method.
         variable(&mut w, "this")?;
         string(&mut w, method)?;
@@ -534,6 +673,9 @@ fn bridge_with_methods(version: u8, methods: &[&str]) -> Result<Vec<u8>> {
 fn read(player: &mut ruffle_core::Player, path: &str) -> Value {
     player.call_internal_interface(&format!("__bwx_{GETTER}"), [Value::String(path.into())])
 }
+fn write(player: &mut ruffle_core::Player, path: &str, value: Value) {
+    player.call_internal_interface(&format!("__bwx_{SETTER}"), [Value::String(path.into()), value]);
+}
 fn snapshot(player: &mut ruffle_core::Player) -> serde_json::Value {
     let mut result = serde_json::Map::new();
     for name in [
@@ -541,6 +683,9 @@ fn snapshot(player: &mut ruffle_core::Player) -> serde_json::Value {
         "_global.SHOW_AMMO",
         "_global.CursorVisible",
         "_root.STATUS._visible",
+        "_global.HEALTH",
+        "_global.MAX_HEALTH",
+        "_root.STATUS.prevTotalPips",
         "_root.SKETCH_SELECT._visible",
         "_root.AMMO_BARS._visible",
         "_root.RETICLES._visible",
@@ -548,6 +693,29 @@ fn snapshot(player: &mut ruffle_core::Player) -> serde_json::Value {
         "_root.SKETCH_SELECT._url",
         "_root.AMMO_BARS._url",
         "_root.RETICLES._url",
+        "_root.RETICLES.Cursor._x",
+        "_root.RETICLES.Cursor._y",
+        "_root.RETICLES.Cursor._visible",
+        "_root.RETICLES.Reticle_Menu._visible",
+        "_root.TICKETS._visible",
+        "_root.SKIP_MOVIE._visible",
+        "_root.BLACK._visible",
+        "_root.TICKETS.g_TMDropdownMC.NumberMC.Numbers.text",
+        "_root.GENERIC_DIALOG.dialogBox.scroll",
+        "_root.GENERIC_DIALOG._visible",
+        "_root.GENERIC_DIALOG.dialogBox.text",
+        "_root.GENERIC_DIALOG.dialogBox.maxscroll",
+        "_root.GENERIC_DIALOG.Portrait._url",
+        "_root.GENERIC_DIALOG.Portrait._width",
+        "_root.GENERIC_DIALOG.Portrait._visible",
+        "_root.PAUSE_MENU_MAIN._url",
+        "_root.PAUSE_MENU_MAIN._framesloaded",
+        "_root.PAUSE_MENU_MAIN._visible",
+        "_root.POPUP.Popup._totalframes",
+        "_root.POPUP.Popup.textClips.title.text",
+        "_root.POPUP.Popup.textClips.description.text",
+        "_root.POPUP.Popup.icon._url",
+        "_root.POPUP._visible",
         "_global.INIT_MOVIE_MAX",
         "_root.STATUS._framesloaded",
         "_root.STATUS._totalframes",
@@ -691,7 +859,7 @@ pub fn probe_with_player_level(
         anyhow::bail!("HUD captures require the blotworx-ui-render feature");
     }
     let mut resources = super::resource_store::Store::new(&root, &["HUDTextures.pak".into()])?;
-    let file = resources.read(path)?;
+    let file = read_movie_resource(&mut resources, path)?;
     let original_hash = ring::digest::digest(&ring::digest::SHA256, &file.data)
         .as_ref()
         .iter()
@@ -699,6 +867,7 @@ pub fn probe_with_player_level(
         .collect::<String>();
     let mut movie = crate::gfx::GfxFile::load(&file.data)?;
     let mut images = super::ui_images::Images::default();
+    images.inspect_unverified_blends = capture.is_none();
     images.adapt(&mut movie, &file.path, &mut resources)?;
     let images = Rc::new(RefCell::new(images));
     let resources = Rc::new(RefCell::new(resources));

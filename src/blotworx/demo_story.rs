@@ -8,10 +8,12 @@ use std::collections::BTreeMap;
 pub struct State {
     pub enabled: bool,
     pub dialogue: Option<Dialogue>,
+    bark: Option<Bark>,
     pub choice: usize,
     pub conversation: std::collections::BTreeSet<usize>,
     pub(super) camera_override: Option<usize>,
     saved_camera_override: Option<usize>,
+    pub(super) owns_grabbed_camera: bool,
     active: Option<Playback>,
     pub(super) current_request: Option<super::story_sequences::Request>,
     pub completed: Vec<String>,
@@ -24,6 +26,7 @@ pub struct State {
     pub drips_visible: bool,
     pub motion: super::demo_gameplay::State,
     pub ai: super::demo_ai::State,
+    pub(super) projectiles: super::ai_projectiles::State,
     pub npc_fallback: super::demo_npc_behaviors::State,
     pub scene: super::demo_scene::State,
     pub triggers: super::demo_triggers::State,
@@ -800,6 +803,12 @@ pub struct Dialogue {
     pub speaker: String,
     pub text: String,
     pub choices: Vec<(String, String)>,
+    pub portrait: Option<String>,
+}
+struct Bark {
+    line: Dialogue,
+    remaining: f32,
+    from_sequence: bool,
 }
 #[derive(Clone)]
 struct StoryEvent {node:Node,key:(usize,Vec<usize>)}
@@ -844,6 +853,10 @@ fn sequence(bytes: &[u8], path: &str) -> Result<Node> {
         .context("Missing story sequence")
 }
 impl State {
+    pub(super) fn presented_dialogue(&self) -> Option<(&Dialogue, bool)> {
+        self.dialogue.as_ref().map(|line| (line, true))
+            .or_else(|| self.bark.as_ref().map(|bark| (&bark.line, false)))
+    }
     pub fn load_strings(&mut self, files: &[epic_mickey_lib_rs::packfile::VirtualFile]) {
         for file in files
             .iter()
@@ -874,9 +887,13 @@ impl State {
     pub fn summary(&self) -> serde_json::Value {
         serde_json::json!({"enabled":self.enabled,"reward_events":self.reward_events,"cancelled":self.cancelled,"last_cancelled":self.last_cancelled,"last_cancelled_detail":self.last_cancelled_detail,"random_dialogue_events":self.random_dialogue.len(),"random_dialogue_picks":self.random_dialogue_picks,"active":self.active.as_ref().map(|p|&p.name),
         "dictionary_count":self.dictionaries.len(),"ai_movement_updates":self.ai.movement_updates,"ai_attacks":self.ai.attacks,"ai_decisions":self.ai.decisions,
+        "seer_charge":{"windups":self.ai.charge_windups,"rolls":self.ai.charge_rolls,"contacts":self.ai.charge_contacts,"recoveries":self.ai.charge_recoveries},
+        "ai_projectiles": self.projectiles.summary(),
         "trigger_entries":self.triggers.entries,"trigger_state":self.triggers.summary(),"pickups_collected":self.triggers.pickups,
         "event":self.active.as_ref().map(|p|p.cursor),"delay_seconds":self.active.as_ref().map(|p|p.delay),
-        "pending_deaths":self.pending_deaths.len(),"dialogue":self.dialogue.as_ref().map(|d|&d.text),"completed":self.completed,"errors":self.errors,
+        "pending_deaths":self.pending_deaths.len(),"dialogue":self.dialogue.as_ref().map(|d|&d.text),
+        "bark":self.bark.as_ref().map(|b|serde_json::json!({"text":b.line.text,"remaining":b.remaining,"from_sequence":b.from_sequence})),
+        "completed":self.completed,"errors":self.errors,
         "effect_warnings":self.scene.effect_warnings,"emitter_requests":self.scene.emitter_requests})
     }
     pub fn acknowledge(&mut self, choice: usize) {
@@ -896,15 +913,12 @@ impl State {
     }
 }
 impl super::assets::World {
-    // Functional demo handoff: exhaustion, cancellation and errors must release
-    // presentation just like an explicit End event. Retain application camera
-    // information for later blending, but relinquish its live render/input owner.
+    // A BSQ Camera event can own its shot. A dialogue-only BSQ can run over
+    // a shot acquired by a Lua coroutine, which still controls its release.
     fn release_demo_story_camera(&mut self) {
-        self.demo_story.camera_override = None;
-        self.demo_story.saved_camera_override = None;
-        self.nif_camera = None;
-        self.nif_camera_transition = None;
-        self.nif_camera_completed_frame = None;
+        if self.demo_story.owns_grabbed_camera {
+            self.clear_grabbed_camera();
+        }
     }
     /// Retail presentation adapter12fcc and instance completion2844dc.
     /// This is gameplay Status.Invisible, never render visibility or collision.
@@ -931,6 +945,9 @@ impl super::assets::World {
             "pending_delay":p.delay,"dialogue_active":self.demo_story.dialogue.is_some(),
             "resource":self.demo_story.current_request.and_then(|request|self.story_sequences.resources.get(request.resource)).map(|r|r.path.clone())}));
         if self.demo_story.dialogue.take().is_some() {self.cutscene_input.unrestrict();}
+        if self.demo_story.bark.as_ref().is_some_and(|bark| bark.from_sequence) {
+            self.demo_story.bark = None;
+        }
         if p.restricted {self.cutscene_input.unrestrict();}
         if let Err(error)=self.story_player_status(false) {self.demo_story.errors.push(format!("Story cancellation status cleanup: {error:#}"));}
         self.demo_story.current_request=None;
@@ -943,6 +960,23 @@ impl super::assets::World {
         }
     }
     pub fn enable_demo_story(&mut self) -> Result<()> {
+        if self.report.level.eq_ignore_ascii_case("Levels/TL_SpaceMountain.Level") {
+            // Intro_Setup releases two sets of Minihub Lua callbacks. A direct
+            // level start has neither module to release. The original functions
+            // only clear their globals; keep real handlers on streamed entry.
+            self.scripts.ensure_global_module("@space-mountain-direct-entry.lua", br#"
+                if not rawget(_G, 'Cleanup_TL_Gear_Puzzle') then
+                    rawset(_G, 'Cleanup_TL_Gear_Puzzle', function()
+                        rawset(_G, 'Cleanup_TL_Gear_Puzzle', nil)
+                    end)
+                end
+                if not rawget(_G, 'Cleanup_TL_Minihub') then
+                    rawset(_G, 'Cleanup_TL_Minihub', function()
+                        rawset(_G, 'Cleanup_TL_Minihub', nil)
+                    end)
+                end
+            "#)?;
+        }
         self.demo_story.enabled = true;
         self.demo_story.npc_fallback.enabled = true;
         let limitation="Temporary NPC fallback: verified scripted/conversation events and task waits with provisional Gremlin patrol/navigation and immediate action draining. Damage reactions, attraction/follow policies and full native navigation remain incomplete. Use --strict-npc-ai to disable this fallback.";
@@ -1151,12 +1185,23 @@ impl super::assets::World {
                 }
             }
         } else if name == "SetCameraAttributes" {
-            self.demo_story.camera_override = args
+            let owner = args
                 .front()
                 .map(|v| self.scripts.resolve_world_argument(v))
                 .transpose()?
                 .flatten();
-        } else if name == "SaveCameraOverride" {
+            self.demo_story.camera_override = owner;
+            // An authored spline override selects the gameplay camera path.
+            // The DBC first-machine return uses this without ReleaseCamera.
+            if owner.is_some_and(|entity| self.entities[entity].components.iter()
+                .filter(|component| component.class_name == "CameraOverrideComponent")
+                .flat_map(|component| &component.properties)
+                .any(|property| property.name == "CameraSplineKnot"
+                    && property.value.as_u64().is_some_and(|knot| knot != 0 && knot < u32::MAX as u64)))
+            {
+                self.clear_grabbed_camera();
+            }
+        } else if matches!(name, "SaveCameraOverride" | "SaveCurrentCameraOverride") {
             self.demo_story.saved_camera_override = self.demo_story.camera_override;
         } else if name == "LoadSavedCameraOverride" {
             self.demo_story.camera_override = self.demo_story.saved_camera_override;
@@ -1221,9 +1266,7 @@ impl super::assets::World {
                 return Err(mlua::Error::external("Incorrect camera release arguments"));
             }
             self.demo_story.camera_override = None;
-            self.nif_camera = None;
-            self.nif_camera_transition = None;
-            self.nif_camera_completed_frame = None;
+            self.clear_grabbed_camera();
         } else {
             if args.len() < 2 || (name == "ForceSequence" && args.len() != 2) {
                 return Err(mlua::Error::external(
@@ -1258,7 +1301,84 @@ impl super::assets::World {
         }
         Ok(mlua::MultiValue::new())
     }
+    fn conversation_portrait(&self, owner: usize, speaker: &str) -> Option<String> {
+        let portrait = |entity: usize, match_role: bool| {
+            let conversation = self.entities.get(entity)?.components.iter()
+                .find(|component| component.class_name == "ConversationComponent")?;
+            if match_role && !conversation.properties.iter()
+                .find(|property| property.name == "Roles")
+                .and_then(|property| property.value.as_array())
+                .is_some_and(|roles| roles.iter().any(|role| {
+                    role.as_str().is_some_and(|role| role.eq_ignore_ascii_case(speaker))
+                }))
+            {
+                return None;
+            }
+            conversation.properties.iter().find(|property| property.name == "Portrait")
+                .and_then(|property| property.value.as_str())
+                .filter(|path| !path.is_empty())
+                .map(str::to_owned)
+        };
+        if let Some(path) = portrait(owner, !speaker.is_empty()) {
+            return Some(path);
+        }
+        if let Some(path) = self.scripts.resolve_name(speaker).and_then(|entity| portrait(entity, false)) {
+            return Some(path);
+        }
+        // BSQ speakers commonly name a conversation role instead of a scene
+        // entity. Prefer the sequence owner's scene among active role matches.
+        self.entities.iter().enumerate()
+            .filter(|(entity, _)| !self.removed_entities.contains(entity) && self.entity_scene_active(*entity))
+            .filter_map(|(entity, actor)| portrait(entity, true).map(|path| (actor.scene != self.entities[owner].scene, path)))
+            .min_by_key(|(other_scene, _)| *other_scene)
+            .map(|(_, path)| path)
+    }
+
+    fn bark_display_time(&self) -> Result<f32> {
+        self.runtime_settings.get("BarkDisplayTime")
+            .map(|value| super::config_value::decimal_float(value).map_err(anyhow::Error::msg))
+            .transpose().map(|seconds| seconds.unwrap_or(1.))
+    }
+
+    // REL1e7234 and 1e70c4. A Lua bark opens GenericDialog with SHOWA=false
+    // and owns a timed presentation, with no sequence or input restriction.
+    pub(super) fn bark_lua(&mut self, lua: &mlua::Lua, args: mlua::MultiValue) -> mlua::Result<mlua::MultiValue> {
+        if !(2..=5).contains(&args.len()) {
+            return Err(mlua::Error::external("Bark requires a target, text, and optional display time and speaker"));
+        }
+        let target = self.scripts.resolve_native_entity_argument(lua, args[0].clone())?;
+        if target != Some(self.player_entity) {
+            return Ok(mlua::MultiValue::new());
+        }
+        let string = |index: usize| -> mlua::Result<String> {
+            args.get(index).map(|value| lua.coerce_string(value.clone()))
+                .transpose().map(|value| value.flatten().map_or_else(String::new, |s| s.to_string_lossy()))
+        };
+        let text = string(1)?.replace("\\n", "\n");
+        let remaining = if let Some(value) = args.get(2) {
+            lua.coerce_number(value.clone())?.unwrap_or(0.) as f32
+        } else {
+            self.bark_display_time().map_err(mlua::Error::external)?
+        };
+        if !text.is_empty() && remaining.is_finite() && remaining > 0. {
+            let speaker = string(4)?;
+            let from_sequence = self.demo_story.bark.as_ref().is_some_and(|bark| bark.from_sequence);
+            self.demo_story.bark = Some(Bark {
+                line: Dialogue { speaker, text, choices: Vec::new(), portrait: None },
+                remaining,
+                from_sequence,
+            });
+        }
+        Ok(mlua::MultiValue::new())
+    }
+
     pub(super) fn advance_demo_story(&mut self, delta: f32) {
+        if let Some(bark) = &mut self.demo_story.bark {
+            bark.remaining = (bark.remaining - delta).max(0.);
+            if bark.remaining == 0. {
+                self.demo_story.bark = None;
+            }
+        }
         // The sequence queue is shared by every scene. The demo flag controls
         // only the GV-specific trigger/AI scaffolding; authored conversations
         // and their UI must advance in ordinary levels as well.
@@ -1277,6 +1397,9 @@ impl super::assets::World {
             }
             self.demo_story.current_request = None;
             self.demo_story.dialogue = None;
+            if self.demo_story.bark.as_ref().is_some_and(|bark| bark.from_sequence) {
+                self.demo_story.bark = None;
+            }
         }
     }
     fn step_demo_story(&mut self, delta: f32) -> Result<()> {
@@ -1313,7 +1436,9 @@ impl super::assets::World {
                 });
             }
         }
-        if self.demo_story.dialogue.is_some() {
+        if self.demo_story.dialogue.is_some()
+            || self.demo_story.bark.as_ref().is_some_and(|bark| bark.from_sequence)
+        {
             return Ok(());
         }
         let Some(mut p) = self.demo_story.active.take() else {
@@ -1352,13 +1477,25 @@ impl super::assets::World {
                             )
                         })
                         .collect();
-                    self.cutscene_input.restrict();
-                    self.demo_story.choice = 0;
-                    self.demo_story.dialogue = Some(Dialogue {
+                    let dialogue = Dialogue {
+                        portrait: self.conversation_portrait(p.owner, &speaker),
                         speaker,
                         text: self.demo_story.localized(text(line, "Text key")),
                         choices,
-                    });
+                    };
+                    // REL27ab44 reads the active sequence's bit 0. The
+                    // caller passes it to REL1e6da0, which chooses the modal
+                    // event or a timed bark using BarkDisplayTime.
+                    if p.restricted || number(&event, "_type") == 2 {
+                        self.cutscene_input.restrict();
+                        self.demo_story.choice = 0;
+                        self.demo_story.dialogue = Some(dialogue);
+                    } else {
+                        let remaining = self.bark_display_time()?;
+                        if remaining > 0. {
+                            self.demo_story.bark = Some(Bark { line: dialogue, remaining, from_sequence: true });
+                        }
+                    }
                 }
                 8 => {
                     let item=super::story_rewards::event_item(&event)?;
@@ -1370,13 +1507,16 @@ impl super::assets::World {
                     if event.value("Silent").and_then(|v| v.as_bool()) == Some(true) {
                         self.quests.set_silent(quest, state);
                     } else {
-                        let _transition = self.quests.begin_transition(quest, state);
+                        if let Some(transition) = self.quests.begin_transition(quest, state) {
+                            self.ui_notifications.extend(self.quests.notification(transition));
+                        }
                     }
                 }
                 5 => {
                     let camera = self.scripts.resolve_name(text(&event, "Camera"));
                     let target = self.scripts.resolve_name(text(&event, "Target"));
                     self.select_entity_camera(camera, target, 1, 0.)?;
+                    self.demo_story.owns_grabbed_camera = camera.is_some();
                     if event.value("Wait").and_then(|v| v.as_bool()) == Some(true) {
                         p.delay = event
                             .value("Blend seconds")

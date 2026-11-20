@@ -44,6 +44,9 @@ impl Queue {
         self.entries.len()
     }
     pub fn contains(&self,target:Target)->bool {self.entries.iter().any(|entry|entry.target==target)}
+    pub fn has_owner(&self, owner: usize) -> bool {
+        self.entries.iter().any(|entry| entry.owner as usize == owner)
+    }
     /// REL24c050: remove only the exact node/key pair, in reverse order.
     pub fn cancel(&mut self,target:Target) {
         for index in (0..self.entries.len()).rev() {

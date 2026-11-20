@@ -26,17 +26,22 @@ struct Source {
     base_db: f32,
     pan: [f32;4],
     lineage: Arc<[u32]>,
+    owner: Option<Arc<super::audio_events::RegisteredObject>>,
     mutes: Vec<(u32,f32)>,
     phase: f64,
     filter: Option<super::audio_filter::Stream>,
     layout:Option<super::audio_loop::Layout>,
     stop:Option<super::audio_transition::Mute>,
+    attack: Option<super::audio_transition::Transition>,
+    attack_gain: f32,
     base_filter:f32,sis_filter:f32,spatial_filter:f32,
     spatial:Option<[f32;4]>,
     state: Arc<State>,
 }
 struct State {
     cancelled: AtomicBool,
+    paused: AtomicBool,
+    level: std::sync::atomic::AtomicU32,
     finished: AtomicBool,
     rendered: AtomicU64,
 }
@@ -44,6 +49,9 @@ pub struct Voice {
     state: Arc<State>,
 }
 impl Voice {
+    pub(super) fn set_paused(&self, paused: bool) {
+        self.state.paused.store(paused, Ordering::Release);
+    }
     pub fn done(&self) -> bool {
         self.state.finished.load(Ordering::Acquire)
     }
@@ -58,7 +66,7 @@ impl Drop for Voice {
     }
 }
 enum Command {
-    Play(Source),
+    Play(Source, Option<(u8, i32)>),
     Define(Vec<u32>),
     Mute(super::audio_mute_mix::Command),
     Spatial(Arc<State>,[f32;4]),
@@ -144,6 +152,11 @@ pub struct Output {
     sis_nodes:std::collections::BTreeMap<u32,Result<super::audio_sis::Definition,String>>,
 }
 impl Output {
+    pub(super) fn set_level(&mut self, voice: &Voice, level: f32) -> Result<()> {
+        ensure!(level.is_finite() && (0. ..=1.).contains(&level), "Invalid voice level");
+        voice.state.level.store(level.to_bits(), Ordering::Release);
+        Ok(())
+    }
     pub fn tick(&self)->u32 {self.clock.load(Ordering::Acquire) as u32}
     pub fn define_mute_nodes(&mut self,ids:impl IntoIterator<Item=u32>)->Result<()> {
         let ids=ids.into_iter().filter(|id|self.mute_nodes.insert(*id)).collect::<Vec<_>>();
@@ -260,6 +273,26 @@ impl Output {
         self.start_spatial_filtered(clip,spatial,0.)
     }
     pub fn start_spatial_filtered(&mut self,clip:&Clip,spatial:Option<[f32;4]>,spatial_filter:f32)->Result<Voice> {
+        self.start_with_fade(clip, spatial, spatial_filter, None)
+    }
+    pub fn start_with_fade(
+        &mut self,
+        clip: &Clip,
+        spatial: Option<[f32; 4]>,
+        spatial_filter: f32,
+        fade: Option<(u8, i32)>,
+    ) -> Result<Voice> {
+        self.start_owned(clip, spatial, spatial_filter, fade, None)
+    }
+    pub(super) fn start_owned(
+        &mut self,
+        clip: &Clip,
+        spatial: Option<[f32; 4]>,
+        spatial_filter: f32,
+        fade: Option<(u8, i32)>,
+        owner: Option<Arc<super::audio_events::RegisteredObject>>,
+    ) -> Result<Voice> {
+        ensure!(fade.is_none_or(|(curve, duration)| curve <= 8 && duration > 0), "Invalid voice fade-in");
         if matches!(&clip.signal,super::audio_signal::Signal::Pcm) {if let Some(layout)=clip.layout {ensure!(layout.samples<=clip.samples.len(),"Authored sample count exceeds PCM");}}
         ensure!(
             clip.rate > 0 && (!clip.samples.is_empty() || (!matches!(&clip.signal,super::audio_signal::Signal::Pcm) && clip.layout.is_some())) && clip.pitch_ratio.is_finite() && clip.pitch_ratio>0.,
@@ -274,10 +307,17 @@ impl Output {
             super::audio_panner::stereo_fold(clip.channel_gains.map(|channel| channel * gain))?};
         let mut filter=Some(super::audio_filter::Stream::dynamic(clip.low_pass.max(spatial_filter),clip.rate as f64*clip.pitch_ratio as f64)?);
         if let Some(filter)=&mut filter {filter.set_layout(clip.layout);}
-        let reader=match &clip.signal {super::audio_signal::Signal::File(spec)=>Some(spec.open(clip.layout.context("Stream layout missing")?)?),super::audio_signal::Signal::FilePending(_)=>anyhow::bail!("External audio was not prepared"),_=>None};
+        let reader=match &clip.signal {
+            super::audio_signal::Signal::File(spec)=>Some(spec.open(clip.layout.context("Stream layout missing")?)?),
+            super::audio_signal::Signal::MusicFile { spec, offset, lead, length } => Some(spec.open_window(*offset, *lead, *length)?),
+            super::audio_signal::Signal::FilePending(_)=>anyhow::bail!("External audio was not prepared"),
+            _=>None
+        };
         self.ensure_worker()?;
         let state = Arc::new(State {
             cancelled: AtomicBool::new(false),
+            paused: AtomicBool::new(false),
+            level: std::sync::atomic::AtomicU32::new(1f32.to_bits()),
             finished: AtomicBool::new(false),
             rendered: AtomicU64::new(0),
         });
@@ -286,16 +326,18 @@ impl Output {
             .unwrap()
             .sender
             .send(Command::Play(Source {
+                owner,
                 samples: clip.samples.clone(),reader,silent:matches!(&clip.signal,super::audio_signal::Signal::Silence(_)),
                 rate: clip.rate as f64 * clip.pitch_ratio as f64,
                 gain,
                 base_gain:gain,base_db:clip.gain_db,pan:clip.channel_gains,lineage:clip.lineage.clone(),mutes:Vec::new(),
                 phase: 0.,
                 filter,layout:clip.layout,stop:None,
+                attack: None, attack_gain: 1.,
                 base_filter:clip.low_pass,sis_filter:0.,spatial_filter,
                 spatial,
                 state: state.clone(),
-            }))
+            }, fade))
             .map_err(|_| anyhow::anyhow!("Audio output worker disconnected"))?;
         Ok(Voice { state })
     }
@@ -317,6 +359,8 @@ fn mix_checked(sources:&mut Vec<Source>,frames:usize)->Result<(Vec<i16>,Vec<Arc<
             ended.push(source.state.clone());
             return Ok(false);
         }
+        if source.state.paused.load(Ordering::Acquire) { return Ok(true); }
+        let level = f32::from_bits(source.state.level.load(Ordering::Acquire));
         let mut rendered = 0;
         for output in &mut mixed {
             let index = (source.phase / RATE as f64) as u64;
@@ -330,7 +374,7 @@ fn mix_checked(sources:&mut Vec<Source>,frames:usize)->Result<(Vec<i16>,Vec<Arc<
                 let fraction=(source.phase%RATE as f64) as f32/RATE as f32;a as f32+(b as f32-a as f32)*fraction
             };
             for channel in 0..2 {
-                output[channel] += sample * source.gain[channel];
+                output[channel] += sample * source.gain[channel] * source.attack_gain * level;
             }
             source.phase += source.rate;
             rendered += 1;
@@ -372,7 +416,8 @@ fn update_filter(source:&mut Source)->Result<()> {
     if let Some(filter)=&mut source.filter {filter.set_coefficients(coefficients);}Ok(())
 }
 fn apply_parameters(source:&mut Source,changes:impl IntoIterator<Item=super::audio_sis::Change>)->Result<()> {
-    for c in changes {if source.lineage.contains(&c.node) {match c.property {super::audio_sis::Property::Volume=>source.base_db+=c.delta,super::audio_sis::Property::LowPass=>source.sis_filter+=c.delta}}}
+    let owner=source.owner.as_ref().map(|owner|owner.handle);
+    for c in changes {if (c.owner.is_none() || c.owner==owner) && source.lineage.contains(&c.node) {match c.property {super::audio_sis::Property::Volume=>source.base_db+=c.delta,super::audio_sis::Property::LowPass=>source.sis_filter+=c.delta}}}
     let gain=super::audio_panner::output_gain(source.base_db.min(0.))?;source.base_gain=super::audio_panner::stereo_fold(source.pan.map(|v|v*gain))?;update_filter(source)
 }
 fn run(receiver: mpsc::Receiver<Command>, endpoint: endpoint::Endpoint, gate: &Gate,ids:Vec<u32>,sis_ids:Vec<super::audio_sis::Definition>,clock:&AtomicU64) -> Result<()> {
@@ -383,7 +428,12 @@ fn run(receiver: mpsc::Receiver<Command>, endpoint: endpoint::Endpoint, gate: &G
     let mut parameters=super::audio_sis::Runtime::default();parameters.define(sis_ids);
     fn receive(command:Command,sources:&mut Vec<Source>,controls:&mut super::audio_mute_mix::Runtime,parameters:&mut super::audio_sis::Runtime,tables:&super::audio_transition::Tables)->Result<bool> {
         match command {
-            Command::Play(mut source)=>{source.mutes=controls.initial(&source.lineage);let initial=parameters.initial(&source.lineage);source.base_db+=initial[0];source.sis_filter=initial[1];apply_parameters(&mut source,[])?;sources.push(source);},
+            Command::Play(mut source, fade)=>{
+                if let Some((curve, duration)) = fade {
+                    source.attack = Some(super::audio_transition::Transition::new_linear(0., 1., curve, duration, controls.tick));
+                    source.attack_gain = 0.;
+                }
+                source.mutes=controls.initial(&source.lineage);let initial=parameters.initial(&source.lineage,source.owner.as_ref().map(|owner|owner.handle));source.base_db+=initial[0];source.sis_filter=initial[1];apply_parameters(&mut source,[])?;sources.push(source);},
             Command::Define(ids)=>controls.define(ids),
             Command::Mute(command)=>controls.enqueue(command),
             Command::Spatial(state,channels)=>{if let Some(source)=sources.iter_mut().find(|source|Arc::ptr_eq(&source.state,&state)){source.spatial=Some(channels);}},
@@ -431,7 +481,18 @@ fn run(receiver: mpsc::Receiver<Command>, endpoint: endpoint::Endpoint, gate: &G
                 let parameter_changes=parameters.advance(&tables,controls.tick)?;
                 let changes=controls.advance()?;
                 if !parameter_changes.is_empty() {for source in &mut sources {apply_parameters(source,parameter_changes.iter().copied())?;}}
-                for source in &mut sources {if let Some(fade)=&mut source.stop {fade.update(&tables,controls.tick)?;}}
+                for source in &mut sources {
+                    if let Some(fade) = &mut source.stop {
+                        fade.update(&tables, controls.tick)?;
+                    }
+                    if let Some(fade) = &mut source.attack {
+                        let (gain, complete) = fade.sample(&tables, controls.tick)?;
+                        source.attack_gain = gain;
+                        if complete {
+                            source.attack = None;
+                        }
+                    }
+                }
                 apply_mutes(&mut sources,&changes)?;
                 let (samples, ended) = mix_checked(&mut sources, FRAMES)?;
                 queued.push_back((endpoint.submit(samples)?, ended));
@@ -617,15 +678,19 @@ mod tests {
     use super::*;
     fn source(samples: &[i16], rate: u32, gain: f32) -> Source {
         Source {
+            owner:None,
             samples: samples.to_vec().into(),reader:None,silent:false,
             rate: rate as f64,
             gain: [gain; 2],
             base_gain:[gain;2],base_db:0.,pan:[gain,gain,0.,0.],lineage:vec![].into(),mutes:vec![],
             phase: 0.,
+            attack: None, attack_gain: 1.,
             filter: None,layout:None,stop:None,base_filter:0.,sis_filter:0.,spatial_filter:0.,
             spatial:None,
             state: Arc::new(State {
                 cancelled: AtomicBool::new(false),
+                paused: AtomicBool::new(false),
+                level: std::sync::atomic::AtomicU32::new(1f32.to_bits()),
                 finished: AtomicBool::new(false),
                 rendered: AtomicU64::new(0),
             }),
@@ -675,8 +740,8 @@ mod tests {
         let samples=[1000,-1000,2000,-2000,3000,-3000,4000,-4000];
         let mut s=source(&samples,32000,1.);s.lineage=Arc::from([3,7]);s.base_filter=10.;s.spatial_filter=25.;s.filter=Some(super::super::audio_filter::Stream::dynamic(25.,32000.)?);
         let mut voices=vec![s];mix(&mut voices,3);let phase=voices[0].phase;
-        apply_parameters(&mut voices[0],[super::super::audio_sis::Change{node:9,property:super::super::audio_sis::Property::Volume,delta:-12.}])?;assert_eq!(voices[0].base_db,0.);
-        apply_parameters(&mut voices[0],[super::super::audio_sis::Change{node:7,property:super::super::audio_sis::Property::Volume,delta:-12.},super::super::audio_sis::Change{node:7,property:super::super::audio_sis::Property::LowPass,delta:40.}])?;
+        apply_parameters(&mut voices[0],[super::super::audio_sis::Change{node:9,owner:None,property:super::super::audio_sis::Property::Volume,delta:-12.}])?;assert_eq!(voices[0].base_db,0.);
+        apply_parameters(&mut voices[0],[super::super::audio_sis::Change{node:7,owner:None,property:super::super::audio_sis::Property::Volume,delta:-12.},super::super::audio_sis::Change{node:7,owner:None,property:super::super::audio_sis::Property::LowPass,delta:40.}])?;
         apply_mutes(&mut voices,&[])?;assert_eq!(voices[0].phase,phase);assert_eq!(voices[0].base_db,-12.);assert_eq!(voices[0].sis_filter,40.);assert!(voices[0].gain.iter().all(|g|*g<0.3));
         assert!(mix(&mut voices,3).0.iter().any(|v|*v!=0));assert!(voices[0].phase>phase);Ok(())
     }
@@ -797,7 +862,7 @@ mod tests {
             maximum_instances: 0,
             pitch_ratio: 1.,
             low_pass: 0.,
-            pitch_cents:0.,random_ranges:Arc::from([]),
+            pitch_cents:0.,random_ranges:Arc::from([]),pitch_controls:Arc::from([]),
             spatial:None,signal:super::super::audio_signal::Signal::Pcm,source_passes:1,layout:None,admission:None,
             lineage: vec![0].into(),
         };
@@ -849,7 +914,7 @@ mod tests {
             maximum_instances: 0,
             pitch_ratio: 1.,
             low_pass: 0.,
-            pitch_cents:0.,random_ranges:Arc::from([]),
+            pitch_cents:0.,random_ranges:Arc::from([]),pitch_controls:Arc::from([]),
             spatial:None,signal:super::super::audio_signal::Signal::Pcm,source_passes:1,layout:None,admission:None,
             lineage: vec![0].into(),
         };
@@ -885,7 +950,7 @@ mod tests {
             maximum_instances: 0,
             pitch_ratio: 1.,
             low_pass: 0.,
-            pitch_cents:0.,random_ranges:Arc::from([]),
+            pitch_cents:0.,random_ranges:Arc::from([]),pitch_controls:Arc::from([]),
             spatial:None,signal:super::super::audio_signal::Signal::Pcm,source_passes:1,layout:None,admission:None,
             lineage: vec![0].into(),
         };

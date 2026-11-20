@@ -16,6 +16,7 @@ pub(super) struct Screen {
     dots: Vec<TextureHandle>,
     spinner: Option<TextureHandle>,
     widescreen: bool,
+    show_activity: bool,
     first_paint: Option<Instant>,
 }
 
@@ -27,15 +28,15 @@ impl Screen {
     ) -> Self {
         let root = root.to_owned();
         let destination = destination.map(str::to_owned);
-        Self::spawn(ctx, false, move || Artwork::load(&root, destination.as_deref()))
+        Self::spawn(ctx, false, destination.is_some(), move || Artwork::load(&root, destination.as_deref()))
     }
 
     pub(super) fn em2(ctx: &egui::Context, root: &Path) -> Self {
         let root = root.to_owned();
-        Self::spawn(ctx, true, move || Artwork::em2(&root))
+        Self::spawn(ctx, true, true, move || Artwork::em2(&root))
     }
 
-    fn spawn(ctx: &egui::Context, widescreen: bool, load: impl FnOnce() -> Artwork + Send + 'static) -> Self {
+    fn spawn(ctx: &egui::Context, widescreen: bool, show_activity: bool, load: impl FnOnce() -> Artwork + Send + 'static) -> Self {
         let (sender, receiver) = mpsc::channel();
         let ctx = ctx.clone();
         std::thread::spawn(move || {
@@ -49,6 +50,7 @@ impl Screen {
             dots: Vec::new(),
             spinner: None,
             widescreen,
+            show_activity,
             first_paint: None,
         }
     }
@@ -102,6 +104,10 @@ impl Screen {
         if let Some(background) = &self.background {
             painter.image(background.id(), image, uv, Color32::WHITE);
         }
+        if !self.show_activity {
+            ctx.request_repaint_after(Duration::from_millis(16));
+            return;
+        }
         if let Some(spinner) = &self.spinner {
             let side = image.height() / 8.;
             let center = image.min + image.size() * 0.8;
@@ -113,8 +119,8 @@ impl Screen {
         } else if !self.dots.is_empty() {
             let frame = (elapsed.as_millis() / DOT_FRAME.as_millis()) as usize;
             let dot = &self.dots[frame % self.dots.len()];
-            let corner = image.right_bottom() - Vec2::splat(18. * scale);
-            let marker = Rect::from_min_max(corner - dot.size_vec2() * scale, corner);
+            let center = egui::pos2(image.center().x, image.bottom() - image.height() * 0.1);
+            let marker = Rect::from_center_size(center, dot.size_vec2() * (image.width() / 640.));
             painter.image(dot.id(), marker, uv, Color32::WHITE);
         } else {
             let radius = 10.;
@@ -173,9 +179,11 @@ impl Artwork {
                 })
                 .or_else(|| read(path))
         }).or_else(|| read(DEFAULT_ART));
-        let dots = (1..=8)
-            .filter_map(|index| read(&format!("LoadingScreens/LoadingDots_{index:02}.tga")))
-            .collect();
+        let dots = if destination.is_some() {
+            (1..=8).filter_map(|index| read(&format!("LoadingScreens/LoadingDots_{index:02}.tga"))).collect()
+        } else {
+            Vec::new()
+        };
         Self { background, dots, spinner: None }
     }
 

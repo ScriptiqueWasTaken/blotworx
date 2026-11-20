@@ -1,14 +1,15 @@
 [package]
 name = "blotworx"
-version = "0.1.0"
+default-run = "blotworx"
+version = "0.1.0-demo.1"
 edition = "2021"
 description = "Standalone Rust game asset runtime"
 license = "GPL-3.0-only"
 repository = "https://github.com/Bloticle/blotworx"
 
 [features]
-# Embedded movie compatibility is kept out of the shipped gameplay path until
-# original Scaleform resources and host services have reference validation.
+# Gameplay HUD movies are loaded from the local game installation.
+default = ["blotworx-ui-render"]
 blotworx-ui = ["dep:ruffle_core", "dep:ruffle_render", "dep:swf", "dep:url", "dep:async-channel", "dep:encoding_rs"]
 blotworx-ui-render = ["blotworx-ui", "dep:ruffle_render_wgpu", "dep:wgpu", "dep:pollster"]
 blotworx-memory-profile = []
@@ -52,6 +53,9 @@ log = "0.4"
 env_logger = "0.11"
 open = "5"
 dirs = "5"
+nod = "=1.4.4"
+semver = "1"
+tempfile = "3"
 image = { version = "0.25", default-features = false, features = ["dds", "png", "jpeg", "tga"] }
 wiiu_swizzle = { version = "0.3", features = ["std"] }
 

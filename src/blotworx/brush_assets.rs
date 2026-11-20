@@ -226,9 +226,25 @@ impl Assets {
                     .iter()
                     .any(|e| e.name.eq_ignore_ascii_case(name))
             });
-        let candidates: Vec<_> = global
+        let mut dedicated = scenes.iter().filter(|(path, scene)| {
+            let normalized = path.replace('\\', "/");
+            normalized.split('/').last().is_some_and(|file| {
+                file.rsplit_once('.').is_some_and(|(stem, extension)| {
+                    stem.eq_ignore_ascii_case(name) && extension.eq_ignore_ascii_case("bin")
+                })
+            }) && normalized.to_ascii_lowercase().starts_with("palettes/")
+                && scene.objects.iter().any(|entity| entity.name.eq_ignore_ascii_case(name))
+        });
+        let preferred = if global.is_some() {
+            global
+        } else {
+            let exact = dedicated.next();
+            ensure!(dedicated.next().is_none(), "Ambiguous dedicated effect palette for {name}");
+            exact
+        };
+        let candidates: Vec<_> = preferred
             .into_iter()
-            .chain(scenes.iter().filter(|_| global.is_none()))
+            .chain(scenes.iter().filter(|_| preferred.is_none()))
             .collect();
         let mut matches = candidates.iter().flat_map(|(path, scene)| {
             scene

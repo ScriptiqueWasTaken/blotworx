@@ -301,6 +301,7 @@ fn accepts(class: &str) -> Result<()> {
                 | "TemplateSpawnerComponent"
                 | "ShooterComponent"
                 | "RotatorComponent"
+                | "PressurePlateComponent"
         ),
         "Native enable-interface classification/callback for {class} is not implemented"
     );

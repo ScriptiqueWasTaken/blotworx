@@ -1,7 +1,10 @@
 use anyhow::{ensure,Result};
 use std::{path::PathBuf,sync::Arc};
 #[derive(Clone,Debug)]
-pub enum Signal {Pcm,FilePending(PathBuf),File(Arc<super::audio_file::Spec>),Silence([f32;3])}
+pub enum Signal {
+    Pcm, FilePending(PathBuf), File(Arc<super::audio_file::Spec>), Silence([f32;3]),
+    MusicFile { spec: Arc<super::audio_file::Spec>, offset: u64, lead: u64, length: u64 },
+}
 fn silence_seconds([base,min,max]:[f32;3],draw:u16)->Result<f32> {
     ensure!(draw<=32767,"Invalid silence RNG sample");let fraction=draw as f32/32767.;let offset=min+fraction*(max-min);
     let mut seconds=base+offset;if seconds<0.001 {seconds=0.001;}Ok(seconds)

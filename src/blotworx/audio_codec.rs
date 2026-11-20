@@ -14,7 +14,7 @@ pub fn provision() -> Result<PathBuf> {
     let files=manifest["files"].as_object().context("Invalid audio codec manifest")?;
     let valid=|root:&Path|files.iter().all(|(name,sha)|std::fs::read(root.join(name)).is_ok_and(|bytes|super::movie_codec::digest(&bytes)==sha.as_str().unwrap_or_default()));
     let bundled=std::env::current_exe()?.parent().context("Executable folder missing")?.join("Codecs/vgmstream-r2168");
-    let cache=dirs::cache_dir().context("No runtime codec cache directory")?.join("BlueThinner/runtime/vgmstream-r2168");
+    let cache=dirs::cache_dir().context("No runtime codec cache directory")?.join("Blotworx Engine/runtime/vgmstream-r2168");
     let root=if valid(&bundled) {bundled} else {cache};
     if !valid(&root) {
         let bytes=ureq::get(manifest["url"].as_str().context("Missing audio codec URL")?).call()?.body_mut().with_config().limit(4_574_355+1).read_to_vec()?;

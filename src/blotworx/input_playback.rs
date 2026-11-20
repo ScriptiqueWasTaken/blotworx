@@ -19,6 +19,8 @@ pub struct Frame {
     /// Frontend Wii Minus action, independent of gameplay spin.
     pub menu_delete_pressed: bool,
     pub dialogue_choice: Option<usize>,
+    /// Host frames spent in the pause menu before simulation resumes.
+    pub pause_frames: u16,
     pub aim: Option<[f32; 2]>,
 }
 #[derive(serde::Deserialize)]

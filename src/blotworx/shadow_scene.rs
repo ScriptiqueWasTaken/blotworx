@@ -7,6 +7,7 @@ use std::{collections::BTreeMap, sync::Arc};
 #[derive(Clone, Debug)]
 struct Definition {
     scale: [f32; 3],
+    authored_scale: [f32; 3],
     bone: String,
     rotate: bool,
     cast_layer: i32,
@@ -26,6 +27,12 @@ impl Runtime {
     pub fn set_scale(&mut self, entity: usize, scale: [f32; 3]) {
         if let Some(definition) = self.definitions.get_mut(&entity) {
             definition.scale = scale;
+            self.script_scale_updates += 1;
+        }
+    }
+    pub fn restore_scale(&mut self, entity: usize) {
+        if let Some(definition) = self.definitions.get_mut(&entity) {
+            definition.scale = definition.authored_scale;
             self.script_scale_updates += 1;
         }
     }
@@ -70,6 +77,7 @@ impl Runtime {
                         index,
                         Definition {
                             scale,
+                            authored_scale: scale,
                             bone,
                             rotate,
                             cast_layer

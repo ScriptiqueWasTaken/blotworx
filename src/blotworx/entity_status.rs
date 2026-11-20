@@ -169,9 +169,10 @@ impl super::assets::World {
             if field.is_some_and(|i| c.properties[i].class_name != "Boolean") {
                 return Ok(MultiValue::new());
             }
-            if c.class_name == "HealthComponent" && property == "ForceInvulnerable" {
-                // REL321904..321988 registers the Boolean descriptor.
-                // Its runtime value is consumed directly by health acceptance.
+            if property == "ForceInvulnerable"
+                && matches!(c.class_name.as_str(), "HealthComponent" | "PaintThinnerCounterComponent")
+            {
+                // Both damage paths read this live property when admitting a hit.
                 if let Some(value) = value {
                     if index == 0 {
                         if let Some(i) = field {
@@ -191,6 +192,41 @@ impl super::assets::World {
                     .ok_or_else(|| mlua::Error::external("ForceInvulnerable is not Boolean")))
                     .transpose()?.unwrap_or(false);
                 return Ok(MultiValue::from_vec(vec![Value::Boolean(forced)]));
+            }
+            if let Some(field) = field {
+                if property == "InvulnerableToPaintThinner"
+                    && matches!(c.class_name.as_str(),
+                        "PhysicsRigidBodyStaticComponent" | "PhysicsRigidBodyDynamicComponent")
+                {
+                    if let Some(value) = value {
+                        if index == 0 {
+                            c.properties[field].value = value.into();
+                            if let Some(paint) = self.model_paint.get_mut(&owner) {
+                                paint.invulnerable = value;
+                            }
+                        }
+                        return Ok(MultiValue::new());
+                    }
+                    if index != 0 {
+                        return Err(mlua::Error::external("Indexed boolean getter output is not verified"));
+                    }
+                    let invulnerable = c.properties[field].value.as_bool().ok_or_else(|| {
+                        mlua::Error::external("Physics InvulnerableToPaintThinner must be Boolean")
+                    })?;
+                    return Ok(MultiValue::from_vec(vec![Value::Boolean(invulnerable)]));
+                }
+                if !setter && property == "Is Painted"
+                    && matches!(c.class_name.as_str(),
+                        "PhysicsRigidBodyStaticComponent" | "PhysicsRigidBodyDynamicComponent")
+                {
+                    if index != 0 {
+                        return Err(mlua::Error::external("Indexed boolean getter output is not verified"));
+                    }
+                    // Model paint transitions update this same live property.
+                    let painted = c.properties[field].value.as_bool()
+                        .ok_or_else(|| mlua::Error::external("Physics Is Painted must be Boolean"))?;
+                    return Ok(MultiValue::from_vec(vec![Value::Boolean(painted)]));
+                }
             }
             if field.is_some() {
                 if (c.class_name == "StatusComponent" && property == "Invisible")

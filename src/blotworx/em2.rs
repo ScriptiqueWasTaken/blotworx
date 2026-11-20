@@ -350,7 +350,7 @@ fn build(options: super::Options, root: &Path, tx: mpsc::Sender<Result<()>>) -> 
                 if startup.start_hidden {hidden_draws.insert(draws.len());}
                 draw_sources.push(super::model_body_binding::DrawSource {scene:scene_index,entity:entity.link_id.to_u32(),path:mesh.hierarchy_path.clone(),original_transform:matrix});
                 projection_centers.push(projection_sources.get(&key).and_then(|result|result.as_ref().ok()).and_then(|bounds|bounds.get(&(mesh.mesh_index as u32))).and_then(|result|result.as_ref().ok()).map(|bound|bound.center));
-                draws.push(GpuDrawCommand { shader_time,source_attributes:mesh.source_attributes.clone(),projected_shadow:false,extra_uvs:mesh.extra_uvs.clone(),projection_bound:None,
+                draws.push(GpuDrawCommand { shader_time,source_attributes:mesh.source_attributes.clone(),projected_shadow:false,skybox:false,extra_uvs:mesh.extra_uvs.clone(),projection_bound:None,
                     material_registers:None,material_indirect:None,material_images:Arc::new(Vec::new()),baked:false,baked_error:None,
                     preview:None,uv_transform:mesh.uv_transform.clone(),material:Some(mesh.material.clone()),sampler:mesh.sampler,
                     v_data:mesh.v_data.clone(),indices:mesh.indices.clone(),trans_mat:matrix,color:[1.;4],tex_bytes,

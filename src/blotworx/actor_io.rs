@@ -649,16 +649,22 @@ impl Outputs {
         }
     }
     pub fn ready(&mut self, time: f32) -> Vec<Delivery> {
-        self.ready_for(time, None)
+        self.ready_for(time, None, None)
     }
     pub fn ready_for_owner(&mut self, time: f32, owner: usize) -> Vec<Delivery> {
-        self.ready_for(time, Some(owner))
+        self.ready_for(time, Some(owner), None)
     }
-    fn ready_for(&mut self, time: f32, owner: Option<usize>) -> Vec<Delivery> {
+    pub(super) fn ready_for_owner_output(&mut self, time: f32, owner: usize, output: &str) -> Vec<Delivery> {
+        self.ready_for(time, Some(owner), Some(output))
+    }
+    fn ready_for(&mut self, time: f32, owner: Option<usize>, output: Option<&str>) -> Vec<Delivery> {
         let mut ready = Vec::new();
         self.pending.retain(|pending| {
             let connection = &self.connections[pending.index];
-            if time >= pending.due && owner.is_none_or(|owner| connection.owner == owner) {
+            if time >= pending.due
+                && owner.is_none_or(|owner| connection.owner == owner)
+                && output.is_none_or(|output| connection.output == output)
+            {
                 ready.push(Delivery {
                     connection: connection.clone(),
                     activator: pending.activator,

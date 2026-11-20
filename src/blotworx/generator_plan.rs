@@ -40,6 +40,7 @@ pub struct Prepared {
     pub clips: super::clip_instance::Instances,
     pub expressions: super::expression_instances::Instances,
     pub attachment_modifiers: super::attachment_modifier::Instances,
+    pub(super) event_modifiers: BTreeSet<String>,
     pub transitions: super::transition_instances::Instances,
     pub transition_stacks: BTreeMap<String, super::machine_transitions::Stack<Handle>>,
     pub dispatchers: BTreeMap<String, super::machine_arbitration::Dispatcher>,
@@ -103,6 +104,7 @@ impl Prepared {
                 }
                 "hkbModifierGenerator"
                 | "hkbModifierList"
+                | "hkbEventDrivenModifier"
                 | "hkbEvaluateExpressionModifier"
                 | "hkbAttributeModifier"
                 | "hkbTwistModifier"
@@ -145,7 +147,7 @@ impl Prepared {
         } else {
             definition.self_transition_mode
         };
-        let duration = definition.duration; // blending effect virtual +0x60
+        let duration = playback.duration; // blending effect virtual +0x60
         match mode {
             1 => {}
             2 => self.echo_subgraph(graph, &target, 0., resources)?,
@@ -215,6 +217,7 @@ impl Prepared {
                                 | "hkbAttributeModifier"
                                 | "hkbTwistModifier"
                                 | "hkbAttachmentModifier"
+                                | "hkbEventDrivenModifier"
                         ),
                         "Modifier synchronization for {class} is not implemented"
                     );
@@ -280,6 +283,7 @@ struct Builder<'a> {
     machines: BTreeMap<String, Runtime>,
     blenders: BTreeMap<String, Vec<blender::Child>>,
     retained_nodes: BTreeSet<String>,
+    event_modifiers: &'a mut BTreeSet<String>,
     transitions: Instances,
     transition_stacks: BTreeMap<String, super::machine_transitions::Stack<Handle>>,
     visiting_effects: BTreeSet<Handle>,
@@ -363,6 +367,7 @@ impl Prepared {
                 }
                 "hkbEvaluateExpressionModifier" => self.expressions.deactivate(id),
                 "hkbAttachmentModifier" => self.attachment_modifiers.deactivate(id)?,
+                "hkbEventDrivenModifier" => { self.event_modifiers.remove(id); }
                 "hkbStateMachine" => {
                     if !self
                         .machines
@@ -635,7 +640,7 @@ impl Builder<'_> {
             "Cycle in active transition instances"
         );
         self.transitions
-            .activate(handle, &self.state.transition_effects, |id| {
+            .activate_with_variables(handle, &self.state.transition_effects, self.state.words(), |id| {
                 self.retained_nodes.contains(id)
             })?;
         // EM1's global event mode is initialized to 2 at DOL 0x8021f540.
@@ -799,6 +804,22 @@ impl Builder<'_> {
                 self.blenders.insert(id.into(), children);
                 active
             }
+            "hkbEventDrivenModifier" => {
+                ensure!(fields["variableBindingSet"].is_null(), "Event-driven modifier has topology bindings");
+                if !self.retained_nodes.contains(id) {
+                    self.event_modifiers.remove(id);
+                    if fields["activeByDefault"].as_bool().context("Missing event modifier default")? {
+                        self.event_modifiers.insert(id.into());
+                    }
+                }
+                if fields["enable"].as_bool().context("Missing event modifier enable")?
+                    && self.event_modifiers.contains(id)
+                {
+                    vec![reference("modifier")?]
+                } else {
+                    vec![]
+                }
+            }
             "hkbModifierList" => {
                 // Retail vtable806b5318: child enumeration b9a0/b9c4
                 // preserves list order and suppresses children when disabled.
@@ -875,6 +896,7 @@ pub fn prepare(graph: &Document, mut state: State, seed: u32) -> Result<Prepared
     let root = graph.single("hkbBehaviorGraph")?["rootGenerator"]["ref"]
         .as_str()
         .context("Missing root generator")?;
+    let mut event_modifiers = BTreeSet::new();
     let mut builder = Builder {
         graph,
         state: &mut state,
@@ -889,6 +911,7 @@ pub fn prepare(graph: &Document, mut state: State, seed: u32) -> Result<Prepared
         machines: BTreeMap::new(),
         blenders: BTreeMap::new(),
         retained_nodes: BTreeSet::new(),
+        event_modifiers: &mut event_modifiers,
         transitions: Default::default(),
         transition_stacks: Default::default(),
         visiting_effects: Default::default(),
@@ -907,6 +930,7 @@ pub fn prepare(graph: &Document, mut state: State, seed: u32) -> Result<Prepared
         transition_stacks: builder.transition_stacks,
         dispatchers: Default::default(),
         blender_echoes: Default::default(),
+        event_modifiers,
         state,
     })
 }
@@ -952,6 +976,7 @@ pub fn rebuild_in_place(graph: &Document, prepared: &mut Prepared) -> Result<Vec
         machines: std::mem::take(&mut prepared.machines),
         blenders: std::mem::take(&mut prepared.blenders),
         retained_nodes,
+        event_modifiers: &mut prepared.event_modifiers,
         transitions: std::mem::take(&mut prepared.transitions),
         transition_stacks: std::mem::take(&mut prepared.transition_stacks),
         visiting_effects: BTreeSet::new(),

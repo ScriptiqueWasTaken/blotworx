@@ -1,6 +1,11 @@
 {
   "goal": "Complete original Epic Mickey1 compatibility in native Blotworx Engine; Box3D physics.",
   "full_goal_complete": false,
+  "development_order": [
+    "Establish a playable story route from a fresh boot through the credits. Keep a record of temporary behavior that preserves progression.",
+    "Prioritize controls, collision, streaming and persistence where discrepancies can block progression or corrupt a run.",
+    "Refine remaining timing, presentation and behavior against Wii reference captures after the story route works."
+  ],
   "milestones": {
     "eb_villagetest": "Full original-reference validation remains unproven.",
     "GV_ZoneA_Start": "Whole-level completion and original audiovisual parity remain unproven."
@@ -87,8 +92,8 @@
         "Original Wii patrol timing and path parity"
       ]
     },
-      {
-        "scope": "Gremlin Village Zone D arrival",
+    {
+      "scope": "Gremlin Village Zone D arrival",
       "state": "The authored intro relinquishes its camera and input ownership and writes a Zone D checkpoint after the Asia airlock handoff.",
       "source": "GV_ZoneD.lua, Prefab_GrabCameraFancy.lua, PlaneTrigger_Entry in gremlinvillage_zoned.pak, REL328e30..329090 and REL263b50.",
       "evidence": "Replay tools/blotworx/fixtures/gv_asia_airlock_valves.lua from Levels/GV_ZoneC_Start.level for 1810 ticks with dialogue choice 0 every 12 ticks. The capture finishes GV_ZoneD_NeedToReachExit, releases the camera and input, clears the fade, and writes GV_ZoneD_LoadCheckpoint. The sole Lua error is an authored one-shot Disable connection. Its _player target and additional Trigger_Portal string produce two arguments in the original dispatcher, while the retail function requires one.",
@@ -110,324 +115,102 @@
     },
     {
       "scope": "Zone C entry, maintenance chest spline, and Asia airlock",
-        "state": "The original Zone C maintenance-room call can clear a spline stop. Restarting motion remains a separate authored action. Completing the preceding Zone B cutscene before staging the transfer lets the following Zone C intro release its own input restrictions.",
-        "source": "GV_ZoneC_MaintenanceRoomChest, GV_JTA_Timer, GV_JTA_Camera1GlobalSet, and EM1 REL 3be6dc and 3bdbbc",
-        "evidence": "The 3630-tick airlock-to-Zone-C replay completes the introductory conversations with input depth zero. The 165-tick spline replay verifies a fractional stop, unchanged speed on clear, the authored cleanup knot, and actual maintenance-chest motion. The 610-tick Asia airlock replay solves the timer puzzle and spawns Pete. All three replays record zero Lua or runtime errors.",
-        "open": [
-          "Native spline interpolation and original Wii timing comparison",
-          "Unstaged travel through Zone C and the Asia airlock"
-        ]
-      },
-      {
-        "scope": "Spawner source lifetime in Tim's paint follow-up",
-        "state": "Scene admission retains hidden Objects To Spawn sources without delivering their clone-spawn callback. Newly created copies keep the existing deferred spawn event and can retire independently.",
-        "source": "gv_zoneb_dynamic.Spawner_PipeBurst and gv_zoneb_dynamic.FX_PipeBurst in gv_zoneb.bin. The latter has a two-second self-DestroyEntity connection on OnSpawned.",
-        "evidence": "The before-fix probe records the source valid at load and invalid after its timer. The 1340-tick Tim replay records independent clone retirement, a retained source, GV_ZoneB_OpenDoors completion, 15 pending Hero points, and released input with zero script or runtime errors.",
-        "open": [
-          "Original Wii verification of template admission scheduling",
-          "Complete natural combat and progression playthrough",
-          "The combined Zone C staging started the transfer while the earlier Zone B intro still owned an input restriction"
-        ]
-      },
-      {
-        "scope": "Tim's paint dismissal and the boat-transfer gate",
-        "state": "The original Lua callback clears the fallback combat planner's live target and cancels unfinished attacks. Tim's reflected PatrolSpeed write reaches the same controller field used for authored patrol destinations.",
-        "source": "GV_ZoneB_SpatterDismissalFull, BasicAIControllerComponent.PatrolSpeed on SpatterMelee 04, and EM1 REL 2d47e0 and 2df228",
-        "evidence": "The 920-tick paint replay verifies the selected Spatter, the patrol speed change from 7 to 3, and completion of GV_ZoneB_TimFullDismiss. It then reaches the previously untested pipe-burst spawn. The separate boat-transfer replay reached stream_3 and completed Zone B cleanup at 1440 ticks with no script or runtime errors.",
-        "open": [
-          "The pipe-burst spawner's source is unavailable after scene initialization. The authored source has a delayed DestroyEntity on OnSpawned.",
-          "Native permanent-target ownership and target-change event",
-          "Unstaged paint combat and full travel through the boat-transfer puzzle",
-          "The staged Zone C intro completes its first two conversations but retains one input restriction"
-        ]
-      },
-      {
-        "scope": "Zone B Tim dismissal, guardian award intake, and first boat ride",
-        "state": "Tim's thinner outcome can release the scripted guardian from its animated socket. The authored hero and scrapper award callbacks publish signed pending points with the retail enable gate.",
-        "source": "GuardianPrefab_StartNextGuardian, GV_ZoneB_GuardianExplaination, and EM1 REL 1ca48, 1cb60, 18d38–18d64",
-        "evidence": "target/perf/gv-tim-thin-fixed.runtime.json records a completed dismissal and -15 pending points at tick 760. The earlier attachment and award errors are absent. The separate boarding replay carries Mickey 26.175 m to the dock, with 671 grounded ticks and zero respawns after boarding.",
-        "open": [
-          "Pending point consumption, guardian population changes and save serialization",
-          "Painted Spatter dismissal",
-          "Direct Zone B launch lacks Zone A's cleanup function",
-          "Completion of the boat-transfer exit sequence"
-        ]
-      },
-      {
-        "scope": "Gremlin Village airlock entry and Zone B boat junction",
-        "state": "The staged airlock approach reaches the authored Zone B intro, which calls the original Zone A cleanup. Zone B's boat handoff can now set the live spline junction probability through its native Lua API.",
-        "source": "GV_ZoneA.lua, GV_ZoneB2.lua, and the authored SK_BoatPath08 junction in gv_zoneb.pak",
-        "evidence": "The live airlock run crosses gv_zoneb.Trigger_Intro and confirms Cleanup_GV_ZoneA removed itself. tools/blotworx/fixtures/gv_boat_branch.lua invokes the original boat handoff and asserts the switch from 1 to 0 and the completed callback state.",
-        "open": [
-          "Unstaged traversal from the airlock through the full boat ride and into the next area",
-          "Original Wii traversal timing"
-        ]
-      },
-      {
-        "scope": "Gremlin Village Zone D weighted platforms and projector handoff",
-        "state": "Authored AnimGBSequence completion requests emit OnAnimGBEnded at the sequence end text key. Both original weighted-platform outputs latch their door switches and activate the Steamboat Willie projector.",
-        "source": "Gremlin Village Zone D scene IO, the two ExitPlatforms keyframe sets, and the original AsiaToSBW projector script",
-        "evidence": "target/perf/gv-zone-d-steamboat-route.runtime.json records both switches, the original projector entry and Steamboat Willie scene publication by tick 1610, with no script or runtime errors. The replay stages player position at the triggers and projector.",
-        "open": [
-          "Continuous traversal from the prior zone",
-          "Other native end-listener registration paths",
-          "Retail transition timing"
-        ]
-      },
-      {
-        "scope": "Gremlin Village Zone D quest cleanup and Steamboat Willie exit",
-        "state": "BSQ event 16 marks quest slots with no completed current stage while preserving the authored stage ID. The Steamboat Willie exit takes Mickey to Zone F through the shipped projector script, releases the arrival camera on movement, and carries the quest status into the Zone F checkpoint.",
-        "source": "Wii REL27d980, 245010, 244d94, 244c70 and 2456f8; GV_ZoneD_QuestCleanUp.bsq and the original Steamboat Willie right projector.",
-        "evidence": "target/perf/steamboat-quest-cleanup-live.runtime.json records the cleanup completing with no story, Lua, or runtime errors. target/perf/steamboat-exit-quest.runtime.json records GV_ZoneF_Start, movement after input release, and checkpoint GV_ZoneF_LoadCheckpoint. The resulting QUES section restores quest 36 with status 1.",
-        "open": [
-          "Unstaged traversal and obstacles through Steamboat Willie",
-          "Other quest event types and quest UI",
-          "In-game resume from this checkpoint"
-        ]
-      },
-      {
-        "scope": "Continue a committed EM1 checkpoint",
-        "state": "Continue opens the selected save slot and bootstraps the saved level from its saved part descriptors and ordered WRLD scenes. Globals, quest slots, player scalars, spawn, playtime and other established save owners are installed before level scripts. The saved callback runs once.",
-        "source": "GAME v16 header, GLOB1, QUES4, AISS2, MICK3 and WRLD1, and the shipped GV_ZoneF_LoadCheckpoint callback",
-        "evidence": "target/perf/gv-zone-f-checkpoint-resumed.runtime.json matches the prior Zone F save's scene order, spawn, quest status, playtime, health, inventory and raw ammo words. The copied save remains byte-identical. target/perf/gv-zone-f-checkpoint-resumed-motion.ticks.json records 3.39 units of player movement after fresh-session resume, with no script, story, or runtime errors.",
-        "open": [
-          "Remaining derived ability grant effects and sketch use after reload",
-          "Death and in-memory restart",
-          "Additional save-owner callbacks and Wii ordering parity",
-          "Cross-campaign checkpoint coverage"
-        ]
-      },
-      {
-        "scope": "EM1 checkpoint ability and sketch restoration",
-        "state": "Checkpoint startup visits the primary, secondary and registered sketch abilities in native order. Ownership uses the native suffix probes and current grant level. The loader restores each indexed capacity and clamps each saved named count to its live capacity.",
-        "source": "Wii REL21098, 212b4, 21480..214c4, 25e590 and 344868. The save fixture is a changed copy of the Zone F checkpoint.",
-        "evidence": "target/perf/checkpoint-sketch-count-live.runtime.json and its tick trace compare against the pre-change replay of the same slot. The restored paint-only brush emits 11 shots and declines thinner. Spin plays its original clip. The three saved capacities and two anvil items are present in the live owners.",
-        "open": [
-          "Native initialization timing for sparse SketchCount arrays",
-          "Derived grant side effects outside Blast, Brush and Spin",
-          "Sketch placement and consumption after reload",
-          "Restart after death"
-        ]
-      },
-      {
-        "scope": "EM1 scripted checkpoint reload and player death routing",
-        "state": "LoadGameFromMemory latches a reload after callbacks return. With a checkpoint present, Mickey's authored OnDeath connection dispatches LoadCheckpoint to restore its world, spawn, and player records.",
-        "source": "Wii REL2fcc8, REL2c1a8 and REL323a10, globalscripts.lua LoadCheckpoint, and the player InputOutputComponent in _Dynamic.bin, gv_shared_zf.bin and sw_steama_shared.bin.",
-        "evidence": "With a copy of the Zone F save, set health to 4 and call SaveGameToMemory('GV_ZoneF_LoadCheckpoint', false, '', false). Lower health to 2 and request LoadCheckpoint(GetPlayer()), or set health to 0. target/perf/memory-checkpoint-script.runtime.json and memory-checkpoint-death.runtime.json report health 4 with no errors at tick 57. Both shipped callbacks ran again and each disk copy was byte-identical.",
-        "open": [
-          "Original death animation and fade timing",
-          "Behavior without a memory checkpoint",
-          "Additional level and checkpoint coverage"
-        ]
-      },
-      {
-        "scope": "EM1 checkpoint source selection and level restart",
-        "state": "LoadGameFromMemory defaults to the current memory checkpoint. A true final argument reads the selected committed disk slot. RestartCurrentLevel submits the original level descriptor with no part overrides and rebuilds its initial parts.",
-        "source": "Wii REL bindings at 3a684 and 3a724; RestartCurrentLevel at 2f7e8 -> 2b938 -> 2a21c; LoadGameFromMemory at 2fcc8 -> 2c1a8 or 2c168 -> 260140.",
-        "evidence": "Zone F runs from the same saved slot with health 5. Capture a memory-only checkpoint at health 4, lower live health to 2, and run the memory, disk, or authored RestartLevel route. The target/perf/life-restart-*.runtime.json captures show health 4, 5, and 5 at tick 27. Only memory and disk rerun the checkpoint callback. All runs have zero script/runtime errors and the disk copy is unchanged.",
-        "open": [
-          "Native Wii save-device UI timing and load-failure behavior",
-          "Exact death animation, fade, and lifetime of the death sound across world replacement",
-          "Additional campaign coverage"
-        ]
-      },
-      {
-        "scope": "EM1 save ownership through asynchronous level loading",
-        "state": "The application and loading world share save-slot state and in-flight jobs. Shutdown retains access to that service if the current world has been dropped or the incoming load fails. The forced write uses the latest attached memory buffer, including a later memory-only capture, and waits for the existing job before retrying pending work.",
-        "source": "Wii REL2bae0 -> 25fb00 -> 25ddc8 attaches the save service buffer at +988. REL2c104 gates the disk request only. REL239c0 forces a pending write on shutdown; 25ffb4 -> 2612c0 passes the attached buffer to the disk job.",
-        "evidence": "Five targeted save-service tests passed. In target/perf/save-shutdown-live.err, a Gremlin Village Zone F replay committed health 3, queued another save, captured health 2 to memory, and requested an intentionally absent level. After the reported loading error and normal shutdown, the scratch slot contained health 2 and its previous committed backup contained health 3.",
-        "open": [
-          "Native save-device timing and frontend behavior",
-          "Shutdown on additional campaign transitions"
-        ]
-      },
-      {
-        "scope": "EM1 campaign completion slot and ending outcomes",
-        "state": "StoreEndgameData records nine signed global outcomes as booleans in native header order on the next memory capture. ResetSaveGameSlot preserves the native header fields for the next playthrough, increments the playthrough counter, marks the completed slot, and writes a LAST-only archive without the ordinary save throttle.",
-        "source": "Authored DoEndGame and SetEndgameVariables, Wii REL2fbd0 -> 345b4 and 260620 -> 26029c..2604d4. RELba148 reads the outcome bytes for the frontend movie list.",
-        "evidence": "A scratch copy of Zone F ran the original SetEndgameVariables with staged story decisions. target/perf/campaign-completion-live.runtime.json captures a LAST-only save and zero runtime or script errors. The committed bytes contain the expected nine outcomes and playthrough +1, and the backup equals the starting file. Two focused tests cover exact header retention and replacement of a throttled write.",
-        "open": [
-          "The actual final encounter and pin-update callback",
-          "Ending movie order, main-menu credits handoff, and starting a new run from a completed slot"
-        ]
-      },
-      {
-        "scope": "EM1 Zone S tentacle animation",
-        "state": "The shared Gamebryo actor sampler binds compressed cubic float morph weights and compressed transform channels. The seven placed Zone S tentacles bind their original Rest, Idle and Wilt sequences through the usual KFM/actor path.",
-        "source": "Original DBC_ZoneS_Tentacle actor NIF/KFM/KF files, Wii DOL803c0310..803c08a4 cubic fill, and DOL8044f488..8044f64c compact control-point decoding. The authored Lua groups request Wilt through AnimGBSequence.",
-        "evidence": "zones-splines-inspect.json records all seven actors binding three clips and no missing morph target errors. The zones-wilt-rest and zones-wilt-active replays start the original Zone S, invoke the authored group request after two seconds, and record active clip 1 then clip 2 on the first tentacle without script or runtime errors. An isolated original Wii fill routine supplied the weights and control points for 35 synthetic sample checks with tolerance 2e-6. Seven samples of the original Tentacle01A Wilt morph track differed by at most 3e-8.",
-        "open": [
-          "Natural fight and ending callback from player inputs",
-          "Remaining emitter properties, curve emitters, and mode 6 socket effects",
-          "Frame and blend comparison against the Wii game"
-        ]
-      },
-      {
-        "scope": "EM1 Zone S blister particle playback",
-        "state": "The Gamebryo actor binds referenced BirthRate and EmitterActive evaluator pairs through the particle-system node and emitter name. Playback forwards the dominant clip's keyed tracks and activation ID to the existing birth scheduler. The animated emitter and field transforms are published before simulation.",
-        "source": "DBC_TentacleSore_01 NIF/KFM/KF, Wii DOL804d12d4..804d1568 (paired update and activation ID) and DOL804d1dfc (key-driven emission). Gamebryo NiPoseBlender selects referenced evaluators by weight.",
-        "evidence": "Run blotworx diagnose --strict-runtime --level Levels/DBC_Start_ZoneS.level --run-script tools/blotworx/fixtures/dbc_zone_s_sore_pop.lua --capture <image> --capture-tick <tick> with imported EM1 data. The first placed blister has 0, 31 and 0 live particles at ticks 24, 49 and 161, with zero runtime errors. Only three NiPSCurveEmitter admissions still fail in this scene, down from 49 total particle admission errors in the baseline.",
-        "open": [
-          "Native curved-path platform motion remains incomplete.",
-          "Curve emitters, the animated emitter rotation-speed variance, dynamic particle bounds, and Wii visual and birth-by-birth parity."
-        ]
-      },
-      {
-        "scope": "EM1 Zone S first chamber damage chain",
-        "state": "The Lua reflection API writes the live TargetableComponent.Target Value and HealthComponent.ForceInvulnerable fields. The health receiver uses the reflected Boolean when accepting damage, and the original callbacks advance the blister counter and open the chamber door.",
-        "source": "Wii REL3c75b4..3c7658 registers Target Value, 3c7c44..3c7c68 resolves its scalar read and write, and 321904..321988 registers ForceInvulnerable. The imported Zone S scene supplies the OnDamage routing and the door KFM names Open as sequence 1.",
-        "evidence": "With original EM1 data, run blotworx diagnose --strict-runtime --level Levels/DBC_Start_ZoneS.level --run-script tools/blotworx/fixtures/dbc_zone_s_first_chamber.lua --capture <image> --capture-tick 289 --focus-actor \"dbc_zones_static.DBC_ZoneS_Door01_Inert 01\". The replay sends thinner stimuli through the health receiver, verifies forced invulnerability, unlocks blisters 2 and 3 in order, and finishes with the door playing Open and blister 4 still gated.",
-        "open": [
-          "Player-driven traversal and brush aiming through both chambers."
-        ]
-      },
-      {
-        "scope": "EM1 spline follower speed binding",
-        "state": "The named Lua command and reflected InitialSpeed both access the live speed. The imported component value remains the original startup seed. A sign change clears the previous OnPass knot when preview traversal is active. Zero preserves it.",
-        "source": "Wii REL .text 267f38 registers callback 26445c, which calls 3ba5d8. The InitialSpeed descriptor registers accessors at 3ba910..3ba928. Its getter at 3bb200 resolves the same float at +0x34, and setter 3bb204 calls 3ba5d8. The latter clears +0x6c on a negative speed product. 3bb614 compares that slot before dispatching OnPass.",
-        "evidence": "The imported Zone S fixture covers both Lua entry points, signed speed and zero coercion. The headless spline event validation checks that a reversal re-enables OnPass, zero preserves its previous knot, and live writes leave the authored property intact.",
-        "open": [
-          "Native curved path progression, easing, and player support over moving collision."
-        ]
-      },
-      {
-        "scope": "Authored preview spline segment timing",
-        "state": "Preview traversal uses Hermite handles on linked edges. Without an authored duration it divides route length by live speed. Explicit times above the native epsilon are bounded below by route length divided by 200. Main and branch paths measure 200 cubic chords with the Wii distance arithmetic. Main paths use the chord table to map phase to distance. Branch paths sample cubic phase directly. The follower easing flag and knot overrides control a speed ramp over the first and last 10% of each linked segment. On a linked edge the signed phase step carries unused frame time through knot crossings and holds. An expiring hold queues OnHoldEnd from the canonical source knot to its authored output rows. The chord measurement also applies to zero-handle paths. Explicit fractional stops retain their existing behavior.",
-        "source": "REL .text 3bc7dc..3bc8a4 supplies the duration and phase arithmetic. 3c06dc assembles the endpoint and handle vectors, 3c0f98 evaluates their cubic, afe4..b068 measures each chord with the paired reduction and reciprocal-root estimate; 3c10bc remaps main-path phase by cached lengths from 3c177c..3c1824, and 3c11f0 applies the authored endpoint easing. Main and branch knot preparation apply the duration bounds at 3c1828 and 3c197c. 3bc84c..3bc9fc advances phase, applies the short-edge rule and returns the residual after a strict crossing. The caller at 3bc534 repeats while time remains and the residual or phase changes. 3bc680..3bc74c queues event 0x1e when a positive hold expires with a source knot.",
-        "evidence": "The headless spline validation compares every coordinate bit in 27 decoded Wii kernel samples and 52 decoded Wii easing cases across all four knot-flag combinations. The Zone S fixture covers the straight platform, and the Zone I fixtures cover eased departure, a timed cloud and an untimed cloud with a live speed change. Isolated PowerPC runs checked 70 main and branch clamp inputs and 640 phase steps. The headless check covers 48 recorded phase steps and uses the imported Zone I cloud to verify a full outbound edge, the next hold, two seconds of return travel, exact-zero expiry, the authored cloud audio cue and the queued knot event order. An isolated PowerPC run checked 84 hold and timestep combinations. Four arc fixtures, including an imported cloud and a zero-handle route, compare distance totals and both paths at six phases bit for bit.",
-        "open": [
-          "Initial approach and fractional stop geometry, hold source during explicit preview stops, reverse branch topology, and traversal outside preview mode."
-        ]
-      },
-      {
-        "scope": "EM1 rotator maximum-speed Lua binding",
-        "state": "SetRotatorMaxSpeed is dispatched in both runtime modes. It changes configured speed while retaining current angular velocity and the rotation target.",
-        "source": "Wii REL .text registration 267f88 binds 264580. It resolves an entity's rotator through 5ee8c and calls 3b1aa0, which writes the float at +0x38 through 123d80.",
-        "evidence": "In isolated runs of 264580 with Lua argument and entity lookups stubbed, six speeds each write exactly one float word. The null entity and absent rotator write nothing. All eight calls return zero results. The authored rotator validation checks the Lua handle path, null target, reflected value and unchanged motor velocity.",
-        "open": [
-          "Full mechanical arm attack and cutscene replay."
-        ]
-      },
-      {
-        "scope": "Live bone attachment name writes",
-        "state": "Bone Attach Name can be read and written in both runtime modes. An omitted field or an explicit null write reads back as one Lua nil. An explicit empty string stays distinct. Clearing a live socket restores ordinary parent following.",
-        "source": "Wii REL .text 3526a8..352748 registers the field, 352ecc initializes it through 124da4 using the DOL null handle at 80696390, and getter 353924 reads it. The Lua getter at 265b24 pushes one nil for a null handle. Setter 35392c refreshes the parent binding through 353aa0, and 356fa4 normalizes the bound socket name.",
-        "evidence": "Four isolated Wii setter calls distinguish changed, cleared, unchanged and initialization-only writes. The dbc_bone_attachment Lua fixture streams the castle scene and checks getter result counts, null and empty strings, writes, invalid indices and restore.",
-        "open": [
-          "Exact socket pose and body refresh parity across every attachment mode."
-        ]
-      },
-      {
-        "scope": "EM1 authored ending sequence and title handoff",
-        "state": "UpdatePins captures the 57 original named global bytes. CleanLoadLevel takes the original ending flag and completed slot into a fresh Main_Menu world. PreStartScreenAction selects EndGame:0, and the original opening, nine configured outcomes and closing play on a continuous sample clock. The localized Play_fmv_endgame soundtrack stays active across all eleven clips and mixes with the embedded Bink tracks.",
-        "source": "Wii REL353ac and relocated pin table at section 7 +0x1c4, CleanLoadLevel at 2f314, SetEndingGame at 26c944, and frontend movie list builder ba148. Shipped StartScreen.lua and ConfigFiles.ini supply the sequence request and variant movie paths.",
-        "evidence": "target/perf/ending-verified-opening.runtime.json shows the original opening frame and expected mixed-outcome file order. ending-verified-complete.runtime.json records all 11 clips finishing with skip input, no script/runtime errors and the closing clip last. The completed slot retains the staged first pin. The later ending-mixed-full replay reached closing frame 1186 without skipping, at 252.7455 seconds on the same audio clock. That was 0.565 ms after the authored frame timestamp, with no script or runtime errors. The ending-mixed-gain-skip replay skipped the full ending to credits and returned to the interactive title. The separate Zone S terminal callback probe staged boss flag 25, ran the shipped DoEndGame, wrote LAST-only and opened the original ending movie.",
-        "open": [
-          "Final encounter played to its terminal callback without staging",
-          "Native Wii dissolve, end-to-end mix gain and hold-to-skip timing comparison"
-        ]
-      },
-      {
-        "scope": "EM1 campaign credits and return to title",
-        "state": "Campaign EndGame proceeds from the closing movie to the original credits video with its Wwise stereo soundtrack, plays the original teaser, then returns to the interactive title. Credits:0 also works as an explicit sequence command.",
-        "source": "Wii REL398cc..39908 state registration, baaa4 EndGame return to state 13, b8b6c credits presentation and b87b4 return to the title state. Play_music_credits in the imported fmv_endgame_soundtrack bank resolves the streamed source and its -1 dB node gain, while fmv_credits.bik contains a silent embedded track.",
-        "evidence": "credits-campaign-return.runtime.json records a staged campaign ending with twelve completed movies including a held-input credits skip, the original interactive title visible and no runtime or script errors. credits-art-and-music.runtime.json samples credits frame 600 at device time 20.020964 seconds using 28000 Hz stereo media 448639764, within one millisecond of the frame timestamp. The frontend-extras-credits replays opened the original reel through the Credits card, sampled picture and its native Wwise track, and used QuickExit to return to the same Extras slot. campaign-credits-teaser.runtime.json consumed the credits and teaser in that order using held skips, recorded 32000 Hz media 411479065 for the teaser, and reached the title. The campaign-credits-natural replay completed both requests with zero skip input and reached teaser frame 849 and the interactive title. The frontend-extras-credits-natural-10450 replay reached credits frame 9622 without skipping, resumed the same Extras slot and preserved both scratch saves. Replay with tools/blotworx/verify_credits_flow.py.",
-        "open": [
-          "Full unskipped Wii playback comparison and final gain parity",
-          "Regional soundtrack parity and the standalone teaser branch in builds with a matching collectible"
-        ]
-      },
-      {
-        "scope": "EM1 authored frontend boot sequence",
-        "state": "PreStartScreenAction queues the shipped logo and attract clips and reaches the StartScreen handoff. The logo ignores Accept. The attract clip accepts input after its authored two-second threshold and plays the default Wii audio track.",
-        "source": "Shipped StartScreen.lua, retail RELc4ba8..c4ca0 sequence pair parser, c5650 item classification, and c58a0..c5950 Accept receiver.",
-        "evidence": "The native renderer captured the original startup logo at frame 80. The recorded frontend run completed both movies, accepted the attract skip after two seconds and reached the title handoff with no script or runtime errors.",
-        "open": [
-          "Original startscreen.gfx rendering and PlayStartScreenMovie / StartScreenEnd callbacks",
-          "Main-menu actions and slot selection",
-          "Wii regional movie audio track selection and playback timing comparison"
-        ]
-      },
-      {
-        "scope": "EM1 interactive title screen",
-        "state": "The startup handoff opens the shipped AVM1 title movie. Its PlayStartScreenMovie command starts the configured Bink intro, followed by the original silent loop. Accept runs the authored FadeOut and waits for StartScreenEnd. The handoff opens the original main-menu movie and releases the title renderer and movie resources.",
-        "source": "HUDElements/Flash/cooked/startscreen.gfx, including the BlackMC Init, Fade_In and Fade_Out frame labels. The imported General_Shared and gfxfontlib movies supply the A button and title font. UI_Start uses the English NTSC dictionary entry.",
-        "evidence": "The title replays recorded PlayStartScreenMovie and the title loop, then recorded StartScreenEnd on scripted Accept. The visible capture is taken after the original fade-in reaches the looping background.",
-        "open": [
-            "Original title particle effects, regional localization and aspect-ratio comparison"
-        ]
-      },
-      {
-        "scope": "EM1 authored main menu and save selection",
-        "state": "StartScreenEnd loads the shipped MainMenu movie. The movie drives its own Start Game and save-page transitions, requests the matching Bink backgrounds and draws three rows from the host saves. Slot selection uses the existing checkpoint or completed-slot loader, and an empty slot starts a fresh campaign with a newly selected save service and a running playtime clock.",
-        "source": "MainMenu.gfx Initialize, MaintoLoadGame, RefreshSlot, PlayMovie, NextMovie, MainMenuPick and MainMenuLoad. GAME v16 playtime, timebase and collectible header owners supply the slot display.",
-        "evidence": "The original Start Game button emitted MainMenuPick and played FE_Main_to_LoadGame. The native capture showed one empty slot and two distinct occupied rows. Selecting the third slot entered the original opening level from a completed save. The frontend-campaign-lifecycle live replays reached tick 540 in DBC for an empty first slot and an active second slot with no script or runtime errors. The empty slot started on playthrough zero with a running timer. The active slot restored DBC_1st_ZoneA_LoadCheckpoint and left the scratch save hash unchanged.",
-        "open": [
-          "Native menu effects and Wii storage failure and retry screens",
-          "Reference comparison for timing, navigation, completion percentage and regional date formatting"
-        ]
-      },
-      {
-        "scope": "EM1 main-menu save deletion",
-        "state": "Wii Minus on the focused occupied slot opens the authored confirmation movie and localized A and B labels. A removes the chosen host checkpoint and refreshes the slot list. B returns to the save list. Requests for an empty slot leave the save list open. Pending gameplay writes finish before menu entry.",
-        "source": "MainMenu.gfx InitInputHandlers and the Minus key release branch, Wii REL1fd368..1fd498, message 0xa0 at REL2607f0, and the delete confirmation keys at REL2618e4. The prompt uses the retail error.gfx timeline.",
-        "evidence": "The prompt, cancel, confirm-held and empty captures under target/perf/main-menu-delete-* record the original Slot1 command with no script or runtime errors. The prompt capture shows the localized confirmation. Cancel preserves both scratch saves byte for byte. Confirm removes only the selected scratch save and the empty-slot request preserves the neighboring save.",
-        "open": [
-          "Wii NAND error presentation and confirmation frame timing comparison"
-        ]
-      },
-      {
-        "scope": "EM1 authored Extras landing and selected save",
-        "state": "ExtrasMenuLoad uses its authored slot number to open the shipped Extras movie. Its four counters are populated from the selected GAME header and original collectibles database. FadeIn waits for DelayedInit to release the authored HoldFade. Card titles and unlock captions read the original dictionary. Authored zero-alpha counter backing fields remain transparent during timeline updates.",
-        "source": "Wii REL1fd328..1fd360 slot selection, bc610 category tables, bc008..bc234 count publication, and extrasmenu.gfx Initialize, DelayedInit and the EditText layout. English_NTSC.pak contains the shipped text.",
-        "evidence": "frontend-extras-final.runtime.json captures ExtrasMenuLoad Slot1 and the authored Extras display with counts 0/50, 4/39, 0/2 and 1/1. An independent parse of the two scratch saves and collectibles.pak predicts 4/39 for the selected save and 5/39 if combined. Both save hashes are unchanged. The frontend-extras-localization replay reads the localized text directly from the four authored cards. The frontend-extras-back replay routes Escape through the authored B handler, then plays FE_Extras_to_Main and resumes FE_MainMenu_Loop with both scratch saves unchanged.",
-        "open": [
-          "Standalone Extras teaser selection and remaining category validation",
-          "Frame and timing comparison with the original Wii UI"
-        ]
-      },
-      {
-        "scope": "EM1 Extras category browsing and movie playback",
-        "state": "The authored category transitions, six-card pages and thumbnail slots use the chosen save. The host publishes the original lock array, puts unlocked entries first and opens only unlocked movie and Concept Art records. Rollover passes the saved item’s English dictionary title and description into the authored text fields.",
-        "source": "Wii RELbc4cc/bc740/bc8f4, bd2f0..bd418, 113794..113870, collectibles.pak and extrasmenu.gfx UpdateSubMenu, RestoreMovieMenu and RestoreCartoonMenu. RELbcc4c binds the selected art to Map_Placeholder, and RELbdcd8 routes the unlocked item’s _Name and _Desc to SetExtrasInformation.",
-        "evidence": "The frontend-extras-thumbnails replay enters the Movies category, renders four original thumbnails from the selected save and shows page 1/7. The frontend-extras-media replay selects the first item and plays AL_visit1_Cyrano_for_Pirate_Happy.bik. The frontend-extras-paging replay stops the movie with one Back press and advances to page 2 using the authored arrow. The frontend-extras-concept replays use a scratch save with Mickey Faces I unlocked, show the authored image and dictionary text, then return to the grid with one Back press. The Extras Credits card reuses the credits player and QuickExit returns to the same slot without starting the campaign teaser. These replays preserve the scratch saves and report no runtime or script errors.",
-        "open": [
-          "Full Wii visual and timing comparison, additional regional dictionaries and standalone Extras teaser selection",
-          "Playback and pagination validation across the remaining categories"
-        ]
-      },
-      {
-        "scope": "EM1 completed slot to next playthrough",
-        "state": "Continuing from a completed slot loads the configured first level with a fresh world, quests and player state. The native carryover owners are populated before scripts run, and the first new checkpoint replaces the completed save stream.",
-        "source": "Retail REL2b030..2b0a4 and its extras, selective collectibles, options, pin and metadata readers. The start level comes from MainMenu gamestart in the imported game configuration.",
-        "evidence": "A scratch copy of the completed ending slot was loaded with Continue. The original DBC start level observed playthrough 1, a positive pin clamped to 1, a negative pin sign-extended to -2, a retained reel total and fresh story state. The new checkpoint retains the ending outcomes and leaves a backup of the completed slot.",
-        "open": [
-          "Original title-screen and slot-selection UI",
-          "Native frontend action that clears secondary extra flags when requested",
-          "Manual end-to-end campaign replay"
-        ]
-      },
-      {
-        "scope": "EM1 loading-screen presentation",
-        "state": "Full level loads and scene streams behind an authored fade show original artwork and cycle the authored dot frames. Faded scene imports wait until the loading screen has had a visible presentation window. Level loads use destination artwork, while streams use the current level's artwork.",
-        "source": "loading_screen_texture in levels.pak, loose LoadingScreens assets, and src/blotworx/loading_screen.rs",
-        "evidence": "The artwork paths and eight 64x16 dot frames resolve in the BlueThinner import. The DBC staged stream captured original artwork with a pending scene, then resumed with the scene queue drained and no runtime errors.",
-        "open": [
-          "Regional splash selection follows the English NTSC assets currently",
-          "Retail timing and placement",
-          "Asynchronous scene publication and Wii UI timing"
-        ]
-      },
-      {
-        "scope": "DBC projector screen material animation",
-        "state": "The cloned projector screen plays its authored fade and flicker. Direct material tracks remain active alongside sequence poses, and a scripted camera sequence chosen after reset starts without blending from the previous sequence. The warp samples current scene color using the authored two-axis IndirectScale.",
-        "source": "screen_mickey.nif_wii, GEN_Portal_Screen_Distortion.nif_wii, and SFX_projectionWarp.r3mt",
-        "evidence": "target/perf/dbc-refraction-staged.runtime.json records the original Dark Beauty Castle screen and a deliberately staged distortion spawn. SFX_projectionWarp contributes to the probed pixel with no fallback or script/runtime errors. The earlier paired color probes record Constant_Color_1 alpha changing from 0 to 0.098.",
-        "open": [
-          "Reference distortion amplitude and framebuffer capture order",
-          "Full Wii transition animation comparison"
-        ]
-      },
+      "state": "The original Zone C maintenance-room call can clear a spline stop. Restarting motion remains a separate authored action. Completing the preceding Zone B cutscene before staging the transfer lets the following Zone C intro release its own input restrictions.",
+      "source": "GV_ZoneC_MaintenanceRoomChest, GV_JTA_Timer, GV_JTA_Camera1GlobalSet, and EM1 REL 3be6dc and 3bdbbc",
+      "evidence": "The 3630-tick airlock-to-Zone-C replay completes the introductory conversations with input depth zero. The 165-tick spline replay verifies a fractional stop, unchanged speed on clear, the authored cleanup knot, and actual maintenance-chest motion. The 610-tick Asia airlock replay solves the timer puzzle and spawns Pete. All three replays record zero Lua or runtime errors.",
+      "open": ["Native spline interpolation and original Wii timing comparison", "Unstaged travel through Zone C and the Asia airlock"]
+    },
+    {
+      "scope": "Character ink impacts and Spatter combat acquisition",
+      "state": "Character bodies reject projected world decals. Ink counters start authored FX for hits, conversions, and puddle transitions. Named FX reuse the existing animated material path, and the particle reset controller compares consecutive scaled loop samples. The provisional combat planner can acquire a visible player before finishing its patrol and uses the shipped Spatter melee speed and reach settings.",
+      "source": "FXTemplate entries in SpatterMeleeMaster and Gremlin_Variant2, SpatterImpactFX.bin, fx_enemy_death.nif, ConfigFiles.ini, and the Gamebryo 2.6 reset-on-loop implementation",
+      "evidence": "gv-npc-impact-and-puddle.runtime.json records a scripted hit-emitter start with 14 live particles and an independent scripted thinner defeat with the detached original puddle, its animated mesh and 29 live particles. The run has no script, runtime or FX admission errors.",
+      "open": ["Manual spray validation, exact hit and defeat animation scheduling, and full original AI sensor and combat behavior"]
+    },
+    {
+      "scope": "Spatter melee contact and Mickey's hit reaction",
+      "state": "Havok weapon start/end exports gate the active arsenal child's existing damage trigger. Its original layer channels feed health and knockback. The graph selects hit or miss follow-through from contact and finishes recovery using its sequence export.",
+      "source": "SpatterBehavior.hkx_wii, SpatterMeleeWeapon.bin, and EM1 animation registration IDs 0x79, 0x7a, 0x7b and 0xc1",
+      "evidence": "The 390-tick gv-spatter-melee replay recorded two melee contacts, two native knockback launches and recoveries, and zero script, runtime, or animation-export errors. The graph's attack cues were not rejected. The bank catalog does not contain the separate Stop_sfx_Spatter_mvmt_Chase cue. Replay stages the player using tools/blotworx/fixtures/gv_spatter_melee.lua.",
+      "open": ["Listen to the attack cues in a gameplay session", "Validate weapon selection, ranged attacks, alternate weapons, and other enemy families", "Original AI behavior selection, sensing, and scheduling fidelity"]
+    },
+    {
+      "scope": "Ranged Spatter close-range weapon selection",
+      "state": "The melee selector considers contact weapons within their authored distance limits, even when the default arsenal index points to a ranged weapon. Ranged Spatter close attacks start their idle windup timer from the clip marker. Weapon stop and follow-through selection are independent, so the close strike stays active until its explicit stop marker.",
+      "source": "BlotlingRangedBehavior.hkx_wii, SpatterRangedMaster, RangedSpatter_MeleeWeapon.bin",
+      "evidence": "The staged 330-tick Zone C replay produced one hit and one knockback launch and recovery, with zero runtime, script, animation-export or Spatter cue rejection errors. The 390-tick original melee Spatter regression still produces two hits and two knockback recoveries. Replay tools/blotworx/fixtures/gv_ranged_spatter_melee.lua with repeated dialogue advances.",
+      "open": ["Native behavior selection and attack-spacing parity", "Audible playback verification", "Other alternate-weapon families"]
+    },
+    {
+      "scope": "Spatter ranged projectile launch",
+      "state": "Ranged Spatter selects its authored shooter and releases its indexed projectile template from the animated weapon pose. The prepared and release markers share the current fixed-tick spawn path. The mode-4 trajectory drives the admitted Box3D body with world gravity, and the launch cue uses the projectile transform for spatial audio.",
+      "source": "BlotlingRangedBehavior.hkx_wii, SpatterExplosionWeapon.bin, ThinnerBallSpatter.bin, and EM1 REL section 1 offsets 3b7c04, 3b81b4, 39191c and 390c70",
+      "evidence": "The resolve clip emits prepare/fire/stop at local times 0.200/0.201/0.202 s. The broom variant uses 0.136/0.137/0.138 s. The shooter names template slot 1 and uses delivery method 4 with a speed of 7.7. The 285-tick dry Zone C replay recorded four launches with zero launch errors and zero rejected projectile cues. Contact and player hit counts both stayed at zero.",
+      "open": ["Resolve why the staged shots produced no Box3D begin contacts before validating impact damage and effects", "Native projectile attachment and launch ordering", "Trajectory arithmetic and randomized aim comparison against Wii execution", "Projectile lifetime and cleanup across streaming"]
+    },
+    {
+      "scope": "Gremlin Village Zone C thinner river reaction",
+      "state": "PhysicsStimulusComponent uses the controller's current support owner when the character support probe holds the player just outside the rigid manifold. Shared combat admission routes the authored DamageLeap channel to Mickey's recovery after the paired thinner channel removes health.",
+      "source": "Zone C authored river meshes, ThinnerDamageCollisionDynamic, PhysicsStimulusComponent channels 6 and 0, and Mickey's zero DamageLeap health multiplier",
+      "evidence": "The prior contact case lost health without selecting any thinner launch clip. The prior support case remained on the river with five health and zero contact stimulus batches. Both updated 165-tick Zone C runs lost one health point, reached 11.5 upward speed, and played Mickey_Launch_Thinner_Top without runtime or script errors. The support case is staged by tools/blotworx/fixtures/gv_zonec_thinner_river.lua.",
+      "open": ["Original Wii reaction timing, horizontal recovery trajectory, and visual and audio comparisons", "Regression coverage across other thinner volumes and meshes"]
+    },
+    {
+      "scope": "Skybox compositing in Gremlin Village and Mean Street",
+      "state": "Authored SkyboxComponent draws render in a camera-centered pass with their own depth and alpha ordering. The renderer clears their depth before world submission and excludes those draws from material shadow casting.",
+      "source": "gv_zoneb.bin and the Mean Street visit-one SkyboxComponent",
+      "evidence": "sky-pass-gv-after.runtime.json and sky-pass-mean-after.runtime.json record the sky pass followed by a depth reset to 1.0. The paired Mean Street captures show the castle roof and street buildings uncovered at the same camera pose.",
+      "open": ["Wii comparison of layered horizon effects", "Mean Street has an existing OnSpawned audio callback with no event argument"]
+    },
+    {
+      "scope": "Zone B boat junction with a live rider",
+      "state": "The keyframed boat carries Mickey through the authored crossing trigger after Tim's thinner outcome. The trigger routes the boat onto the transfer branch.",
+      "source": "gv_zoneb.SK_BoatPath08, gv_boattransfer01.Trigger 03 and GV_ZoneB_BoatPathChange",
+      "evidence": "gv-boat-live-rider.runtime.json at tick 3400 and its replay log. Boarding was staged 1.2 units above the boat. No post-boarding position was forced. Mickey reached x205.760, remained about 0.70 units from the boat origin, and the original route callback fired without runtime or script errors.",
+      "open": ["Unstaged boarding, actual paint/thinner puzzle hits at the transfer, and the remaining Zone C route"]
+    },
+    {
+      "scope": "Gremlin Village boat-transfer airlock to Zone C",
+      "state": "The three bandages route their thinner endpoints into the original gear callbacks. The exit trigger starts the original Gus conversation, camera sequence, Zone C stream and Zone B cleanup.",
+      "source": "gv_boattransfer01.bin, GV_BoatTransfer01.lua, and GV_BT_GusFreakOut.bsq",
+      "evidence": "The 2350-tick gv-gear-and-zonec replay thins the bandages through ForceThinned and places Mickey inside Trigger 05. All three gear flags clear, the exit unlocks, Zone B cleanup finishes and the Zone C entrance entity exists. The replay records no script or runtime errors. The tracked replay is tools/blotworx/fixtures/gv_boat_transfer_thin.lua.",
+      "open": ["The staged direct Zone B boot had input restriction depth 1 at tick 1 and again after the transfer. Its control handoff needs validation from the normal approach.", "Unstaged travel from the boat using the live brush, original Wii timing comparison, and verification of repeated bandage callbacks"]
+    },
+    {
+      "scope": "Gremlin Village Zone B ticket booth",
+      "state": "Suspended character bodies stop integrating retained velocity during scene streaming. Spawned counters publish their first defeat transition, and the Seer's starting allegiance comes from its authored Team. Dialogue resolves the active speaker's authored conversation role, including Tim's lines in a Gus-owned sequence.",
+      "source": "gv_zoneb.bin entities Gremlin_Tim and FodderBlotling 01, GV_ZoneB2.lua, and GV_ZoneB_GusIntro2.bsq",
+      "evidence": "gv-booth-route-after.runtime.json at tick 2800 records the Zone A entry, Tim at [159.7853, 7.2100, -9.8956], all five defeat callbacks from the fixture gv_ticket_booth.lua, completion of GV_ZoneB_OpenDoors, and no runtime or script errors. gv-booth-portrait-after.png and its runtime report show Tim's authored portrait in the same sequence that previously rendered Gus.",
+      "open": ["Manual combat with spray aiming, alternate paint and mixed outcomes through the complete Zone A route, and Wii comparisons for exact body timing"]
+    },
+    {
+      "scope": "Spawner source lifetime in Tim's paint follow-up",
+      "state": "Scene admission retains hidden Objects To Spawn sources without delivering their clone-spawn callback. Newly created copies keep the existing deferred spawn event and can retire independently.",
+      "source": "gv_zoneb_dynamic.Spawner_PipeBurst and gv_zoneb_dynamic.FX_PipeBurst in gv_zoneb.bin. The latter has a two-second self-DestroyEntity connection on OnSpawned.",
+      "evidence": "The before-fix probe records the source valid at load and invalid after its timer. The 1340-tick Tim replay records independent clone retirement, a retained source, GV_ZoneB_OpenDoors completion, 15 pending Hero points, and released input with zero script or runtime errors.",
+      "open": ["Original Wii verification of template admission scheduling", "Complete natural combat and progression playthrough", "The combined Zone C staging started the transfer while the earlier Zone B intro still owned an input restriction"]
+    },
+    {
+      "scope": "Tim's paint dismissal and the boat-transfer gate",
+      "state": "The original Lua callback clears the fallback combat planner's live target and cancels unfinished attacks. Tim's reflected PatrolSpeed write reaches the same controller field used for authored patrol destinations.",
+      "source": "GV_ZoneB_SpatterDismissalFull, BasicAIControllerComponent.PatrolSpeed on SpatterMelee 04, and EM1 REL 2d47e0 and 2df228",
+      "evidence": "The 920-tick paint replay verifies the selected Spatter, the patrol speed change from 7 to 3, and completion of GV_ZoneB_TimFullDismiss. It then reaches the previously untested pipe-burst spawn. The separate boat-transfer replay reached stream_3 and completed Zone B cleanup at 1440 ticks with no script or runtime errors.",
+      "open": ["The pipe-burst spawner's source is unavailable after scene initialization. The authored source has a delayed DestroyEntity on OnSpawned.", "Native permanent-target ownership and target-change event", "Unstaged paint combat and full travel through the boat-transfer puzzle", "The staged Zone C intro completes its first two conversations but retains one input restriction"]
+    },
+    {
+      "scope": "Zone B Tim dismissal, guardian award intake, and first boat ride",
+      "state": "Tim's thinner outcome can release the scripted guardian from its animated socket. The authored hero and scrapper award callbacks publish signed pending points with the retail enable gate.",
+      "source": "GuardianPrefab_StartNextGuardian, GV_ZoneB_GuardianExplaination, and EM1 REL 1ca48, 1cb60, 18d38–18d64",
+      "evidence": "target/perf/gv-tim-thin-fixed.runtime.json records a completed dismissal and -15 pending points at tick 760. The earlier attachment and award errors are absent. The separate boarding replay carries Mickey 26.175 m to the dock, with 671 grounded ticks and zero respawns after boarding.",
+      "open": ["Pending point consumption, guardian population changes and save serialization", "Painted Spatter dismissal", "Direct Zone B launch lacks Zone A's cleanup function", "Completion of the boat-transfer exit sequence"]
+    },
+    {
+      "scope": "Gremlin Village airlock entry and Zone B boat junction",
+      "state": "The staged airlock approach reaches the authored Zone B intro, which calls the original Zone A cleanup. Zone B's boat handoff can now set the live spline junction probability through its native Lua API.",
+      "source": "GV_ZoneA.lua, GV_ZoneB2.lua, and the authored SK_BoatPath08 junction in gv_zoneb.pak",
+      "evidence": "The live airlock run crosses gv_zoneb.Trigger_Intro and confirms Cleanup_GV_ZoneA removed itself. tools/blotworx/fixtures/gv_boat_branch.lua invokes the original boat handoff and asserts the switch from 1 to 0 and the completed callback state.",
+      "open": ["Unstaged traversal from the airlock through the full boat ride and into the next area", "Original Wii traversal timing"]
+    },
     {
       "scope": "Blotworx clean-build compiler memory and parallelism",
       "state": "A non-incremental engine rebuild completed in 7m27s with Cargo limited to two jobs and 16 codegen units for the bluethinner crate. The largest observed bluethinner rustc process was 3,632.5 MiB private / about 3,024 MiB working set; available system RAM recovered from 3.3 GiB during the peak to 5.2 GiB after codegen. Only one rustc process was active during the app-crate peak. The earlier four-job/eight-unit attempt reached about 3.8 GiB for bluethinner while a Ruffle compiler also reached about 2.2 GiB, and did not produce a fresh executable. The lower-concurrency settings are now the package defaults; runtime behavior is unchanged.",
@@ -495,6 +278,16 @@
       ]
     },
     {
+      "scope": "Archive-backed Flash movie loading",
+      "state": "Movie requests use the shared game resource store. Pause page requests admit their matching archives and texture dependencies on demand.",
+      "source": "src/blotworx/ui_movie.rs",
+      "evidence": "target/perf/movie-pack-hud.json validates all 28 HUD child requests and initialization. The standalone pause page probe reached AVM1 and then reported that the page requires a parent with Init.",
+      "open": [
+        "Open pause pages through the gameplay UI container",
+        "Pause input ownership and page-specific host services"
+      ]
+    },
+    {
       "scope": "Current-tick gameplay HUD worker and viewport sizing",
       "state": "connected; paired scheduling/pixel/gameplay equivalence verified",
       "source": "src/blotworx/ui_gameplay_worker.rs",
@@ -503,6 +296,447 @@
         "Original UI host-service and update-phase parity",
         "Zero-copy GPU presentation",
         "Full-game framerate acceptance"
+      ]
+    },
+    {
+      "scope": "Size-based rigid-body phantom triggers in the DBC exit route",
+      "state": "With both machine flags set, entering the authored exit volume requests and completes the Brush PowerUp movie",
+      "source": "src/blotworx/demo_triggers.rs",
+      "evidence": "target/perf/dbc-exit-touch.runtime.json and target/perf/dbc-exit-dialogue-fixed.runtime.json",
+      "open": [
+        "Whole-level playthrough from the opening",
+        "Native contact filter and resource-backed trigger parity"
+      ]
+    },
+    {
+      "scope": "DBC intro and machine camera ownership, hallway gear progression",
+      "state": "Dialogue-only BSQs retain Lua-acquired cameras. The authored spline-camera return releases the grabbed shot, and whole-model paint completion publishes the gear's authored door output.",
+      "source": "src/blotworx/demo_story.rs, src/blotworx/nif_camera.rs, src/blotworx/model_paint.rs",
+      "evidence": "target/perf/dbc-intro-camera-held.runtime.json preserves the intro camera after the Gus BSQ. target/perf/dbc-first-machine-right.runtime.json and target/perf/dbc-first-machine-left-after-hold.runtime.json exercise the authored machine callbacks and reach a released camera. target/perf/dbc-hall-gear-baseline.runtime.json reproduces the missing callback, and target/perf/dbc-hall-gear-progression.runtime.json passes the authored DBC_ZoneB_Door1Open assertion after the gear's paint transition.",
+      "open": ["Natural player-input playthrough of both machine orders and the hallway", "Native spline-camera interpolation and exact release blending"]
+    },
+    {
+      "scope": "DBC hallway gear door and thinner trim door",
+      "state": "Named Havok door leaves follow the proper opening pose. The second door and its separate blocker use the trim's full jigsaw endpoint.",
+      "source": "src/blotworx/dynamic_runtime.rs, src/blotworx/jigsaw_effects.rs",
+      "evidence": "target/perf/dbc-door-two-check.log records that the first door blocks the passage before the gear is painted and clears it after opening. Thinning all but one painted trim piece retains the second blocker. Thinning the final piece runs the original Open sequence and removes the blocker."
+    },
+    {
+      "scope": "DBC courtyard first gear and rubble floor",
+      "state": "The original gear script can lock the glint animation, request the door unlock sequence and stop the rotator. The toon ramp composes its base material with the thinner effect and reaches its sketched endpoint.",
+      "source": "src/blotworx/assets.rs, src/blotworx/material_animation.rs, src/blotworx/jigsaw_effects.rs and src/blotworx/model_paint.rs",
+      "evidence": "target/perf/dbc-courtyard-final.log records the staged original script requesting Opened and reducing Max Speed from 360 to 0. target/perf/dbc-courtyard-final.runtime.json records all seven ramp meshes sketched and no runtime or Lua errors."
+    },
+    {
+      "scope": "DBC courtyard portal unlock and film-screen handoff",
+      "state": "The authored second-gear script raises the portcullis, opens the portal, streams the next part and writes the courtyard checkpoint. The authored outro runs the film-screen cinematic and 2D exit setup.",
+      "source": "Original DBC_1st_ZoneC.lua callbacks using the native Lua, streaming, checkpoint and movie bridges",
+      "evidence": "target/perf/dbc-court-second.log and target/perf/dbc-court-second.runtime.json confirm the gear stops, the portal flag is set, stream_4 loads and the checkpoint is written. target/perf/dbc-court-exit.log and target/perf/dbc-court-exit.runtime.json confirm the staged outro skips the authored film and runs the 2D exit callback with no script or runtime errors.",
+      "open": ["Walk-up trigger and end-to-end beanstalk traversal", "Restoring the written checkpoint through the frontend"]
+    },
+    {
+      "scope": "DBC courtyard slope descent",
+      "state": "The shared Box3D player refreshes stair retention from the solved pose before animation. Crossing a short gap above walkable ground retains the grounded motion state without fabricating contact.",
+      "source": "src/blotworx/player_physics.rs and the authored Ramp_A_DBCMain static mesh",
+      "evidence": "Matched recordings target/perf/dbc-ramp-descent-before.ticks.json and target/perf/dbc-ramp-descent-after.ticks.json. Baseline ticks 113 and 136 entered airborne animation. The updated build retained ground motion at both ticks at distances 0.128 and 0.131 m, with no respawns or script errors.",
+      "open": ["Original Wii comparison, ascent, other stair heights and moving support"]
+    },
+    {
+      "scope": "Toon pickup spawner spin",
+      "state": "GetPropertyBool reads the live rigid body's painted flag. The authored DBC barrel now reaches its Trampoline animation and reward selection script when struck. The first ForceSpawn call exposed premature expiry of the hidden spawn-effect source. Lifetime updates exclude registered factory sources, and spawned clones retain independent lifetime components. The original callback now spawns its effect and hover object. A follow-up build creates the ammo container. Its collectible needs a resource-backed sensor that was rejected during child clone preflight. Runtime clones now share decoded geometry while owning separate sensors and listeners. The original attachment callback runs and the collectible restores 10 units of paint and 10 units of thinner. The follow-up patches map dynamic spawn separately, use the moving attachment pose for sensor bounds, and drain immediate removal IO before source teardown.",
+      "source": "P_BarrelA1_Toon, Prefab_PickupSpawners.lua, GenPickupCollision.hkx and Wii REL270bac..270dc8 / 182718..182740 / 3cc558",
+      "evidence": "target/perf/dbc-court-toon-repro.runtime.json reports the missing getter. target/perf/dbc-court-toon-after.err records the authored Trampoline request and target/perf/dbc-court-toon-after.runtime.json reports the prototype error. target/perf/dbc-pickup-sources-late.err isolates the hidden Item_SpawnFX source disappearing after five seconds on the previous build. target/perf/dbc-toon-factory-lifetime.runtime.json confirms both setup spawns and identifies the missing ammo phantom clone. target/perf/dbc-toon-owned-reward.runtime.json records the subsequent container spawn without Lua errors. target/perf/dbc-toon-resource-reward.runtime.json records one collected pickup, both ammo meters increasing from 10.7333 to 20.7333, and no Lua or runtime errors. This staged replay used an interim dynamic-spawn bridge. Retail distinct-kind and attached-sensor replay is pending.",
+      "open": ["Replay the verified 3d/3e separation and attached sensor bounds", "Replay the corrected OnEntityRemovedFromWorld counters and repeated reward delivery. Wii REL2732ac binds kind 44 and REL1edf98..1edfc0 dispatches it synchronously."]
+    },
+    {
+      "scope": "DBC courtyard Seer pipe spawn",
+      "state": "The template spawner tests the authored position with a rounded box and the recovered Wii query filter. If it intersects geometry, the engine tests the position raised to the highest contact plus the box half-height and applies it only when clear.",
+      "source": "REL3cc5d0..3cc870, src/blotworx/template_spawner.rs, src/blotworx/physics.rs and src/blotworx/box3d_bridge.c",
+      "evidence": "target/perf/dbc-seer-natural.runtime.json records the prior above-ground placement error. target/perf/dbc-seer-fixed-pipe.runtime.json records the original pipe OnUser1 connection creating a live FodderBlotling with its Havok graph, Box3D body and AI brain. target/perf/dbc-seer-handoff.runtime.json confirms that entering through the authored trigger also creates the live Seer and completes the original combat training movie without script errors.",
+      "open": ["Natural opening-to-courtyard traversal and trigger ordering", "Wii differential capture of placement contact witnesses and per-child filters", "Above-ground sizing for imported rigid shapes and resource phantoms"]
+    },
+    {
+      "scope": "Seer charge attack",
+      "state": "The combat adapter selects the inherited type-2 weapon and uses the authored Havok windup, windup-idle, roll and recovery states. The authored config sets the idle wait and acceleration, and the weapon sets the maximum travel distance. The spawned Seer now has an independent charge weapon attached in its original slot. The authored trigger delivers damage and knockback during the roll.",
+      "source": "FodderBlotlingMaster, fodderblotlingchargeattack, blotlingFodderBehaviorGraph.hkx, ConfigFiles.ini BEH_ChargeAttack_FodderBlotling and src/blotworx/demo_ai.rs",
+      "evidence": "target/perf/seer-charge-isolated.runtime.json records two windups, one roll, one recovery and zero charge contacts with no Lua errors. The replay keeps other encounter enemies thinned so their attacks cannot contaminate health observations. target/perf/seer-charge-parent-probe.err exposes the original actor ownership leak. target/perf/seer-charge-owned-weapon.err and its runtime report confirm clone ownership, one contact, health 5 to 4, roughly 4.5 meters of knockback, recovery, and zero Lua errors.",
+      "open": ["Spawned secondary rigid collision child", "Original EM1 movement, clipping, attack slots, alarm, vulnerability and difficulty behavior"]
+    },
+    {
+      "scope": "DBC mechanical arm combat activation",
+      "state": "Convex Havok trigger hulls feed the authored attack selection scripts through Box3D overlap. A staged player approach after the opening selected AttackPosition6 and played Area6_DrillDig_Start, Area6_DrillDig_Loop_Single and Area6_DrillDig_End.",
+      "source": "dbc_1st_zonea_clawstages.ArmTriggerZone0 01, src/blotworx/phantom_bounds.rs and src/blotworx/demo_triggers.rs",
+      "evidence": "target/perf/dbc-arm-trigger-validation.log and target/perf/dbc-arm-attack-after.ticks.json",
+      "open": ["Retail attack timing, collision and damage", "Natural movement and coverage of every attack zone"]
+    },
+    {
+      "scope": "DBC exit door flame occlusion",
+      "state": "Sortable blended surfaces submit after the opaque and alpha-tested scene, back to front. Authored no-sort flags are preserved.",
+      "source": "Original DBC_ZoneD_ExitDoor01.nif_wii and TorchFlame_01.nif_wii material state, Gamebryo NiAlphaAccumulator and src/render_support/viewport3d.rs",
+      "evidence": "Controlled same-pixel probes in target/perf/dbc-exit-flame-after.runtime.json and target/perf/dbc-exit-flame-occluded.runtime.json show that the door occludes the farther flame and the nearer flame blends over the door.",
+      "open": ["Retail image comparison", "Cross-level transparency and author-controlled sort order"]
+    },
+    {
+      "scope": "DBC courtyard toon armor collision",
+      "state": "A multipart authored mover can use its rigid-body local poses relative to the owning entity when the visual model supplies no corresponding node names. A walking replay stops against the armored prop.",
+      "source": "DBC_DonaldArmorA1_Inert assets and src/blotworx/dynamic_runtime.rs",
+      "evidence": "target/perf/dbc-armor-approach-before.ticks.json and target/perf/dbc-armor-approach-after.ticks.json record the same approach from Z 8.30. The player previously reached Z 5.72 and stops near Z 6.91 with the live armor body.",
+      "open": ["Spin reward lifecycle", "Retail comparison of keyframed compound shapes"]
+    },
+    {
+      "scope": "DBC courtyard Calvin cage",
+      "state": "The authored spawn callback selects the jailed Havok animation. The Box3D compatibility body holds its spawn pose until the original cage release script restores motion, the shadow and interaction.",
+      "source": "src/blotworx/animation_variables.rs, src/blotworx/actor_scripts.rs, src/blotworx/assets.rs and src/blotworx/shadow_scene.rs",
+      "evidence": "target/perf/dbc-calvin-repro.ticks.json records the actor falling from Y 25.65 to Y -1.15. target/perf/dbc-calvin-final-hold.error.log records zero drift during the held replay. target/perf/dbc-calvin-final-release.error.log records the staged authored release restoring collision layer 4 and the usable radius.",
+      "open": ["Reference capture and the full courtyard rescue cutscene"]
+    },
+    {
+      "scope": "GV airlock Tiestow wrench sequence",
+      "state": "Placed Wii actors can recover a missing animation by its authored path from the installed archive index. Tiestow's repair coroutine reaches the next conversation after its hammering and teleport clips.",
+      "source": "src/blotworx/animation_resources.rs, src/blotworx/authored_havok.rs and src/blotworx/streamed_animation_resources.rs",
+      "evidence": "target/perf/gv-wrench-stage.runtime.json reproduces the missing gremlin_emote_greet_inPlace.hkx failure. target/perf/gv-wrench-door.runtime.json records the original coroutine and exit dialogue completing with controls released and zero Lua and Havok actor errors. The replay log records the authored Exit Door Open2 request.",
+      "open": ["Full interactive combat-to-exit replay with both pipe outcomes", "Original Wii animation timing"]
+    },
+    {
+      "scope": "DBC beanstalk entry, side-scrolling input and authored ability restrictions",
+      "state": "Only a live side-scroll camera can own the traversal plane. Its authored flags gate brush fire and sketch placement without modifying stored ability ownership. The plane is rebuilt when the camera changes its normal.",
+      "source": "src/blotworx/side_scroller.rs and src/blotworx/mod.rs; dbc_2dzbeanstalk._Marker(CameraOverride) in dbc_1st_zoned.bin",
+      "evidence": "target/perf/dbc-2d-left.ticks.json records grounded spawn, horizontal movement, jumps, and no respawns after staged film entry. With a collected brush, the previous build aborted on sketch input with a missing collision resource. target/perf/dbc-2d-ability-fixed.ticks.json records the same inputs with no brush shots, no runtime errors, ground jumps and continued horizontal progress.",
+      "open": ["Original-game timing and camera behavior comparison", "Full beanstalk ascent from its starting platform"]
+    },
+    {
+      "scope": "Gremlin Village Zone D weighted platforms and projector handoff",
+      "state": "Authored AnimGBSequence completion requests emit OnAnimGBEnded at the sequence end text key. Both original weighted-platform outputs latch their door switches and activate the Steamboat Willie projector.",
+      "source": "Gremlin Village Zone D scene IO, the two ExitPlatforms keyframe sets, and the original AsiaToSBW projector script",
+      "evidence": "target/perf/gv-zone-d-steamboat-route.runtime.json records both switches, the original projector entry and Steamboat Willie scene publication by tick 1610, with no script or runtime errors. The replay stages player position at the triggers and projector.",
+      "open": ["Continuous traversal from the prior zone", "Other native end-listener registration paths", "Retail transition timing"]
+    },
+    {
+      "scope": "Gremlin Village Zone D quest cleanup and Steamboat Willie exit",
+      "state": "BSQ event 16 marks quest slots with no completed current stage while preserving the authored stage ID. The Steamboat Willie exit takes Mickey to Zone F through the shipped projector script, releases the arrival camera on movement, and carries the quest status into the Zone F checkpoint.",
+      "source": "Wii REL27d980, 245010, 244d94, 244c70 and 2456f8; GV_ZoneD_QuestCleanUp.bsq and the original Steamboat Willie right projector.",
+      "evidence": "target/perf/steamboat-quest-cleanup-live.runtime.json records the cleanup completing with no story, Lua, or runtime errors. target/perf/steamboat-exit-quest.runtime.json records GV_ZoneF_Start, movement after input release, and checkpoint GV_ZoneF_LoadCheckpoint. The resulting QUES section restores quest 36 with status 1.",
+      "open": [
+        "Unstaged traversal and obstacles through Steamboat Willie",
+        "Other quest event types and quest UI",
+        "In-game resume from this checkpoint"
+      ]
+    },
+    {
+      "scope": "Continue a committed EM1 checkpoint",
+      "state": "Continue opens the selected save slot and bootstraps the saved level from its saved part descriptors and ordered WRLD scenes. Globals, quest slots, player scalars, spawn, playtime and other established save owners are installed before level scripts. The saved callback runs once.",
+      "source": "GAME v16 header, GLOB1, QUES4, AISS2, MICK3 and WRLD1, and the shipped GV_ZoneF_LoadCheckpoint callback",
+      "evidence": "target/perf/gv-zone-f-checkpoint-resumed.runtime.json matches the prior Zone F save's scene order, spawn, quest status, playtime, health, inventory and raw ammo words. The copied save remains byte-identical. target/perf/gv-zone-f-checkpoint-resumed-motion.ticks.json records 3.39 units of player movement after fresh-session resume, with no script, story, or runtime errors.",
+      "open": [
+        "Remaining derived ability grant effects and sketch use after reload",
+        "Death and in-memory restart",
+        "Additional save-owner callbacks and Wii ordering parity",
+        "Cross-campaign checkpoint coverage"
+      ]
+    },
+    {
+      "scope": "EM1 checkpoint ability and sketch restoration",
+      "state": "Checkpoint startup visits the primary, secondary and registered sketch abilities in native order. Ownership uses the native suffix probes and current grant level. The loader restores each indexed capacity and clamps each saved named count to its live capacity.",
+      "source": "Wii REL21098, 212b4, 21480..214c4, 25e590 and 344868. The save fixture is a changed copy of the Zone F checkpoint.",
+      "evidence": "target/perf/checkpoint-sketch-count-live.runtime.json and its tick trace compare against the pre-change replay of the same slot. The restored paint-only brush emits 11 shots and declines thinner. Spin plays its original clip. The three saved capacities and two anvil items are present in the live owners.",
+      "open": [
+        "Native initialization timing for sparse SketchCount arrays",
+        "Derived grant side effects outside Blast, Brush and Spin",
+        "Sketch placement and consumption after reload",
+        "Restart after death"
+      ]
+    },
+    {
+      "scope": "EM1 scripted checkpoint reload and player death routing",
+      "state": "LoadGameFromMemory latches a reload after callbacks return. With a checkpoint present, Mickey's authored OnDeath connection dispatches LoadCheckpoint to restore its world, spawn, and player records.",
+      "source": "Wii REL2fcc8, REL2c1a8 and REL323a10, globalscripts.lua LoadCheckpoint, and the player InputOutputComponent in _Dynamic.bin, gv_shared_zf.bin and sw_steama_shared.bin.",
+      "evidence": "With a copy of the Zone F save, set health to 4 and call SaveGameToMemory('GV_ZoneF_LoadCheckpoint', false, '', false). Lower health to 2 and request LoadCheckpoint(GetPlayer()), or set health to 0. target/perf/memory-checkpoint-script.runtime.json and memory-checkpoint-death.runtime.json report health 4 with no errors at tick 57. Both shipped callbacks ran again and each disk copy was byte-identical.",
+      "open": [
+        "Original death animation and fade timing",
+        "Behavior without a memory checkpoint",
+        "Additional level and checkpoint coverage"
+      ]
+    },
+    {
+      "scope": "EM1 checkpoint source selection and level restart",
+      "state": "LoadGameFromMemory defaults to the current memory checkpoint. A true final argument reads the selected committed disk slot. RestartCurrentLevel submits the original level descriptor with no part overrides and rebuilds its initial parts.",
+      "source": "Wii REL bindings at 3a684 and 3a724; RestartCurrentLevel at 2f7e8 -> 2b938 -> 2a21c; LoadGameFromMemory at 2fcc8 -> 2c1a8 or 2c168 -> 260140.",
+      "evidence": "Zone F runs from the same saved slot with health 5. Capture a memory-only checkpoint at health 4, lower live health to 2, and run the memory, disk, or authored RestartLevel route. The target/perf/life-restart-*.runtime.json captures show health 4, 5, and 5 at tick 27. Only memory and disk rerun the checkpoint callback. All runs have zero script/runtime errors and the disk copy is unchanged.",
+      "open": [
+        "Native Wii save-device UI timing and load-failure behavior",
+        "Exact death animation, fade, and lifetime of the death sound across world replacement",
+        "Additional campaign coverage"
+      ]
+    },
+    {
+      "scope": "EM1 save ownership through asynchronous level loading",
+      "state": "The application and loading world share save-slot state and in-flight jobs. Shutdown retains access to that service if the current world has been dropped or the incoming load fails. The forced write uses the latest attached memory buffer, including a later memory-only capture, and waits for the existing job before retrying pending work.",
+      "source": "Wii REL2bae0 -> 25fb00 -> 25ddc8 attaches the save service buffer at +988. REL2c104 gates the disk request only. REL239c0 forces a pending write on shutdown; 25ffb4 -> 2612c0 passes the attached buffer to the disk job.",
+      "evidence": "Five targeted save-service tests passed. In target/perf/save-shutdown-live.err, a Gremlin Village Zone F replay committed health 3, queued another save, captured health 2 to memory, and requested an intentionally absent level. After the reported loading error and normal shutdown, the scratch slot contained health 2 and its previous committed backup contained health 3.",
+      "open": [
+        "Native save-device timing and frontend behavior",
+        "Shutdown on additional campaign transitions"
+      ]
+    },
+    {
+      "scope": "EM1 campaign completion slot and ending outcomes",
+      "state": "StoreEndgameData records nine signed global outcomes as booleans in native header order on the next memory capture. ResetSaveGameSlot preserves the native header fields for the next playthrough, increments the playthrough counter, marks the completed slot, and writes a LAST-only archive without the ordinary save throttle.",
+      "source": "Authored DoEndGame and SetEndgameVariables, Wii REL2fbd0 -> 345b4 and 260620 -> 26029c..2604d4. RELba148 reads the outcome bytes for the frontend movie list.",
+      "evidence": "A scratch copy of Zone F ran the original SetEndgameVariables with staged story decisions. target/perf/campaign-completion-live.runtime.json captures a LAST-only save and zero runtime or script errors. The committed bytes contain the expected nine outcomes and playthrough +1, and the backup equals the starting file. Two focused tests cover exact header retention and replacement of a throttled write.",
+      "open": [
+        "The actual final encounter and pin-update callback",
+        "Ending movie order, main-menu credits handoff, and starting a new run from a completed slot"
+      ]
+    },
+    {
+      "scope": "EM1 Zone S tentacle animation",
+      "state": "The shared Gamebryo actor sampler binds compressed cubic float morph weights and compressed transform channels. The seven placed Zone S tentacles bind their original Rest, Idle and Wilt sequences through the usual KFM/actor path.",
+      "source": "Original DBC_ZoneS_Tentacle actor NIF/KFM/KF files, Wii DOL803c0310..803c08a4 cubic fill, and DOL8044f488..8044f64c compact control-point decoding. The authored Lua groups request Wilt through AnimGBSequence.",
+      "evidence": "zones-splines-inspect.json records all seven actors binding three clips and no missing morph target errors. The zones-wilt-rest and zones-wilt-active replays start the original Zone S, invoke the authored group request after two seconds, and record active clip 1 then clip 2 on the first tentacle without script or runtime errors. An isolated original Wii fill routine supplied the weights and control points for 35 synthetic sample checks with tolerance 2e-6. Seven samples of the original Tentacle01A Wilt morph track differed by at most 3e-8.",
+      "open": [
+        "Natural fight and ending callback from player inputs",
+        "Remaining emitter properties, curve emitters, and mode 6 socket effects",
+        "Frame and blend comparison against the Wii game"
+      ]
+    },
+    {
+      "scope": "EM1 Zone S blister particle playback",
+      "state": "The Gamebryo actor binds referenced BirthRate and EmitterActive evaluator pairs through the particle-system node and emitter name. Playback forwards the dominant clip's keyed tracks and activation ID to the existing birth scheduler. The animated emitter and field transforms are published before simulation.",
+      "source": "DBC_TentacleSore_01 NIF/KFM/KF, Wii DOL804d12d4..804d1568 (paired update and activation ID) and DOL804d1dfc (key-driven emission). Gamebryo NiPoseBlender selects referenced evaluators by weight.",
+      "evidence": "Run blotworx diagnose --strict-runtime --level Levels/DBC_Start_ZoneS.level --run-script tools/blotworx/fixtures/dbc_zone_s_sore_pop.lua --capture <image> --capture-tick <tick> with imported EM1 data. The first placed blister has 0, 31 and 0 live particles at ticks 24, 49 and 161, with zero runtime errors. Only three NiPSCurveEmitter admissions still fail in this scene, down from 49 total particle admission errors in the baseline.",
+      "open": [
+        "Native curved-path platform motion remains incomplete.",
+        "Curve emitters, the animated emitter rotation-speed variance, dynamic particle bounds, and Wii visual and birth-by-birth parity."
+      ]
+    },
+    {
+      "scope": "EM1 Zone S first chamber damage chain",
+      "state": "The Lua reflection API writes the live TargetableComponent.Target Value and HealthComponent.ForceInvulnerable fields. The health receiver uses the reflected Boolean when accepting damage, and the original callbacks advance the blister counter and open the chamber door.",
+      "source": "Wii REL3c75b4..3c7658 registers Target Value, 3c7c44..3c7c68 resolves its scalar read and write, and 321904..321988 registers ForceInvulnerable. The imported Zone S scene supplies the OnDamage routing and the door KFM names Open as sequence 1.",
+      "evidence": "With original EM1 data, run blotworx diagnose --strict-runtime --level Levels/DBC_Start_ZoneS.level --run-script tools/blotworx/fixtures/dbc_zone_s_first_chamber.lua --capture <image> --capture-tick 289 --focus-actor \"dbc_zones_static.DBC_ZoneS_Door01_Inert 01\". The replay sends thinner stimuli through the health receiver, verifies forced invulnerability, unlocks blisters 2 and 3 in order, and finishes with the door playing Open and blister 4 still gated.",
+      "open": [
+        "Player-driven traversal and brush aiming through both chambers."
+      ]
+    },
+    {
+      "scope": "EM1 spline follower speed binding",
+      "state": "The named Lua command and reflected InitialSpeed both access the live speed. The imported component value remains the original startup seed. A sign change clears the previous OnPass knot when preview traversal is active. Zero preserves it.",
+      "source": "Wii REL .text 267f38 registers callback 26445c, which calls 3ba5d8. The InitialSpeed descriptor registers accessors at 3ba910..3ba928. Its getter at 3bb200 resolves the same float at +0x34, and setter 3bb204 calls 3ba5d8. The latter clears +0x6c on a negative speed product. 3bb614 compares that slot before dispatching OnPass.",
+      "evidence": "The imported Zone S fixture covers both Lua entry points, signed speed and zero coercion. The headless spline event validation checks that a reversal re-enables OnPass, zero preserves its previous knot, and live writes leave the authored property intact.",
+      "open": [
+        "Native curved path progression, easing, and player support over moving collision."
+      ]
+    },
+    {
+      "scope": "Authored preview spline segment timing",
+      "state": "Preview traversal uses Hermite handles on linked edges. Without an authored duration it divides route length by live speed. Explicit times above the native epsilon are bounded below by route length divided by 200. Main and branch paths measure 200 cubic chords with the Wii distance arithmetic. Main paths use the chord table to map phase to distance. Branch paths sample cubic phase directly. The follower easing flag and knot overrides control a speed ramp over the first and last 10% of each linked segment. On a linked edge the signed phase step carries unused frame time through knot crossings and holds. An expiring hold queues OnHoldEnd from the canonical source knot to its authored output rows. The chord measurement also applies to zero-handle paths. Explicit fractional stops retain their existing behavior.",
+      "source": "REL .text 3bc7dc..3bc8a4 supplies the duration and phase arithmetic. 3c06dc assembles the endpoint and handle vectors, 3c0f98 evaluates their cubic, afe4..b068 measures each chord with the paired reduction and reciprocal-root estimate; 3c10bc remaps main-path phase by cached lengths from 3c177c..3c1824, and 3c11f0 applies the authored endpoint easing. Main and branch knot preparation apply the duration bounds at 3c1828 and 3c197c. 3bc84c..3bc9fc advances phase, applies the short-edge rule and returns the residual after a strict crossing. The caller at 3bc534 repeats while time remains and the residual or phase changes. 3bc680..3bc74c queues event 0x1e when a positive hold expires with a source knot.",
+      "evidence": "The headless spline validation compares every coordinate bit in 27 decoded Wii kernel samples and 52 decoded Wii easing cases across all four knot-flag combinations. The Zone S fixture covers the straight platform, and the Zone I fixtures cover eased departure, a timed cloud and an untimed cloud with a live speed change. Isolated PowerPC runs checked 70 main and branch clamp inputs and 640 phase steps. The headless check covers 48 recorded phase steps and uses the imported Zone I cloud to verify a full outbound edge, the next hold, two seconds of return travel, exact-zero expiry, the authored cloud audio cue and the queued knot event order. An isolated PowerPC run checked 84 hold and timestep combinations. Four arc fixtures, including an imported cloud and a zero-handle route, compare distance totals and both paths at six phases bit for bit.",
+      "open": [
+        "Initial approach and fractional stop geometry, hold source during explicit preview stops, reverse branch topology, and traversal outside preview mode."
+      ]
+    },
+    {
+      "scope": "EM1 rotator maximum-speed Lua binding",
+      "state": "SetRotatorMaxSpeed is dispatched in both runtime modes. It changes configured speed while retaining current angular velocity and the rotation target.",
+      "source": "Wii REL .text registration 267f88 binds 264580. It resolves an entity's rotator through 5ee8c and calls 3b1aa0, which writes the float at +0x38 through 123d80.",
+      "evidence": "In isolated runs of 264580 with Lua argument and entity lookups stubbed, six speeds each write exactly one float word. The null entity and absent rotator write nothing. All eight calls return zero results. The authored rotator validation checks the Lua handle path, null target, reflected value and unchanged motor velocity.",
+      "open": [
+        "Full mechanical arm attack and cutscene replay."
+      ]
+    },
+    {
+      "scope": "Live bone attachment name writes",
+      "state": "Bone Attach Name can be read and written in both runtime modes. An omitted field or an explicit null write reads back as one Lua nil. An explicit empty string stays distinct. Clearing a live socket restores ordinary parent following.",
+      "source": "Wii REL .text 3526a8..352748 registers the field, 352ecc initializes it through 124da4 using the DOL null handle at 80696390, and getter 353924 reads it. The Lua getter at 265b24 pushes one nil for a null handle. Setter 35392c refreshes the parent binding through 353aa0, and 356fa4 normalizes the bound socket name.",
+      "evidence": "Four isolated Wii setter calls distinguish changed, cleared, unchanged and initialization-only writes. The dbc_bone_attachment Lua fixture streams the castle scene and checks getter result counts, null and empty strings, writes, invalid indices and restore.",
+      "open": [
+        "Exact socket pose and body refresh parity across every attachment mode."
+      ]
+    },
+    {
+      "scope": "EM1 authored ending sequence and title handoff",
+      "state": "UpdatePins captures the 57 original named global bytes. CleanLoadLevel takes the original ending flag and completed slot into a fresh Main_Menu world. PreStartScreenAction selects EndGame:0, and the original opening, nine configured outcomes and closing play on a continuous sample clock. The localized Play_fmv_endgame soundtrack stays active across all eleven clips and mixes with the embedded Bink tracks.",
+      "source": "Wii REL353ac and relocated pin table at section 7 +0x1c4, CleanLoadLevel at 2f314, SetEndingGame at 26c944, and frontend movie list builder ba148. Shipped StartScreen.lua and ConfigFiles.ini supply the sequence request and variant movie paths.",
+      "evidence": "target/perf/ending-verified-opening.runtime.json shows the original opening frame and expected mixed-outcome file order. ending-verified-complete.runtime.json records all 11 clips finishing with skip input, no script/runtime errors and the closing clip last. The completed slot retains the staged first pin. The later ending-mixed-full replay reached closing frame 1186 without skipping, at 252.7455 seconds on the same audio clock. That was 0.565 ms after the authored frame timestamp, with no script or runtime errors. The ending-mixed-gain-skip replay skipped the full ending to credits and returned to the interactive title. The separate Zone S terminal callback probe staged boss flag 25, ran the shipped DoEndGame, wrote LAST-only and opened the original ending movie.",
+      "open": [
+        "Final encounter played to its terminal callback without staging",
+        "Native Wii dissolve, end-to-end mix gain and hold-to-skip timing comparison"
+      ]
+    },
+    {
+      "scope": "EM1 campaign credits and return to title",
+      "state": "Campaign EndGame proceeds from the closing movie to the original credits video with its Wwise stereo soundtrack, plays the original teaser, then returns to the interactive title. Credits:0 also works as an explicit sequence command.",
+      "source": "Wii REL398cc..39908 state registration, baaa4 EndGame return to state 13, b8b6c credits presentation and b87b4 return to the title state. Play_music_credits in the imported fmv_endgame_soundtrack bank resolves the streamed source and its -1 dB node gain, while fmv_credits.bik contains a silent embedded track.",
+      "evidence": "credits-campaign-return.runtime.json records a staged campaign ending with twelve completed movies including a held-input credits skip, the original interactive title visible and no runtime or script errors. credits-art-and-music.runtime.json samples credits frame 600 at device time 20.020964 seconds using 28000 Hz stereo media 448639764, within one millisecond of the frame timestamp. The frontend-extras-credits replays opened the original reel through the Credits card, sampled picture and its native Wwise track, and used QuickExit to return to the same Extras slot. campaign-credits-teaser.runtime.json consumed the credits and teaser in that order using held skips, recorded 32000 Hz media 411479065 for the teaser, and reached the title. The campaign-credits-natural replay completed both requests with zero skip input and reached teaser frame 849 and the interactive title. The frontend-extras-credits-natural-10450 replay reached credits frame 9622 without skipping, resumed the same Extras slot and preserved both scratch saves. Replay with tools/blotworx/verify_credits_flow.py.",
+      "open": [
+        "Full unskipped Wii playback comparison and final gain parity",
+        "Regional soundtrack parity and the standalone teaser branch in builds with a matching collectible"
+      ]
+    },
+    {
+      "scope": "EM1 authored frontend boot sequence",
+      "state": "PreStartScreenAction queues the shipped logo and attract clips and reaches the StartScreen handoff. The logo ignores Accept. The attract clip accepts input after its authored two-second threshold and plays the default Wii audio track.",
+      "source": "Shipped StartScreen.lua, retail RELc4ba8..c4ca0 sequence pair parser, c5650 item classification, and c58a0..c5950 Accept receiver.",
+      "evidence": "The native renderer captured the original startup logo at frame 80. The recorded frontend run completed both movies, accepted the attract skip after two seconds and reached the title handoff with no script or runtime errors.",
+      "open": [
+        "Main-menu actions and slot selection",
+        "Wii regional movie audio track selection and playback timing comparison"
+      ]
+    },
+    {
+      "scope": "EM1 interactive title screen",
+      "state": "The startup handoff opens the shipped AVM1 title movie. Its PlayStartScreenMovie command starts the configured Bink intro, followed by the original silent loop. Accept runs the authored FadeOut and waits for StartScreenEnd. The handoff opens the original main-menu movie and releases the title renderer and movie resources.",
+      "source": "HUDElements/Flash/cooked/startscreen.gfx, including the BlackMC Init, Fade_In and Fade_Out frame labels. The imported General_Shared and gfxfontlib movies supply the A button and title font. UI_Start uses the English NTSC dictionary entry.",
+      "evidence": "The title replays recorded PlayStartScreenMovie and the title loop, then recorded StartScreenEnd on scripted Accept. The visible capture is taken after the original fade-in reaches the looping background.",
+      "open": [
+        "Original title particle effects, regional localization and aspect-ratio comparison"
+      ]
+    },
+    {
+      "scope": "EM1 authored main menu and save selection",
+      "state": "StartScreenEnd loads the shipped MainMenu movie. The movie drives its own Start Game and save-page transitions, requests the matching Bink backgrounds and draws three rows from the host saves. Slot selection uses the existing checkpoint or completed-slot loader, and an empty slot starts a fresh campaign with a newly selected save service and a running playtime clock.",
+      "source": "MainMenu.gfx Initialize, MaintoLoadGame, RefreshSlot, PlayMovie, NextMovie, MainMenuPick and MainMenuLoad. GAME v16 playtime, timebase and collectible header owners supply the slot display.",
+      "evidence": "The original Start Game button emitted MainMenuPick and played FE_Main_to_LoadGame. The native capture showed one empty slot and two distinct occupied rows. Selecting the third slot entered the original opening level from a completed save. The frontend-campaign-lifecycle live replays reached tick 540 in DBC for an empty first slot and an active second slot with no script or runtime errors. The empty slot started on playthrough zero with a running timer. The active slot restored DBC_1st_ZoneA_LoadCheckpoint and left the scratch save hash unchanged.",
+      "open": [
+        "Native menu effects and Wii storage failure and retry screens",
+        "Reference comparison for timing, navigation, completion percentage and regional date formatting"
+      ]
+    },
+    {
+      "scope": "EM1 main-menu save deletion",
+      "state": "Wii Minus on the focused occupied slot opens the authored confirmation movie and localized A and B labels. A removes the chosen host checkpoint and refreshes the slot list. B returns to the save list. Requests for an empty slot leave the save list open. Pending gameplay writes finish before menu entry.",
+      "source": "MainMenu.gfx InitInputHandlers and the Minus key release branch, Wii REL1fd368..1fd498, message 0xa0 at REL2607f0, and the delete confirmation keys at REL2618e4. The prompt uses the retail error.gfx timeline.",
+      "evidence": "The prompt, cancel, confirm-held and empty captures under target/perf/main-menu-delete-* record the original Slot1 command with no script or runtime errors. The prompt capture shows the localized confirmation. Cancel preserves both scratch saves byte for byte. Confirm removes only the selected scratch save and the empty-slot request preserves the neighboring save.",
+      "open": [
+        "Wii NAND error presentation and confirmation frame timing comparison"
+      ]
+    },
+    {
+      "scope": "EM1 authored Extras landing and selected save",
+      "state": "ExtrasMenuLoad uses its authored slot number to open the shipped Extras movie. Its four counters are populated from the selected GAME header and original collectibles database. FadeIn waits for DelayedInit to release the authored HoldFade. Card titles and unlock captions read the original dictionary. Authored zero-alpha counter backing fields remain transparent during timeline updates.",
+      "source": "Wii REL1fd328..1fd360 slot selection, bc610 category tables, bc008..bc234 count publication, and extrasmenu.gfx Initialize, DelayedInit and the EditText layout. English_NTSC.pak contains the shipped text.",
+      "evidence": "frontend-extras-final.runtime.json captures ExtrasMenuLoad Slot1 and the authored Extras display with counts 0/50, 4/39, 0/2 and 1/1. An independent parse of the two scratch saves and collectibles.pak predicts 4/39 for the selected save and 5/39 if combined. Both save hashes are unchanged. The frontend-extras-localization replay reads the localized text directly from the four authored cards. The frontend-extras-back replay routes Escape through the authored B handler, then plays FE_Extras_to_Main and resumes FE_MainMenu_Loop with both scratch saves unchanged.",
+      "open": [
+        "Standalone Extras teaser selection and remaining category validation",
+        "Frame and timing comparison with the original Wii UI"
+      ]
+    },
+    {
+      "scope": "EM1 Extras category browsing and movie playback",
+      "state": "The authored category transitions, six-card pages and thumbnail slots use the chosen save. The host publishes the original lock array, puts unlocked entries first and opens only unlocked movie and Concept Art records. Rollover passes the saved item’s English dictionary title and description into the authored text fields.",
+      "source": "Wii RELbc4cc/bc740/bc8f4, bd2f0..bd418, 113794..113870, collectibles.pak and extrasmenu.gfx UpdateSubMenu, RestoreMovieMenu and RestoreCartoonMenu. RELbcc4c binds the selected art to Map_Placeholder, and RELbdcd8 routes the unlocked item’s _Name and _Desc to SetExtrasInformation.",
+      "evidence": "The frontend-extras-thumbnails replay enters the Movies category, renders four original thumbnails from the selected save and shows page 1/7. The frontend-extras-media replay selects the first item and plays AL_visit1_Cyrano_for_Pirate_Happy.bik. The frontend-extras-paging replay stops the movie with one Back press and advances to page 2 using the authored arrow. The frontend-extras-concept replays use a scratch save with Mickey Faces I unlocked, show the authored image and dictionary text, then return to the grid with one Back press. The Extras Credits card reuses the credits player and QuickExit returns to the same slot without starting the campaign teaser. These replays preserve the scratch saves and report no runtime or script errors.",
+      "open": [
+        "Full Wii visual and timing comparison, additional regional dictionaries and standalone Extras teaser selection",
+        "Playback and pagination validation across the remaining categories"
+      ]
+    },
+    {
+      "scope": "EM1 completed slot to next playthrough",
+      "state": "Continuing from a completed slot loads the configured first level with a fresh world, quests and player state. The native carryover owners are populated before scripts run, and the first new checkpoint replaces the completed save stream.",
+      "source": "Retail REL2b030..2b0a4 and its extras, selective collectibles, options, pin and metadata readers. The start level comes from MainMenu gamestart in the imported game configuration.",
+      "evidence": "A scratch copy of the completed ending slot was loaded with Continue. The original DBC start level observed playthrough 1, a positive pin clamped to 1, a negative pin sign-extended to -2, a retained reel total and fresh story state. The new checkpoint retains the ending outcomes and leaves a backup of the completed slot.",
+      "open": [
+        "Original title-screen and slot-selection UI",
+        "Native frontend action that clears secondary extra flags when requested",
+        "Manual end-to-end campaign replay"
+      ]
+    },
+    {
+      "scope": "EM1 loading-screen presentation",
+      "state": "Full level loads and scene streams behind an authored fade show original artwork and cycle the authored dot frames. Faded scene imports wait until the loading screen has had a visible presentation window. Level loads use destination artwork, while streams use the current level's artwork.",
+      "source": "loading_screen_texture in levels.pak, loose LoadingScreens assets, and src/blotworx/loading_screen.rs",
+      "evidence": "The artwork paths and eight 64x16 dot frames resolve in the BlueThinner import. The DBC staged stream captured original artwork with a pending scene, then resumed with the scene queue drained and no runtime errors.",
+      "open": ["Regional splash selection follows the English NTSC assets currently", "Retail timing and placement", "Asynchronous scene publication and Wii UI timing"]
+    },
+    {
+      "scope": "DBC projector screen material animation",
+      "state": "The cloned projector screen plays its authored fade and flicker. Direct material tracks remain active alongside sequence poses, and a scripted camera sequence chosen after reset starts without blending from the previous sequence. The warp samples current scene color using the authored two-axis IndirectScale.",
+      "source": "screen_mickey.nif_wii, GEN_Portal_Screen_Distortion.nif_wii, and SFX_projectionWarp.r3mt",
+      "evidence": "target/perf/dbc-refraction-staged.runtime.json records the original Dark Beauty Castle screen and a deliberately staged distortion spawn. SFX_projectionWarp contributes to the probed pixel with no fallback or script/runtime errors. The earlier paired color probes record Constant_Color_1 alpha changing from 0 to 0.098.",
+      "open": ["Reference distortion amplitude and framebuffer capture order", "Full Wii transition animation comparison"]
+    },
+    {
+      "scope": "Beanstalk exit into Gremlin Village",
+      "state": "The final beanstalk projector interaction runs the original entry script, loads GV_ZoneA_Start and reaches the original Gremlin Village arrival and camera release callbacks.",
+      "source": "dbc_1st_zoned.seq_projector 01, Prefab_Projector.lua and DBC_Main_1st.lua",
+      "evidence": "target/perf/dbc-beanstalk-exit-route.err records the original DBC1stZoneDtoGV projector entry and ENTRY INTO GV sequence after a staged position near the active projector.",
+      "open": ["Continuous approach through the full beanstalk", "Save and reload across the transition"]
+    },
+    {
+      "scope": "DBC Gus dialogue and original HUD recovery",
+      "state": "The HUD republishes current and maximum health when the Flash globals change, and dialogue waits for its authored text field before appearing. The original movie receives A/B labels only for real choices, and timed lines clear all prompts.",
+      "source": "src/blotworx/ui_gameplay.rs and src/blotworx/ui_movie.rs",
+      "evidence": "target/perf/dbc-dialog-buttons.log records the original HUD regression pass, including hidden A/B choice clips for a linear line. target/perf/dbc-gus-hud-recovery.runtime.json records five current and maximum health points, the Gus portrait and authored dialogue after the staged lab wrap-up."
+    },
+    {
+      "scope": "DBC cage glass and courtyard railing",
+      "state": "EM1 shader-backed Wii meshes use inherited NiProperty blending, alpha testing and depth behavior when their R3MT override mask selects those properties.",
+      "source": "src/render_support/material_preview.rs, src/render_support/nif.rs and src/render_support/wii_default.rs. REL179c00 dispatches the three independent PE groups.",
+      "evidence": "target/perf/dbc-cage-alpha-fixed.runtime.json records source-alpha additive blending with depth writes disabled on the cage glass. The matching screenshot shows Calvin through the glass and the courtyard railing cutouts."
+    },
+    {
+      "scope": "Toon transition and named effect lighting",
+      "state": "Supported toon transition shaders retain the original surface combiner and can use its live spherical-harmonic maps. Rigid effect meshes with authored spherical-harmonic inputs sample the live scene lights at their transformed bounds.",
+      "source": "src/blotworx/jigsaw_effects.rs, src/blotworx/assets.rs and src/blotworx/effect_runtime.rs",
+      "evidence": "target/perf/dbc-transition-active.runtime.json records a staged thinner ramp without Lua or runtime errors, with 1076 prepared courtyard jigsaw transition draws.",
+      "open": ["Visual comparison of the reported toon pieces and spin debris to the original renderer", "Native per-effect light visibility"]
+    },
+    {
+      "scope": "DBC thinner pool recovery and barrel destruction latency",
+      "state": "The pool enters the authored damage-leap branch and uses Mickey's controller values for launch, gravity and steering. Barrel rewards reuse parsed palette scenes and one-shot effects can be prepared at load.",
+      "source": "src/blotworx/demo_triggers.rs, src/blotworx/physics.rs, src/blotworx/resource_store.rs, src/blotworx/effect_runtime.rs",
+      "evidence": "target/perf/dbc-thinner-final.ticks.json records one health point lost and Mickey_Launch_Thinner_Up on tick 5. The staged before-build run reached 8.0 units/s upward with no thinner-launch clip, while the updated replay reaches about 10.77 units/s after the first physics step. target/perf/barrel-current-check.log records a 22.42 ms original-asset barrel lifecycle with its detached effect and both reward paths present.",
+      "open": ["Original Wii timing, damage-leap stun and recovery parity", "End-to-end barrel frame time within the presentation budget"]
+    },
+    {
+      "scope": "Pause movie and frozen gameplay",
+      "state": "Escape and Start open the original pause movie while simulation is frozen. The movie's original page and resume commands reach the host. Its visible Reticle_Menu pointer follows the mouse or right stick. Options owns input from its load request until Back returns to the main pause page. The page navigator reads the game's English dictionary and the main page uses live collectible counts.",
+      "source": "src/blotworx/mod.rs, src/blotworx/ui_gameplay.rs, src/blotworx/ui_pause.rs and src/blotworx/ui_images.rs",
+      "evidence": "target/perf/eb-pause-polished.runtime.json records the original visible main movie and Reticle_Menu sprite at gameplay tick 40. target/perf/dbc-options-navigation-verified.log records navigation through the original Map, Options and Resume callbacks, including pointer activation and Back from Options.",
+      "open": ["Full quest, pin and map data parity", "Original pause music and Wii menu audio timing", "Physical controller verification"]
+    },
+    {
+      "scope": "EM1 movie HUD exit and Gus machine tutorial",
+      "state": "The authored skip clip is visible only during the movie hold. The engine owns fullscreen presentation and stale pause clips are hidden when their input mode closes.",
+      "source": "src/blotworx/ui_gameplay.rs and src/blotworx/ui_movie.rs",
+      "evidence": "target/perf/dbc-cinematic-fixed-validate.log validates movie hold, release and exit against the installed HUD movie. target/perf/dbc-gus-approach-fixed.runtime.json records the Gus tutorial active at full scene visibility, with only fmv_intro.bik requested and the black and skip HUD clips hidden."
+    },
+    {
+      "scope": "EM1 adaptive score and DBC music trigger",
+      "state": "The authored Wwise state, switch, playlist, segment, track, and cue records drive the streaming playback path. REL31cc30 controls automatic and forced modes. REL22ec supplies the exploration and combat branches and authored threat thresholds. Pausing suspends the score at the current sample.",
+      "source": "src/blotworx/audio_music.rs, src/blotworx/audio_music_state.rs, src/blotworx/audio_file.rs and src/blotworx/audio_playback.rs",
+      "evidence": "target/perf/dbc-music-state-check.log confirms stereo voices, a Music_Combat Level_2 state change and pause retention. target/perf/dbc-music-trigger-skip.runtime.json records 70,560 rendered frames from the original DBC tutorial segment after touching the cooked hallway trigger. target/perf/dbc-music-after-fight.runtime.json records the authored Lua handoff from the tutorial score to the regular castle exploration branch.",
+      "open": ["Full Wii mix and sample-exact fade scheduling", "Music stinger triggers and track modes outside the verified DBC graphs", "Music event coverage across the remaining game"]
+    },
+    {
+      "scope": "Generic dialogue presentation through the installed HUD movie",
+      "state": "Rendered the authored Gus lab wrap-up line through GenericDialog in DBC and rendered the paper with its DefineScalingGrid edges preserved",
+      "source": "src/blotworx/ui_gameplay.rs",
+      "evidence": "target/perf/flash-dialogue-grid.runtime.json and target/perf/flash-dialogue-grid-detail.png. The installed General_Shared.gfx paper image and button glyphs render from verified loose DDS art when their NIF replacements are absent. The decoder probe target/perf/dbc-dialog-atlas-probe.json resolves the separate 64x32 DialogBox_Generic_I4.dds layer. The experimental gameplay capture target/perf/dbc-dialog-atlas-detail.png shows a bright rectangle with the layer enabled, so it is restricted to the non-rendering probe pending blend verification.",
+      "open": [
+        "Original dialogue input handlers, portraits, button transitions and backdrop blending for the secondary dialogue layer",
+        "Dialogue with more than two choices"
+      ]
+    },
+    {
+      "scope": "Dialogue input ownership and timed presentation",
+      "state": "Sequence bit 0 controls whether ordinary and random BSQ lines are modal. Nonmodal sequences advance when the configured BarkDisplayTime expires. Lua Bark accepts a time override and takes no input lock.",
+      "source": "src/blotworx/demo_story.rs and src/blotworx/ui_gameplay.rs",
+      "evidence": "Wii REL27ab44, 27cb34..27cb54, 27e4d4..27e4f4 and 1e6da0..1e73c0 distinguish modal speech from barks. REL1e677c..1e67f4 reveals the text after three updates. target/perf/dbc-modal-native-reveal-detail.png shows the DBC lab wrap-up prompt. target/perf/dbc-bark-native-reveal-detail.png shows the second authored warning with zero dialogue acknowledgements and no additional input lock. target/perf/eb-bark-visible.runtime.json and target/perf/eb-bark-expired.runtime.json cover Lua Bark during movement and after expiration.",
+      "open": [
+        "Timed speech audio and portraits, original input acceptance delay, and exact arbitration of overlapping speech"
+      ]
+    },
+    {
+      "scope": "E-Ticket pickup dropdown from the installed HUD movie",
+      "state": "A relocated authored Gremlin Village pickup raises the balance from 0 to 10 and starts one original dropdown animation",
+      "source": "src/blotworx/ui_gameplay.rs",
+      "evidence": "target/perf/gv-ticket-hud-pickup.runtime.json and target/perf/gv-ticket-audio-diagnostic.runtime.json. REL0xed550..0xed770 parses previous:next, computes TicketCountUP from the difference and reset policy, then posts Play_sfx_Ticket_CountUp. The updated worker submits the computed control value with each Play request. target/perf/gv-ticket-pitch.runtime.json records nine accepted posts, one controlled source submitted by the mixer, seven voice-limit rejections across the run, and no RTPC rejection for the ticket cue. This accelerated capture does not establish audible cadence.",
+      "open": [
+        "Live RTPC updates for already-playing voices and HUD particle host callbacks",
+        "Repeated pickups, overflow and reference timing"
       ]
     },
     {
@@ -772,7 +1006,6 @@
       "implementation": [
         "src/blotworx/countdown.rs",
         "src/blotworx/countdown_runtime.rs",
-        "src/blotworx/demo_hud.rs",
         "src/blotworx/level_session.rs"
       ],
       "evidence": [
@@ -853,7 +1086,6 @@
     "status": "Three scalar properties and HUD mode connected; deleted-shape crash fixed; both production connection regressions pass",
     "source": [
       "src/blotworx/assets.rs",
-      "src/blotworx/demo_hud.rs",
       "src/blotworx/level_session.rs",
       "src/blotworx/box3d_bridge.c"
     ],
@@ -2127,10 +2359,10 @@
       "RELbacf4..bad1c",
       "ConfigFiles.ini UI_SkipMovie SkipButtonHoldTime=3"
     ],
-    "evidence": "target/playback-phase-validation",
-    "verified": "Three hold-state checks; actual DBC intro frame capture; skip plus 300-tick gameplay replay with no runtime/script/sequence errors.",
+    "evidence": "target/playback-phase-validation, target/perf/flash-skip-alpha.runtime.json, and target/perf/flash-alpha-probe.json (alpha-bearing half-moon NIF and transparent corners in DBC intro frame 37)",
+    "verified": "Three hold-state checks; actual DBC intro frame capture; skip plus 300-tick gameplay replay with no runtime/script/sequence errors. The DBC intro capture shows the installed SkipMovie.gfx meter with the authored 3-second hold; the original HUD reports current and maximum health of 5 from PlayerHealth.",
     "remaining": [
-      "Original movie skip prompt and input/timer parity",
+      "Original input/timer parity across press, release and repeated playback",
       "Non-default movie flags, lifecycle events and localization/subtitles",
       "Full campaign and original-reference acceptance"
     ],

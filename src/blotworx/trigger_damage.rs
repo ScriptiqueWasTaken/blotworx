@@ -298,8 +298,15 @@ pub(super) mod tests {
         );
         assert!(
             player.velocity[1] > 0. && !player.grounded,
-            "Thinner pool did not start the demo recovery leap"
+            "Thinner pool did not start its recovery leap"
         );
+        assert_eq!(player.velocity[1], player.motion.damage_leap_launch_speed);
+        assert!(player.damage_leaping);
+        let expected_event = world.player_behavior.single("hkbBehaviorGraphStringData")?["eventNames"]
+            .as_array().context("Missing Mickey graph events")?.iter()
+            .position(|name| name.as_str() == Some("EVENT_Start_Damaged_Leap"))
+            .context("Mickey graph lacks the damaged-leap event")?;
+        assert!(world.player_script_animation_events.iter().any(|(event, _)| event.id as usize == expected_event));
         println!("PASS: original steam damage/knockback and thinner pool damage/recovery leap");
         Ok(())
     }

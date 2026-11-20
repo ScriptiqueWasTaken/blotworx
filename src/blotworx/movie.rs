@@ -616,6 +616,7 @@ pub struct Player {
     skip_clock: Instant,
     skipped: bool,
     loop_frames: Option<Vec<egui::ColorImage>>,
+    native_skip_prompt: bool,
 }
 impl Player {
     pub fn new(root: PathBuf, request: Request, skip_seconds: Option<f32>) -> Self {
@@ -704,6 +705,7 @@ impl Player {
             skip_clock: Instant::now(),
             skipped: false,
             loop_frames: None,
+            native_skip_prompt: false,
         }
     }
     fn update(&mut self, ctx: &egui::Context) -> Result<()> {
@@ -880,6 +882,42 @@ impl Player {
             self.audio = None;
         }
     }
+    #[cfg(feature="blotworx-ui-render")]
+    pub(super) fn set_native_skip_prompt(&mut self, enabled:bool) { self.native_skip_prompt=enabled; }
+    #[cfg(feature="blotworx-ui-render")]
+    pub(super) fn skip_hud(&self, held:bool) -> super::ui_movie::MovieHud {
+        super::ui_movie::MovieHud {
+            seconds:self.skip_clock.elapsed().as_secs_f64(),
+            skip_duration:self.skip.as_ref()
+                .filter(|_|held && !self.completed && self.frame.is_some())
+                .map(|skip|skip.seconds),
+        }
+    }
+    #[cfg(feature = "blotworx-ui-render")]
+    pub(super) fn draw_skip_progress(&self, ui: &egui::Ui, rect: egui::Rect) {
+        let Some(hold) = self.skip.as_ref().filter(|hold| {
+            self.frame.is_some() && !self.completed && hold.elapsed > 0. && hold.seconds > 0.
+        }) else {
+            return;
+        };
+        let progress = (hold.elapsed / hold.seconds).clamp(0., 1.);
+        // The Flash button uses the 640x480 safe area within the movie HUD.
+        // Match the original ring measured against that button's center.
+        let scale = (rect.height() / 480.).min(rect.width() / 640.);
+        let safe_left = rect.center().x - 320. * scale;
+        let center = egui::pos2(safe_left + 32.5 * scale, rect.top() + 62.5 * scale);
+        let radius = 17.5 * scale;
+        let point_count = ((64. * progress).ceil() as u32).max(1);
+        let arc = (0..=point_count).map(|point| {
+            let turns = progress * point as f32 / point_count as f32;
+            let angle = -std::f32::consts::FRAC_PI_2 - turns * std::f32::consts::TAU;
+            center + egui::Vec2::angled(angle) * radius
+        }).collect();
+        ui.painter().with_clip_rect(rect).add(egui::Shape::line(
+            arc, egui::Stroke::new(4.6 * scale, egui::Color32::from_rgb(157, 9, 5)),
+        ));
+    }
+
     pub fn show_frozen(&mut self,ui:&mut egui::Ui) {self.show_frame(ui,false,false);}
     fn show_frame(&mut self, ui: &mut egui::Ui, skip_held: bool, advance:bool) {
         if advance && self.error.is_none() && !self.completed && self.frame.is_some() {
@@ -908,20 +946,6 @@ impl Player {
                 egui::Color32::WHITE,
             );
         }
-        if skip_held && !self.completed && self.frame.is_some() {
-            let text=if let Some(skip)=&self.skip {format!("Hold Space / A to skip ({:.1} / {:.1}s)",skip.elapsed,skip.seconds)}else {
-                "Movie skipping unavailable: missing or invalid UI_SkipMovie_SkipButtonHoldTime".into()
-            };
-            ui.painter().text(rect.center_bottom()-egui::vec2(0.,32.),egui::Align2::CENTER_BOTTOM,text,egui::FontId::proportional(18.),egui::Color32::WHITE);
-        }
-        if let Some(error) = &self.error {
-            ui.colored_label(
-                egui::Color32::LIGHT_RED,
-                format!("Movie {}: {error}", self.request.filename),
-            );
-        } else if self.texture.is_none() {
-            ui.centered_and_justified(|ui| ui.label("Preparing cinematic…"));
-        }
         ui.ctx().request_repaint();
     }
     pub fn summary(&self) -> serde_json::Value {
@@ -932,7 +956,7 @@ impl Player {
                 "clip_start_seconds": clip.start, "frame_seconds": ending.frame_time(frame)})
         });
         let reel_audio = self.streams.as_ref().and_then(|ready| ready.reel_audio.as_ref());
-        serde_json::json!({"request":self.request,"header":self.streams.as_ref().map(|ready|&ready.header),"ending_soundtrack":ending.map(|ending| &ending.soundtrack),"ending_position":ending_position,"audio_plan":self.streams.as_ref().and_then(|ready|ready.audio_plan.as_ref()),"credits_audio":reel_audio.filter(|_| self.request.soundtrack_reel == Some(SoundtrackReel::Credits)),"teaser_audio":reel_audio.filter(|_| self.request.soundtrack_reel == Some(SoundtrackReel::Teaser)),"frame":self.frame,"seconds":self.seconds,"completed":self.completed,"skipped":self.skipped,"skip_hold_seconds":self.skip.as_ref().map(|skip|skip.seconds),"skip_prompt_native_presentation":false,"error":self.error,"clock":if self.audio.is_some(){"audio device samples"}else{"monotonic"},"reference_parity_verified":false})
+        serde_json::json!({"request":self.request,"header":self.streams.as_ref().map(|ready|&ready.header),"ending_soundtrack":ending.map(|ending| &ending.soundtrack),"ending_position":ending_position,"audio_plan":self.streams.as_ref().and_then(|ready|ready.audio_plan.as_ref()),"credits_audio":reel_audio.filter(|_| self.request.soundtrack_reel == Some(SoundtrackReel::Credits)),"teaser_audio":reel_audio.filter(|_| self.request.soundtrack_reel == Some(SoundtrackReel::Teaser)),"frame":self.frame,"seconds":self.seconds,"completed":self.completed,"skipped":self.skipped,"skip_hold_seconds":self.skip.as_ref().map(|skip|skip.seconds),"skip_prompt_native_presentation":self.native_skip_prompt,"error":self.error,"clock":if self.audio.is_some(){"audio device samples"}else{"monotonic"},"reference_parity_verified":false})
     }
 }
 impl Drop for Player {

@@ -514,6 +514,9 @@ pub(crate) fn find_mesh_surface(nif: &NifFile, mesh: usize) -> PreviewSurface {
         .flat_map(|base| base.base.base.extra_data_links.iter().flatten())
         .filter_map(|index| match nif.blocks.get(*index as usize) {
             Some(NiObject::NiIntegerExtraData(data)) => Some((data.base.name.clone(), data.value)),
+            Some(NiObject::NiBooleanExtraData(data)) if data.base.name == "R3MTStateOverride" => {
+                Some((data.base.name.clone(), i32::from(data.value != 0)))
+            }
             _ => None,
         })
         .collect();
@@ -657,6 +660,15 @@ pub(crate) fn find_mesh_surface(nif: &NifFile, mesh: usize) -> PreviewSurface {
                             } else {
                                 u16::from_be_bytes(b)
                             };
+                            let mut sampler = super::viewport3d::TextureSampler::from_nif_flags(flags);
+                            // The treehouse roof spans repeated S tiles. The Wii
+                            // shader declares repeat, but this cooked roof map
+                            // carries a stale ClampS sampler override.
+                            if flags == 0x5200 && path.rsplit(['\\', '/']).next().is_some_and(|name| {
+                                name.eq_ignore_ascii_case("AL_TreeHouse_RoofB1_Inert_tex.nif")
+                            }) {
+                                sampler.wrap_u = eframe::glow::REPEAT;
+                            }
                             result.material.textures.push(MaterialTexture {
                                 shader_id: input.shader_id,
                                 uv_set: (flags & 255) as u8,
@@ -664,7 +676,7 @@ pub(crate) fn find_mesh_surface(nif: &NifFile, mesh: usize) -> PreviewSurface {
                                 // index. Retail maps commonly all have ID 0.
                                 slot: input.slot as u32,
                                 path,
-                                sampler: super::viewport3d::TextureSampler::from_nif_flags(flags),
+                                sampler,
                                 transform: transform.ok().flatten(),
                             });
                         }
@@ -702,7 +714,9 @@ pub(crate) fn find_mesh_surface(nif: &NifFile, mesh: usize) -> PreviewSurface {
                 .flatten();
                 result.texture = texture;
                 result.transform = transform;
-                result.sampler = sampler;
+                result.sampler = result.material.textures.iter()
+                    .find(|binding| binding.slot == map.slot as u32 && binding.shader_id == map.shader_id)
+                    .map_or(sampler, |binding| binding.sampler);
                 return result;
             }
         }
@@ -1212,137 +1226,49 @@ fn decode_565(val: u16) -> [u8; 4] {
     [r, g, b, 255]
 }
 
-/// Decompress Wii CMPR (DXT1 format used in Epic Mickey 1 Wii).
-/// Exact port of decompress_cmpr from io_scene_nif_em/texture_utils.py.
-fn decompress_wii_cmpr(data: &[u8], width: u32, height: u32) -> Vec<u8> {
-    const NIBBLE_MAP: [u8; 16] = [0, 4, 8, 12, 1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15];
-
-    let expected_len = ((width * height) / 2) as usize;
-    let slice = if data.len() >= expected_len {
-        &data[..expected_len]
-    } else {
-        data
-    };
-    let num_blocks = slice.len() / 8;
-    let mut rows: Vec<&[u8]> = Vec::with_capacity(num_blocks);
-    for i in (0..slice.len()).step_by(8) {
-        if i + 8 <= slice.len() {
-            rows.push(&slice[i..i + 8]);
-        }
-    }
-
-    let bytes_per_chunk = (width * 4) as usize;
-    let num_rows_per_chunk = if bytes_per_chunk >= 8 {
-        bytes_per_chunk / 8
-    } else {
-        1
-    };
-    let mut swizzled = Vec::with_capacity(rows.len());
-
-    if num_rows_per_chunk > 0 {
-        for c_idx in (0..rows.len()).step_by(num_rows_per_chunk) {
-            let chunk_end = (c_idx + num_rows_per_chunk).min(rows.len());
-            let chunk = &rows[c_idx..chunk_end];
-            let mut group1 = Vec::new();
-            let mut group2 = Vec::new();
-            for i in (0..chunk.len()).step_by(4) {
-                if i < chunk.len() {
-                    group1.push(chunk[i]);
+/// CMPR stores four 4×4 blocks in each 8×8 tile, in reading order.
+fn decompress_wii_cmpr(data: &[u8], width: u32, height: u32) -> Option<Vec<u8>> {
+    let (width, height) = (width as usize, height as usize);
+    let columns = width.div_ceil(8);
+    let rows = height.div_ceil(8);
+    let data = data.get(..columns.checked_mul(rows)?.checked_mul(32)?)?;
+    let mut out = vec![0; width.checked_mul(height)?.checked_mul(4)?];
+    for (tile, bytes) in data.chunks_exact(32).enumerate() {
+        let tile_x = (tile % columns) * 8;
+        let tile_y = (tile / columns) * 8;
+        for (cell, block) in bytes.chunks_exact(8).enumerate() {
+            let c0 = u16::from_be_bytes([block[0], block[1]]);
+            let c1 = u16::from_be_bytes([block[2], block[3]]);
+            let a = decode_565(c0);
+            let b = decode_565(c1);
+            let blend = |weight_a, weight_b, divisor| {
+                let mut color = [255; 4];
+                for i in 0..3 {
+                    color[i] = ((u16::from(a[i]) * weight_a + u16::from(b[i]) * weight_b) / divisor) as u8;
                 }
-                if i + 1 < chunk.len() {
-                    group1.push(chunk[i + 1]);
-                }
-                if i + 2 < chunk.len() {
-                    group2.push(chunk[i + 2]);
-                }
-                if i + 3 < chunk.len() {
-                    group2.push(chunk[i + 3]);
-                }
-            }
-            swizzled.extend(group1);
-            swizzled.extend(group2);
-        }
-    } else {
-        swizzled = rows;
-    }
-
-    let mut out = vec![0u8; (width * height * 4) as usize];
-    let blocks_wide = (width / 4) as usize;
-    let blocks_high = (height / 4) as usize;
-
-    for (b_idx, block_data) in swizzled.into_iter().enumerate() {
-        if b_idx >= blocks_wide * blocks_high {
-            break;
-        }
-
-        let c0_raw = u16::from_be_bytes([block_data[0], block_data[1]]);
-        let c1_raw = u16::from_be_bytes([block_data[2], block_data[3]]);
-
-        let mut lookup_bytes = [block_data[4], block_data[5], block_data[6], block_data[7]];
-        for j in 0..4 {
-            let b = lookup_bytes[j];
-            let n1 = (b >> 4) & 0xF;
-            let n2 = b & 0xF;
-            // Swap high & low nibble and map
-            let mapped_n1 = NIBBLE_MAP[n1 as usize];
-            let mapped_n2 = NIBBLE_MAP[n2 as usize];
-            lookup_bytes[j] = (mapped_n2 << 4) | mapped_n1;
-        }
-
-        let lookup = u32::from_le_bytes(lookup_bytes);
-
-        let c0 = decode_565(c0_raw);
-        let c1 = decode_565(c1_raw);
-
-        let colors: [[u8; 4]; 4] = if c0_raw > c1_raw {
-            [
-                c0,
-                c1,
-                [
-                    ((2 * c0[0] as u32 + c1[0] as u32) / 3) as u8,
-                    ((2 * c0[1] as u32 + c1[1] as u32) / 3) as u8,
-                    ((2 * c0[2] as u32 + c1[2] as u32) / 3) as u8,
-                    255,
-                ],
-                [
-                    ((c0[0] as u32 + 2 * c1[0] as u32) / 3) as u8,
-                    ((c0[0] as u32 + 2 * c1[1] as u32) / 3) as u8,
-                    ((c0[0] as u32 + 2 * c1[2] as u32) / 3) as u8,
-                    255,
-                ],
-            ]
-        } else {
-            [
-                c0,
-                c1,
-                [
-                    ((c0[0] as u32 + c1[0] as u32) / 2) as u8,
-                    ((c0[1] as u32 + c1[1] as u32) / 2) as u8,
-                    ((c0[2] as u32 + c1[2] as u32) / 2) as u8,
-                    255,
-                ],
-                [0, 0, 0, 0],
-            ]
-        };
-
-        let by = b_idx / blocks_wide;
-        let bx = b_idx % blocks_wide;
-
-        for py in 0..4usize {
-            for px in 0..4usize {
-                let code = ((lookup >> ((py * 4 + px) * 2)) & 3) as usize;
-                let color = colors[code];
-                let fx = bx * 4 + px;
-                let fy = by * 4 + py;
-                if fx < width as usize && fy < height as usize {
-                    let out_idx = (fy * width as usize + fx) * 4;
-                    out[out_idx..out_idx + 4].copy_from_slice(&color);
+                color
+            };
+            let (c, d) = if c0 > c1 {
+                (blend(5u16, 3u16, 8u16), blend(3u16, 5u16, 8u16))
+            } else {
+                let average = blend(1u16, 1u16, 2u16);
+                let mut transparent = average;
+                transparent[3] = 0;
+                (average, transparent)
+            };
+            let palette = [a, b, c, d];
+            let bx = tile_x + (cell % 2) * 4;
+            let by = tile_y + (cell / 2) * 4;
+            for (py, &selectors) in block[4..].iter().enumerate().take(height.saturating_sub(by)) {
+                for px in 0..4.min(width.saturating_sub(bx)) {
+                    let code = (selectors >> (6 - px * 2)) & 3;
+                    let at = ((by + py) * width + bx + px) * 4;
+                    out[at..at + 4].copy_from_slice(&palette[code as usize]);
                 }
             }
         }
     }
-
-    out
+    Some(out)
 }
 
 /// Decode a Wii (Wii, not Wii U) texture block.
@@ -1395,7 +1321,7 @@ pub(crate) fn decode_wii_texture(
             gx_decode_ia4(data, width, height)
         }
     } else if gx2 == 0x31 || ni_fmt == 14 || ni_fmt == 4 || ni_fmt == 5 {
-        decompress_wii_cmpr(data, width, height)
+        decompress_wii_cmpr(data, width, height)?
     } else if bpp == 2 {
         if ni_fmt == 1 || ni_fmt == 5 || ni_fmt == 6 {
             gx_decode_rgb5a3(data, width, height)

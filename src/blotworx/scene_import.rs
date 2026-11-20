@@ -525,6 +525,22 @@ impl Batch {
                     .iter()
                     .find(|c| c.class_name == "MickeyPlayerMotionControllerComponent")
                     .context("Mickey has no resolved motion controller component")?;
+                let motion_value = |name: &str| {
+                    motion_component.properties.iter().find(|p| p.name == name).map(|p| &p.value)
+                };
+                report.motion.damage_leap_enabled = motion_value("DoesDamagedLeap")
+                    .and_then(|v| v.as_bool()).unwrap_or(false);
+                for (name, target) in [
+                    ("DamagedLeapLaunchSpeed", &mut report.motion.damage_leap_launch_speed),
+                    ("DamagedLeapGravity", &mut report.motion.damage_leap_gravity),
+                    ("DamagedLeapMaxAirSpeed", &mut report.motion.damage_leap_air_speed),
+                    ("DamagedLeapAirAccel", &mut report.motion.damage_leap_acceleration),
+                ] {
+                    if let Some(value) = motion_value(name) {
+                        *target = value.as_f64().with_context(|| format!("Invalid {name}"))? as f32;
+                        ensure!(target.is_finite(), "Nonfinite {name}");
+                    }
+                }
                 report.locomotion_action_settings =
                     Some(super::super::locomotion_actions::Settings::load(|name| {
                         motion_component
@@ -1265,6 +1281,7 @@ impl Batch {
                         extra_uvs: mesh.extra_uvs.clone(),
                         projection_bound: None,
                         projected_shadow: false,
+                        skybox: false,
                         material_indirect: None,
                         material_registers: preview
                             .as_ref()

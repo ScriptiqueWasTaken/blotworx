@@ -22,7 +22,7 @@ impl Runtime {
     }
     pub fn shake(&mut self, args: [f32; 6]) -> Result<()> {
         ensure!(args.iter().all(|x|x.is_finite()), "Nonfinite ShakeCamera argument");
-        ensure!(args[0] > 0. && args[2] > 0. && args[2] < 1., "Unsupported degenerate shake duration/envelope");
+        ensure!(args[0] > 0. && (0. ..=1.).contains(&args[2]), "Invalid shake duration/envelope");
         self.shake_requests += 1;
         self.shakes.push(Shake { args, elapsed: 0. });
         Ok(())
@@ -37,7 +37,7 @@ impl Runtime {
         for shake in &self.shakes {
             let [duration, frequency, attack, power, x, y] = shake.args;
             let t = shake.elapsed / duration;
-            let envelope = if t <= attack { t / attack } else { (1. - t)/(1. - attack) };
+            let envelope = if attack > 0. && t <= attack { t / attack } else { (1. - t)/(1. - attack) };
             let envelope = envelope.powf(power);
             let weight = envelope * envelope * (3. - 2. * envelope);
             let phase = std::f32::consts::TAU * t * (duration * frequency);
@@ -76,6 +76,11 @@ pub fn validate() -> Result<()> {
     ensure!(state.angles().iter().all(|x|x.is_finite()) && state.angles()!=[0.;2], "Shake did not advance");
     state.advance(2.);
     ensure!(state.angles()==[0.;2] && state.rumble_remaining[0]<=0., "Feedback did not expire");
+    state.shake([3., 6., 0., 0.5, 0.002, 0.002])?;
+    ensure!(state.angles() == [0.; 2], "Immediate attack produced invalid angles");
+    state.advance(1. / 30.);
+    ensure!(state.angles().iter().all(|x| x.is_finite()) && state.angles() != [0.; 2],
+        "Space Mountain's immediate attack did not shake");
     println!("PASS: script feedback timers, disabled rumble, visible shake and expiration");
     Ok(())
 }

@@ -10,10 +10,13 @@ pub struct State {
     pub plane: Option<([f32;3], [f32;3])>,
     respawns: u32,
 }
-fn number(entity: &RuntimeEntity, key: &str, default: f32) -> f32 {
+fn setting<'a>(entity: &'a RuntimeEntity, key: &str) -> Option<&'a serde_json::Value> {
     entity.components.iter().find(|c| c.class_name=="CameraOverrideComponent")
         .and_then(|c| c.properties.iter().find(|p|p.name==key))
-        .and_then(|p|p.value.as_f64()).map(|v|v as f32)
+        .map(|p| &p.value)
+}
+fn number(entity: &RuntimeEntity, key: &str, default: f32) -> f32 {
+    setting(entity, key).and_then(serde_json::Value::as_f64).map(|v|v as f32)
         .filter(|v|v.is_finite()).unwrap_or(default)
 }
 pub fn project(vector: [f32;3], normal: [f32;3]) -> [f32;3] {
@@ -21,33 +24,48 @@ pub fn project(vector: [f32;3], normal: [f32;3]) -> [f32;3] {
     std::array::from_fn(|i|vector[i]-depth*normal[i])
 }
 impl World {
+    fn side_scroll_camera(&self, index: usize) -> Option<&RuntimeEntity> {
+        self.entities.get(index).filter(|entity| {
+            !self.removed_entities.contains(&index)
+                && self.entity_scene_active(index)
+                && number(entity, "SideScrollDistance", 0.) > 0.
+        })
+    }
+    pub(super) fn side_scroll_disables(&self, key: &str) -> bool {
+        self.side_scroller.enabled && self.side_scroller.owner
+            .and_then(|owner| self.side_scroll_camera(owner))
+            .and_then(|entity| setting(entity, key))
+            .and_then(serde_json::Value::as_bool).unwrap_or(false)
+    }
     pub(super) fn prepare_side_scroller(&mut self, player: &mut Player) {
         if !self.side_scroller.enabled {
             self.side_scroller.plane=None;
             player.side_scroll_plane=None;
             return;
         }
-        // Explicit script selection wins; retain it across story scheduler release.
-        if let Some(owner)=self.demo_story.camera_override {
-            self.side_scroller.owner=Some(owner);
-        }
-        if self.side_scroller.owner.is_none() {
-            self.side_scroller.owner=self.entities.iter().position(|e|
-                number(e,"SideScrollActive",2.)==0. && number(e,"SideScrollDistance",0.)>0.);
-        }
-        let yaw=self.side_scroller.owner.and_then(|i|self.entities.get(i))
+        // A cinematic or an unloaded zone can still have a camera override
+        // handle. Only a live side-scroll camera can own the gameplay plane.
+        self.side_scroller.owner = self.demo_story.camera_override
+            .filter(|&owner| self.side_scroll_camera(owner).is_some())
+            .or_else(|| self.side_scroller.owner.filter(|&owner| self.side_scroll_camera(owner).is_some()))
+            .or_else(|| (0..self.entities.len()).find(|&index| self.side_scroll_camera(index)
+                .is_some_and(|entity| number(entity, "SideScrollActive", 2.) == 0.)));
+        let yaw=self.side_scroller.owner.and_then(|i|self.side_scroll_camera(i))
             .map(|e|number(e,"SideScrollYaw",0.)).unwrap_or(0.).to_radians();
         let normal=[yaw.sin(),0.,yaw.cos()];
         if self.side_scroller.respawns!=player.respawns {
             self.side_scroller.plane=None;
             self.side_scroller.respawns=player.respawns;
         }
+        if self.side_scroller.plane.is_some_and(|(_, previous)| previous != normal) {
+            self.side_scroller.plane = None;
+        }
         let plane=self.side_scroller.plane.get_or_insert((player.position,normal));
         player.side_scroll_plane=Some(*plane);
     }
     pub(super) fn side_scroller_frame(&self) -> Result<Option<super::nif_camera::Frame>> {
         if !self.side_scroller.enabled {return Ok(None)}
-        let Some(owner)=self.side_scroller.owner.and_then(|i|self.entities.get(i)) else {return Ok(None)};
+        let Some(owner)=self.side_scroller.owner.and_then(|i|self.side_scroll_camera(i)) else {return Ok(None)};
         let position: [f32;3]=self.entities[self.player_entity].transform[12..15].try_into().unwrap();
         let yaw=number(owner,"SideScrollYaw",0.).to_radians();
         let pitch=number(owner,"SideScrollPitch",0.).to_radians();

@@ -2,6 +2,7 @@
 //! Registry traversal and child-source remapping are not yet native-equivalent.
 use anyhow::{ensure, Context, Result};
 use epic_mickey_lib_rs::scene_file::Component;
+use std::collections::HashMap;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Action {
@@ -28,7 +29,8 @@ struct Pending {
 }
 #[derive(Default)]
 pub struct Runtime {
-    listeners: Vec<Listener>,
+    listeners: HashMap<usize, Vec<Listener>>,
+    owners: Vec<usize>,
     pending: Vec<Pending>,
     pub deliveries: u64,
 }
@@ -99,7 +101,7 @@ impl Runtime {
                     .context("Invalid ActionEventNames integer entry")
             })
             .collect::<Result<Vec<_>>>()?;
-        self.listeners.push(Listener {
+        let listener = Listener {
             entity,
             started: false,
             types,
@@ -109,7 +111,11 @@ impl Runtime {
             audio: strings("AudioEventNames")?,
             effects: strings("EffectEventNames")?,
             actions,
-        });
+        };
+        self.listeners.entry(entity).or_insert_with(|| {
+            self.owners.push(entity);
+            Vec::new()
+        }).push(listener);
         Ok(())
     }
     /// REL31e628..31e694 writes byte3c before category3, then drains
@@ -117,22 +123,18 @@ impl Runtime {
     pub fn update(&mut self, target: usize, time: f32) -> Result<Vec<Action>> {
         ensure!(time.is_finite(), "Invalid gameplay event time");
         let mut immediate = Vec::new();
-        for index in 0..self.listeners.len() {
-            if self.listeners[index].entity != target || self.listeners[index].started {
-                continue;
+        for listener in self.listeners.get_mut(&target).into_iter().flatten() {
+            if !listener.started {
+                listener.started = true;
+                Self::receive_listener(listener, 3, "", time, &mut self.pending, &mut immediate);
             }
-            self.listeners[index].started = true;
-            immediate.extend(self.receive_listener(index, &[3], "", time)?);
         }
+        self.deliveries += immediate.len() as u64;
         immediate.extend(self.take_ready(time, Some(target)));
         Ok(immediate)
     }
     pub fn owners(&self) -> Vec<usize> {
-        let mut seen = std::collections::HashSet::new();
-        self.listeners
-            .iter()
-            .filter_map(|listener| seen.insert(listener.entity).then_some(listener.entity))
-            .collect()
+        self.owners.clone()
     }
     pub fn receive_stimuli(
         &mut self,
@@ -166,7 +168,9 @@ impl Runtime {
         self.receive_categories(target, if death_event { &[24, 5] } else { &[24] }, "", time)
     }
     pub fn remove(&mut self, entity: usize) {
-        self.listeners.retain(|listener| listener.entity != entity);
+        if self.listeners.remove(&entity).is_some() {
+            self.owners.retain(|&owner| owner != entity);
+        }
         self.pending.retain(|event| event.action.entity != entity);
     }
     fn receive_categories(
@@ -178,58 +182,47 @@ impl Runtime {
     ) -> Result<Vec<Action>> {
         ensure!(time.is_finite(), "Invalid gameplay event time");
         let mut immediate = Vec::new();
-        for &category in categories {
-            for index in 0..self.listeners.len() {
-                if self.listeners[index].entity == target {
-                    immediate.extend(self.receive_listener(index, &[category], tag, time)?);
+        if let Some(listeners) = self.listeners.get(&target) {
+            for &category in categories {
+                for listener in listeners {
+                    Self::receive_listener(listener, category, tag, time, &mut self.pending, &mut immediate);
                 }
             }
         }
+        self.deliveries += immediate.len() as u64;
         Ok(immediate)
     }
     fn receive_listener(
-        &mut self,
-        index: usize,
-        categories: &[u32],
+        listener: &Listener,
+        category: u32,
         tag: &str,
         time: f32,
-    ) -> Result<Vec<Action>> {
-        let mut immediate = Vec::new();
-        let listener = &self.listeners[index];
-        for &category in categories {
-            for (index, &kind) in listener.types.iter().enumerate() {
-                if kind != category {
-                    continue;
-                }
-                let alias = listener
-                    .aliases
-                    .get(index)
-                    .map(String::as_str)
-                    .unwrap_or("");
-                if !alias.is_empty() && alias != tag {
-                    continue;
-                }
-                let entry = |values: &Vec<String>| values.get(index).cloned().unwrap_or_default();
-                let action = Action {
-                    entity: listener.entity,
-                    script: entry(&listener.scripts),
-                    audio: entry(&listener.audio),
-                    effect: entry(&listener.effects),
-                    action: listener.actions.get(index).copied(),
-                };
-                let delay = listener.delays.get(index).copied().unwrap_or(0.);
-                if delay > 0. {
-                    self.pending.push(Pending {
-                        time: time + delay,
-                        action,
-                    });
-                } else {
-                    self.deliveries += 1;
-                    immediate.push(action);
-                }
+        pending: &mut Vec<Pending>,
+        immediate: &mut Vec<Action>,
+    ) {
+        for (index, &kind) in listener.types.iter().enumerate() {
+            if kind != category {
+                continue;
+            }
+            let alias = listener.aliases.get(index).map(String::as_str).unwrap_or("");
+            if !alias.is_empty() && alias != tag {
+                continue;
+            }
+            let entry = |values: &[String]| values.get(index).cloned().unwrap_or_default();
+            let action = Action {
+                entity: listener.entity,
+                script: entry(&listener.scripts),
+                audio: entry(&listener.audio),
+                effect: entry(&listener.effects),
+                action: listener.actions.get(index).copied(),
+            };
+            let delay = listener.delays.get(index).copied().unwrap_or(0.);
+            if delay > 0. {
+                pending.push(Pending { time: time + delay, action });
+            } else {
+                immediate.push(action);
             }
         }
-        Ok(immediate)
     }
     pub fn ready(&mut self, time: f32) -> Vec<Action> {
         self.take_ready(time, None)
@@ -282,7 +275,7 @@ mod tests {
         for case in fixture["cases"].as_array().unwrap() {
             let mut runtime = Runtime::default();
             runtime.bind(4, &first_update_component()?)?;
-            runtime.listeners[0].started = case["initial_flag"].as_u64().unwrap() != 0;
+            runtime.listeners.get_mut(&4).unwrap()[0].started = case["initial_flag"].as_u64().unwrap() != 0;
             assert!(runtime.receive_damage(4, 0.)?.is_empty());
             let actions = runtime.update(4, 1.)?;
             let mut expected = case["result"]["trace"]
@@ -304,7 +297,7 @@ mod tests {
                     .collect::<Vec<_>>(),
                 expected
             );
-            assert!(runtime.listeners[0].started);
+            assert!(runtime.listeners[&4][0].started);
             assert!(
                 runtime.update(4, 1.)?.is_empty(),
                 "Re-entry must not repeat first update"

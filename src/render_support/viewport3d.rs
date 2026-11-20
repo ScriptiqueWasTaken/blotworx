@@ -60,6 +60,7 @@ pub struct CameraOverride {
 
 #[derive(Clone, Debug)]
 pub struct Viewport3DState {
+    pub smooth_textures: bool,
     pub(crate) native_material:Option<super::native_material::Shared>,
     pub view_culling: bool,
     pub limitations_overlay: bool,
@@ -117,6 +118,7 @@ impl Default for Viewport3DState {
             pixel_probe:None,
             finish: Default::default(),
             surfaces: Default::default(),
+            smooth_textures: false,
             render_work: Default::default(),
             volume_shadow_mesh: None,
             volume_shadows: Vec::new(),
@@ -201,6 +203,13 @@ impl TextureSampler {
             },
         }
     }
+    fn smoothed(self, enabled: bool) -> Self {
+        if enabled {
+            Self { min_filter: glow::LINEAR_MIPMAP_LINEAR, mag_filter: glow::LINEAR, ..self }
+        } else {
+            self
+        }
+    }
     unsafe fn apply(self, gl: &glow::Context) {
         gl.tex_parameter_i32(glow::TEXTURE_2D, glow::TEXTURE_WRAP_S, self.wrap_u as i32);
         gl.tex_parameter_i32(glow::TEXTURE_2D, glow::TEXTURE_WRAP_T, self.wrap_v as i32);
@@ -222,6 +231,7 @@ pub struct GpuDrawCommand {
     pub(crate) shader_time:Option<crate::nif_shader_time::Clock>,
     pub(crate) source_attributes: Option<Result<std::sync::Arc<crate::nif_vertex_attributes::Source>,String>>,
     pub(crate) projected_shadow: bool,
+    pub(crate) skybox: bool,
     pub extra_uvs: Option<Arc<std::collections::BTreeMap<u32, Arc<Vec<[f32; 2]>>>>>,
     /// Original mesh NiAVObject world-bound center for pinned projection.
     /// Missing bounds must not be replaced with the entity origin or an AABB.
@@ -796,6 +806,7 @@ unsafe fn read_probe_depth(gl:&glow::Context,p:[i32;2])->f32{
  let mut depth=1f32;let bytes=std::slice::from_raw_parts_mut((&mut depth)as *mut f32 as *mut u8,4);gl.read_pixels(p[0],p[1],1,1,glow::DEPTH_COMPONENT,glow::FLOAT,glow::PixelPackData::Slice(Some(bytes)));depth
 }
 pub struct GpuViewportCache {
+    smooth_textures: bool,
     surfaces: super::surface_lighting::State,
     contact_pass:Option<Result<super::contact_occlusion::Pass,String>>,
     finish_pass: Option<Result<super::scene_finish::Pass,String>>,
@@ -913,6 +924,7 @@ pub unsafe fn validate_material_gpu(gl: &glow::Context) -> anyhow::Result<()> {
         extra_uvs: None,
         projection_bound: None,
         projected_shadow: false,
+        skybox: false,
         material_registers: None,
         material_indirect: None,
         material_images: Arc::new(vec![]),
@@ -1522,24 +1534,25 @@ impl GpuViewportCache {
             else {
                 return None;
             };
-            if !self.material_samplers.contains_key(&image.sampler) {
+            let sampling = image.sampler.smoothed(self.smooth_textures && source.uv_textures.contains(&slot));
+            if !self.material_samplers.contains_key(&sampling) {
                 let Ok(sampler) = gl.create_sampler() else {
                     return None;
                 };
                 for (name, value) in [
-                    (glow::TEXTURE_WRAP_S, image.sampler.wrap_u),
-                    (glow::TEXTURE_WRAP_T, image.sampler.wrap_v),
-                    (glow::TEXTURE_MIN_FILTER, image.sampler.min_filter),
-                    (glow::TEXTURE_MAG_FILTER, image.sampler.mag_filter),
+                    (glow::TEXTURE_WRAP_S, sampling.wrap_u),
+                    (glow::TEXTURE_WRAP_T, sampling.wrap_v),
+                    (glow::TEXTURE_MIN_FILTER, sampling.min_filter),
+                    (glow::TEXTURE_MAG_FILTER, sampling.mag_filter),
                 ] {
                     gl.sampler_parameter_i32(sampler, name, value as i32);
                 }
-                self.material_samplers.insert(image.sampler, sampler);
+                self.material_samplers.insert(sampling, sampler);
             }
             textures.push((
                 slot,
                 texture,
-                self.material_samplers[&image.sampler],
+                self.material_samplers[&sampling],
                 image.matrix,
             ));
         }
@@ -2093,6 +2106,7 @@ impl GpuViewportCache {
         gl.bind_vertex_array(None);
 
         Some(Self {
+            smooth_textures: false,
             surfaces: Default::default(),
             contact_pass:None,
             finish_pass: None,
@@ -2540,6 +2554,7 @@ pub(crate) fn render_viewport(
     let pixel_probe=vp.pixel_probe;
     let native_material=vp.native_material.clone();
     let surfaces = vp.surfaces;
+    let smooth_textures = vp.smooth_textures;
     let finish = vp.finish;
     let view_culling = vp.view_culling;
     let render_work = vp.render_work.clone();
@@ -2594,6 +2609,7 @@ pub(crate) fn render_viewport(
                         ((info.screen_size_px[1] as i32) - (rect.max.y * ppp) as i32).max(0);
                     let width = ((rect.width() * ppp) as i32).max(1);
                     let height = ((rect.height() * ppp) as i32).max(1);
+                    cache.smooth_textures = smooth_textures;
                     cache.surfaces.begin(gl,surfaces,&draw_commands,&lights,eye,light_vp,view_mat,proj_mat,[left,bottom,width,height]);
                     let hdr_target=cache.surfaces.target(gl,scene_size);
                     let mut projector_images = None;
@@ -2850,7 +2866,7 @@ pub(crate) fn render_viewport(
                         cache.surfaces.shadow_pass=enhanced_shadow;
                         gl.color_mask(false,false,false,false);
                         for (draw_index,cmd) in draw_commands.iter().enumerate() {
-                            if cmd.indices.is_empty() || cmd.v_data.is_empty() {
+                            if cmd.skybox || cmd.indices.is_empty() || cmd.v_data.is_empty() {
                                 continue;
                             }
                             if cmd.preview.as_ref().and_then(|p| p.as_ref().ok())
@@ -2982,6 +2998,8 @@ pub(crate) fn render_viewport(
                     if probe_pixel.is_some(){work.pixel_history.clear();work.pixel_history.push(serde_json::json!({"stage":"clear","rgba":probe_previous}));}
                     // Defer sortable blended geometry until opaque/alpha-tested
                     // draws have populated depth, as NiAlphaAccumulator does.
+                    let mut sky_opaque = Vec::new();
+                    let mut sky_blended = Vec::new();
                     let mut immediate = Vec::with_capacity(draw_commands.len());
                     let mut blended = Vec::new();
                     for (index, cmd) in draw_commands.iter().enumerate() {
@@ -2993,19 +3011,42 @@ pub(crate) fn render_viewport(
                             && cmd.preview.as_ref().and_then(|p| p.as_ref().ok())
                             .is_some_and(|program| program.scene_color_slot.is_some());
                         if samples_scene_color || cmd.needs_alpha_sort(prepared_materials[index].is_some(), managed) {
-                            blended.push((index, cmd.alpha_depth(&view_mat), samples_scene_color));
+                            let pass = if cmd.skybox { &mut sky_blended } else { &mut blended };
+                            pass.push((index, cmd.alpha_depth(&view_mat), samples_scene_color));
                         } else {
-                            immediate.push(index);
+                            let pass = if cmd.skybox { &mut sky_opaque } else { &mut immediate };
+                            pass.push(index);
                         }
                     }
                     // A scene-color material captures the layers behind it, including
                     // translucent draws. Coplanar regular draws enter that capture first.
-                    blended.sort_unstable_by(|&(left_index, left_depth, left_capture), &(right_index, right_depth, right_capture)| {
-                        right_depth.total_cmp(&left_depth)
-                            .then(left_capture.cmp(&right_capture))
-                            .then(left_index.cmp(&right_index))
-                    });
-                    for draw_index in immediate.into_iter().chain(blended.into_iter().map(|(index, _, _)| index)) {
+                    for pass in [&mut sky_blended, &mut blended] {
+                        pass.sort_unstable_by(|&(left_index, left_depth, left_capture), &(right_index, right_depth, right_capture)| {
+                            right_depth.total_cmp(&left_depth)
+                                .then(left_capture.cmp(&right_capture))
+                                .then(left_index.cmp(&right_index))
+                        });
+                    }
+                    let has_sky = !sky_opaque.is_empty() || !sky_blended.is_empty();
+                    let ordered_draws = sky_opaque.into_iter()
+                        .chain(sky_blended.into_iter().map(|(index, _, _)| index))
+                        .map(Some)
+                        .chain(has_sky.then_some(None))
+                        .chain(immediate.into_iter().map(Some))
+                        .chain(blended.into_iter().map(|(index, _, _)| Some(index)));
+                    for draw in ordered_draws {
+                        let Some(draw_index) = draw else {
+                            // Keep depth within the sky pass. Level geometry
+                            // must start with a clear depth buffer.
+                            gl.depth_mask(true);
+                            gl.clear(glow::DEPTH_BUFFER_BIT);
+                            if let Some(pixel) = probe_pixel {
+                                let depth = read_probe_depth(gl, pixel);
+                                work.pixel_history.push(serde_json::json!({"stage":"skybox_depth_reset","depth":depth}));
+                                probe_previous_depth = Some(depth);
+                            }
+                            continue;
+                        };
                         let cmd = &draw_commands[draw_index];
                         let prepared = &prepared_materials[draw_index];
 
@@ -3023,7 +3064,7 @@ pub(crate) fn render_viewport(
                                         let key=format!("{shader} (baked={}): {reason}",cmd.baked);
                                         if let Some(count)=work.fallback_materials.get_mut(&key){*count=count.saturating_sub(1);if *count==0 {work.fallback_materials.remove(&key);}}
                                     }
-                                    if let Some(pixel)=probe_pixel {let rgba=read_probe_pixel(gl,pixel);let depth=read_probe_depth(gl,pixel);work.pixel_history.push(serde_json::json!({"draw":draw_index,"path":"platform_native","rgba":rgba,"depth":depth}));probe_previous=Some(rgba);probe_previous_depth=Some(depth);}
+                                    if let Some(pixel)=probe_pixel {let rgba=read_probe_pixel(gl,pixel);let depth=read_probe_depth(gl,pixel);work.pixel_history.push(serde_json::json!({"draw":draw_index,"skybox":cmd.skybox,"path":"platform_native","rgba":rgba,"depth":depth}));probe_previous=Some(rgba);probe_previous_depth=Some(depth);}
                                     continue;
                                 },
                                 Ok(false)=>{},
@@ -3037,7 +3078,7 @@ pub(crate) fn render_viewport(
                             );
                             if surfaces.mode!=0 && super::surface_lighting::eligible(source,cmd){work.surface_draws+=1;}
                             if let Some(pixel)=probe_pixel {let rgba=read_probe_pixel(gl,pixel);if probe_previous.is_none_or(|before|before.iter().zip(&rgba).any(|(a,b)|(a-b).abs()>1e-7)){
-                              work.pixel_history.push(serde_json::json!({"draw":draw_index,"shader":cmd.material.as_ref().and_then(|m|m.shader.as_deref()),"rgba":rgba,"blend":source.blend,"depth_write":source.depth_write,"textures":cmd.material.as_ref().map(|m|m.textures.iter().map(|t|t.path.as_str()).collect::<Vec<_>>()),"vertex_alpha":cmd.v_data.chunks_exact(12).map(|v|v[11]).fold([f32::INFINITY,f32::NEG_INFINITY],|a,v|[a[0].min(v),a[1].max(v)])}));probe_previous=Some(rgba);
+                              work.pixel_history.push(serde_json::json!({"draw":draw_index,"skybox":cmd.skybox,"shader":cmd.material.as_ref().and_then(|m|m.shader.as_deref()),"rgba":rgba,"blend":source.blend,"depth_write":source.depth_write,"textures":cmd.material.as_ref().map(|m|m.textures.iter().map(|t|t.path.as_str()).collect::<Vec<_>>()),"vertex_alpha":cmd.v_data.chunks_exact(12).map(|v|v[11]).fold([f32::INFINITY,f32::NEG_INFINITY],|a,v|[a[0].min(v),a[1].max(v)])}));probe_previous=Some(rgba);
                             }}
                             if let Some(pixel)=probe_pixel {probe_previous_depth=Some(read_probe_depth(gl,pixel));}
                             work.submitted_native_draws += 1;
@@ -3212,7 +3253,7 @@ pub(crate) fn render_viewport(
                         if let Some(tex) = gpu_tex {
                             gl.active_texture(glow::TEXTURE0);
                             gl.bind_texture(glow::TEXTURE_2D, Some(tex));
-                            cmd.sampler.apply(gl);
+                            cmd.sampler.smoothed(smooth_textures).apply(gl);
                             gl.uniform_1_i32(Some(&cache.u_use_tex), 1);
                         } else {
                             gl.uniform_1_i32(Some(&cache.u_use_tex), 0);

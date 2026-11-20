@@ -26,6 +26,8 @@ pub enum Node {
     Sound(Sound),
     Selector{id:u32,settings:Settings,playlist:Vec<PlaylistItem>,children:BTreeMap<u32,Arc<Node>>},
     Switch{id:u32,kind:u32,group:u32,definition:super::audio_switch::Definition,children:BTreeMap<u32,Arc<Node>>},
+    Layer(Vec<Arc<Node>>),
+    Music(Arc<super::audio_music::Graph>),
     Unsupported(String),
 }
 pub type Cache=BTreeMap<(u32,u32),Arc<Node>>;
@@ -34,7 +36,8 @@ impl Node {
         match self {
             Self::Sound(s)=>output.push((s.metadata.sound,s.metadata.maximum_instances,s.metadata.lineage.clone())),
             Self::Selector{children,..}|Self::Switch{children,..}=>for node in children.values(){node.lineages(output)},
-            Self::Unsupported(_)=>{},
+            Self::Layer(children)=>for node in children{node.lineages(output)},
+            Self::Music(_) | Self::Unsupported(_)=>{},
         }
     }
 }
@@ -75,6 +78,13 @@ pub fn prepare_with_root(bank:&Bank<'_>,storage:&BTreeMap<u32,Arc<[u8]>>,origin:
                 for package in &definition.groups {for &child in &package.nodes {if bank.objects.contains_key(&child) {children.insert(child,visit(bank,storage,origin,child,cache,path,root)?);}}}
                 Node::Switch{id,kind:c.group_kind,group:c.group,definition,children}
             },
+            9=>{
+                let children = object.unmodulated_layer_children(bank.feedback)?.into_iter()
+                    .map(|child| visit(bank,storage,origin,child,cache,path,root))
+                    .collect::<Result<Vec<_>>>()?;
+                Node::Layer(children)
+            },
+            10 | 12 | 13 => Node::Music(Arc::new(super::audio_music::Graph::read(bank, id)?)),
             kind=>anyhow::bail!("Audio Play node {id:08x} class{kind} is not implemented"),
         })})();
         path.remove(&id);
@@ -86,6 +96,7 @@ pub fn prepare_with_root(bank:&Bank<'_>,storage:&BTreeMap<u32,Arc<[u8]>>,origin:
 pub struct Runtime {
     selectors:super::audio_bank::selection::Runtime,
     switches:super::audio_switch::Runtime,
+    state_groups: BTreeMap<u32, u32>,
     pub selections:u64,
     owners:BTreeMap<usize,Weak<super::audio_events::RegisteredObject>>,
 }
@@ -95,6 +106,9 @@ pub trait Sink {
     fn reject(&mut self,error:&str);
 }
 impl Runtime {
+    pub(super) fn set_state(&mut self, group: u32, value: u32) {
+        self.state_groups.insert(group, value);
+    }
     pub fn retain_owner(&mut self,owner:&Arc<super::audio_events::RegisteredObject>) {
         self.owners.insert(owner.handle as usize,Arc::downgrade(owner));
     }
@@ -106,16 +120,30 @@ impl Runtime {
         match node {
             Node::Sound(source)=>match source.decode(){Ok(clip)=>sink.sound(clip,request,random),Err(error)=>{sink.reject(&format!("{error:#}"));Ok(2)}},
             Node::Unsupported(error)=>{sink.reject(error);Ok(2)},
+            Node::Music(_) => anyhow::bail!("Music graph cannot be played as a sound-effect child"),
+            Node::Layer(children) => {
+                let mut status = 2;
+                for child in children {
+                    if self.play(child, request, scope, random, sink)? == 1 {
+                        status = 1;
+                    }
+                }
+                Ok(status)
+            }
             Node::Selector{id,settings,playlist,children}=>{
                 let selected=self.selectors.select(*id,settings,playlist,scope,|id|children.contains_key(&id),||random() as u32)?;
                 self.selections+=1;
                 if let Some(id)=selected.selected {self.play(&children[&id],request,scope,random,sink)}else {Ok(2)}
             },
             Node::Switch{id,kind,group,definition,children}=>{
-                //8032e590: kind0 queries this object's switch; kind1 queries
-                // the global state manager, which is not implemented here.
-                if *kind!=0 {sink.reject("Global state-group switch playback is not connected");return Ok(2);}
-                let value=sink.switch_value(*group)?.unwrap_or(0);
+                let value = match kind {
+                    0 => sink.switch_value(*group)?.unwrap_or(0),
+                    1 => self.state_groups.get(group).copied().unwrap_or(0),
+                    _ => {
+                        sink.reject("Unknown audio switch group kind");
+                        return Ok(2);
+                    }
+                };
                 let Some(nodes)=self.switches.begin(*id,definition,value,request)? else {return Ok(2)};
                 let mut successes=0;let mut status=2;
                 for id in nodes {
@@ -130,7 +158,7 @@ impl Runtime {
 mod tests {
     use super::*;
     fn source(id:u32)->Arc<Node> {
-        let clip=Arc::new(Clip{samples:Arc::from([0]),rate:32000,sound:id,gain_db:0.,channel_gains:[1.,1.,0.,0.],maximum_instances:0,lineage:Arc::from([id]),pitch_ratio:1.,low_pass:0.,pitch_cents:0.,random_ranges:Arc::from([]),spatial:None,signal:super::super::audio_signal::Signal::Pcm,source_passes:1,layout:None,admission:None});
+        let clip=Arc::new(Clip{samples:Arc::from([0]),rate:32000,sound:id,gain_db:0.,channel_gains:[1.,1.,0.,0.],maximum_instances:0,lineage:Arc::from([id]),pitch_ratio:1.,low_pass:0.,pitch_cents:0.,random_ranges:Arc::from([]),pitch_controls:Arc::from([]),spatial:None,signal:super::super::audio_signal::Signal::Pcm,source_passes:1,layout:None,admission:None});
         let decoded=OnceLock::new();assert!(decoded.set(Ok(clip.clone())).is_ok());
         Arc::new(Node::Sound(Sound{metadata:(*clip).clone(),bytes:Arc::from([]),range:0..0,decoded}))
     }

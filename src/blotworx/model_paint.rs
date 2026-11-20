@@ -145,8 +145,8 @@ pub(super) fn initialize_range(
             sketch.material = Some(Arc::new(bindings));
             sketch.material_registers = None;
             // Transition preparation is independent of initial state loading.
-            // Retain failures as explicit activation errors, never substitute
-            // an instantaneous transition or abort an unrelated level load.
+            // Retain the authored endpoint and timing if a visual transition
+            // cannot be composed. Collision and level events still advance.
             let transition =
                 super::jigsaw_effects::prepare(&original, alpha, templates, files, textures)
                     .with_context(|| format!("Whole-model transition {} draw {index}", owner.name))
@@ -328,12 +328,6 @@ impl World {
             .model_paint
             .get(&usize::try_from(target.node)?)
             .context("Unknown whole-model effect target")?;
-        // Validate the whole target before mutating transition state.
-        for transition in model.transitions.values() {
-            transition
-                .as_ref()
-                .map_err(|error| anyhow::anyhow!(error.clone()))?;
-        }
         for &index in model.states.keys() {
             self.jigsaw_effect_values
                 .insert(index, if painted { 2. } else { 0. });
@@ -348,9 +342,10 @@ impl World {
         step: f32,
         painted: &mut bool,
     ) -> Result<bool> {
+        let entity = usize::try_from(target.node)?;
         let model = self
             .model_paint
-            .get(&usize::try_from(target.node)?)
+            .get(&entity)
             .context("Unknown whole-model effect target")?;
         let mut completed = false;
         for (&index, states) in &model.states {
@@ -371,19 +366,17 @@ impl World {
                 draw.preview = state.preview.clone();
                 draw.material = state.material.clone();
                 draw.material_images = state.material_images.clone();
-                draw.material_registers = None;
+                draw.material_registers = state.material_registers;
                 if endpoint {
                     self.sketch_draws.remove(&index);
                 } else {
                     self.sketch_draws.insert(index);
                 }
                 self.jigsaw_effect_values.remove(&index);
-            } else {
+            } else if let Ok(transition) = &model.transitions[&index] {
                 let selection =
                     super::jigsaw_material::transition_material(model.alpha[&index], Some(*value))?;
-                let state = &model.transitions[&index]
-                    .as_ref()
-                    .map_err(|error| anyhow::anyhow!(error.clone()))?[usize::from(*value <= 1.)];
+                let state = &transition[usize::from(*value <= 1.)];
                 let mut registers = state
                     .template
                     .program
@@ -398,6 +391,10 @@ impl World {
                 draw.material_images = std::sync::Arc::new(state.images.clone());
                 draw.material_registers = Some(registers);
             }
+        }
+        if completed {
+            let output = if *painted { "OnFullyPainted" } else { "OnFullySketched" };
+            self.emit_entity_output(entity, output, self.player_entity);
         }
         Ok(completed)
     }

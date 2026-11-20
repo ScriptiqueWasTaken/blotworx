@@ -28,6 +28,16 @@ pub struct Runtime {
     instances: BTreeMap<usize, Instance>,
     event_maps: BTreeMap<(String, String), BTreeMap<u32, i32>>,
     export_maps: BTreeMap<(String, String), BTreeMap<i32, u32>>,
+    wii_source: Option<Arc<super::streamed_animation_resources::WiiClips>>,
+}
+
+impl Runtime {
+    pub fn with_wii_source(root: &std::path::Path) -> Self {
+        Self {
+            wii_source: Some(Arc::new(super::streamed_animation_resources::WiiClips::new(root))),
+            ..Self::default()
+        }
+    }
 }
 
 #[cfg(test)]
@@ -737,6 +747,17 @@ impl Runtime {
             .state
             .write_native_variable(name, bits))
     }
+    pub(super) fn active_state_time(&self, entity: usize, name: &str) -> Option<f32> {
+        let prepared = &self.instances.get(&entity)?.actor.prepared;
+        prepared.machines.iter().find_map(|(id, runtime)| {
+            if !runtime.active {
+                return None;
+            }
+            let definition = &prepared.state.machines[id];
+            let state = &definition.states[definition.state_indices[&runtime.current]];
+            (state.info.name == name).then_some(runtime.time)
+        })
+    }
     pub fn send_event(&mut self, entity: usize, name: &str) -> Result<()> {
         let instance = self
             .instances
@@ -885,10 +906,11 @@ impl Runtime {
                         |path| find(path).map(|file| file.data.as_slice()),
                         reflection,
                     )?;
-                    let resources =
+                    let mut resources =
                         super::animation_resources::Resources::load(&contract, |path| {
                             find(path).map(|file| file.data.clone())
                         })?;
+                    resources.set_wii_source(self.wii_source.clone());
                     if let Ok(catalog) = &world.animation_events {
                         let map = catalog.graph_map(&contract.events)?;
                         self.export_maps.insert(

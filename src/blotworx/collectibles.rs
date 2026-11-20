@@ -22,6 +22,8 @@ pub struct Notification {
     pub event: &'static str,
     pub title_key: String,
     pub icon: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description_key: Option<String>,
 }
 impl Notification {
     pub fn new(route: Route, event: &'static str, name: &str, icon: &str) -> Result<Self> {
@@ -32,6 +34,7 @@ impl Notification {
             event,
             title_key: format!("{}_Name", std::str::from_utf8(prefix)?),
             icon: icon.into(),
+            description_key: None,
         })
     }
 }

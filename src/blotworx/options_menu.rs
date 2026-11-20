@@ -19,6 +19,7 @@ pub struct Preferences {
     pub distance: f32,
     pub fov: f32,
     pub fullscreen: bool,
+    pub smooth_textures: bool,
 }
 impl Default for Preferences {
     fn default() -> Self {
@@ -56,6 +57,7 @@ impl Default for Preferences {
             distance: 5.,
             fov: 60.,
             fullscreen: false,
+            smooth_textures: false,
         }
     }
 }
@@ -146,6 +148,8 @@ impl Preferences {
             Profile::Remix => "Per-pixel lighting, material highlights and geometry shadows.",
         });
         ui.add_space(12.);
+        ui.checkbox(&mut self.smooth_textures, "Smooth textures")
+            .on_hover_text("Use bilinear filtering with blended mip levels on scene textures.");
         let i = self.index();
         if i != 0 {
             egui::CollapsingHeader::new("Lighting & materials")

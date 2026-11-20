@@ -28,7 +28,7 @@ pub struct Instance {
     controllers: Vec<Playback>,
     controller_owners: BTreeMap<u32, usize>,
     locals: BTreeMap<u32, NiTransform>,
-    published_locals: BTreeMap<u32, NiTransform>,
+    pub(super) published_locals: BTreeMap<u32, NiTransform>,
     pub poses: BTreeMap<u32, Pose>,
     pub world: BTreeMap<u32, NiTransform>,
     pub affected: BTreeSet<u32>,

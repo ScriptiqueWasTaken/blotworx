@@ -193,7 +193,7 @@ impl super::audio_sound::Spatial for EmitterSpatial<'_> {
 /// register before action/event completion. A voice must retain its owner for
 /// its entire lifetime, including after the object is unregistered.
 pub trait NodeHost {
-    fn prepare_parameter(&mut self,_:&Action<'_>,_:u32)->Result<()> {Ok(())}
+    fn prepare_parameter(&mut self,_:&Action<'_>,_:u32,_:Option<Arc<RegisteredObject>>)->Result<()> {Ok(())}
     /// Called after command4 resolves and retains the current object. Hosts
     /// owning continuous switch subscriptions must deliver their notifications.
     /// Reject by default rather than silently dropping those notifications.
@@ -260,7 +260,11 @@ struct Driven<'a, N, C> {
     completion: &'a mut C,
 }
 impl<N: NodeHost, C: audio_schedule::CompletionHost> Sink for Driven<'_, N, C> {
-    fn prepare_parameter(&mut self,action:&Action<'_>,due:u32)->Result<()> {self.nodes.prepare_parameter(action,due)}
+    fn prepare_parameter(&mut self,action:&Action<'_>,due:u32,owner:Option<&audio_schedule::Owner>)->Result<()> {
+        let owner = owner.cloned().map(|owner| Arc::downcast::<RegisteredObject>(owner)
+            .map_err(|_| anyhow::anyhow!("Invalid retained audio parameter owner"))).transpose()?;
+        self.nodes.prepare_parameter(action,due,owner)
+    }
     fn action_admitted(&mut self, id: u32) -> Result<()> {
         self.playing.add_action(id);
         Ok(())
@@ -485,6 +489,9 @@ impl Events {
     }
     pub fn pending(&self) -> usize {
         self.schedule.pending()
+    }
+    pub(super) fn has_pending_event(&self, id: u32) -> bool {
+        self.schedule.has_pending_event(id)
     }
     pub fn tick(&self) -> u32 {
         self.schedule.tick()

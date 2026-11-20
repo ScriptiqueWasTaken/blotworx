@@ -7,13 +7,26 @@ use anyhow::{ensure, Context, Result};
 #[derive(Clone, Debug)]
 pub struct Definition {
     pub name: String,
+    pub icon: String,
     stages: Vec<Stage>,
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Debug, Default)]
 struct Stage {
     id: u16,
     completion_type: u16,
+    area: String,
+    character: String,
+    description: String,
+}
+
+pub(super) struct PauseQuest<'a> {
+    pub name: &'a str,
+    pub area: &'a str,
+    pub character: &'a str,
+    pub description: &'a str,
+    pub icon: &'a str,
+    pub status: u16,
 }
 
 impl Definition {
@@ -76,6 +89,31 @@ fn items<'a>(record: &'a Node, name: &str) -> Result<&'a [Node]> {
         .with_context(|| format!("Missing quest metadata list {name}"))
 }
 impl State {
+    pub(super) fn notification(&self, transition: Transition) -> Option<super::collectibles::Notification> {
+        let definition = self.slots.get(transition.quest)?.definition.as_ref()?;
+        let stage = definition.stage(transition.state)?;
+        Some(super::collectibles::Notification {
+            route: super::collectibles::Route::UiEventManager,
+            event: match stage.completion_type {
+                1 => "UI_QuestCompleted",
+                2 => "UI_QuestFailed",
+                _ if transition.previous == u16::MAX => "UI_QuestAdded",
+                _ => "UI_QuestUpdated",
+            },
+            title_key: definition.name.clone(),
+            icon: definition.icon.clone(),
+            description_key: Some(stage.description.clone()),
+        })
+    }
+
+    pub(super) fn pause_quests(&self) -> impl Iterator<Item = PauseQuest<'_>> {
+        self.slots.iter().filter_map(|slot| {
+            let definition = slot.definition.as_ref()?;
+            let stage = definition.stage(slot.current)?;
+            Some(PauseQuest { name: &definition.name, area: &stage.area, character: &stage.character,
+                description: &stage.description, icon: &definition.icon, status: stage.completion_type })
+        })
+    }
     /// REL244f64..24500c: authored state IDs, not stage ordinals. No status
     /// byte changes. Returning Some does not claim that the UI event completed.
     pub fn begin_transition(&mut self, quest: i32, state: u16) -> Option<Transition> {
@@ -195,14 +233,19 @@ impl State {
                         .value("Completion type")
                         .and_then(|value| value.as_u64())
                         .context("Quest stage completion type missing")?;
+                    let string = |field| stage.value(field).and_then(|v| v.as_str()).unwrap_or("").to_owned();
                     Ok(Stage {
                         id: u16::try_from(id).context("Quest state ID exceeds native u16")?,
                         completion_type: u16::try_from(completion_type)
                             .context("Quest completion type exceeds native u16")?,
+                        area: string("Area"),
+                        character: string("Character"),
+                        description: string("Description key"),
                     })
                 })
                 .collect::<Result<Vec<_>>>()?;
-            slot.definition = Some(Definition { name, stages });
+            let icon = quest.value("Icon").and_then(|v| v.as_str()).unwrap_or("").to_owned();
+            slot.definition = Some(Definition { name, icon, stages });
         }
         Ok(state)
     }
@@ -294,10 +337,11 @@ mod tests {
                 Slot {
                     definition: Some(Definition {
                         name: "one".into(),
+                        icon: String::new(),
                         stages: vec![
-                            Stage { id: 10, completion_type: 0 },
-                            Stage { id: 20, completion_type: 1 },
-                            Stage { id: 20, completion_type: 0 },
+                            Stage { id: 10, ..Stage::default() },
+                            Stage { id: 20, completion_type: 1, ..Stage::default() },
+                            Stage { id: 20, ..Stage::default() },
                         ],
                     }),
                     current: u16::MAX,
@@ -307,9 +351,10 @@ mod tests {
                 Slot {
                     definition: Some(Definition {
                         name: "two".into(),
+                        icon: String::new(),
                         stages: vec![
-                            Stage { id: 0, completion_type: 2 },
-                            Stage { id: 65534, completion_type: 3 },
+                            Stage { id: 0, completion_type: 2, ..Stage::default() },
+                            Stage { id: 65534, completion_type: 3, ..Stage::default() },
                         ],
                     }),
                     current: u16::MAX,

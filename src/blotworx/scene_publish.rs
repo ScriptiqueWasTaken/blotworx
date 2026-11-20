@@ -163,7 +163,9 @@ impl World {
     /// Model-only callers retain their existing publication boundary.
     pub(crate) fn prepare_gameplay_scene_requests(&mut self) -> Result<()> {
         if !self.scene_requests_prepared_for_models {
-            self.process_scene_request()?;
+            if self.scene_requests.prepare_front(&self.data_root, &self.asset_context, &self.report.scenes) {
+                self.process_scene_request()?;
+            }
             self.scene_requests_prepared_for_models = true;
         }
         Ok(())

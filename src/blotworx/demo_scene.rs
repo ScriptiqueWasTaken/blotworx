@@ -306,8 +306,7 @@ impl World {
                         .context("Audio state must be text")?
                         .to_str()?
                         .to_owned();
-                    // Keep the requested state; host audio currently lacks Wwise
-                    // state-driven mixing. This must not abort gameplay scripts.
+                    self.set_authored_audio_state(&group, &state)?;
                     self.demo_story.scene.audio_states.insert(group, state);
                 }
                 "CounterAdd" | "CounterSubtract" => {

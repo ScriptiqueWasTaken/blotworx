@@ -214,7 +214,7 @@ pub fn pe(alpha: u16, threshold: u8, depth: u16) -> Result<Pe> {
         early_depth: !test && blend.is_none(),
     })
 }
-fn comparison(gx: u32) -> u32 {
+pub(super) fn comparison(gx: u32) -> u32 {
     [
         glow::NEVER,
         glow::LESS,
@@ -226,7 +226,7 @@ fn comparison(gx: u32) -> u32 {
         glow::ALWAYS,
     ][gx as usize]
 }
-fn blend_factor(gx: u32, source: bool) -> Result<u32> {
+pub(super) fn blend_factor(gx: u32, source: bool) -> Result<u32> {
     Ok(match gx {
         0 => glow::ZERO,
         1 => glow::ONE,

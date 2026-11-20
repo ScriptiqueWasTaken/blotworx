@@ -299,6 +299,7 @@ pub struct World {
     pub guardians: super::guardians::State,
     pub guardian_audio: super::guardians::Audio,
     pub audio_playback: super::audio_playback::Playback,
+    pub(super) music_state: super::audio_music_state::State,
     pub multi_position_audio: BTreeMap<(usize, u32), super::multi_position_audio::Controller>,
     pub screen_fade: super::screen_fade::State,
     pub map_info: super::map_info::State,
@@ -406,6 +407,7 @@ pub struct World {
     pub player_ability_registry: super::ability_registry::Registry,
     /// MickeyPlayerController byte d0, set by retail SetStayInCombatIdle.
     pub player_stay_combat_idle: bool,
+    pub ticket_hud_gain: Option<(u64, f32, f32)>,
     pub ability_hud_requests: Vec<(&'static str, &'static str, &'static str)>,
     pub diagnostic_pickup_commands: bool,
     pub pickup_receivers: BTreeMap<usize, super::pickup::Receiver>,
@@ -452,6 +454,7 @@ pub struct World {
     /// collision world. Multi-body model binding and Havok parity remain open.
     pub dynamic_runtime_sources: BTreeMap<usize, usize>,
     pub dynamic_ground_contacts: std::collections::BTreeSet<usize>,
+    pub(super) pressure_plates: super::pressure_plate::Plates,
     pub runtime_lifetimes: BTreeMap<usize, super::lifetime::State>,
     pub dynamic_runtime_filter: super::physics_filter::GameFilter,
     pub rigid_layer_updates: super::rigid_layer::State,
@@ -489,6 +492,7 @@ pub struct World {
     pub model_bounds: HashMap<String, super::scene_bounds::Hierarchy>,
     pub material_animation: super::material_animation::Runtime,
     pub jigsaw_effect_queue: super::jigsaw_transition::Queue,
+    pub(super) jigsaw_endpoint_pending: BTreeSet<usize>,
     pub jigsaw_effect_values: HashMap<usize, f32>,
     pub sketch_draws: HashSet<usize>,
     pub hidden_jigsaw_draws: HashSet<usize>,
@@ -785,6 +789,10 @@ impl RuntimeEntity {
         }
         matrix[12..15].copy_from_slice(&position);
         matrix
+    }
+
+    pub(super) fn has_character_body(&self) -> bool {
+        self.components.iter().any(|component| component.class_name == "PhysicsRigidBodyCharacterComponent")
     }
 
     /// Query current components, preserving native precedence rather than
@@ -1486,7 +1494,7 @@ impl World {
                 self.post_audio_from_game(entity, &sound);
             }
             if !effect.is_empty() {
-                if let Err(error) = self.start_death_effect(entity, &effect) {
+                if let Err(error) = self.start_one_shot_effect(entity, &effect) {
                     self.report.unsupported.push(format!("Death effect {} -> {effect}: {error:#}", self.entities[entity].name));
                 }
             }
@@ -1588,8 +1596,8 @@ impl World {
         if name == "Max Speed" {
             return self.set_rotator_speed(entity, value);
         }
-        if self.demo_story.enabled && name == "Acceleration" {
-            return self.set_demo_rotator_acceleration(entity, value);
+        if name == "Acceleration" {
+            return self.set_rotator_acceleration(entity, value);
         }
         if name == "InitialSpeed" {
             ensure!(self.entities[entity].components.iter()
@@ -1736,7 +1744,9 @@ impl World {
             .collect::<Vec<_>>();
         let mut removal = Vec::new();
         for entity in owners {
-            if self.removed_entities.contains(&entity) {
+            // Hidden spawner sources are factory inputs. Their lifetime
+            // starts on a spawned instance, not on its authored source.
+            if self.removed_entities.contains(&entity) || self.spawner_sources.contains(&entity) {
                 continue;
             }
             let Some(update) = self.runtime_lifetimes[&entity].prepare(dt)? else {
@@ -1786,6 +1796,7 @@ impl World {
             }
         }
         if self.removed_entities.contains(&entity) { return Ok(()); }
+        self.deliver_entity_removal(entity)?;
         // Transformation teardown353380 runs while all parent/node bindings
         // still exist. It detaches surviving children, then its own parent.
         self.detach_retiring_transform(entity)?;
@@ -1800,16 +1811,16 @@ impl World {
         self.named_fx.retire(entity);
         self.lod_states.remove(&entity);
         self.guardian_entities.remove(Some(entity));
-        let draw_indices = self.entities[entity].draws.clone().collect::<Vec<_>>();
-        let draw_set = draw_indices.iter().copied().collect::<HashSet<_>>();
-        self.removed_draws.extend(draw_indices.iter().copied());
+        let draws = self.entities[entity].draws.clone();
+        self.material_animation.lock(draws.clone(), None);
+        self.removed_draws.extend(draws.clone());
         self.hidden_entities.remove(&entity);
         self.previous_hidden_entities.remove(&entity);
         for draw in self.entities[entity].draws.clone() {
             self.hidden_entity_draws.remove(&draw);
         }
         self.remove_entity_physics(entity)?;
-        self.release_retired_entity_assets(entity, &draw_indices, &draw_set);
+        self.release_retired_entity_assets(entity, draws);
         self.actors.remove(&entity);
         self.idle_actors.remove(&entity);
         self.model_animation.remove(&entity);
@@ -1935,28 +1946,22 @@ impl World {
     fn release_retired_entity_assets(
         &mut self,
         entity: usize,
-        draw_indices: &[usize],
-        draw_set: &HashSet<usize>,
+        draws: std::ops::Range<usize>,
     ) {
-        for &draw in draw_indices {
+        for draw in draws {
             self.draws[draw].release_retired_assets();
+            self.actor_draw_sources.remove(&draw);
+            self.model_mesh_inverse.remove(&draw);
+            self.model_local_draws.remove(&draw);
+            self.jigsaw_effect_values.remove(&draw);
+            self.sketch_draws.remove(&draw);
+            self.hidden_jigsaw_draws.remove(&draw);
             for cold in self.cold_scene_assets.values_mut() {
                 cold.retire_draw(draw);
             }
         }
         self.cold_scene_assets
             .retain(|_, cold| !cold.is_empty());
-        self.actor_draw_sources
-            .retain(|draw, _| !draw_set.contains(draw));
-        self.model_mesh_inverse
-            .retain(|draw, _| !draw_set.contains(draw));
-        self.model_local_draws
-            .retain(|draw| !draw_set.contains(draw));
-        self.jigsaw_effect_values
-            .retain(|draw, _| !draw_set.contains(draw));
-        self.sketch_draws.retain(|draw| !draw_set.contains(draw));
-        self.hidden_jigsaw_draws
-            .retain(|draw| !draw_set.contains(draw));
         let instances = self
             .jigsaw_instances
             .iter()
@@ -2121,6 +2126,8 @@ impl World {
         let ids = emissions.iter().map(|e| e.stimulus).collect::<Vec<_>>();
         let activator = first.owner.and_then(|owner| usize::try_from(owner).ok())
             .filter(|owner| *owner < self.entities.len());
+        let mut damage_accepted = false;
+        let mut lost_health = false;
         if let Some(authored) = self.authored_health.get(&target) {
             let component = components
                 .iter()
@@ -2144,6 +2151,7 @@ impl World {
                 .runtime_health
                 .entry(target)
                 .or_insert_with(|| super::health::Runtime::new(authored));
+            let previous_health = runtime.health;
             if first.owner != Some(target as u64)
                 && runtime.damage(
                     amount,
@@ -2153,6 +2161,8 @@ impl World {
                     duration,
                 )?
             {
+                damage_accepted = true;
+                lost_health = runtime.health < previous_health && runtime.health > 0;
                 // Keep imported defaults immutable; consumers see the live value
                 // in the entity's runtime property and the runtime health map.
                 if let Some(property) = self.entities[target]
@@ -2179,10 +2189,26 @@ impl World {
         if self.demo_story.enabled {
             self.demo_counter_stimulus(target, &effective, first.owner == Some(target as u64))?;
         }
-        let actions =
-            self.component_events
+        if target != self.player_entity || first.tag != "ThinnerOcean" || damage_accepted {
+            let actions = self.component_events
                 .receive_stimuli(target, &ids, &first.tag, self.animation_time)?;
-        self.execute_component_events(actions)
+            self.execute_component_events(actions)?;
+        }
+        // DamageLeap is authored as a response channel paired with ordinary
+        // thinner damage. Mickey's health multiplier for channel 6 is zero,
+        // so read the response from the incoming batch, after health admission.
+        // River meshes and trigger volumes both go through this receiver.
+        if target == self.player_entity && lost_health && self.script_player_available
+            && emissions.iter().any(|e| e.stimulus == 6 && e.amount > 0.)
+            && self.script_player.begin_damage_leap()
+        {
+            let event = self.animation_events.as_ref().ok()
+                .and_then(|events| events.id("EVENT_Start_Damaged_Leap"));
+            if let Some(event) = event {
+                self.send_native_actor_animation_event(target, event)?;
+            }
+        }
+        Ok(())
     }
     pub(super) fn dispatch_live_spin(&mut self, hit_set: &mut HashSet<usize>) -> Result<()> {
         // RELb7fec calls REL2969f0 for the attack center. This is the
@@ -2223,17 +2249,13 @@ impl World {
                 .collect::<Vec<_>>())
         })?;
         for owner in owners {
-            let Some(entity) = self.collision_entity(owner) else {
+            let Some(target) = self.collision_entity_index(owner) else {
                 continue;
             };
-            let target = self
-                .entities
-                .iter()
-                .position(|e| std::ptr::eq(e, entity))
-                .context("Missing spin target")?;
             if target == self.player_entity || hit_set.contains(&target) {
                 continue;
             }
+            let entity = &self.entities[target];
             let target_position = [
                 entity.transform[12],
                 entity.transform[13],
@@ -2375,11 +2397,14 @@ impl World {
         for action in actions {
             // REL31ed00 executes audio, effect, script, action in this order.
             // Unimplemented sinks remain explicit, rather than success no-ops.
-            for (kind, name) in [("audio", &action.audio), ("effect", &action.effect)] {
-                if !name.is_empty() {
+            if !action.audio.is_empty() {
+                self.post_audio_from_game(action.entity, &action.audio);
+            }
+            if !action.effect.is_empty() {
+                if let Err(error) = self.start_one_shot_effect(action.entity, &action.effect) {
                     let message = format!(
-                        "GameEvents {kind} receiver pending: {} -> {name}",
-                        self.entities[action.entity].name
+                        "GameEvents effect {} -> {}: {error:#}",
+                        self.entities[action.entity].name, action.effect,
                     );
                     if !self.report.unsupported.contains(&message) {
                         self.report.unsupported.push(message);
@@ -2806,6 +2831,7 @@ impl World {
                 }
             }
             world.update_skeletal_children(None)?;
+            world.launch_ai_projectiles();
             Ok(())
         })
     }
@@ -2894,6 +2920,7 @@ impl World {
             }
             return Ok(());
         }
+        self.advance_demo_attack_animation(entity, event.id as u32)?;
         // The native ordinary kind9 fallback ignores payloads. Specialized
         // IDs still fail explicitly until their concrete controller is wired.
         self.dispatch_native_animation_feedback(entity, event.id as u32, 1)
@@ -3238,7 +3265,15 @@ impl World {
         let mut graph = cache
             .lock()
             .map_err(|_| anyhow::anyhow!("Resource phantom bounds cache poisoned"))?;
-        graph.aabb(root, &motion.transform, tolerance)
+        // Attached pickups can be moved by an animated socket after their
+        // phantom was constructed. Use the current attachment pose for the
+        // overlap query. Detached owners keep their native motion record.
+        let pose = if self.transform_hierarchy.contains_key(&owner) {
+            self.entities[owner].physics_transform()
+        } else {
+            motion.transform
+        };
+        graph.aabb(root, &pose, tolerance)
     }
     /// Bounds prepared for native admission, not proof that admission occurred.
     /// Shape phantoms use calcAabb802beeb8's half-world tolerance; AABB phantoms
@@ -3373,6 +3408,15 @@ impl World {
                 Ok(mlua::MultiValue::new())
             }
             "AudioSetSwitch" => self.audio_set_switch_lua(lua, args),
+            "SetCombatIntensityBias" | "CombatIntensity_SetBias" => {
+                let value = args.back().cloned().unwrap_or(mlua::Value::Nil);
+                if let Some(bias) = lua.coerce_number(value)? {
+                    self.set_music_bias(bias as f32);
+                }
+                Ok(mlua::MultiValue::new())
+            }
+            "GetCombatIntensityBias" | "CombatIntensity_GetBias" => Ok(mlua::MultiValue::from_vec(
+                vec![mlua::Value::Number(f64::from(self.music_bias()))])),
             "RequestRobotArmChangeIdle" => self.robot_arm_idle_lua(lua, args),
             "SetRobotArmAttackTypeAngleInfo"
             | "SetRobotArmAttackTypeCooldownInfo"
@@ -3421,6 +3465,7 @@ impl World {
             {
                 self.demo_motion_lua(lua, name, args)
             }
+            "Bark" => self.bark_lua(lua, args),
             "SetRotatorMaxSpeed" => self.rotator_max_speed_lua(lua, args),
             "FireSequence"
             | "ForceSequence"
@@ -3438,6 +3483,7 @@ impl World {
             | "SetCharacterInConversation"
             | "SetCameraAttributes"
             | "SaveCameraOverride"
+            | "SaveCurrentCameraOverride"
             | "LoadSavedCameraOverride"
                 if self.demo_story.enabled =>
             {
@@ -3445,6 +3491,26 @@ impl World {
             }
             "StartEmitterByName" | "StartEmitterByNameFireForget" | "StopEmitterByName" => {
                 self.named_effect_lua(lua, name, args)
+            }
+            "SetR3MTLockAnimation" | "SetR3MTUnlockAnimation" => {
+                let lock = name == "SetR3MTLockAnimation";
+                if args.len() != 1 + usize::from(lock) {
+                    return Err(mlua::Error::external(format!("Invalid {name} arguments")));
+                }
+                if let Some(owner) = self.scripts.resolve_native_entity_argument(lua, args[0].clone())? {
+                    let frame = if lock {
+                        let frame = lua.coerce_number(args[1].clone())?
+                            .ok_or_else(|| mlua::Error::external("Expected a material animation frame"))? as f32;
+                        if !frame.is_finite() {
+                            return Err(mlua::Error::external("Invalid material animation frame"));
+                        }
+                        Some(frame)
+                    } else {
+                        None
+                    };
+                    self.material_animation.lock(self.entities[owner].draws.clone(), frame);
+                }
+                Ok(mlua::MultiValue::new())
             }
             "SetR3MTColorReg" | "SetR3MTConstReg" => {
                 if args.len()!=3 { return Err(mlua::Error::external(format!("{name} requires entity, register, vector4"))); }
@@ -3481,11 +3547,24 @@ impl World {
                 Ok(mlua::MultiValue::new())
             }
             "AnimVarInt" | "AnimVarFloat" => self.animation_variable_lua(lua, name, args),
+            "SetNPCState" => self.npc_animation_state_lua(lua, args),
             "AI_ClearTarget" => {
                 if let Some(owner) = self.scripts.resolve_native_entity_argument(
                     lua, args.back().cloned().unwrap_or(mlua::Value::Nil),
                 )? {
                     self.clear_ai_combat_target(owner);
+                }
+                Ok(mlua::MultiValue::new())
+            }
+            "AIBB_SetReevaluateRequired" => {
+                let mut args = args;
+                let required = super::actor_scripts::native_boolean(
+                    lua, args.pop_back().unwrap_or(mlua::Value::Nil),
+                )?;
+                if let Some(brain) = self.scripts.resolve_native_entity_argument(
+                    lua, args.pop_back().unwrap_or(mlua::Value::Nil),
+                )?.and_then(|entity| self.ai_brains.get_mut(&entity)) {
+                    brain.reevaluation_requested = required;
                 }
                 Ok(mlua::MultiValue::new())
             }
@@ -4343,6 +4422,21 @@ impl World {
                 }
                 Ok(mlua::MultiValue::new())
             }
+            "PlayerPickup_SetPendingActivation" => {
+                if args.len() != 2 {
+                    return Err(mlua::Error::external("Pending activation requires a pickup and duration"));
+                }
+                let duration = lua.coerce_number(args[1].clone())?
+                    .map(|duration| duration as f32)
+                    .filter(|duration| duration.is_finite())
+                    .ok_or_else(|| mlua::Error::external("Pickup duration is not finite"))?;
+                if let Some(owner) = self.scripts.resolve_world_argument(&args[0])? {
+                    if let Some(pickup) = self.pickup_update_states.get_mut(&owner) {
+                        pickup.gate.delay(duration);
+                    }
+                }
+                Ok(mlua::MultiValue::new())
+            }
             "ForceSpawn" => {
                 if args.len() != 2 {
                     return Err(mlua::Error::external(
@@ -4829,20 +4923,15 @@ impl World {
                     self.collectibles.increment(&key)
                 }
                 .map_err(mlua::Error::external)?;
-                if self.collectibles.notifications.len() != before {
-                    if self
+                if self.collectibles.notifications.len() != before
+                    && self
                         .collectibles
                         .notifications
                         .last()
                         .is_some_and(|n| n.route == super::collectibles::Route::UiEventManager)
-                    {
-                        self.ui_notifications
-                            .push(self.collectibles.notifications.pop().unwrap());
-                    }
-                    let pending="Native collectible ownership and notification requests are connected; original UI queue scheduling and popup delivery remain incomplete. Requests are retained, not discarded.";
-                    if !self.report.unsupported.iter().any(|s| s == pending) {
-                        self.report.unsupported.push(pending.into());
-                    }
+                {
+                    self.ui_notifications
+                        .push(self.collectibles.notifications.pop().unwrap());
                 }
                 Ok(mlua::MultiValue::new())
             }
@@ -4900,10 +4989,6 @@ impl World {
                             )
                             .map_err(mlua::Error::external)?,
                         );
-                        let pending="Native extra unlock flags, global writes and UI requests are connected; original UI event delivery remains incomplete. Requests are retained, not discarded.";
-                        if !self.report.unsupported.iter().any(|s| s == pending) {
-                            self.report.unsupported.push(pending.into());
-                        }
                     }
                 }
                 Ok(mlua::MultiValue::new())
@@ -5050,6 +5135,15 @@ impl World {
                 if let Some(owner) = self.scripts.resolve_native_entity_argument(lua, args[0].clone())?
                     .filter(|owner| !self.removed_entities.contains(owner)) {
                     self.shadow_volumes.set_scale(owner, scale);
+                }
+                Ok(mlua::MultiValue::new())
+            }
+            "RestoreShadowScale" => {
+                let mut args = args;
+                if let Some(owner) = self.scripts.resolve_native_entity_argument(
+                    lua, args.pop_back().unwrap_or(mlua::Value::Nil),
+                )?.filter(|owner| !self.removed_entities.contains(owner)) {
+                    self.shadow_volumes.restore_scale(owner);
                 }
                 Ok(mlua::MultiValue::new())
             }
@@ -5822,6 +5916,37 @@ impl World {
     /// Publish an absolute root-owner pose to rendering and installed static
     /// queries. Native MoveToEntity's component resets, phantom/controller
     /// state and parent propagation are separate required work, not no-ops.
+    /// The collision cache stores static geometry in its original world frame.
+    /// Reapply the entity's rigid delta when Lua or an animated socket moves it.
+    pub(super) fn publish_static_collision_pose(&mut self, index: usize, position: V, rotation: [f32; 9]) -> Result<()> {
+        let entity = &self.entities[index];
+        if entity.collision_parts.is_empty() { return Ok(()); }
+        let initial = entity.initial_physics_transform();
+        let next = super::native_hk_transform::from_entity(rotation, position);
+        let identity =
+            super::native_hk_transform::from_entity([1., 0., 0., 0., 1., 0., 0., 0., 1.], [0.; 3]);
+        let inverse = super::native_hk_transform::relative(&initial, &identity);
+        let delta = super::native_hk_transform::compose(&next, &inverse);
+        let quaternion = super::native_hk_transform::rotation_quaternion(&delta)?;
+        let translation = delta[12..15].try_into().unwrap();
+        let owners = entity
+            .collision_parts
+            .clone()
+            .map(|part| self.report.collision_parts[part].owner)
+            .collect::<Vec<_>>();
+        for &owner in &owners {
+            ensure!(
+                self.collision.has_owner(owner),
+                "Static relocation has no installed collision owner {owner}"
+            );
+        }
+        for owner in owners {
+            self.collision
+                .set_owner_transform(owner, translation, quaternion)?;
+        }
+        Ok(())
+    }
+
     pub fn relocate_entity(&mut self, index: usize, position: V, rotation: [f32; 9]) -> Result<()> {
         let entity = self
             .entities
@@ -5923,29 +6048,7 @@ impl World {
             entity.jigsaw_asset.is_none(),
             "Jigsaw relocation requires piece-body synchronization"
         );
-        let initial = entity.initial_physics_transform();
-        let next = super::native_hk_transform::from_entity(rotation, position);
-        let identity =
-            super::native_hk_transform::from_entity([1., 0., 0., 0., 1., 0., 0., 0., 1.], [0.; 3]);
-        let inverse = super::native_hk_transform::relative(&initial, &identity);
-        let delta = super::native_hk_transform::compose(&next, &inverse);
-        let quaternion = super::native_hk_transform::rotation_quaternion(&delta)?;
-        let translation = delta[12..15].try_into().unwrap();
-        let owners = entity
-            .collision_parts
-            .clone()
-            .map(|part| self.report.collision_parts[part].owner)
-            .collect::<Vec<_>>();
-        for &owner in &owners {
-            ensure!(
-                self.collision.has_owner(owner),
-                "Static relocation has no installed collision owner {owner}"
-            );
-        }
-        for owner in owners {
-            self.collision
-                .set_owner_transform(owner, translation, quaternion)?;
-        }
+        self.publish_static_collision_pose(index, position, rotation)?;
         if let Some((handle, bounds)) = phantom {
             self.physics_objects
                 .phantoms
@@ -6150,7 +6253,7 @@ impl World {
             .published_status = current;
         Ok(true)
     }
-    fn relative_prefab_entity(&self, owner: usize, suffix: &str) -> Result<Option<usize>> {
+    pub(super) fn relative_prefab_entity(&self, owner: usize, suffix: &str) -> Result<Option<usize>> {
         let owner = self.scripts.prefab_owner(owner)?.unwrap_or(owner);
         let root = self
             .entities
@@ -6232,7 +6335,13 @@ impl World {
             .find(|c| c.class_name == "ChildComponent");
         let found = if let Some(slots)=self.live_child_slots.get(&owner) {
             let requested=super::child_entities::requested_name(name)?;
-            slots.iter().flatten().copied().find(|&i|!self.removed_entities.contains(&i) && self.entities[i].name.eq_ignore_ascii_case(requested))
+            slots.iter().flatten().copied().find(|&i| {
+                let child = &self.entities[i];
+                !self.removed_entities.contains(&i)
+                    && (child.name.eq_ignore_ascii_case(requested)
+                        || child.name.strip_suffix(&format!(" [spawn {}]", child.id))
+                            .is_some_and(|name| name.eq_ignore_ascii_case(requested)))
+            })
         } else {super::child_entities::find(component, name, |id| {
             Ok(self
                 .entities
@@ -6626,8 +6735,8 @@ impl World {
         })?;
         for command in commands {
             let result = match command {
-                super::actor_scripts::Command::Sequence { entity, name } => {
-                    self.request_actor_sequence(entity, &name)
+                super::actor_scripts::Command::Sequence { entity, name, notify } => {
+                    self.request_actor_sequence_with_end_event(entity, &name, notify)
                 }
                 super::actor_scripts::Command::Reset { entity } => {
                     self.reset_actor_sequence(entity)
@@ -7205,57 +7314,37 @@ impl World {
                     .context("SH owner model unavailable")?;
                 let empty = BTreeMap::new();
                 let previous = self.spherical_bounds.get(&entity).unwrap_or(&empty);
-                let result = if let Some(playback) = self
-                    .actor_playback
-                    .as_ref()
-                    .filter(|playback| playback.entity == entity)
+                let empty_poses = BTreeMap::new();
+                let animation = self.model_animation.get(&entity);
+                let (poses, direct, managed) = if let Some(playback) = self
+                    .actor_playback.as_ref().filter(|playback| playback.entity == entity)
                 {
-                    hierarchy.actor_world_bounds(&transform, previous, &playback.pose.transforms)
+                    (&playback.pose.transforms, true, true)
                 } else if let Some(actor) = self.actors.get(&entity) {
-                    let poses = actor
-                        .pose
-                        .as_ref()
-                        .map(|pose| &pose.transforms)
-                        .or_else(|| {
-                            self.model_animation
-                                .get(&entity)
-                                .map(|animation| &animation.poses)
-                        });
-                    let empty = BTreeMap::new();
-                    hierarchy.actor_world_bounds(&transform, previous, poses.unwrap_or(&empty))
-                } else if let Some(animation) = self.model_animation.get(&entity) {
-                    animation.bounds(hierarchy, &transform, previous)
+                    let poses = actor.pose.as_ref().map(|pose| &pose.transforms)
+                        .or_else(|| animation.map(|animation| &animation.poses));
+                    (poses.unwrap_or(&empty_poses), true, true)
+                } else if let Some(animation) = animation {
+                    (&animation.poses, true, false)
                 } else {
-                    hierarchy.static_world_bounds(Some(&transform), previous)
+                    (&empty_poses, false, false)
                 };
+                let runtime_geometry = self.scene_particles.live.get(&entity)
+                    .map(|effect| effect.particles.lighting_bounds())
+                    .transpose()?.unwrap_or_default();
+                let result = if let Some(animation) = animation.filter(|_| !managed) {
+                    hierarchy.base_world_transforms_with_overrides(
+                        Some(&transform), &empty_poses, &animation.published_locals,
+                    )
+                } else {
+                    hierarchy.base_world_transforms_with_poses(Some(&transform), poses)
+                }.and_then(|mut transforms| {
+                    hierarchy.face_billboard_bounds(&mut transforms, view)?;
+                    hierarchy.bounds_with_runtime_geometry(
+                        &transforms, previous, direct, managed, &runtime_geometry, true,
+                    )
+                });
                 if result.is_err() && projected_entities.contains(&entity) {
-                    let empty_poses = BTreeMap::new();
-                    let (poses, direct, managed) = if let Some(playback) = self
-                        .actor_playback
-                        .as_ref()
-                        .filter(|playback| playback.entity == entity)
-                    {
-                        (&playback.pose.transforms, true, true)
-                    } else if let Some(actor) = self.actors.get(&entity) {
-                        (
-                            actor
-                                .pose
-                                .as_ref()
-                                .map(|pose| &pose.transforms)
-                                .or_else(|| {
-                                    self.model_animation
-                                        .get(&entity)
-                                        .map(|animation| &animation.poses)
-                                })
-                                .unwrap_or(&empty_poses),
-                            true,
-                            true,
-                        )
-                    } else if let Some(animation) = self.model_animation.get(&entity) {
-                        (&animation.poses, true, false)
-                    } else {
-                        (&empty_poses, false, false)
-                    };
                     projection_mesh_bounds.insert(
                         entity,
                         hierarchy
@@ -7304,10 +7393,24 @@ impl World {
             images.insert(id, image);
         }
         for binding in &self.spherical_bindings {
-            // Cached painted materials must not replace active ink surfaces.
-            if self.sketch_draws.contains(&binding.draw)
-                || self.jigsaw_effect_values.contains_key(&binding.draw)
-            {
+            // An ink transition owns its shader, but its composed base still
+            // samples the object's live lighting property.
+            if self.jigsaw_effect_values.contains_key(&binding.draw) {
+                let draw = &mut draws[binding.draw];
+                if let (Some(Ok(pixels)), Some(Ok(program)), Some(material)) = (
+                    images.get(&binding.property), draw.preview.as_ref(), draw.material.as_ref(),
+                ) {
+                    if let Some(slot) = program.first_runtime_sh_slot(material) {
+                        if let Some(image) = Arc::make_mut(&mut draw.material_images).iter_mut()
+                            .find(|image| u32::from(image.slot) == slot)
+                        {
+                            image.rgba = pixels.clone();
+                        }
+                    }
+                }
+                continue;
+            }
+            if self.sketch_draws.contains(&binding.draw) {
                 continue;
             }
             let result = (|| -> std::result::Result<_, String> {
@@ -8004,36 +8107,39 @@ impl World {
         (part.owner == owner).then_some(part)
     }
     pub fn collision_entity(&self, part: usize) -> Option<&RuntimeEntity> {
+        self.entities.get(self.collision_entity_index(part)?)
+    }
+    pub(super) fn collision_entity_index(&self, part: usize) -> Option<usize> {
         if self
             .player_physics
             .as_ref()
             .is_some_and(|body| body.owner == part)
         {
-            return self.entities.get(self.player_entity);
+            return (self.player_entity < self.entities.len()).then_some(self.player_entity);
         }
         if let Some((&entity, _)) = self
             .character_physics
             .iter()
             .find(|(_, body)| body.as_ref().is_ok_and(|body| body.owner == part))
         {
-            return self.entities.get(entity);
+            return (entity < self.entities.len()).then_some(entity);
         }
         if let Some((&source, _)) = self
             .dynamic_runtime_sources
             .iter()
             .find(|(_, owner)| **owner == part)
         {
-            return self.entities.get(self.dynamic_bodies.get(source)?.entity);
+            let entity = self.dynamic_bodies.get(source)?.entity;
+            return (entity < self.entities.len()).then_some(entity);
         }
         if let Some(source) = self.jigsaw_owners.get(&part) {
-            return self
-                .entities
-                .get(self.jigsaw_instances.get(source.instance)?.entity);
+            let entity = self.jigsaw_instances.get(source.instance)?.entity;
+            return (entity < self.entities.len()).then_some(entity);
         }
         let source = self.imported_static_part(part)?;
         self.entities
             .iter()
-            .find(|e| e.id == source.entity_id && e.scene == source.scene)
+            .position(|e| e.id == source.entity_id && e.scene == source.scene)
     }
     /// Resolve an original triangle ID from the active Box3D contact snapshot.
     /// Static owner relocation uses the current unscaled transform. Dynamic
@@ -8983,7 +9089,7 @@ pub(super) fn load_with_bootstrap_mode(
     report
         .geometry
         .push(serde_json::json!({"kind":"quest_state","state":quest_state.summary()}));
-    report.unsupported.push("Native quest slots and QUES save/restore are owned by this world; evaluation, global-change notifications, stage transitions and quest UI remain unimplemented.".into());
+    report.unsupported.push("Quest conditions driven by global changes and native completion listeners remain incomplete.".into());
     let bytes = read_descriptor(&root, &files, level)?;
     let mut values = descriptor_bytes(&bytes).with_context(|| format!("Level descriptor {level}"))?;
     let restore_snapshot = scores.checkpoint.latest.as_ref()
@@ -9789,6 +9895,7 @@ pub(super) fn load_with_bootstrap_mode(
         guardians: Default::default(),
         guardian_audio,
         audio_playback,
+        music_state: Default::default(),
         multi_position_audio: BTreeMap::new(),
         model_shadow: Default::default(),
         screen_fade: Default::default(),
@@ -9848,7 +9955,7 @@ pub(super) fn load_with_bootstrap_mode(
             .map_err(|error| format!("{error:#}")),
         player_script_animation_events: Vec::new(),
         controller_feedback: Default::default(),
-        authored_havok: super::authored_havok::Runtime::default(),
+        authored_havok: super::authored_havok::Runtime::with_wii_source(&root),
         player_physics: None,
         character_physics: BTreeMap::new(),
         npc_relocations: BTreeMap::new(),
@@ -9860,6 +9967,7 @@ pub(super) fn load_with_bootstrap_mode(
         player_abilities: super::ability_registry::Registry::base_ownership(),
         player_stay_combat_idle: false,
         player_ability_registry: super::ability_registry::Registry::load(&runtime_settings),
+        ticket_hud_gain: None,
         ability_hud_requests: Vec::new(),
         diagnostic_pickup_commands: false,
         authored_health: BTreeMap::new(),
@@ -9914,6 +10022,7 @@ pub(super) fn load_with_bootstrap_mode(
         dynamic_query_owners: Vec::new(),
         dynamic_runtime_sources: BTreeMap::new(),
         dynamic_ground_contacts: Default::default(),
+        pressure_plates: Default::default(),
         runtime_lifetimes: BTreeMap::new(),
         rigid_layer_updates: Default::default(),
         dynamic_runtime_filter: super::physics_filter::GameFilter {
@@ -9947,6 +10056,7 @@ pub(super) fn load_with_bootstrap_mode(
         spherical_bindings: Vec::new(),
         child_lighting_properties: BTreeMap::new(),
         jigsaw_effect_queue: Default::default(),
+        jigsaw_endpoint_pending: Default::default(),
         jigsaw_effect_values: HashMap::new(),
         hidden_jigsaw_draws,
         sketch_draws,
@@ -10015,6 +10125,24 @@ pub(super) fn load_with_bootstrap_mode(
             .push(format!("Native animation events: {error}"));
     }
     world.initialize_component_range(0..world.entities.len(), &files, &root)?;
+    if let Some(health) = world.runtime_settings.get("PlayerHealth").filter(|_| restore.is_none())
+        .map(|value| super::native_text_number::atoi(value.as_bytes(), &mut 0))
+        .filter(|&value| value > 0)
+    {
+        let player = world.player_entity;
+        if let Some(authored) = world.authored_health.get_mut(&player) {
+            authored.health = health;
+            authored.maximum = health;
+            world.runtime_health.insert(player, super::health::Runtime::new(authored));
+            for property in world.entities[player].components.iter_mut()
+                .filter(|component| component.class_name == "HealthComponent")
+                .flat_map(|component| &mut component.properties)
+                .filter(|property| matches!(property.name.as_str(), "Health" | "MaxHealth"))
+            {
+                property.value = serde_json::json!(health);
+            }
+        }
+    }
     trace_load_memory("component constructors and Lua scripts initialized");
     // Map-load callbacks must see the same gameplay APIs as subsequent ticks.
     // Inspection and strict compatibility fixtures retain their original path.
@@ -10494,7 +10622,7 @@ mod tests {
             input:"AnimEvent".into(),parameters:"EVENT_Special_1".into(),delay:0.,flags:0,
         };
         let before=world.player_graph.machines.iter().map(|(id,m)|(id.clone(),m.current)).collect::<Vec<_>>();
-        world.dispatch_actor_input(player,None,&connection)?;
+        world.dispatch_actor_input(player,None,&connection,None)?;
         let after=world.player_graph.machines.iter().map(|(id,m)|(id.clone(),m.current)).collect::<Vec<_>>();
         ensure!(before!=after,"IO event did not change Mickey's graph synchronously");
         ensure!(world.player_script_animation_events.len()==1,"IO event bypassed native external-event publication");
@@ -10507,7 +10635,7 @@ mod tests {
             let id=world.actor_sequences[&pipe].find_name(name);
             ensure!(world.actor_sequences[&pipe].get(id).is_some_and(|(sequence,_)|sequence.name.as_deref()==Some(name)),"Original named sequence absent");
             connection.parameters=format!("{name},false,0,0,false");
-            world.dispatch_actor_input(pipe,None,&connection)?;
+            world.dispatch_actor_input(pipe,None,&connection,None)?;
             ensure!(world.actors[&pipe].requested_id()==Some(id),"GB IO failed to parse sequence and modifier arguments");
         }
         Ok(())

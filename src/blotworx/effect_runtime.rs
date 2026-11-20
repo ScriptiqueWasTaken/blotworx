@@ -47,6 +47,7 @@ struct Mesh {
     draw: crate::render_support::viewport3d::GpuDrawCommand,
     inverse: [f32; 16],
     billboards: Vec<(u32,u16)>,
+    lighting_slot: Option<u8>,
 }
 struct Prepared {
     visibility: super::effect_visibility::Runtime,
@@ -170,6 +171,7 @@ impl Live {
         eye: [f32; 3],
         right: [f32; 3],
         up: [f32; 3],
+        lights: &[super::spherical_lighting::RegisteredLight],
         draws: &mut Vec<crate::render_support::viewport3d::GpuDrawCommand>,
     ) -> Result<()> {
         self.particles.append(right, up, draws)?;
@@ -178,6 +180,13 @@ impl Live {
             .as_ref()
             .map(|a| &a.world)
             .unwrap_or(&self.bind_world);
+        let back = super::physics::cross(right, up);
+        let view = [
+            right[0], up[0], back[0], 0.,
+            right[1], up[1], back[1], 0.,
+            right[2], up[2], back[2], 0.,
+            0., 0., 0., 1.,
+        ];
         for mesh in self.meshes.iter() {
             if !self.visibility.visible(&mesh.path) {continue;}
             let mut matrix = super::skin::matrix_product(
@@ -197,6 +206,18 @@ impl Live {
             self.particles.publish_material(mesh.node, &mut draw)?;
             if let Some(animation) = &self.animation {
                 animation.apply_material(mesh.node, &mut draw)?;
+            }
+            if let Some(slot) = mesh.lighting_slot {
+                let images = Arc::make_mut(&mut draw.material_images);
+                if let Some(image) = images.iter_mut().find(|image| image.slot == slot) {
+                    let center = std::array::from_fn(|axis| {
+                        (draw.aabb_min[axis] + draw.aabb_max[axis]) * 0.5
+                    });
+                    let position = super::physics::point(&draw.trans_mat, center);
+                    image.rgba = Arc::new(super::spherical_lighting::view_texture(
+                        lights.iter().map(|light| (&light.light, 1.)), position, &view,
+                    )?);
+                }
             }
             draws.push(draw);
         }
@@ -231,6 +252,7 @@ impl Library {
     ) -> Result<Self> {
         let mut library=Self {resources:super::resource_store::Store::new(root,&report.packs)?,names:BTreeMap::new(),definitions:Vec::new(),prepared:BTreeMap::new(),live:BTreeMap::new(),created:0,completed:0};
         library.admit(&report.packs,&report.scenes,files,entities)?;
+        library.resources.palette_scenes()?;
         Ok(library)
     }
     pub(super) fn admit(&mut self,packs:&[String],scene_paths:&[String],files:&[VirtualFile],entities:&[RuntimeEntity])->Result<()> {
@@ -287,6 +309,19 @@ impl Library {
                 }
             }
         }
+        let death_effects = entities
+            .iter()
+            .filter_map(|entity| value(&entity.components, "HealthComponent", "NoHealthEffect"))
+            .filter_map(|property| property.as_str())
+            .filter(|name| !name.is_empty())
+            .filter_map(|name| named_effects::lookup_key(name).ok())
+            .filter_map(|name| self.names.get(&name).copied())
+            .collect::<HashSet<_>>();
+        for effect in death_effects {
+            // Cache decoded one-shot resources in the scene loading phase.
+            // Instance creation still reports any errors at the call site.
+            let _ = self.prepare(effect);
+        }
         Ok(())
     }
     fn prepare(&mut self, index: usize) -> Result<Arc<Prepared>> {
@@ -303,6 +338,18 @@ impl Library {
                 definition.name
             );
             for component in &definition.components {
+                if component.class_name == "DynamicallyLitComponent" {
+                    // This declaration selects ordinary live lighting, already
+                    // supplied by the FX mesh and particle render paths.
+                    let field = |name| component.properties.iter()
+                        .find(|property| property.name == name).map(|property| &property.value);
+                    ensure!(
+                        field("Dynamic Light Layers").is_none_or(|value| value.as_i64() == Some(0))
+                            && field("LinkLightsOnceOnly").is_none_or(|value| value.as_bool() == Some(false)),
+                        "FX requires a custom dynamic-light binding: {}", definition.name
+                    );
+                    continue;
+                }
                 ensure!(
                     matches!(
                         component.class_name.as_str(),
@@ -411,8 +458,9 @@ impl Library {
                     path.iter().all(|id| hierarchy.nodes[id]
                         .controllers
                         .iter()
-                        .all(|c| matches!(c.class_name.as_str(), "NiTransformController" | "NiVisController"))),
-                    "FX mesh visibility/property controller is not connected"
+                        .all(|c| matches!(c.class_name.as_str(), "NiTransformController" | "NiVisController")
+                            || c.color.is_some() || c.texture_transform.is_some() || c.indirect_scale.is_some())),
+                    "FX mesh visibility/property controller is not connected: {}", definition.name
                 );
                 let billboards = path
                     .iter().rev()
@@ -476,11 +524,25 @@ impl Library {
                         )
                         .map_err(anyhow::Error::msg)?,
                     );
-                    let images = crate::render_support::material_preview::images(
+                    let lighting_slot = program.first_runtime_sh_slot(&mesh.material)
+                        .map(u8::try_from).transpose()?;
+                    let runtime_lighting = lighting_slot.map(|slot| {
+                        use super::spherical_lighting::SIZE;
+                        crate::render_support::material_preview::MaterialImage {
+                            slot,
+                            rgba: Arc::new(vec![0; SIZE * SIZE * 4]),
+                            width: SIZE as u32,
+                            height: SIZE as u32,
+                            sampler: Default::default(),
+                            matrix: [1., 0., 0., 0., 1., 0., 0., 0., 1.],
+                        }
+                    });
+                    let images = crate::render_support::material_preview::images_with_runtime_sh(
                         &program,
                         &mesh.material,
                         &files,
                         &mut textures,
+                        runtime_lighting.as_ref(),
                     )
                     .map_err(anyhow::Error::msg)?;
                     let mut min = [f32::INFINITY; 3];
@@ -496,11 +558,13 @@ impl Library {
                         path: path.clone(),
                         inverse: super::nif_runtime::inverse(mesh.mesh_to_model)?,
                         billboards: billboard_modes.clone(),
+                        lighting_slot,
                         draw: crate::render_support::viewport3d::GpuDrawCommand {
                             shader_time:None,source_attributes: mesh.source_attributes.clone(),
                             extra_uvs: mesh.extra_uvs.clone(),
                             projection_bound: None,
                             projected_shadow: false,
+                            skybox: false,
                             material_registers: None,
                             material_indirect: None,
                             material_images: Arc::new(images),
@@ -780,8 +844,8 @@ impl World {
         named_effects::start(&mut Factory { world: self, owner }, name, None, forget)?;
         Ok(())
     }
-    /// Detached death effects survive the destroyed scenery's hide/removal.
-    pub(super) fn start_death_effect(&mut self, owner: usize, name: &str) -> Result<()> {
+    /// Detached one-shot effects survive their source entity's hide/removal.
+    pub(super) fn start_one_shot_effect(&mut self, owner: usize, name: &str) -> Result<()> {
         named_effects::start(&mut Factory { world: self, owner }, name, None, true)?;
         Ok(())
     }
@@ -1533,6 +1597,7 @@ mod tests {
                     [5., 2., 5.],
                     [1., 0., 0.],
                     [0., 1., 0.],
+                    &world.report.spherical_lights,
                     &mut all,
                 )?;
                 let flash = all.last().context("No FX mesh draw")?;

@@ -45,6 +45,7 @@ fn clone_component_supported(name: &str) -> bool {
             | "JPSSceneGraphComponent"
             | "InputOutputComponent"
             | "ParticleSystemControllerComponent"
+            | "LifetimeComponent"
             | "SplineFollowerComponent"
             | "UsableComponent"
             | "GameEventsComponent"
@@ -61,6 +62,12 @@ fn clone_component_supported(name: &str) -> bool {
             | "AIBrainComponent"
             | "PaintThinnerCounterComponent"
             | "ArsenalComponent"
+            | "WeaponComponent"
+            | "ShooterComponent"
+            | "TriggerDamageComponent"
+            | "PhysicsRigidBodyPhantomShapeComponent"
+            | "PhysicsPhantomComponent"
+            | "PlayerPickupComponent"
             | "TargetableComponent"
             | "VulnerabilityComponent"
             | "TeamComponent"
@@ -211,7 +218,7 @@ impl World {
                             && !self.removed_entities.contains(index)
                     })
                     .map(|(index, _)| index)
-                    .context("Spawner prototype reference is not loaded")?;
+                    .with_context(|| format!("Spawner {} source slot {} references absent entity {id} in {scene}", source.name, pair.object))?;
                 self.preflight_render_clone(prototype)?;
                 Ok(Some(Prototype::Object(prototype)))
             })
@@ -276,6 +283,7 @@ impl World {
                 state.live.push(entity);
                 state.destinations.insert(entity, slot);
                 state.occupied_destinations |= super::super::spawn_selection::destination_bit(slot);
+                self.queue_dynamic_spawn_output(entity)?;
                 self.queue_spawner_status(0x18, owner, entity)?;
                 last = Some(entity);
             }
@@ -335,8 +343,24 @@ impl World {
         }));
         Ok(())
     }
+    fn queue_dynamic_spawn_output(&mut self, entity: usize) -> Result<()> {
+        // REL182718..182740 emits 3e after insertion in the world. The
+        // template spawner reaches that path at 3cc558. REL270d7c binds
+        // the distinct OnSpawnedDynamically output, separate from kind 3d.
+        self.entity_event_queue.enqueue(&super::super::entity_events::Basic {
+            event_kind: 0x3e,
+            source: Some(entity),
+            header: None,
+        }.into(), None)?;
+        Ok(())
+    }
+
     fn preflight_render_clone(&self, source: usize) -> Result<()> {
         let entity = &self.entities[source];
+        ensure!(
+            !self.rigid_trigger_hulls.contains_key(&source),
+            "Resource-backed weapon trigger cloning requires rebinding on {}", entity.name
+        );
         let unsupported=entity.components.iter().filter(|component|!clone_component_supported(&component.class_name))
             .map(|component|component.class_name.as_str()).collect::<Vec<_>>();
         ensure!(unsupported.is_empty(),"ForceSpawn clone lifecycle on {} has unsupported components: {}",entity.name,unsupported.join(", "));
@@ -404,12 +428,27 @@ impl World {
         rotation: [f32; 9],
         group: &str,
     ) -> Result<usize> {
+        self.clone_render_branch(source, position, rotation, group, &mut Vec::new())
+    }
+
+    fn clone_render_branch(
+        &mut self,
+        source: usize,
+        position: V,
+        rotation: [f32; 9],
+        group: &str,
+        ancestry: &mut Vec<usize>,
+    ) -> Result<usize> {
+        ensure!(!ancestry.contains(&source), "Cyclic spawn child ownership on {}", self.entities[source].name);
+        ensure!(position.iter().chain(&rotation).all(|value| value.is_finite()), "Invalid spawn pose");
         self.preflight_render_clone(source)?;
+        let slots = self.owned_retirement_children(source)?;
         let original = &self.entities[source];
+        let transform = super::super::render_transform::from_entity(rotation, position, original.authored_scale);
         let mut entity = RuntimeEntity {
             authored_scale: original.authored_scale,
             authored_rotation: original.authored_rotation,
-            runtime_rotation: original.runtime_rotation,
+            runtime_rotation: rotation,
             model_asset: original.model_asset.clone(),
             mesh_draws: original.mesh_draws.clone(),
             jigsaw_asset: None,
@@ -417,8 +456,8 @@ impl World {
             scene: original.scene.clone(),
             id: original.id,
             name: original.name.clone(),
-            transform: original.transform,
-            authored_transform: original.authored_transform,
+            transform,
+            authored_transform: transform,
             components: original.components.clone(),
             draws: original.draws.clone(),
             collision_parts: 0..0,
@@ -441,6 +480,12 @@ impl World {
             {
                 parent.value = serde_json::json!(0);
             }
+        }
+        if let Some(field) = entity.components.iter_mut()
+            .find(|c| c.class_name == "ChildComponent")
+            .and_then(|c| c.properties.iter_mut().find(|p| p.name == "Child Entities"))
+        {
+            field.value = serde_json::json!(vec![0u32; slots.len()]);
         }
         let mut aliases = Vec::new();
         if let Some(io) = entity
@@ -496,7 +541,10 @@ impl World {
                 *index = draw_base + *index - source_draws.start;
             }
         }
-        let draws = self.draws[source_draws.clone()].to_vec();
+        let mut draws = self.draws[source_draws.clone()].to_vec();
+        for draw in &mut draws {
+            draw.trans_mat = transform;
+        }
         let bindings = self
             .spherical_bindings
             .iter()
@@ -506,6 +554,11 @@ impl World {
         let index = self.entities.len();
         self.entities.push(entity);
         self.draws.extend(draws);
+        if !slots.is_empty() {
+            self.live_child_slots.insert(index, vec![None; slots.len()]);
+        }
+        ancestry.push(source);
+        let mut owned = Vec::new();
         let result = (|| -> Result<()> {
             // Share immutable model-local resources, never the source actor's
             // live clip, transition, clock or sampled pose. The common
@@ -518,8 +571,8 @@ impl World {
             }
             self.scripts
                 .register_entity(index, &self.entities[index].name, &aliases)?;
-            self.relocate_entity(index, position, rotation)?;
-            self.entities[index].authored_transform = self.entities[index].transform;
+            // Component constructors consume the spawn pose directly. A
+            // relocation would require a phantom that has not been built yet.
             for draw in source_draws.clone() {
                 let target = draw_base + draw - source_draws.start;
                 if let Some(material) = self.spherical_materials.get(&draw).cloned() {
@@ -565,6 +618,7 @@ impl World {
                 self.spherical_bindings.push(binding);
             }
             let root = self.data_root.clone();
+            self.bind_cloned_phantom(source, index)?;
             self.initialize_component_range(index..index + 1, &[], &root)?;
             if self.entities[index].components.iter().any(|component|component.class_name=="AnimationComponentGB") {
                 ensure!(self.actors.contains_key(&index),"Spawned Gamebryo actor initialization failed");
@@ -595,6 +649,49 @@ impl World {
                 self.initialize_demo_motion_range(index..index + 1);
             }
             self.entities[index].authored_transform = self.entities[index].transform;
+            for (slot, child) in slots.into_iter().enumerate() {
+                let Some(child) = child.filter(|child| !self.removed_entities.contains(child)) else {
+                    continue;
+                };
+                let Some(local) = self.transform_hierarchy.get(&child).filter(|local| local.parent == source) else {
+                    let message = format!("Spawn child {} has a separate transform owner; rebinding is pending", self.entities[child].name);
+                    if !self.report.unsupported.contains(&message) {
+                        self.report.unsupported.push(message);
+                    }
+                    continue;
+                };
+                if let Err(error) = self.preflight_render_clone(child) {
+                    let message = format!("Spawn child {}: {error:#}", self.entities[child].name);
+                    if !self.report.unsupported.contains(&message) {
+                        self.report.unsupported.push(message);
+                    }
+                    continue;
+                }
+                let parent = super::super::rotator_runtime::parent_cache(&self.entities[index]);
+                let (position, rotation) = super::super::native_transform_record::world_pose(
+                    &parent, local.position, &local.rotation,
+                );
+                let spawned = self.clone_render_branch(child, position, rotation, "", ancestry)?;
+                owned.push(spawned);
+                self.change_transform_parent(spawned, Some(index))?;
+                self.queue_dynamic_spawn_output(spawned)?;
+                let slots = self.live_child_slots.get_mut(&index).context("Spawn lost its child slots")?;
+                // Parenting selects the first free slot. The factory preserves
+                // the original indexed layout, including empty weapon slots.
+                let assigned = slots.iter().position(|id| *id == Some(spawned))
+                    .context("Spawned child was not registered by parenting")?;
+                slots.swap(assigned, slot);
+            }
+            if let Some(slots) = self.live_child_slots.get(&index) {
+                let ids = slots.iter().map(|child| child.map_or(0, |child| self.entities[child].id))
+                    .collect::<Vec<_>>();
+                if let Some(field) = self.entities[index].components.iter_mut()
+                    .find(|c| c.class_name == "ChildComponent")
+                    .and_then(|c| c.properties.iter_mut().find(|p| p.name == "Child Entities"))
+                {
+                    field.value = serde_json::json!(ids);
+                }
+            }
             self.report.geometry.push(serde_json::json!({
                     "kind": "spawned_object_clone",
                     "entity": index,
@@ -612,7 +709,11 @@ impl World {
                 }));
             Ok(())
         })();
+        ancestry.pop();
         if let Err(error) = result {
+            for child in owned.into_iter().rev() {
+                self.queue_entity_retirement(child)?;
+            }
             self.retire_entity(index)?;
             return Err(error);
         }
@@ -711,7 +812,9 @@ pub(in crate::blotworx) fn validate_airlock_spawns()->Result<()> {
         target:Some(barrel as u64),owner:Some(world.player_entity as u64),tag:"Spin".into(),delivery:super::super::projectile_stimulus::Delivery::Target,
     };
     world.receive_combat(barrel,&[emission])?;
+    let started = std::time::Instant::now();
     world.advance_health_lifecycle()?;
+    println!("Barrel break lifecycle: {:.2} ms", started.elapsed().as_secs_f64() * 1000.);
     ensure!(world.named_fx.created>before,"Original barrel break effect was not created: {:?}",world.report.unsupported.iter().filter(|s|s.starts_with("Death effect")).collect::<Vec<_>>());
     let effect=*world.named_fx.live.iter().find(|(_,fx)|fx.owner==barrel && fx.fire_and_forget).context("Detached barrel effect missing")?.0;
     ensure!(!world.transform_hierarchy.contains_key(&effect),"Death effect remained attached to hidden scenery");

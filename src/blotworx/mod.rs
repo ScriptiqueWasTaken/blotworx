@@ -65,6 +65,9 @@ mod animation_chunks;
 mod igc_timeline;
 mod gamebryo_camera;
 mod usable_selection;
+mod usable_prompt;
+mod disc_setup;
+mod updater;
 mod em2_player_tools;
 mod em2_children;
 mod em2_child_pose;
@@ -280,6 +283,12 @@ mod audio_play_action;
 mod audio_playback;
 mod audio_parameters;
 mod audio_mute_mix;
+mod audio_music;
+mod audio_music_state;
+#[cfg(debug_assertions)]
+pub fn validate_music() -> anyhow::Result<()> { audio_music::validate() }
+#[cfg(all(debug_assertions, feature="blotworx-ui-render"))]
+pub fn validate_pause_menu() -> anyhow::Result<()> { ui_movie::validate_pause_menu() }
 #[cfg(debug_assertions)]
 pub fn validate_audio_mutes()->anyhow::Result<()> {audio_playback::validate_mutes()}
 mod audio_playing;
@@ -460,17 +469,27 @@ mod decal_preview;
 mod decal_queue;
 mod decal_targets;
 mod demo_ai;
+mod ai_projectiles;
 mod demo_npc_behaviors;
 mod demo_counter;
 mod demo_gameplay;
-mod demo_hud;
 mod demo_scene;
 mod demo_story;
 mod dialogue_selection;
 mod demo_triggers;
 mod dynamic_reward;
 mod dynamic_body;
+#[cfg(debug_assertions)]
+pub fn validate_dbc_courtyard_armor() -> anyhow::Result<()> {
+    dynamic_runtime::validate_dbc_courtyard_armor()
+}
 mod dynamic_runtime;
+#[cfg(debug_assertions)]
+pub fn validate_dbc_hall_door() -> anyhow::Result<()> { dynamic_runtime::validate_dbc_hall_door() }
+#[cfg(debug_assertions)]
+pub fn validate_dbc_arm_trigger() -> anyhow::Result<()> {
+    demo_triggers::validate_dbc_arm_trigger()
+}
 mod ears;
 mod effect_runtime;
 mod effect_visibility;
@@ -544,6 +563,7 @@ mod machine_echo;
 mod machine_runtime;
 mod machine_transitions;
 mod map_info;
+mod pressure_plate;
 mod material_animation;
 mod material_curve;
 mod material_projection;
@@ -631,10 +651,6 @@ mod robot_arm_spotlight;
 mod robot_arm_turn;
 mod robot_arm_behavior;
 mod robot_arm_behavior_world;
-#[cfg(debug_assertions)]
-pub fn validate_dbc_arm_trigger() -> anyhow::Result<()> {
-    demo_triggers::validate_dbc_arm_trigger()
-}
 mod robot_arm_target;
 mod rotator;
 mod rotator_runtime;
@@ -745,6 +761,7 @@ use std::{path::PathBuf, sync::mpsc, time::Instant};
 // VillageTest reference capture. Render interpolation remains independent.
 const STEP: f32 = 1.0 / 30.0;
 struct Options {
+    updates: bool,
     continue_checkpoint: bool,
     shared_playtest: bool,
     save_directory: Option<PathBuf>,
@@ -763,7 +780,7 @@ struct Options {
     particle_materials: bool,
     preview_entry: Option<String>,
     render_probe: Option<[f32; 2]>,
-    demo_abilities: bool,
+    preview_runtime: bool,
     strict_npc_ai: bool,
     show_options: bool,
     graphics_profile: Option<options_menu::Profile>,
@@ -802,13 +819,14 @@ struct Options {
 }
 fn options() -> Result<Options> {
     let mut o = Options {
+        updates: false,
         continue_checkpoint: false,
         shared_playtest: false,
         save_directory: None,
         save_slot: 0,
         rtc_seconds: None,
         capture_realtime: false,
-        original_movie_hud: false,
+        original_movie_hud: cfg!(feature = "blotworx-ui-render"),
         diagnostic_serial_hud: false,
         diagnostic_eager_hud: false,
         diagnostic_no_view_culling: false,
@@ -819,7 +837,7 @@ fn options() -> Result<Options> {
         particle_materials: false,
         preview_entry: None,
         render_probe: None,
-        demo_abilities: true,
+        preview_runtime: true,
         strict_npc_ai: false,
         show_options: false,
         graphics_profile: None,
@@ -857,8 +875,16 @@ fn options() -> Result<Options> {
         capture_movie_frame: None,
         capture_switch_level: None,
     };
-    let mut args = std::env::args().skip(1);
+    let mut args = std::env::args().skip(1).peekable();
+    let diagnostic = args.next_if(|arg| arg == "diagnose").is_some();
+    if !diagnostic {
+        o.level = disc_setup::START_LEVEL.into();
+        o.updates = true;
+    }
     while let Some(a) = args.next() {
+        if !diagnostic && !matches!(a.as_str(), "--help" | "-h" | "--data" | "--level" | "--continue") {
+            anyhow::bail!("Unknown launch option {a}. Use the in-game menus or run blotworx diagnose --help for developer tools.");
+        }
         match a.as_str() {
             "--continue" => o.continue_checkpoint = true,
             "--save-dir" => {
@@ -884,7 +910,11 @@ fn options() -> Result<Options> {
             }
             "--diagnostic-checkpoint-timing" => o.diagnostic_checkpoint_timing = true,
             "--capture-realtime" => o.capture_realtime = true,
-            "--original-movie-hud" => o.original_movie_hud = true,
+            "--original-movie-hud" => {
+                anyhow::ensure!(cfg!(feature = "blotworx-ui-render"), "Original HUD renderer is unavailable in this build");
+                o.original_movie_hud = true;
+            }
+            "--basic-hud" => o.original_movie_hud = false,
             "--diagnostic-serial-hud" => o.diagnostic_serial_hud = true,
             "--diagnostic-eager-hud" => o.diagnostic_eager_hud = true,
             "--diagnostic-hud-driver-validation" => o.diagnostic_hud_driver_validation = true,
@@ -935,7 +965,7 @@ fn options() -> Result<Options> {
                 o.render_probe = Some([x, y]);
             }
             "--shared-playtest" => o.shared_playtest = true,
-            "--authored-abilities" => o.demo_abilities = false,
+            "--strict-runtime" => o.preview_runtime = false,
             "--strict-npc-ai" => o.strict_npc_ai = true,
             "--show-options" => o.show_options = true,
             "--graphics-profile" => o.graphics_profile=Some(match args.next().context("Expected classic, classic+ or remix")?.as_str(){"classic"=>options_menu::Profile::Classic,"classic+"=>options_menu::Profile::ClassicPlus,"remix"=>options_menu::Profile::Remix,_=>anyhow::bail!("Expected classic, classic+ or remix")}),
@@ -1134,6 +1164,16 @@ fn options() -> Result<Options> {
                 o.capture = Some(args.next().context("--capture needs a PNG path")?.into())
             }
             "--help" | "-h" => {
+                if !diagnostic {
+                    println!(concat!(
+                        "Blotworx\n\n",
+                        "Run blotworx with no arguments to play. Choose a game folder in the app.\n",
+                        "F10 opens settings and the level selector. F3 opens the debug overlay.\n\n",
+                        "Optional shortcuts: --data <folder> --level <level> --continue\n",
+                        "Developer tools: blotworx diagnose --help",
+                    ));
+                    std::process::exit(0);
+                }
                 println!("  --save-dir <directory> (default: Blotworx Engine application storage; separate from native saves)\n  --save-slot <0|1|2>\n  --rtc-seconds <whole seconds since2000> (repeatable hardware counter seed)");
                 println!("  --diagnostic-checkpoint-timing (explicit mutating timer capture; requires timed --capture; no full checkpoint)");
                 println!("  --strict-npc-ai (disable the explicitly temporary Gremlin NPC fallback)");
@@ -1146,6 +1186,7 @@ fn options() -> Result<Options> {
                 println!("  --diagnostic-guardian-particles <paint|thinner> (root particle asset inspection; no guardian gameplay or ribbons)");
                 println!("  --diagnostic-particle-template <name> (root particles from a loaded scene/palette; no effect entity, scripts or audio)");
                 println!("  --shared-playtest (EM2 provisional shared movement/camera; also toggled with F6)");
+                println!("  --strict-runtime (disable temporary gameplay adapters for diagnostics)");
                 println!("  --input-playback <json> (live tick inputs; requires --capture and --capture-tick, matching --level)");
                 println!("  --diagnostic-pickup-commands <entity> (replay authored Give commands; no overlap or pickup removal)");
                 println!("  --run-script <Lua source or original Lua 5.1 chunk>\n  --focus-actor <exact entity name> (camera only)\n  --play-actor <entity> <sequence> (manual repeating inspection override)");
@@ -1251,6 +1292,18 @@ fn player_record_capture(world: &assets::World) -> serde_json::Value {
         )
 }
 pub fn run() -> Result<()> {
+    if updater::finish_if_requested()? { return Ok(()); }
+    #[cfg(debug_assertions)]
+    {
+        let mut args = std::env::args_os().skip(1);
+        if args.next().as_deref() == Some(std::ffi::OsStr::new("diagnose"))
+            && args.next().as_deref() == Some(std::ffi::OsStr::new("--verify-disc-import"))
+        {
+            let image = PathBuf::from(args.next().context("Choose a disc image")?);
+            let destination = PathBuf::from(args.next().context("Choose a test library directory")?);
+            return disc_setup::verify_import(&image, &destination);
+        }
+    }
     let o = options()?;
     if let Some(root) = o.root.as_deref().map(assets::files_root) {
         if em2::is_install(&root) { return em2::run(o, &root); }
@@ -2380,6 +2433,8 @@ enum LevelLoad {
 }
 
 struct Engine {
+    setup: disc_setup::Setup,
+    updater: updater::Updater,
     frame_phases: std::collections::BTreeMap<&'static str, PhaseTiming>,
     save_directory: Option<PathBuf>,
     save_slot: usize,
@@ -2398,7 +2453,7 @@ struct Engine {
     preview_entry: Option<String>,
     render_probe: Option<[f32; 2]>,
     render_probe_done: bool,
-    demo_abilities: bool,
+    preview_runtime: bool,
     strict_npc_ai: bool,
     capture_hide_hose: bool,
     diagnostic_no_model_shadow: bool,
@@ -2439,9 +2494,9 @@ struct Engine {
     receiver: Option<mpsc::Receiver<Result<World>>>,
     loading_save: Option<(save_service::Service, u64, u32)>,
     loading_screen: Option<loading_screen::Screen>,
-    stream_loading_screen: Option<loading_screen::Screen>,
+    usable_button: Option<egui::TextureHandle>,
+    usable_prompt_target: Option<usize>,
     world: Option<World>,
-    demo_hud: demo_hud::State,
     movie: Option<movie::Player>,
     last_movie: Option<serde_json::Value>,
     #[cfg(feature = "blotworx-ui-render")]
@@ -2456,6 +2511,8 @@ struct Engine {
     zoom: f32,
     last: Instant,
     paused: bool,
+    pause_menu_opened: Option<Instant>,
+    playback_pause: Option<(u64, u16)>,
     simulation_active: bool,
     details: bool,
     debug: debug_view::DebugView,
@@ -2475,6 +2532,9 @@ struct Engine {
     capture_requested: bool,
     capture_result: Option<mpsc::Sender<std::result::Result<(), String>>>,
     pad: input::Pad,
+    pad_aim: [f32; 2],
+    #[cfg(feature = "blotworx-ui-render")]
+    pause_pointer: ui_movie::PausePointer,
     previous_buttons: u16,
     pad_edges: u16,
 }
@@ -2492,9 +2552,16 @@ impl Engine {
             .text_styles
             .insert(egui::TextStyle::Small, egui::FontId::proportional(13.));
         cc.egui_ctx.set_style_of(egui::Theme::Dark, style);
-        let root = o
-            .root
-            .or_else(assets::default_root)
+        let mut setup = disc_setup::Setup::default();
+        let root = o.root.or_else(disc_setup::installed)
+            .and_then(|path| {
+                if path.is_file() {
+                    setup.start(path);
+                    None
+                } else {
+                    Some(path)
+                }
+            })
             .map(|p| p.to_string_lossy().into_owned())
             .unwrap_or_default();
         let (playback_trace, playback_trace_error) =
@@ -2511,6 +2578,8 @@ impl Engine {
                 _ => (None, None),
             };
         let mut s = Self {
+            setup,
+            updater: updater::Updater::on_launch(o.updates),
             frame_phases: Default::default(),
             save_directory: o.save_directory,
             save_slot: o.save_slot,
@@ -2528,7 +2597,7 @@ impl Engine {
             preview_entry: o.preview_entry,
             render_probe: o.render_probe,
             render_probe_done: false,
-            demo_abilities: o.demo_abilities,
+            preview_runtime: o.preview_runtime,
             strict_npc_ai: o.strict_npc_ai,
             input_playback: o.input_playback,
             playback_trace,
@@ -2570,11 +2639,11 @@ impl Engine {
             receiver: None,
             loading_save: None,
             loading_screen: None,
-            stream_loading_screen: None,
+            usable_button: None,
+            usable_prompt_target: None,
             world: None,
             #[cfg(feature = "blotworx-ui-render")]
             hud: None,
-            demo_hud: Default::default(),
             movie: None,
             last_movie: None,
             #[cfg(feature = "blotworx-ui-render")]
@@ -2605,6 +2674,8 @@ impl Engine {
             zoom: 5.,
             last: Instant::now(),
             paused: false,
+            pause_menu_opened: None,
+            playback_pause: None,
             simulation_active: false,
             details: false,
             debug: debug_view::DebugView::new(o.debug),
@@ -2624,6 +2695,9 @@ impl Engine {
             capture_requested: false,
             capture_result: None,
             pad: input::Pad::default(),
+            pad_aim: [0.5; 2],
+            #[cfg(feature = "blotworx-ui-render")]
+            pause_pointer: Default::default(),
             previous_buttons: 0,
             pad_edges: 0,
         };
@@ -2647,6 +2721,12 @@ impl Engine {
             }
         }
         s
+    }
+    fn original_pause_available(&self) -> bool {
+        #[cfg(feature = "blotworx-ui-render")]
+        { self.hud.is_some() }
+        #[cfg(not(feature = "blotworx-ui-render"))]
+        { false }
     }
     fn continue_checkpoint(&mut self, ctx: &egui::Context) {
         let result = (|| -> Result<_> {
@@ -2711,7 +2791,18 @@ impl Engine {
         self.root = assets::files_root(std::path::Path::new(&self.root))
             .to_string_lossy()
             .into_owned();
-        if !std::path::Path::new(&self.root).join("packfiles").is_dir() {
+        let root = std::path::Path::new(&self.root);
+        if em2::is_install(root) {
+            let started = std::env::current_exe().and_then(|exe| {
+                std::process::Command::new(exe).arg("--data").arg(root).spawn()
+            });
+            match started {
+                Ok(_) => ctx.send_viewport_cmd(egui::ViewportCommand::Close),
+                Err(error) => self.error = Some(format!("Open game folder: {error}")),
+            }
+            return;
+        }
+        if !root.join("packfiles").is_dir() {
             self.error=Some(format!("No game packfiles found in {}. Choose the extracted game, DATA, files or packfiles folder.",self.root));
             return;
         }
@@ -2730,7 +2821,7 @@ impl Engine {
         let diagnostic_relocation = self.diagnostic_relocation.clone();
         let diagnostic_pickup_commands = self.diagnostic_pickup_commands.clone();
         let diagnostic_counter_impact = self.diagnostic_counter_impact.clone();
-        let demo_abilities = self.demo_abilities;
+        let preview_runtime = self.preview_runtime;
         let strict_npc_ai = self.strict_npc_ai;
         // Loading a replacement level can allocate several hundred MiB of
         // decoded textures, meshes and native collision resources. Retaining
@@ -2833,8 +2924,10 @@ impl Engine {
             .unwrap_or_default();
         // A diagnostic script belongs to the level the run started in.
         let runtime_script = self.runtime_script.take();
-        self.loading_screen = Some(loading_screen::Screen::load(ctx, &root, Some(&level)));
-        self.stream_loading_screen = None;
+        let initial = self.world.is_none();
+        self.loading_screen = Some(loading_screen::Screen::load(ctx, &root, (!initial).then_some(level.as_str())));
+        self.usable_button = usable_prompt::load(ctx, &root).inspect_err(|e| log::warn!("Interaction artwork: {e:#}")).ok();
+        self.usable_prompt_target = None;
         self.loading_save = scores.checkpoint.service.clone().zip(scores.frame_clock.as_ref()).map(|(service, clock)| {
             (service, clock.hardware_sample(), clock.clock.rate.ticks_per_second.get())
         });
@@ -2856,13 +2949,11 @@ impl Engine {
             self.title = None;
             self.main_menu = None;
             self.hud = None;
-            self.demo_hud = Default::default();
             viewport3d::clear_gpu_cache();
         }
         let ctx = ctx.clone();
         std::thread::spawn(move || {
             let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-                let transferred_session = scores.session.is_some();
                 let mut world = assets::load_with_bootstrap_mode(
                     &root,
                     &level,
@@ -2872,7 +2963,7 @@ impl Engine {
                     game_random,
                     render_options,
                     scores,
-                    demo_abilities,
+                    preview_runtime,
                     strict_npc_ai,
                 )?;
                 if particle_materials {
@@ -2880,14 +2971,11 @@ impl Engine {
                         preview.initialize_materials(&world.scripts)?;
                     }
                 }
-                if demo_abilities {
+                if preview_runtime {
                     if !world.demo_story.enabled {
                         world.enable_demo_story()?;
                     }
                     world.demo_story.npc_fallback.enabled = !strict_npc_ai;
-                    if !transferred_session {
-                        world.enable_demo_abilities()?;
-                    }
                     world.recover_failed_preview_script(0);
                 }
                 if let Some(name) = &diagnostic_pickup_commands {
@@ -2954,155 +3042,89 @@ impl Engine {
         let Some(controller) = &mut self.controller else {
             return;
         };
-        if self.capture.is_none() && self.debug.open {
-            let entries = preview_entries(world);
-            if !entries.is_empty() {
-                ui.horizontal(|ui| {
-                    ui.label("Preview entry").on_hover_text("Uses a placed entry marker. This is manual exploration; automatic original projector/checkpoint entry selection remains incomplete.");
-                    egui::ComboBox::from_id_salt("preview_level_entry")
-                        .selected_text(self.preview_entry.as_deref().unwrap_or("Serialized player position"))
-                        .width(350.).show_ui(ui,|ui| {
-                            let mut destination=None;
-                            if ui.selectable_label(self.preview_entry.is_none(),"Serialized player position").clicked() {
-                                self.preview_entry=None;destination=Some(None);
-                            }
-                            for (name,_) in entries {
-                                if ui.selectable_label(self.preview_entry.as_deref()==Some(&name),&name).clicked() {
-                                    self.preview_entry=Some(name.clone());destination=Some(Some(name));
-                                }
-                            }
-                            if let Some(entry)=destination {
-                                if let Some(name)=entry {
-                                    if let Err(error)=select_preview_entry(world,controller,&name) {self.error=Some(format!("Preview entry: {error:#}"));}
-                                }else {controller.player.spawn=world.report.spawn;controller.respawn();}
-                                self.actor_focus=None;
-                                self.jump_pending=false;self.spin_preview_pending=false;
+        if self.debug.open && self.capture.is_none() {
+            egui::Window::new("Scene tools")
+                .default_width(360.)
+                .show(ui.ctx(), |ui| {
+                    let entries = preview_entries(world);
+                    if !entries.is_empty() {
+                        ui.horizontal(|ui| {
+                            ui.label("Preview entry").on_hover_text("Uses a placed entry marker. This is manual exploration; automatic original projector/checkpoint entry selection remains incomplete.");
+                            egui::ComboBox::from_id_salt("preview_level_entry")
+                                .selected_text(self.preview_entry.as_deref().unwrap_or("Serialized player position"))
+                                .width(350.).show_ui(ui,|ui| {
+                                    let mut destination=None;
+                                    if ui.selectable_label(self.preview_entry.is_none(),"Serialized player position").clicked() {
+                                        self.preview_entry=None;destination=Some(None);
+                                    }
+                                    for (name,_) in entries {
+                                        if ui.selectable_label(self.preview_entry.as_deref()==Some(&name),&name).clicked() {
+                                            self.preview_entry=Some(name.clone());destination=Some(Some(name));
+                                        }
+                                    }
+                                    if let Some(entry)=destination {
+                                        if let Some(name)=entry {
+                                            if let Err(error)=select_preview_entry(world,controller,&name) {self.error=Some(format!("Preview entry: {error:#}"));}
+                                        }else {controller.player.spawn=world.report.spawn;controller.respawn();}
+                                        self.actor_focus=None;
+                                        self.jump_pending=false;self.spin_preview_pending=false;
+                                    }
+                                });
+                        });
+                    }
+                    ui.horizontal(|ui| {
+                        let mut request=None;
+                        egui::ComboBox::from_id_salt("live_actor_sequence").selected_text("Request actor sequence").show_ui(ui,|ui| {
+                            for (&entity,resources) in &world.actor_sequences {
+                                if !world.actor_bindings.contains_key(&entity) {continue;}
+                                ui.menu_button(&world.entities[entity].name,|ui| {
+                                    for (_,sequence) in resources.sequences() {
+                                        if let Some(name)=&sequence.name {
+                                            if ui.button(name).clicked() {request=Some((world.entities[entity].name.clone(),name.clone()));ui.close();}
+                                        }
+                                    }
+                                });
                             }
                         });
-                });
-            }
-        }
-        if self.debug.open {
-            ui.horizontal(|ui| {
-            if world.demo_story.enabled && world.demo_story.hud {
-                if let Some(health)=world.runtime_health.get(&world.player_entity) {ui.strong(format!("Health: {}",health.health));}
-                if let Some(ammo)=&world.ammo.inventory {
-                    ui.colored_label(egui::Color32::LIGHT_BLUE,format!("Paint: {:.0}",ammo.amounts[0]));
-                    ui.colored_label(egui::Color32::LIGHT_GREEN,format!("Thinner: {:.0}",ammo.amounts[1]));
-                }
-            }else if self.demo_abilities {
-                ui.label("Demo abilities enabled").on_hover_text("Brush, blast and spin are granted for this demo. Native startup pickup collection is still incomplete; scripted ability disabling remains active.");
-            } else if ui.button("Enable demo abilities").clicked() {
-                match world.enable_demo_abilities() {
-                    Ok(())=>self.demo_abilities=true,
-                    Err(error)=>self.error=Some(format!("Demo abilities: {error:#}")),
-                }
-            }
-            ui.label("Paint: Q / RT   Thinner: E / LT   Spin: F / B   Interact: G / X");
-        });
-        }
-        if let Some(error) = world.demo_story.errors.last() {
-            ui.colored_label(egui::Color32::LIGHT_RED, error);
-        }
-        if world.usable_target(controller.player.position).is_some() {
-            ui.strong("G / X: Interact");
-        }
-        if self.debug.open && world.demo_story.enabled
-            && world
-                .report
-                .level
-                .eq_ignore_ascii_case("Levels/GV_ZoneA_Start.level")
-        {
-            if world
-                .demo_story
-                .completed
-                .iter()
-                .any(|s| s == "GV_ZoneA_GusOswaldSighting01")
-            {
-                ui.strong("Gremlin Village â€” Zone A complete");
-            } else {
-                let pipes = ["01", "02", "03", "04"]
-                    .iter()
-                    .filter(|suffix| {
-                        world.globals.get(&format!("GV_ZoneA_Pipe{suffix}")) == Some(1)
-                    })
-                    .count();
-                let door = world.globals.get("GV_ZoneA_FrontDoorBlocker") == Some(1);
-                let combat = world.globals.get("GV_ZoneA_CombatTraining") == Some(1);
-                let objective = if !door {
-                    "Open the village gate: paint both gears, or spin the breakable gear."
-                } else if pipes < 4 {
-                    "Repair the steam pipes with paint and follow the village path."
-                } else if !combat {
-                    "Enter the airlock and deal with both Spatters using paint or thinner."
-                } else {
-                    "Speak to the gremlin, then follow Gus to the exit."
-                };
-                ui.small(format!("{objective}  Pipes: {pipes}/4"));
-            }
-        }
-        if self.debug.open {
-            ui.horizontal(|ui| {
-            let mut request=None;
-            egui::ComboBox::from_id_salt("live_actor_sequence").selected_text("Request actor sequence").show_ui(ui,|ui| {
-                for (&entity,resources) in &world.actor_sequences {
-                    if !world.actor_bindings.contains_key(&entity) {continue;}
-                    ui.menu_button(&world.entities[entity].name,|ui| {
-                        for (_,sequence) in resources.sequences() {
-                            if let Some(name)=&sequence.name {
-                                if ui.button(name).clicked() {request=Some((world.entities[entity].name.clone(),name.clone()));ui.close();}
-                            }
+                        if let Some((actor,sequence))=request {
+                            self.actor_focus=Some(actor.clone());
+                            if let Err(error)=world.entities.iter().position(|e|e.name==actor).context("Actor missing").and_then(|entity|world.request_actor_sequence(entity,&sequence)) {self.error=Some(format!("Actor playback: {error:#}"));}
+                        }
+                        if self.actor_focus.is_some() && ui.button("Follow Mickey").clicked() {self.actor_focus=None;}
+                        if ui.button("Place anvil root").on_hover_text("Prototype: original animated model and physics. Impact callbacks, inventory, child effects and lifetime remain incomplete. Shortcut: 2.").clicked() {
+                            self.anvil_root_pending=true;
+                        }
+                        if let Some(playback)=&world.actor_playback {
+                            ui.label(format!("{}: {} {:.3}s â€” manual playback",world.entities[playback.entity].name,playback.name,playback.time));
+                            if ui.button("Stop animation").clicked() {world.actor_playback=None;}
                         }
                     });
-                }
-            });
-            if let Some((actor,sequence))=request {
-                self.actor_focus=Some(actor.clone());
-                if let Err(error)=world.entities.iter().position(|e|e.name==actor).context("Actor missing").and_then(|entity|world.request_actor_sequence(entity,&sequence)) {self.error=Some(format!("Actor playback: {error:#}"));}
-            }
-            if self.actor_focus.is_some() && ui.button("Follow Mickey").clicked() {self.actor_focus=None;}
-            if ui.button("Place anvil root").on_hover_text("Prototype: original animated model and physics. Impact callbacks, inventory, child effects and lifetime remain incomplete. Shortcut: 2.").clicked() {
-                self.anvil_root_pending=true;
-            }
-            if let Some(playback)=&world.actor_playback {
-                ui.label(format!("{}: {} {:.3}s â€” manual playback",world.entities[playback.entity].name,playback.name,playback.time));
-                if ui.button("Stop animation").clicked() {world.actor_playback=None;}
-            }
-        });
-            ui.collapsing("Animation scripts", |ui| {
-                ui.label(format!(
-                    "{} actors playing from authored settings or script requests",
-                    world
-                        .actors
-                        .values()
-                        .filter(|actor| actor.active_id().is_some())
-                        .count()
-                ));
-                ui.add(
-                    egui::TextEdit::multiline(&mut self.script_console)
-                        .desired_rows(3)
-                        .hint_text("AnimGBSequence(GetEntity('exact entity name'), 'Spawn')"),
-                );
-                if ui.button("Run Lua").clicked() {
-                    if let Err(error) = world.run_script(&self.script_console) {
-                        self.error = Some(format!("Game Lua: {error:#}"));
-                    }
-                }
-                for error in world.report.unsupported.iter().filter(|error| {
-                    error.starts_with("Game Lua:") || error.starts_with("Script animation request:")
-                }) {
-                    ui.colored_label(egui::Color32::YELLOW, error);
-                }
-            });
-        }
-        if let Some(preview) = &self.diagnostic_morph {
-            ui.colored_label(
-                egui::Color32::YELLOW,
-                format!(
-                    "Diagnostic morph: {} at {:.3}s (fixed pose; activation unimplemented)",
-                    preview.sequence, preview.time
-                ),
-            );
+                    ui.collapsing("Animation scripts", |ui| {
+                        ui.label(format!(
+                            "{} actors playing from authored settings or script requests",
+                            world
+                                .actors
+                                .values()
+                                .filter(|actor| actor.active_id().is_some())
+                                .count()
+                        ));
+                        ui.add(
+                            egui::TextEdit::multiline(&mut self.script_console)
+                                .desired_rows(3)
+                                .hint_text("AnimGBSequence(GetEntity('exact entity name'), 'Spawn')"),
+                        );
+                        if ui.button("Run Lua").clicked() {
+                            if let Err(error) = world.run_script(&self.script_console) {
+                                self.error = Some(format!("Game Lua: {error:#}"));
+                            }
+                        }
+                        for error in world.report.unsupported.iter().filter(|error| {
+                            error.starts_with("Game Lua:") || error.starts_with("Script animation request:")
+                        }) {
+                            ui.colored_label(egui::Color32::YELLOW, error);
+                        }
+                    });
+                });
         }
         let viewport = ui.available_size();
         if viewport.x > 0. && viewport.y > 0. {
@@ -3119,6 +3141,7 @@ impl Engine {
         let capture_mode = self.capture.is_some();
         let active = (focused || capture_mode)
             && !self.paused
+            && self.pause_menu_opened.is_none()
             && (!self.options_open || capture_mode)
             && !self.capture_requested
             && self.receiver.is_none();
@@ -3165,8 +3188,16 @@ impl Engine {
         let mut requested_hose = None;
         let mut input = controller::Input::default();
         if active && !capture_mode {
-            if let Some(entity) = world.usable_target(controller.player.position) {
-                if ui.input(|i| i.key_pressed(egui::Key::G)) || self.pad_edges & 0x4000 != 0 {
+            let mut movement_pad = self.pad;
+            let use_pressed = self.pad_edges & 0x5000 != 0
+                || ui.input(|i| i.key_pressed(egui::Key::G));
+            if use_pressed {
+                if let Some(entity) = world.usable_target(controller.player.position) {
+                    if self.pad_edges & 0x1000 != 0 {
+                        self.jump_pending = false;
+                        movement_pad.buttons &= !0x1000;
+                        self.pad_edges &= !0x1000;
+                    }
                     if let Err(error) = world.use_usable(entity) {
                         self.error = Some(format!("Interaction: {error:#}"));
                     }
@@ -3178,7 +3209,7 @@ impl Engine {
                 self.spin_preview_pending = false;
             }
             let mouse_look=ui.rect_contains_pointer(ui.available_rect_before_wrap());
-            input=ui.input(|i|input::movement_controls(i,self.pad,self.jump_pending,self.preferences.sensitivity,self.preferences.invert_y,mouse_look));
+            input=ui.input(|i|input::movement_controls(i,movement_pad,self.jump_pending,self.preferences.sensitivity,self.preferences.invert_y,mouse_look));
             self.spin_preview_pending |= ui.input(|i| i.key_pressed(egui::Key::F));
             self.anvil_root_pending |= ui.input(|i| i.key_pressed(egui::Key::Num2));
             if mouse_look {
@@ -3189,6 +3220,15 @@ impl Engine {
         if active {
             if let Some(frame) = playback_frame {
                 if let Some(choice) = frame.dialogue_choice {
+                    #[cfg(feature = "blotworx-ui-render")]
+                    if choice == 0 && self.preferences.hud
+                        && self.hud.as_ref().is_some_and(|hud| hud.scroll_dialogue().unwrap_or(false))
+                    {
+                        ui.ctx().request_repaint();
+                    } else {
+                        world.acknowledge_demo_story(choice);
+                    }
+                    #[cfg(not(feature = "blotworx-ui-render"))]
                     world.acknowledge_demo_story(choice);
                 }
                 if frame.interact_pressed {
@@ -3221,10 +3261,19 @@ impl Engine {
         let capture_aim = playback_frame
             .and_then(|frame| frame.aim)
             .unwrap_or(self.diagnostic_aim);
-        let aim_pointer = if capture_mode {
+        let pad_aiming = active && !capture_mode
+            && (self.pad.triggers.iter().any(|&trigger| trigger > 30) || self.pad.buttons & 0x0100 != 0);
+        if pad_aiming {
+            let amount = (elapsed as f32).clamp(0., 0.1) * self.preferences.sensitivity;
+            self.pad_aim[0] = (self.pad_aim[0] + self.pad.right[0] * amount).clamp(0., 1.);
+            self.pad_aim[1] = (self.pad_aim[1] - self.pad.right[1] * amount).clamp(0., 1.);
+            input.camera_stick = [0.; 2];
+        }
+        let aim_pointer = if capture_mode || pad_aiming {
+            let aim = if pad_aiming { self.pad_aim } else { capture_aim };
             egui::pos2(
-                aim_rect.left() + aim_rect.width() * capture_aim[0],
-                aim_rect.top() + aim_rect.height() * capture_aim[1],
+                aim_rect.left() + aim_rect.width() * aim[0],
+                aim_rect.top() + aim_rect.height() * aim[1],
             )
         } else {
             ui.input(|i| i.pointer.hover_pos())
@@ -3238,6 +3287,14 @@ impl Engine {
             (aim_rect.width() * pixels).round() as u32,
             (aim_rect.height() * pixels).round() as u32,
         ];
+        #[cfg(feature = "blotworx-ui-render")]
+        let hud_cursor = (active && !world.side_scroll_disables("SideScrollDisablePaint") && (raw_requested_hose.is_some() || pad_aiming
+            || world.player_ability_enabled("Brush",brush::Ink::Paint).unwrap_or(false)
+            || world.player_ability_enabled("Brush",brush::Ink::Thinner).unwrap_or(false))
+            && (!world.demo_story.enabled || world.demo_story.reticle_visible)).then(|| [
+                ((aim_pointer.x - aim_rect.left()) / aim_rect.width().max(1.)).clamp(0., 1.),
+                ((aim_pointer.y - aim_rect.top()) / aim_rect.height().max(1.)).clamp(0., 1.),
+            ]);
         let mut aim_target = None;
         let mut aim_ray = None;
         let simulation_started = Instant::now();
@@ -3251,13 +3308,7 @@ impl Engine {
                 return Ok(());
             }
             if phase==controller::TickPhase::BeforeMovement {
-                // Scene publication can block the render thread. Defer it
-                // until a fully faded handoff has painted its loading artwork.
-                if world.fading_scene_load_pending() {
-                    world.scene_requests_prepared_for_models = true;
-                } else {
-                    world.with_live_player(player,|world|world.prepare_gameplay_scene_requests())?;
-                }
+                world.with_live_player(player, |world| world.prepare_gameplay_scene_requests())?;
                 world.advance_demo_motion(STEP)?;
                 world.with_live_player(player,|world|world.advance_demo_ai(STEP))?;
                 let trigger_position=player.position;
@@ -3279,15 +3330,17 @@ impl Engine {
                 world.prepare_side_scroller(player);
                 player.script_input_restricted=authored_death || world.cutscene_input.restricted || world.player_physics.as_ref().is_some_and(|b|b.suspended_motion.is_some());
                 if player.script_input_restricted {self.spin_preview_pending=false;self.anvil_root_pending=false;}
+                world.advance_pressure_plates(player, STEP)?;
                 world.prepare_scene_motion(STEP)?;
-                if std::mem::take(&mut self.anvil_root_pending) {
+                if std::mem::take(&mut self.anvil_root_pending) && !world.side_scroll_disables("SideScrollDisableSketches") {
                     // Explicit root-factory preview placement; the original
                     // sketch cursor/action/inventory pipeline remains pending.
                     let (s,c)=player.yaw.sin_cos();
                     world.spawn_sketch_root("paintanvil",[player.position[0]+s*2.5,player.position[1]+3.5,player.position[2]-c*2.5],
                         [c,0.,-s,0.,1.,0.,s,0.,c])?;
                 }
-                requested_hose=match raw_requested_hose.filter(|_|!player.script_input_restricted) {
+                requested_hose=match raw_requested_hose.filter(|_| !player.script_input_restricted
+                    && !world.side_scroll_disables("SideScrollDisablePaint")) {
                     Some(ink) if capture_mode && self.diagnostic_hose.is_some()=>Some(ink),
                     Some(ink)=>{
                         let channel=if ink==0 {brush::Ink::Paint}else{brush::Ink::Thinner};
@@ -3339,13 +3392,15 @@ impl Engine {
                 world.advance_player_knockback(player,STEP)?;
                 return Ok(());
             }
+            world.refresh_player_stairs_after_physics(player)?;
             aim_target=None;aim_ray=None;
             let script_report_start=world.report.unsupported.len();
             {log::debug!(target:"blotworx_phase", "tick {tick} model update begin");}
             world.with_live_player(player,|world|world.advance_contact_stimuli(STEP))?;
+            world.with_live_player(player,|world|world.advance_ai_projectile_impacts())?;
             world.advance_player_models(player,tick as f32*STEP)?;
             {log::debug!(target:"blotworx_phase", "tick {tick} model update end");}
-            if self.demo_abilities && world.recover_failed_preview_script(script_report_start) {
+            if self.preview_runtime && world.recover_failed_preview_script(script_report_start) {
                 player.script_input_restricted=false;
             }
             if player.script_input_restricted {requested_hose=None;self.spin_preview_pending=false;}
@@ -3429,6 +3484,7 @@ impl Engine {
                         particles.advance_attached(STEP,preview.spin_lifecycle.active,world.brush.emitter_transform(&pose,actor)?)?;
                     }
                     let direction=aim_target.map(|p|brush::target_direction(origin,p).direction).unwrap_or([player.yaw.sin(),0.,player.yaw.cos()]);
+                    let mut funded_hose = None;
                     if let (Some(phase),Some(ink))=(&mut self.hose_phase,requested_hose) {
                         if let Some(target)=aim_target {
                             let settings=world.report.brush_settings.as_ref().context("Missing brush settings")?;
@@ -3439,10 +3495,13 @@ impl Engine {
                             let mut effects=brush_runtime::Effects {runtime:&mut world.brush_runtime,
                                 emitters:&mut self.hose_emitters,projectiles:&mut world.projectile_preview,
                                 report:&world.report,owner:world.player_entity as u64,origin,target};
-                            phase.update(ink,true,STEP,settings.projectile_interval,settings.burst,cost,
+                            let firing=phase.update(ink,true,STEP,settings.projectile_interval,settings.burst,cost,
                                 &mut brush::AmmoFiringHost {ammo:&mut world.ammo,effects:&mut effects})?;
+                            if firing.debit.is_some() {
+                                funded_hose = Some(usize::from(ink == brush::Ink::Thinner));
+                            }
                             if world.brush_runtime.dry_sound_requests!=dry_before {
-                                world.audio_playback.post_on(brush_runtime::DRY_SOUND_EVENT,world.player_entity)?;
+                                world.post_audio_from_game(world.player_entity,brush_runtime::DRY_SOUND_EVENT);
                             }
                         }
                     }
@@ -3457,7 +3516,9 @@ impl Engine {
                     world.game_random=random;
                     decals?;
                     for (index,hose) in world.brush.hoses.iter_mut().enumerate(){
-                        hose.advance(STEP,self.hose_emitters[index] && aim_target.is_some(),origin,direction)?;
+                        // Keep the effect's startup state so it can resume after recharge.
+                        // Only a funded firing tick can produce new spray.
+                        hose.advance(STEP,self.hose_emitters[index] && funded_hose==Some(index),origin,direction)?;
                     }
                 }
             }
@@ -3497,7 +3558,7 @@ impl Engine {
                     "script_input_restricted":player.script_input_restricted,
                     "cutscene_restrictions":world.cutscene_input.count,
                     "brush_ownership":world.player_abilities["Brush"].owned,
-                    "demo_abilities":self.demo_abilities,"requested_hose":requested_hose,
+                    "preview_runtime":self.preview_runtime,"requested_hose":requested_hose,
                     "aim_camera":world.nif_camera,"aim_ray":aim_ray,"aim_target":aim_target,
                     "application_camera_source":world.camera_pipeline.last_authored,
                     "application_camera_publication":world.camera_pipeline.publications,
@@ -3625,22 +3686,32 @@ impl Engine {
                 projection,
             });
         }
-        if !self.retail_lighting && self.debug.open {
-            ui.colored_label(egui::Color32::YELLOW,"Inspection rendering: synthetic headlight, game materials and baked lighting bypassed");
-        }
         self.camera.lighting_mode = if self.retail_lighting {
             LightingMode::SceneLights
         } else {
             LightingMode::Headlight
         };
         #[cfg(feature = "blotworx-ui-render")]
+        let (mut pause_input, hud_cursor) = if self.pause_menu_opened.is_some() {
+            let pointer_input = if !capture_mode && self.pause_menu_opened.is_some_and(|opened| opened.elapsed().as_millis() >= 150) {
+                self.pause_pointer.input(ui, aim_rect, self.pad, self.pad_edges, elapsed as f32)
+            } else {
+                Vec::new()
+            };
+            if self.hud.is_some() && ui.input(|input| input.pointer.hover_pos().is_some_and(|point| aim_rect.contains(point))) {
+                ui.ctx().set_cursor_icon(egui::CursorIcon::None);
+            }
+            (pointer_input, Some(self.pause_pointer.position))
+        } else { (Vec::new(), hud_cursor) };
+        #[cfg(feature = "blotworx-ui-render")]
         if !self.diagnostic_serial_hud {
             if let Some(hud) = &mut self.hud {
                 if let Err(error) =
-                    hud.prepare(ui.available_rect_before_wrap(), world, controller.ticks)
+                    hud.prepare(ui.available_rect_before_wrap(), world, controller.ticks,
+                        self.pause_menu_opened.map(|opened| opened.elapsed().as_secs_f64()), std::mem::take(&mut pause_input), hud_cursor)
                 {
                     self.error = Some(format!("Gameplay HUD preparation: {error:#}"));
-                    return;
+                    self.hud = None;
                 }
             }
         }
@@ -3876,10 +3947,12 @@ impl Engine {
                 self.render_probe_done = true;
             }
         }
-        draws.retain(|_| {
+        draws.retain(|draw| {
             let visible = !world.hidden_jigsaw_draws.contains(&draw_index)
                 && !world.hidden_entity_draws.contains(&draw_index)
                 && !world.removed_draws.contains(&draw_index)
+                && !draw.material.as_ref().and_then(|material| material.shader.as_deref())
+                    .is_some_and(|shader| shader.eq_ignore_ascii_case("SPL_hiddenSurface"))
                 && !world.demo_story.scene.culled_draws.contains(&draw_index);
             draw_index += 1;
             visible
@@ -3935,6 +4008,7 @@ impl Engine {
                 eye,
                 billboard_right,
                 billboard_up,
+                &world.report.spherical_lights,
                 &mut draws,
             ) {
                 self.error = Some(format!("Named effect {}: {error:#}", effect.template));
@@ -3959,11 +4033,12 @@ impl Engine {
             presentation_started,
         );
         self.camera.finish=self.preferences.grade();
+        self.camera.smooth_textures = self.preferences.smooth_textures;
         self.camera.surfaces=self.preferences.surface();
         self.camera.fov_degrees=self.preferences.fov;
         self.camera.pixel_probe=if self.capture_tick.is_some_and(|tick|controller.ticks>=tick.saturating_sub(2)){self.render_probe}else{None};
         let render_lights=if self.camera.surfaces.mode!=0 {match world.enhanced_scene_lights(self.camera.surfaces.mode){Ok(l)=>l,Err(e)=>{self.error=Some(format!("Lighting: {e:#}"));self.paused=true;return;}}}else{world.lights.clone()};
-        let (rect, response, _, eye) = viewport3d::render_viewport(
+        let (rect, response, view_projection, eye) = viewport3d::render_viewport(
             ui,
             &mut self.camera,
             draws,
@@ -3975,9 +4050,10 @@ impl Engine {
         if let Some(hud) = &mut self.hud {
             let result = (|| -> Result<()> {
                 if self.diagnostic_serial_hud {
-                    hud.prepare(rect, world, controller.ticks)?;
+                    hud.prepare(rect, world, controller.ticks,
+                        self.pause_menu_opened.map(|opened| opened.elapsed().as_secs_f64()), std::mem::take(&mut pause_input), hud_cursor)?;
                 }
-                if self.preferences.hud { hud.present(ui, rect, world)?; }
+                if self.preferences.hud || self.pause_menu_opened.is_some() { hud.present(ui, rect, world)?; }
                 if self.capture.is_some()
                     && self
                         .capture_tick
@@ -3989,12 +4065,30 @@ impl Engine {
             })();
             if let Err(error) = result {
                 self.error = Some(format!("Gameplay HUD: {error:#}"));
+                self.hud = None;
             }
         }
-        if !self.original_movie_hud && self.preferences.hud && !world.screen_fade.hide_gameplay_hud {
-            self.demo_hud.draw(ui, rect, world);
+        #[cfg(feature = "blotworx-ui-render")]
+        let missing_game_hud = self.hud.is_none();
+        #[cfg(not(feature = "blotworx-ui-render"))]
+        let missing_game_hud = true;
+        if missing_game_hud {
+            world.ability_hud_requests.clear();
         }
-        if requested_hose.is_some()
+        // Scripted HideHud only owns the Flash HUD. The world prompt follows the
+        // native interaction target, which already excludes dialogue and input locks.
+        self.usable_prompt_target = if self.preferences.hud && self.pause_menu_opened.is_none()
+            && !world.screen_fade.hide_gameplay_hud
+        {
+            self.usable_button.as_ref().and_then(|button| {
+                let target = world.usable_target(player.position)?;
+                let owner = &world.entities[target];
+                usable_prompt::draw(ui, rect, &view_projection, button, owner).then_some(target)
+            })
+        } else {
+            None
+        };
+        if requested_hose.is_some() && (missing_game_hud || !self.preferences.hud)
             && (!world.demo_story.enabled || world.demo_story.reticle_visible)
             && !world.screen_fade.hide_gameplay_hud
         {
@@ -4229,7 +4323,19 @@ impl Engine {
                     ui.checkbox(&mut self.camera.view_culling,"View culling");
                     ui.checkbox(&mut self.camera.show_limitations,"Material warnings");
                     ui.checkbox(&mut self.paused,"Pause simulation");
-                    if self.world.as_ref().is_some_and(|w|w.demo_story.npc_fallback.enabled){ui.weak("Temporary NPC navigation enabled");}
+                    if let Some(world) = self.world.as_mut() {
+                        if ui.button("Unlock preview abilities")
+                            .on_hover_text("Grants brush, blast and spin. Scripted restrictions still apply.")
+                            .clicked()
+                        {
+                            if let Err(error) = world.enable_demo_abilities() {
+                                self.error = Some(format!("Unlock abilities: {error:#}"));
+                            }
+                        }
+                        if world.demo_story.npc_fallback.enabled {
+                            ui.weak("Temporary NPC navigation enabled");
+                        }
+                    }
                    }
                   }
                 });
@@ -4264,6 +4370,7 @@ impl eframe::App for Engine {
         }
     }
     fn ui(&mut self, ui: &mut egui::Ui, _: &mut eframe::Frame) {
+        self.updater.show(ui.ctx());
         if self.receiver.is_some() {
             if let Some(screen) = self.loading_screen.as_mut().filter(|screen| !screen.ready_to_dismiss()) {
                 screen.paint(ui);
@@ -4332,6 +4439,8 @@ impl eframe::App for Engine {
                         self.hose_emitters = [false; 2];
                         self.loaded_frames = 0;
                         self.paused = false;
+                        self.pause_menu_opened = None;
+                        self.playback_pause = None;
                         self.camera.yaw = 1.6;
                         self.camera.pitch = 0.28;
                         self.zoom = 5.;
@@ -4427,7 +4536,6 @@ impl eframe::App for Engine {
                         self.level = world.report.level.clone();
                         #[cfg(feature = "blotworx-ui-render")]
                         {
-                            self.demo_hud = Default::default();
                             self.hud = if self.original_movie_hud {
                                 match ui_movie::GameplayWorker::load_with_graphics(
                                     std::path::Path::new(&self.root),
@@ -4464,11 +4572,14 @@ impl eframe::App for Engine {
         if let (Some(hud), Some(world)) = (&mut self.hud, &mut self.world) {
             if let Err(error) = hud.finish_previous(world) {
                 self.error = Some(format!("Gameplay HUD: {error:#}"));
-                self.paused = true;
+                self.hud = None;
             }
         }
         if let Some(world) = self.world.as_mut().filter(|_| self.movie.is_none()) {
             if let Some(request) = world.movies.take_next() {
+                if let Err(error) = world.audio_playback.set_game_audio(true, world.game_options.music_volume, world.game_options.sfx_volume) {
+                    self.error = Some(format!("Movie audio handoff: {error:#}"));
+                }
                 self.movie = Some(movie::Player::new(
                     world.source_data_root().to_owned(),
                     request,
@@ -4483,6 +4594,8 @@ impl eframe::App for Engine {
                 self.controller.as_ref().and_then(|controller|self.input_playback.as_ref()?.frames.get(controller.ticks as usize))
                     .is_some_and(|frame|frame.movie_skip_held)
             }else {ui.input(|input|input.key_down(egui::Key::Space)) || input::poll().buttons&0x1000!=0};
+            #[cfg(feature = "blotworx-ui-render")]
+            movie.set_native_skip_prompt(self.hud.is_some());
             let frontend = movie.request.frontend_skip.is_some();
             if frontend {
                 let accept = if self.capture.is_some() {
@@ -4496,6 +4609,18 @@ impl eframe::App for Engine {
                 movie.show_frontend(ui, accept);
             } else {
                 movie.show(ui, skip_held);
+            }
+            #[cfg(feature = "blotworx-ui-render")]
+            if let (Some(hud), Some(world), Some(controller)) = (&mut self.hud, &mut self.world, &self.controller) {
+                let rect = ui.max_rect();
+                match hud.present_movie(ui, rect, world, controller.ticks, movie.skip_hud(skip_held && !frontend)) {
+                    Ok(()) if skip_held && !frontend => movie.draw_skip_progress(ui, rect),
+                    Ok(()) => {}
+                    Err(error) => {
+                        self.error = Some(format!("Movie HUD: {error:#}"));
+                        self.hud = None;
+                    }
+                }
             }
             self.last = Instant::now();
             self.simulation_active = false;
@@ -4534,25 +4659,6 @@ impl eframe::App for Engine {
             return;
         }
         // Automated captures must not spin forever when loading or simulation fails.
-        // Keep interactive errors visible, but make unattended failures explicit.
-        if self.debug.open { if let Some(world) = &self.world {
-            if world
-                .spawners
-                .values()
-                .any(|spawner| spawner.automatic.blocked.is_some())
-            {
-                ui.colored_label(egui::Color32::YELLOW,"Automatic spawner work is blocked; level gameplay is incomplete. See Level report.");
-            }
-            if world
-                .report
-                .unsupported
-                .iter()
-                .any(|message| message.starts_with("Preview recovery:"))
-            {
-                ui.colored_label(egui::Color32::YELLOW,"Entrance script interrupted â€” exploration enabled. See Level report for the missing game functionality.");
-            }
-        }
-        }
         if self.capture.is_some() {
             if let Some(error) = &self.error {
                 eprintln!("Capture failed: {error}");
@@ -4592,6 +4698,15 @@ impl eframe::App for Engine {
                 (std::array::from_fn(|i|self.camera.camera_target[i]+self.camera.distance*direction[i]),direction.map(|v|-v),[-cy*sp,cp,-sy*sp])
             };
             if let Err(error)=world.update_audio_view(eye,forward,up){self.error=Some(format!("Audio view: {error:#}"));}
+            let music_paused = self.pause_menu_opened.is_some();
+            if !music_paused {
+                if let Err(error) = world.update_automatic_music(world.frame_clock.clock.scaled_seconds) {
+                    self.error = Some(format!("Music state: {error:#}"));
+                }
+            }
+            if let Err(error) = world.audio_playback.set_game_audio(music_paused, world.game_options.music_volume, world.game_options.sfx_volume) {
+                self.error = Some(format!("Music controls: {error:#}"));
+            }
             if let Err(error) = world.audio_playback.poll_with_random(&mut ||world.game_random.draw() as u16) {
                 self.error = Some(format!("Audio output: {error:#}"));
             }
@@ -4603,16 +4718,51 @@ impl eframe::App for Engine {
         let edge = self.pad.buttons & !self.previous_buttons;
         self.pad_edges = edge;
         self.previous_buttons = self.pad.buttons;
-        if self.capture.is_none() && edge & 0x1000 != 0 && ui.input(|i| i.focused) && !self.paused {
+        #[cfg(feature = "blotworx-ui-render")]
+        if let Some(hud) = &mut self.hud {
+            let (resume, quit) = hud.take_pause_exit();
+            if resume { self.pause_menu_opened = None; }
+            if quit { ui.ctx().send_viewport_cmd(egui::ViewportCommand::Close); }
+        }
+        if let Some((_, remaining)) = &mut self.playback_pause {
+            if *remaining > 0 && !self.capture_requested {
+                *remaining -= 1;
+                if *remaining == 0 { self.pause_menu_opened = None; }
+            }
+        }
+        if let Some(controller) = &self.controller {
+            let tick = controller.ticks;
+            if let Some(frame) = self.input_playback.as_ref().and_then(|p| p.frames.get(tick as usize)) {
+                if frame.pause_frames > 0 && self.playback_pause.is_none_or(|(old, _)| old != tick) {
+                    self.pause_menu_opened = Some(Instant::now());
+                    self.playback_pause = Some((tick, frame.pause_frames));
+                }
+            }
+        }
+        let escape = ui.input(|i| i.focused && i.events.iter().any(|event| matches!(event,
+            egui::Event::Key { key: egui::Key::Escape, pressed: true, repeat: false, .. })));
+        let start = edge & 0x10 != 0 && ui.input(|i| i.focused);
+        let pause_pressed = escape || start;
+        if self.capture.is_none() && pause_pressed {
+            if self.options_open {
+                self.options_open = false;
+            } else if self.world.is_some() && self.receiver.is_none()
+                && (self.pause_menu_opened.is_none() || start || !self.original_pause_available()) {
+                self.pause_menu_opened = self.pause_menu_opened.is_none().then(Instant::now);
+                #[cfg(feature = "blotworx-ui-render")]
+                { self.pause_pointer = Default::default(); }
+                self.jump_pending = false;
+                self.spin_preview_pending = false;
+                self.anvil_root_pending = false;
+                self.pad_edges = 0;
+            }
+        }
+        let gameplay_input = !self.paused && self.pause_menu_opened.is_none() && !pause_pressed;
+        if self.capture.is_none() && edge & 0x1000 != 0 && ui.input(|i| i.focused) && gameplay_input {
             self.jump_pending = true;
         }
-        if self.capture.is_none() && edge & 0x2000 != 0 && ui.input(|i| i.focused) && !self.paused {
+        if self.capture.is_none() && edge & 0x2000 != 0 && ui.input(|i| i.focused) && gameplay_input {
             self.spin_preview_pending = true;
-        }
-        if ui.input(|i| i.key_pressed(egui::Key::Escape))
-            || (edge & 0x10 != 0 && ui.input(|i| i.focused))
-        {
-            if self.options_open {self.options_open=false;} else {self.paused = !self.paused;}
         }
         if self.receiver.is_some() {
             self.paint_loading_screen(ui);
@@ -4620,49 +4770,26 @@ impl eframe::App for Engine {
         } else {
             self.loading_screen = None;
         }
-        self.draw_options(ui.ctx());
         if self.world.is_none() {
-            ui.label("Game data stays in your BlueThinner installation. This runtime does not launch Dolphin.");
-            ui.horizontal(|ui| {
-                ui.text_edit_singleline(&mut self.root);
-                if ui.button("Continue checkpoint").clicked() {
-                    self.continue_checkpoint(ui.ctx());
-                }
-                if ui.button("Choose game folder").clicked() {
-                    if let Some(p) = rfd::FileDialog::new().pick_folder() {
-                        self.root = p.to_string_lossy().into_owned();
-                    }
-                }
-                if ui
-                    .add_enabled(self.receiver.is_none(), egui::Button::new("Load level"))
-                    .clicked()
-                {
-                    self.load(ui.ctx());
-                }
-            });
-            if self.receiver.is_some() {
-                ui.spinner();
-                ui.label("Loading level, models, textures and collisionâ€¦");
+            if let Some(root) = self.setup.show(ui) {
+                self.root = root.to_string_lossy().into_owned();
+                self.load(ui.ctx());
             }
-            if let Some(e) = &self.error {
-                ui.colored_label(egui::Color32::LIGHT_RED, e);
-            }
-        } else {
             if let Some(error) = &self.error {
                 ui.colored_label(egui::Color32::LIGHT_RED, error);
             }
+        } else {
+            self.draw_options(ui.ctx());
             if self.details {
                 egui::Window::new("Level report").open(&mut self.details).resizable(true).default_width(530.).show(ui.ctx(),|ui|{if let Some(w)=&self.world{egui::ScrollArea::vertical().max_height(550.).show(ui,|ui|{ui.label(format!("{} entities Â· {} meshes Â· {} triangles Â· {} collision triangles",w.report.placed_entities,w.report.meshes,w.report.render_triangles,w.report.collision_triangles));ui.label(format!("Authored spawn: {:?}",w.report.spawn));ui.label(format!("Global definitions applied: {}",w.report.global_overrides));if ui.button("Export reportâ€¦").clicked(){if let Some(path)=rfd::FileDialog::new().set_file_name("blotworx-report.json").save_file(){if let Err(e)=std::fs::write(path,serde_json::to_vec_pretty(&w.report).unwrap_or_default()){self.error=Some(e.to_string())}}}ui.separator();for line in &w.report.unsupported{ui.label(line);}ui.collapsing("Asset / material warnings",|ui|{for line in &w.report.warnings{ui.label(line);}});ui.collapsing("Components",|ui|{for (name,count) in &w.report.components{ui.label(format!("{count} Ã— {name}"));}});});}});
             }
-            if self.present_stream_load(ui, true) {
-                return;
-            }
             self.play(ui);
-            if self.present_stream_load(ui, false) {
-                return;
-            }
-            if let Some(world) = &mut self.world {
-                if let Some(dialogue) = &world.demo_story.dialogue {
+            #[cfg(feature = "blotworx-ui-render")]
+            let original_dialogue = self.hud.is_some() && self.preferences.hud;
+            #[cfg(not(feature = "blotworx-ui-render"))]
+            let original_dialogue = false;
+            if let Some(world) = self.world.as_mut().filter(|_| gameplay_input) {
+                if let Some((dialogue, interactive)) = world.demo_story.presented_dialogue() {
                     let speaker = dialogue.speaker.clone();
                     let text = dialogue.text.clone();
                     let choices = dialogue
@@ -4671,9 +4798,30 @@ impl eframe::App for Engine {
                         .map(|(text, _)| text.clone())
                         .collect::<Vec<_>>();
                     let mut selected=world.demo_story.choice;
-                    let answer=dialogue_panel::draw(ui,&speaker,&text,&choices,&mut selected,self.pad_edges);
+                    let answer = if original_dialogue && choices.len() <= 2 {
+                        if !interactive {
+                            None
+                        } else if choices.len() == 2 && (self.pad_edges & 0x2000 != 0 || ui.input(|input| input.key_pressed(egui::Key::Backspace))) {
+                            Some(1)
+                        } else if self.pad_edges & 0x1000 != 0 || ui.input(|input| input.key_pressed(egui::Key::Enter)) {
+                            Some(0)
+                        } else {
+                            None
+                        }
+                    } else {
+                        dialogue_panel::draw(ui,&speaker,&text,interactive.then_some(&choices),&mut selected,self.pad_edges)
+                    };
                     world.demo_story.choice=selected;
                     if let Some(answer) = answer {
+                        #[cfg(feature = "blotworx-ui-render")]
+                        if answer == 0 && original_dialogue && choices.len() <= 2
+                            && self.hud.as_ref().is_some_and(|hud| hud.scroll_dialogue().unwrap_or(false))
+                        {
+                            ui.ctx().request_repaint();
+                        } else {
+                            world.acknowledge_demo_story(answer);
+                        }
+                        #[cfg(not(feature = "blotworx-ui-render"))]
                         world.acknowledge_demo_story(answer);
                     }
                 }
@@ -4861,9 +5009,6 @@ impl Engine {
         let capture = self.main_menu.is_none() && self.capture_movie_frame.is_none()
             && title.tick >= self.capture_tick.unwrap_or(120);
         self.draw_options(ui.ctx());
-        if let Some(error) = &self.error {
-            ui.colored_label(egui::Color32::LIGHT_RED, error);
-        }
         self.capture_frame(ui, capture);
     }
 
@@ -4890,7 +5035,6 @@ impl Engine {
             return;
         }
         self.draw_options(ui.ctx());
-        if let Some(error) = &self.error { ui.colored_label(egui::Color32::LIGHT_RED, error); }
         self.capture_frame(ui, self.capture_movie_frame.is_none() && tick >= self.capture_tick.unwrap_or(title_tick + 160));
     }
 
@@ -4935,51 +5079,17 @@ impl Engine {
         }
     }
 
-    fn present_stream_load(&mut self, ui: &mut egui::Ui, before_gameplay: bool) -> bool {
-        let Some(world) = self.world.as_mut().filter(|world| {
-            self.error.is_none() && world.fading_scene_load_pending()
-        }) else {
-            self.stream_loading_screen = None;
-            return false;
-        };
-        // Prepare archive data during the fade. Keep gameplay running until
-        // the fade is opaque, then present the load and publish the new scene.
-        let root = world.source_data_root().to_owned();
-        let prepared = world.scene_requests.prepare_front(&root, ui.ctx(), &world.report.scenes);
-        if !world.faded_scene_load_pending() {
-            return false;
-        }
-        let screen = self.stream_loading_screen.get_or_insert_with(|| {
-            self.simulation_active = false;
-            world.frame_clock.suspend_for_loading();
-            loading_screen::Screen::load(ui.ctx(), &root, Some(&world.report.level))
-        });
-        if before_gameplay && screen.ready_to_dismiss() && prepared {
-            // Publish one scene while the previous loading frame is onscreen.
-            // Keep the overlay for this frame, including the last publication.
-            if let Some(controller) = &mut self.controller {
-                if let Err(error) = world.with_live_player(&mut controller.player, |world| {
-                    world.process_scene_request()
-                }) {
-                    self.error = Some(format!("Scene load: {error:#}"));
-                }
-            }
-            ui.ctx().request_repaint();
-        }
-        screen.paint(ui);
-        if screen.has_presented() {
-            self.capture_frame(ui, false);
-        }
-        true
-    }
-
     fn capture_frame(&mut self, ui: &mut egui::Ui, force: bool) {
         if self.capture.is_some()
             && (force
                 || self.error.is_some()
                 || (self.capture_movie_frame.is_none()
+                    && self.playback_pause.is_none_or(|(_, remaining)| remaining <= 1)
                     && self.capture_tick.map_or(self.loaded_frames > 90, |tick| {
-                        self.controller.as_ref().is_some_and(|c| c.ticks >= tick)
+                        self.controller.as_ref().is_some_and(|c| c.ticks >= tick
+                            && (self.input_playback.as_ref().and_then(|p| p.frames.get(c.ticks as usize))
+                                .is_none_or(|frame| frame.pause_frames == 0)
+                                || self.playback_pause.is_some_and(|(opened, _)| opened == c.ticks)))
                     })))
             && !self.capture_requested
         {
@@ -5038,7 +5148,7 @@ impl Engine {
                     world.retained_source_collision_payload();
                 let mut report = serde_json::json!({
                     "level":world.report.level,"ticks":self.controller.as_ref().map(|controller|controller.ticks),
-                    "demo_abilities":self.demo_abilities,"runtime_error":self.error,
+                    "preview_runtime":self.preview_runtime,"runtime_error":self.error,
                     "game_random":world.game_random,
                     "deferred_entity_events":world.entity_event_queue.entries(),
                     "ai_manager_gate":world.ai_manager_enabled,
@@ -5054,7 +5164,7 @@ impl Engine {
                     "silhouette_candidates":world.render_objects.values().filter(|object|world.render_options.admits_silhouette(object.flags)).count(),
                     "counter_materials":world.counter_materials,
                     "paint_counters":world.paint_counters,
-                    "audio_output_preview":{"submitted":world.audio_playback.submitted,"completed":world.audio_playback.completed,"stop_actions":world.audio_playback.stop_actions,"stopped_voices":world.audio_playback.stopped_voices,
+                    "audio_output_preview":{"submitted":world.audio_playback.submitted,"controlled_pitch_submitted":world.audio_playback.controlled_pitch_submitted,"completed":world.audio_playback.completed,"stop_actions":world.audio_playback.stop_actions,"stopped_voices":world.audio_playback.stopped_voices,
                         "rejected_post_count":world.audio_playback.rejected_post_count,
                         "rejected_posts":world.audio_playback.rejected_posts.values().collect::<Vec<_>>(),
                         "parameter_controls_prepared":world.audio_playback.parameter_controls_prepared,
@@ -5212,9 +5322,13 @@ impl Engine {
                 });
                 report["view_culling_enabled"] =
                     serde_json::json!(!self.diagnostic_no_view_culling);
+                report["interaction_prompt"] = serde_json::json!({
+                    "texture_loaded": self.usable_button.is_some(),
+                    "entity": self.usable_prompt_target.and_then(|target| world.entities.get(target))
+                        .map(|entity| entity.name.as_str()),
+                });
                 #[cfg(feature = "blotworx-ui-render")]
                 {
-                    report["demo_hud"] = serde_json::json!({"enabled":!self.original_movie_hud,"original_movie_parity":false,"unhandled":self.demo_hud.unhandled});
                     report["gameplay_hud"] = self
                         .hud
                         .as_ref()
@@ -5239,6 +5353,7 @@ impl Engine {
                     .switch_summary()
                     .unwrap_or_else(|error| serde_json::json!({"error":format!("{error:#}")}));
                 report["audio_output_preview"]["event_flow"] = world.audio_playback.event_summary();
+                report["audio_output_preview"]["music"] = world.audio_playback.music_summary();
                 report["animation_pushed_emitters"] =
                     serde_json::json!(world.controller_feedback.pushed_emitters);
                 report["audio_output_preview"]["registered_banks"] =
@@ -5254,7 +5369,6 @@ impl Engine {
                     }
                     Err(error) => serde_json::json!({"error":format!("{error:#}")}),
                 };
-                report["pause_map_rendering_implemented"] = serde_json::json!(false);
                 let catalog = &world.camera_profiles;
                 report["camera_feedback"] =
                     serde_json::to_value(&world.camera_feedback).unwrap_or(serde_json::Value::Null);

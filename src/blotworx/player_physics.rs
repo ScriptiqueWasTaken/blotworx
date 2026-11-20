@@ -215,6 +215,37 @@ impl World {
         //802f6aec stores the support classification even when it skips surface
         //aggregation.308a54..68 publishes state/retained normal before308b20.
         player.accept_ground_support(support);
+        self.update_player_stairs(player, previous_motion, support)
+    }
+
+    /// Box3D can end the step beyond a tread with no hull contact. Classify
+    /// that pose before animation consumes the motion state, so a valid lower
+    /// tread retains ground motion on the same tick that support is lost.
+    pub(super) fn refresh_player_stairs_after_physics(&self, player: &mut Player) -> Result<()> {
+        use super::support::State;
+        if !player.motion.stairs.enabled || self.player_physics.is_none() {
+            return Ok(());
+        }
+        let Some(support) = player.support_state else {
+            player.stairs_ground_retained = false;
+            return Ok(());
+        };
+        if support == State::Supported
+            || player.ground_vectors.is_none()
+            || !matches!(player.motion_state(), 0 | 2)
+        {
+            player.stairs_ground_retained = false;
+            return Ok(());
+        }
+        self.update_player_stairs(player, 0, support)
+    }
+
+    fn update_player_stairs(
+        &self,
+        player: &mut Player,
+        previous_motion: i32,
+        support: super::support::State,
+    ) -> Result<()> {
         let input = super::motion_ground::Input {
             position: [
                 player.position[0],
@@ -224,7 +255,7 @@ impl World {
             ],
             radius: player.motion.ground_probe_start_offset,
             maximum: player.motion.max_relevant_ground_distance,
-            slope_cosine,
+            slope_cosine: player.motion.max_slope_degrees.to_radians().cos(),
             enabled: true,
             support: support as u32,
             supporting_body: self.collision.supporting_body(),

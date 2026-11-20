@@ -99,7 +99,7 @@ impl Instances {
             //8021d570 selects duration-time for end mode0.8021dd28 advances
             //these two scalar fields independently of copied output sync, and
             //8021e084 finishes a same-generator effect after time becomes>0.
-            p.clock.remaining = d.duration - p.clock.time;
+            p.clock.remaining = p.duration - p.clock.time;
             return p.clock.advance(dt);
         }
         // DOL 0x8021d570 distinct unsynchronized output has no sync points,
@@ -111,7 +111,7 @@ impl Instances {
             field_48: 1.,
             mapped_events: false,
         };
-        p.clock.remaining = d.duration - p.clock.time;
+        p.clock.remaining = p.duration - p.clock.time;
         p.update(&mut sync, dt)
     }
     pub fn finished(&self, h: Handle) -> Result<bool> {
@@ -227,6 +227,15 @@ impl Instances {
         definitions: &BTreeMap<String, effect::Definition>,
         was_active: impl Fn(&str) -> bool,
     ) -> Result<()> {
+        self.activate_with_variables(h, definitions, &[], was_active)
+    }
+    pub(super) fn activate_with_variables(
+        &mut self,
+        h: Handle,
+        definitions: &BTreeMap<String, effect::Definition>,
+        words: &[u32],
+        was_active: impl Fn(&str) -> bool,
+    ) -> Result<()> {
         let instance = self
             .active
             .get_mut(&h)
@@ -245,7 +254,7 @@ impl Instances {
                 .context("Missing transition definition")?
             {
                 effect::Definition::Blend(d) => {
-                    Playback::Blend(effect::Blending::activate(d, was_active(target))?)
+                    Playback::Blend(effect::Blending::activate_with_variables(d, words, was_active(target))?)
                 }
                 effect::Definition::Generator(d) => Playback::Generated(
                     effect::Generated::activate(d, was_active(&d.transition_generator.id))?,

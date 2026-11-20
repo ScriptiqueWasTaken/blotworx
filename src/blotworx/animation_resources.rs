@@ -180,6 +180,7 @@ pub struct Resources {
     names: BTreeMap<String, String>,
     entries: BTreeMap<String, Entry>,
     binding_overrides:BTreeMap<i16,String>,
+    wii_source: Option<std::sync::Arc<super::streamed_animation_resources::WiiClips>>,
 }
 fn key(path: &str) -> String {
     path.replace('\\', "/").to_ascii_lowercase()
@@ -246,8 +247,12 @@ impl Resources {
             reference_qs,
             names,
             entries,binding_overrides:BTreeMap::new(),
+            wii_source: None,
             property_words: contract.property_words.clone(),
         })
+    }
+    pub(super) fn set_wii_source(&mut self, source: Option<std::sync::Arc<super::streamed_animation_resources::WiiClips>>) {
+        self.wii_source = source;
     }
     pub(super) fn binding_path(&self,index:i16)->Option<&str>{self.binding_overrides.get(&index).map(String::as_str)}
     pub(super) fn bind_dynamic(&mut self,index:i16,path:&str,bytes:&[u8],split:bool)->Result<()> {
@@ -288,7 +293,12 @@ impl Resources {
             .context("Missing animation resource entry")?;
         match entry {
             Entry::Missing(path) => {
-                anyhow::bail!("Animation {path} requires loading its animation list")
+                let bytes = self.wii_source.as_ref().map(|source| source.read(path))
+                    .transpose()?.flatten()
+                    .with_context(|| format!("Animation {path} requires loading its animation list"))?;
+                let clip = Clip::load(&bytes, self.rig.bones.len())
+                    .with_context(|| format!("Decode cross-archive animation {path}"))?;
+                *entry = Entry::Decoded(clip);
             }
             Entry::Packed { zlib, raw_len } => {
                 let bytes = restore_clip(zlib, *raw_len)?;

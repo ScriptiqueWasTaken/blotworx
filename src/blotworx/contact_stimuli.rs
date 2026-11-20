@@ -98,6 +98,16 @@ impl World {
             .or_else(||self.entities.iter().position(|candidate|std::ptr::eq(candidate,entity)))
     }
     pub(super) fn advance_contact_stimuli(&mut self,dt:f32)->Result<()> {
+        let mut player_support = None;
+        if self.script_player_available && self.script_player.grounded
+            && self.script_player.support_state == Some(super::support::State::Supported)
+        {
+            if let super::motion_ground::SupportBody::Body(shape) = self.collision.supporting_body() {
+                let emitter = self.collision.shape_owner(shape)
+                    .and_then(|owner| self.collision_entity_index(owner));
+                player_support = emitter.zip(self.player_physics.as_ref().map(|body| body.shape));
+            }
+        }
         // Read active rates before querying physics. Disabled emitters neither
         // allocate contacts nor retain another copy of their reflected data.
         for emitter in 0..self.entities.len() {
@@ -117,6 +127,14 @@ impl World {
             if let Some(Ok(body))=self.character_physics.get(&emitter) {owners.insert(body.owner);}
             if emitter==self.player_entity {if let Some(body)=&self.player_physics {owners.insert(body.owner);}}
             let mut recipients=BTreeSet::new();
+            if let Some((support_emitter, player_shape)) = player_support {
+                if support_emitter == emitter && emitter != self.player_entity {
+                    // The character support probe can keep the hull just
+                    // outside the rigid manifold. Its live support owner
+                    // still supplies the surface's contact stimulus.
+                    recipients.insert((self.player_entity, player_shape));
+                }
+            }
             for owner in owners {
                 for shape in self.collision.owner_shapes(owner).collect::<Vec<_>>() {
                     for [a,b] in self.collision.touching_shape_pairs(shape)? {

@@ -4,8 +4,17 @@ use super::World;
 use anyhow::{Context,Result};
 impl World {
     pub(super) fn prepare_audio_position(&mut self,entity:usize)->Result<()> {
-        let Some(position)=self.entity_position_or_bound_center(entity)? else {return Ok(())};
-        let transform=&self.entities.get(entity).context("Audio entity missing")?.transform;
+        if self.removed_entities.contains(&entity) {return Ok(())}
+        let emitter=self.entities.get(entity).context("Audio entity missing")?;
+        let transform=&emitter.transform;
+        // A projectile sound follows the thrown entity. Its particle model
+        // can expose several render roots and has no single bound to query.
+        let position=if emitter.components.iter().any(|c|c.class_name=="ProjectileComponent") {
+            transform[12..15].try_into()?
+        } else {
+            let Some(position)=self.entity_position_or_bound_center(entity)? else {return Ok(())};
+            position
+        };
         // Orientation is retained but cones are not yet admitted. Complete
         // unscaled rotation publication still needs native lifecycle validation.
         let orientation=[transform[8],transform[9],transform[10]];

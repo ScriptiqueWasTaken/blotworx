@@ -3562,6 +3562,22 @@ struct Particle {
     rotation: (f32, f32),
     last_update: f32,
 }
+
+fn particle_quad_extents(layer: &Layer, particle: &Particle) -> Result<[f32; 2]> {
+    let factors = [
+        sample(&layer.curves.size, particle.age / particle.life)[0],
+        layer.curves.height.as_ref()
+            .map(|track| track.sample(particle.age, particle.life))
+            .transpose()?.unwrap_or(1.),
+    ];
+    let factors = layer.nonuniform.as_ref().map_or(factors, |system| {
+        system.animated_factors(factors, particle.v)
+    });
+    let size = particle.size * factors[0];
+    let height = particle.height.map_or(size, |radius| radius * factors[1]);
+    let scales = layer.alignment.scales(particle.v)?;
+    Ok([size * scales[0], height * scales[1]])
+}
 #[derive(Clone, Copy, Default)]
 struct AtlasAnimation {
     enabled: bool,
@@ -3616,6 +3632,23 @@ mod atlas_animation_tests {
     }
 }
 #[derive(Clone)]
+struct LoopReset {
+    controller: super::scene_bounds::Controller,
+    clock: ControllerTime,
+    previous_scaled: Option<f32>,
+}
+impl LoopReset {
+    fn update(&mut self, time: f32) -> Result<bool> {
+        let c = &self.controller;
+        if c.flags & 8 == 0 || c.flags & 0x20 != 0 {
+            return Ok(false);
+        }
+        // NiPSResetOnLoopCtlr forces loop mode and compares scaled samples.
+        let scaled = self.clock.scale_parameters(time, c.flags & !6, c.frequency, c.phase, c.start, c.stop)?;
+        Ok(self.previous_scaled.replace(scaled).is_some_and(|previous| previous > scaled))
+    }
+}
+#[derive(Clone)]
 struct Layer {
     node: u32,
     nonuniform: Option<nonuniform::System>,
@@ -3648,6 +3681,7 @@ struct Layer {
     emitter_local: [f32; 16],
     rotations: bool,
     forces: Vec<fields::Force>,
+    loop_resets: Vec<LoopReset>,
     prepared_forces: Vec<fields::Prepared>,
     started_at: f32,
 }
@@ -4150,6 +4184,7 @@ impl Hose {
     pub fn owns_controller(&self, block: u32) -> bool {
         self.layers.iter().any(|layer| {
             layer.playback.block == block
+                || layer.loop_resets.iter().any(|reset| reset.controller.block == block)
                 || layer
                     .forces
                     .iter()
@@ -4167,6 +4202,12 @@ impl Hose {
             if layer.playback.block == block {
                 layer.command_driven = true;
                 layer.playback.native_command(Some(time));
+            }
+            for reset in &mut layer.loop_resets {
+                if reset.controller.block == block {
+                    reset.controller.flags |= 8;
+                    reset.clock.reset();
+                }
             }
             for force in &mut layer.forces {
                 for control in &mut force.controls {
@@ -4190,6 +4231,11 @@ impl Hose {
                 layer.command_driven = true;
                 layer.playback.native_command(None);
             }
+            for reset in &mut layer.loop_resets {
+                if reset.controller.block == block {
+                    reset.controller.flags &= !8;
+                }
+            }
             for force in &mut layer.forces {
                 for control in &mut force.controls {
                     if control.block == block {
@@ -4207,6 +4253,11 @@ impl Hose {
             if controllers.contains(&layer.playback.block) {
                 layer.playback.controller.flags =
                     super::nif_runtime::effect_template_flags(layer.playback.controller.flags);
+            }
+            for reset in &mut layer.loop_resets {
+                if controllers.contains(&reset.controller.block) {
+                    reset.controller.flags = super::nif_runtime::effect_template_flags(reset.controller.flags);
+                }
             }
             for force in &mut layer.forces {
                 for control in &mut force.controls {
@@ -4287,6 +4338,23 @@ impl Hose {
     }
     pub fn particle_count(&self) -> usize {
         self.layers.iter().map(|layer| layer.particles.len()).sum()
+    }
+    pub(super) fn lighting_bounds(&self) -> Result<std::collections::BTreeMap<u32, super::scene_bounds::Sphere>> {
+        use super::scene_bounds::Sphere;
+
+        self.layers.iter().filter(|layer| !layer.indirect).map(|layer| {
+            let mut bound = Sphere { center: [0.; 3], radius: 0. };
+            let scale = layer.render_transform[..3].iter().map(|n| n * n).sum::<f32>().sqrt();
+            for particle in &layer.particles {
+                let [width, height] = particle_quad_extents(layer, particle)?;
+                let center = super::physics::point(&layer.render_transform, particle.p);
+                let radius = scale * (width.abs() * (1. + layer.alignment.center[0].abs()))
+                    .hypot(height.abs() * (1. + layer.alignment.center[1].abs()));
+                let next = Sphere { center, radius };
+                bound = if bound.radius == 0. { next } else { bound.merge(next)? };
+            }
+            Ok((layer.node, bound))
+        }).collect()
     }
     #[cfg(debug_assertions)]
     pub fn validate_retained_world_scale(&self, owner: [f32;16]) -> Result<()> {
@@ -4706,6 +4774,7 @@ impl Hose {
                         }
                     }
                 }
+                let mut loop_resets = Vec::new();
                 for controller in controller_chain
                     .iter()
                     .filter(|c| c.class_name != "NiPSEmitParticlesCtlr")
@@ -4732,12 +4801,12 @@ impl Hose {
                             controller.class_name
                         ));
                     } else if controller.class_name == "NiPSResetOnLoopCtlr" {
-                        // This chain entry is not a field-magnitude track. Keep
-                        // the effect live; clearing its particles at controller
-                        // wrap remains a separate simulation step.
-                        warnings.push(
-                            "Particle reset-on-loop is parsed; clearing live particles on controller wrap remains incomplete".into(),
-                        );
+                        ensure!(controller.target == Some(index as u32), "Particle reset targets a different system");
+                        loop_resets.push(LoopReset {
+                            controller: controller.clone(),
+                            clock: ControllerTime::default(),
+                            previous_scaled: None,
+                        });
                     } else {
                         anyhow::bail!(
                             "Unsupported particle property controller {}",
@@ -4922,6 +4991,7 @@ impl Hose {
                     extra_uvs: None,
                     projection_bound: None,
                     projected_shadow: false,
+                    skybox: false,
                     material_registers: None,
                     material_indirect: None,
                     material_images: Arc::new(images),
@@ -4979,6 +5049,7 @@ impl Hose {
                     texture_seeds: system.flag4 != 0,
                     prepared_forces: Vec::with_capacity(forces.len()),
                     forces,
+                    loop_resets,
                     started_at: 0.,
                     command_driven: false,
                 });
@@ -5244,6 +5315,11 @@ impl Hose {
             } else {
                 self.time
             };
+            for reset in &mut l.loop_resets {
+                if reset.update(time)? {
+                    l.particles.clear();
+                }
+            }
             l.prepared_forces.clear();
             for force in &mut l.forces {
                 if let Some(mut prepared) = force.prepare(
@@ -5460,23 +5536,7 @@ impl Hose {
             };
             for p in &l.particles {
                 let t = p.age / p.life;
-                let factors = [
-                    sample(&l.curves.size, t)[0],
-                    l.curves
-                        .height
-                        .as_ref()
-                        .map(|track| track.sample(p.age, p.life))
-                        .transpose()?
-                        .unwrap_or(1.),
-                ];
-                let factors = l.nonuniform.as_ref().map_or(factors, |system| {
-                    system.animated_factors(factors, p.v)
-                });
-                let size = p.size * factors[0];
-                let height = p.height.map_or(size, |radius| radius * factors[1]);
-                // Alignment consumes the same unscaled system velocity as
-                // the native generator, before render-world publication.
-                let scales = l.alignment.scales(p.v)?;
+                let [width, height] = particle_quad_extents(l, p)?;
                 let (right, up) = if l.up_method == 9 {
                     velocity_quad_axes(right, up, p.v)
                 } else {
@@ -5508,20 +5568,11 @@ impl Hose {
                     } else {
                         (x, y)
                     };
-                    let mut point: [f32; 3] = if p.height.is_some() {
-                        std::array::from_fn(|i| {
-                            p.p[i]
-                                + size * (x - l.alignment.center[0]) * scales[0] * right[i]
-                                + height * (y - l.alignment.center[1]) * scales[1] * up[i]
-                        })
-                    } else {
-                        std::array::from_fn(|i| {
-                            p.p[i]
-                                + size
-                                    * ((x - l.alignment.center[0]) * scales[0] * right[i]
-                                        + (y - l.alignment.center[1]) * scales[1] * up[i])
-                        })
-                    };
+                    let mut point: [f32; 3] = std::array::from_fn(|i| {
+                        p.p[i]
+                            + width * (x - l.alignment.center[0]) * right[i]
+                            + height * (y - l.alignment.center[1]) * up[i]
+                    });
                     {
                         point = std::array::from_fn(|row| {
                             l.render_transform[12 + row]
@@ -5823,6 +5874,7 @@ impl Ribbon {
             extra_uvs: None,
             projection_bound: None,
             projected_shadow: false,
+            skybox: false,
             material_registers: None,
             material_indirect: None,
             material_images: Arc::new(images),

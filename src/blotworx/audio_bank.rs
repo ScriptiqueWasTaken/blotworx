@@ -399,8 +399,15 @@ fn transition_time(transition: [i32; 3], mut random: impl FnMut() -> u16) -> Res
     Ok(base.wrapping_add(offset).wrapping_add(minimum))
 }
 impl Action<'_> {
-    pub fn global_parameter(&self)->Result<VolumeAction> {
-        ensure!(matches!(self.kind,0xa010|0xb010|0xe010|0xf010),"Unsupported global float parameter {:08x}",self.kind);
+    pub(super) fn set_state(&self) -> Result<(u32, u32)> {
+        ensure!(self.kind == 0x12020 && self.parameters.len() == 8, "Invalid Set State action");
+        Ok((word(self.parameters, 0)?, word(self.parameters, 4)?))
+    }
+    pub fn is_float_parameter(&self) -> bool {
+        matches!(self.kind, 0xa010 | 0xb010 | 0xa011 | 0xb011 | 0xe010 | 0xf010)
+    }
+    pub fn parameter(&self)->Result<VolumeAction> {
+        ensure!(self.is_float_parameter(),"Unsupported float parameter {:08x}",self.kind);
         self.float_parameter()
     }
     pub fn global_volume(&self) -> Result<VolumeAction> {
@@ -485,7 +492,7 @@ impl Action<'_> {
     /// and80353a60 reads the exception IDs. Preserve, do not interpret as Play.
     pub fn object_stop(&self) -> Result<StopAction> {
         ensure!(
-            self.kind == 0x1011,
+            matches!(self.kind, 0x1010 | 0x1011),
             "Unsupported object stop action type {:08x}",
             self.kind
         );

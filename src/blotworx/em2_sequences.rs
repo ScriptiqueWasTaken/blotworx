@@ -98,7 +98,7 @@ impl Catalog {
         }Ok(())
     }
     pub fn draw_playtest(&mut self,ui:&egui::Ui,pad_edges:u16,globals:&mut super::em2_global_state::State,schedule:impl FnMut(&str,usize)->Result<()>)->Result<()> {
-        let answer=self.active.as_mut().and_then(|a|super::dialogue_panel::draw(ui,&a.line.speaker,&a.line.text,&[],&mut a.selection,pad_edges));
+        let answer=self.active.as_mut().and_then(|a|super::dialogue_panel::draw(ui,&a.line.speaker,&a.line.text,Some(&[]),&mut a.selection,pad_edges));
         if let Some(answer)=answer{self.answer_playtest(answer,globals,schedule)?;}Ok(())
     }
     pub fn pending_description(&self)->String {

@@ -3069,6 +3069,11 @@ pub struct Motion {
     pub immediate_jump_velocity_multiplier: f32,
     pub gravity_up: f32,
     pub gravity_down: f32,
+    pub damage_leap_enabled: bool,
+    pub damage_leap_launch_speed: f32,
+    pub damage_leap_gravity: f32,
+    pub damage_leap_air_speed: f32,
+    pub damage_leap_acceleration: f32,
 }
 impl Default for Motion {
     fn default() -> Self {
@@ -3104,6 +3109,11 @@ impl Default for Motion {
             immediate_jump_velocity_multiplier: 0.75,
             gravity_up: 30.0,
             gravity_down: 35.0,
+            damage_leap_enabled: false,
+            damage_leap_launch_speed: 11.5,
+            damage_leap_gravity: -22.,
+            damage_leap_air_speed: 5.,
+            damage_leap_acceleration: 20.,
         }
     }
 }
@@ -3120,6 +3130,8 @@ pub struct Player {
     /// Ground0+70, retained slope-gravity force, reset outside ground state.
     slope_gravity_force: f32,
     pub native_knockback: bool,
+    pub(super) damage_leaping: bool,
+    pub(super) damage_leap_landed: bool,
     pub(super) knockback_velocity_override: bool,
     pending_physics: Option<SimulationPose>,
     pending_ground_support: Option<super::support::State>,
@@ -3168,6 +3180,23 @@ pub struct Player {
     movement_direction_override: Option<V>,
 }
 impl Player {
+    pub(super) fn begin_damage_leap(&mut self) -> bool {
+        if !self.motion.damage_leap_enabled || self.native_knockback || self.damage_leaping {
+            return false;
+        }
+        self.damage_leaping = true;
+        self.damage_leap_landed = false;
+        self.velocity[1] = self.motion.damage_leap_launch_speed;
+        self.grounded = false;
+        self.stairs_ground_retained = false;
+        self.jump_stage = None;
+        self.ground_jump_available = false;
+        self.double_jump_available = false;
+        self.pending_ground_support = None;
+        self.support_carry = None;
+        self.ground_vectors = None;
+        true
+    }
     /// Verified motion subset of brush start/stop; other action gates and
     /// CharacterState flags are still owned by the unfinished action runtime.
     pub fn begin_brush_motion(&mut self, speed: f32, stationary_rate: f32) -> anyhow::Result<()> {
@@ -3257,6 +3286,8 @@ impl Player {
     pub fn new(spawn: V, motion: Motion) -> Self {
         Self {
             native_knockback: false,
+            damage_leaping: false,
+            damage_leap_landed: false,
             knockback_velocity_override: false,
             stairs_ground_retained: false,
             slope_gravity_force: 0.,
@@ -3302,6 +3333,8 @@ impl Player {
     pub fn respawn(&mut self) {
         self.slope_gravity_force = 0.;
         self.native_knockback = false;
+        self.damage_leaping = false;
+        self.damage_leap_landed = false;
         self.knockback_velocity_override = false;
         self.stairs_ground_retained = false;
         self.support_carry = None;
@@ -3336,6 +3369,8 @@ impl Player {
     pub(super) fn accept_script_relocation(&mut self, position: V, yaw: f32) {
         self.slope_gravity_force = 0.;
         self.native_knockback = false;
+        self.damage_leaping = false;
+        self.damage_leap_landed = false;
         self.knockback_velocity_override = false;
         self.stairs_ground_retained = false;
         self.support_carry = None;
@@ -3458,8 +3493,9 @@ impl Player {
         self.ground_jump_started = false;
         self.air_first_jump_started = false;
         self.second_jump_started = false;
+        self.damage_leap_landed = false;
         let mut jump = jump;
-        if self.spin_gravity.is_some() {
+        if self.spin_gravity.is_some() || self.damage_leaping {
             jump.pressed = false;
             jump.held = false;
         }
@@ -3590,6 +3626,8 @@ impl Player {
         } else {
             let speed = if ground_motion {
                 self.max_move_speed()
+            } else if self.damage_leaping {
+                self.motion.damage_leap_air_speed
             } else {
                 self.motion.air_speed
             };
@@ -3661,13 +3699,19 @@ impl Player {
                 [ground_velocity[0], ground_velocity[2]]
             }
         } else {
+            let (accel, side_accel) = if self.damage_leaping {
+                let accel = self.motion.damage_leap_acceleration;
+                (accel, accel)
+            } else {
+                (self.motion.air_control_acceleration, self.motion.air_side_acceleration)
+            };
             if let Some(direction) = self.movement_direction_override {
                 air_velocity_step_with_direction(
                     [self.velocity[0], self.velocity[2]],
                     desired,
                     [direction[0], direction[2]],
-                    self.motion.air_control_acceleration,
-                    self.motion.air_side_acceleration,
+                    accel,
+                    side_accel,
                     dt,
                 )
             } else {
@@ -3675,8 +3719,8 @@ impl Player {
                     [self.velocity[0], self.velocity[2]],
                     desired,
                     self.yaw,
-                    self.motion.air_control_acceleration,
-                    self.motion.air_side_acceleration,
+                    accel,
+                    side_accel,
                     dt,
                 )
             }
@@ -3814,7 +3858,9 @@ impl Player {
                 && !self.stairs_ground_retained
                 && (!ground_motion || !walkable_support)
             {
-                self.velocity[1] -= if self.velocity[1] > 0.0 {
+                self.velocity[1] -= if self.damage_leaping {
+                    -self.motion.damage_leap_gravity
+                } else if self.velocity[1] > 0.0 {
                     self.spin_gravity.map_or(self.motion.gravity_up, |g| -g)
                 } else {
                     self.spin_gravity.map_or(self.motion.gravity_down, |g| -g)
@@ -3950,6 +3996,7 @@ impl Player {
                 normal[1] >= self.motion.max_slope_degrees.to_radians().cos()
             });
         if landed {
+            self.damage_leap_landed = std::mem::take(&mut self.damage_leaping);
             self.jump_stage = None;
             self.double_jump_available = true;
             self.ground_jump_available = true;
@@ -3968,6 +4015,8 @@ impl Player {
     pub fn motion_state(&self) -> i32 {
         if self.native_knockback {
             10
+        } else if self.damage_leaping {
+            8
         } else if self.jump_stage.is_some() {
             1
         } else if self.grounded || self.stairs_ground_retained {

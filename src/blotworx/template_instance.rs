@@ -77,7 +77,7 @@ fn dependency(
     anyhow::bail!("Template dependency absent: {owner} -> {path}")
 }
 impl World {
-    pub(super) fn spawn_palette_root(
+    pub(in crate::blotworx) fn spawn_palette_root(
         &mut self,
         owner: usize,
         name: &str,
@@ -107,16 +107,8 @@ impl World {
             .context("Runtime identity exhausted")?;
         let id = next;
         let store = self.named_fx.resource_store();
-        let mut files = store.palette_files()?;
-        let scenes = files
-            .iter()
-            .map(|f| {
-                Ok((
-                    f.path.clone(),
-                    super::super::scene_loading::parse_scene(&f.path, &f.data)?,
-                ))
-            })
-            .collect::<Result<Vec<_>>>()?;
+        let scenes = store.palette_scenes()?;
+        let mut files: Vec<VirtualFile> = Vec::new();
         let graph = super::super::brush_assets::Assets::declarations(name, &scenes)?;
         let definition = &graph[&name.to_ascii_lowercase()];
         let (_, source) = scenes

@@ -28,7 +28,7 @@ pub enum Execution {
 /// parameter/voice execution and the transition update at the audio-block tick.
 pub trait Sink {
     /// Concrete audio-worker bridge; not an extra native game callback.
-    fn prepare_parameter(&mut self,_:&Action<'_>,_:u32)->Result<()> {Ok(())}
+    fn prepare_parameter(&mut self,_:&Action<'_>,_:u32,_:Option<&Owner>)->Result<()> {Ok(())}
     fn action_admitted(&mut self, playing_id: u32) -> Result<()>;
     fn action_finished(&mut self, playing_id: u32) -> Result<()>;
     /// Native virtual +0x30 notification at delayed admission and again just
@@ -104,7 +104,7 @@ pub struct Tracked<'a, S, H> {
     pub completion: &'a mut H,
 }
 impl<S: Sink, H: CompletionHost> Sink for Tracked<'_, S, H> {
-    fn prepare_parameter(&mut self,action:&Action<'_>,due:u32)->Result<()> {self.inner.prepare_parameter(action,due)}
+    fn prepare_parameter(&mut self,action:&Action<'_>,due:u32,owner:Option<&Owner>)->Result<()> {self.inner.prepare_parameter(action,due,owner)}
     fn action_admitted(&mut self, id: u32) -> Result<()> {
         self.playing.add_action(id);
         Ok(())
@@ -156,6 +156,9 @@ impl Schedule {
     }
     pub fn pending(&self) -> usize {
         self.pending.len()
+    }
+    pub(super) fn has_pending_event(&self, id: u32) -> bool {
+        self.pending.iter().any(|entry| entry.context.playing_id == id)
     }
     /// Bank event order is preserved. Only recovered global mute actions are
     /// executable here; unsupported actions return errors, never silent skips.
@@ -255,7 +258,7 @@ impl Schedule {
             0x4011 => {
                 action.play()?;
             }
-            0x1011 => {
+            0x1010 | 0x1011 => {
                 action.object_stop()?;
                 anyhow::ensure!(
                     action.delay == [0; 3],
@@ -265,14 +268,15 @@ impl Schedule {
             0x6010 | 0x7010 => {
                 action.global_mute()?;
             }
-            0xa010|0xb010|0xe010|0xf010=>{action.global_parameter()?;}
+            0x12020 => { action.set_state()?; }
+            _ if action.is_float_parameter()=>{action.parameter()?;}
             kind => anyhow::bail!("Audio scheduler action {kind:08x} requires its native executor"),
         }
         sink.action_admitted(context.playing_id)?;
         let samples = action.delay_samples(&mut random)?;
         let blocks = samples / 96;
-        if matches!(action.kind,0x6010|0x7010|0xa010|0xb010|0xe010|0xf010) {
-            if let Err(error)=sink.prepare_parameter(&action,self.tick.wrapping_add(blocks)) {
+        if matches!(action.kind,0x6010|0x7010) || action.is_float_parameter() {
+            if let Err(error)=sink.prepare_parameter(&action,self.tick.wrapping_add(blocks),owner.as_ref()) {
                 if context.playing_id!=0 {sink.action_finished(context.playing_id)?;}
                 return Err(error);
             }

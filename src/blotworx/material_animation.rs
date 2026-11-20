@@ -102,6 +102,7 @@ impl Curve {
 }
 struct Channel {
     indirect: bool,
+    projected: bool,
     slot: u8,
     values: [Curve; 5],
     inverse_base: [f32; 9],
@@ -114,6 +115,7 @@ struct Animation {
 }
 pub struct Runtime {
     animations: BTreeMap<String, Animation>,
+    locked_frames: BTreeMap<usize, f32>,
     pub errors: BTreeMap<String, String>,
 }
 fn stem(path: &str) -> String {
@@ -136,6 +138,12 @@ fn inverse(m: [f32; 9]) -> Result<[f32; 9]> {
     r[6] = -(r[0] * m[6] + r[3] * m[7]);
     r[7] = -(r[1] * m[6] + r[4] * m[7]);
     Ok(r)
+}
+fn projection_srt([s, t, angle, x, y]: [f32; 5]) -> [f32; 9] {
+    // Continue in homogeneous screen space after the shader's camera pin.
+    let (sin, cos) = angle.to_radians().sin_cos();
+    let (a, b, c, d) = (s * cos, -t * sin, s * sin, t * cos);
+    [a, b, 0., c, d, 0., 0.5 + x - 0.5 * (a + c), 0.5 - y - 0.5 * (b + d), 1.]
 }
 impl Animation {
     fn load(text: &str, material: &str) -> Result<Self> {
@@ -195,6 +203,7 @@ impl Animation {
                 })
                 .context("Missing texture matrix index")?
                 .parse::<u8>()?;
+            let mut projected = false;
             let matrix = if indirect {
                 ensure!(
                     (slot as usize) < indirect_maps.len(),
@@ -205,21 +214,24 @@ impl Animation {
                 let map = maps
                     .get(slot as usize)
                     .context("SRT matrix index outside material")?;
-                ensure!(
-                    map.attribute("Method") == Some("UV"),
-                    "Animated non-UV material needs its camera-space update"
-                );
+                let method = map.attribute("Method").context("Missing SRT method")?;
+                projected = method == "Projection";
+                ensure!(projected || method == "UV", "Unsupported animated SRT method {method}");
                 let number = |name| -> Result<f32> {
                     Ok(map
                         .attribute(name)
                         .context("Missing base SRT field")?
                         .parse()?)
                 };
-                crate::render_support::material_preview::native_uv_matrix(
-                    [number("ScaleS")?, number("ScaleT")?],
-                    number("Rotate")?,
-                    [number("TransS")?, number("TransT")?],
-                )?
+                let values = [number("ScaleS")?, number("ScaleT")?, number("Rotate")?,
+                    number("TransS")?, number("TransT")?];
+                if projected {
+                    projection_srt(values)
+                } else {
+                    crate::render_support::material_preview::native_uv_matrix(
+                        [values[0], values[1]], values[2], [values[3], values[4]],
+                    )?
+                }
             };
             let mut values = [
                 Curve::Constant(1.),
@@ -283,6 +295,7 @@ impl Animation {
             }
             channels.push(Channel {
                 indirect,
+                projected,
                 slot,
                 values,
                 inverse_base: inverse(matrix)?,
@@ -300,6 +313,7 @@ impl Runtime {
     pub fn load(files: &[VirtualFile]) -> Self {
         let mut result = Self {
             animations: BTreeMap::new(),
+            locked_frames: BTreeMap::new(),
             errors: BTreeMap::new(),
         };
         for f in files
@@ -331,17 +345,28 @@ impl Runtime {
         result
     }
     pub fn summary(&self) -> serde_json::Value {
-        serde_json::json!({"animated_materials":self.animations.keys().collect::<Vec<_>>(),"errors":self.errors,"original_frame_parity_validated":false})
+        serde_json::json!({"animated_materials":self.animations.keys().collect::<Vec<_>>(),"locked_frames":self.locked_frames,"errors":self.errors,"original_frame_parity_validated":false})
+    }
+    pub(super) fn lock(&mut self, draws: std::ops::Range<usize>, frame: Option<f32>) {
+        for index in draws {
+            if let Some(frame) = frame {
+                self.locked_frames.insert(index, frame);
+            } else {
+                self.locked_frames.remove(&index);
+            }
+        }
     }
     pub fn apply(&self, seconds: f32, draws: &mut [GpuDrawCommand]) -> Result<()> {
-        for draw in draws {
+        for (index, draw) in draws.iter_mut().enumerate() {
             let Some(name) = draw.material.as_ref().and_then(|m| m.shader.as_ref()) else {
                 continue;
             };
             let Some(animation) = self.animations.get(&stem(name)) else {
                 continue;
             };
-            let frame = if animation.looping {
+            let frame = if let Some(&frame) = self.locked_frames.get(&index) {
+                frame.clamp(0., animation.duration)
+            } else if animation.looping {
                 (seconds * 60.).rem_euclid(animation.duration)
             } else {
                 (seconds * 60.).min(animation.duration)
@@ -361,11 +386,13 @@ impl Runtime {
                     matrices[start..start + 2].copy_from_slice(&rows);
                     continue;
                 }
-                let matrix = crate::render_support::material_preview::native_uv_matrix(
-                    [v[0], v[1]],
-                    v[2],
-                    [v[3], v[4]],
-                )?;
+                let matrix = if channel.projected {
+                    projection_srt(v)
+                } else {
+                    crate::render_support::material_preview::native_uv_matrix(
+                        [v[0], v[1]], v[2], [v[3], v[4]],
+                    )?
+                };
                 // The shader contains its authored base SRT. Replace that base
                 // while preserving the independently authored NIF UV transform.
                 let delta = multiply(matrix, channel.inverse_base);

@@ -64,6 +64,7 @@ pub struct Clip {
     pub settings: Settings,
     pub triggers: Vec<Trigger>,
     playback_variable: Option<usize>,
+    duration_variable: Option<usize>,
 }
 impl Clip {
     pub fn resolve(&self, words: &[u32]) -> Result<Settings> {
@@ -71,6 +72,9 @@ impl Clip {
         if let Some(i) = self.playback_variable {
             settings.playback_speed =
                 f32::from_bits(*words.get(i).context("Missing clip variable")?);
+        }
+        if let Some(i) = self.duration_variable {
+            settings.enforced_duration = f32::from_bits(*words.get(i).context("Missing clip duration variable")?);
         }
         settings.validate()?;
         Ok(settings)
@@ -105,6 +109,7 @@ pub fn compile(graph: &Document, types: &[u8]) -> Result<BTreeMap<String, Clip>>
             serde_json::from_value(fields).with_context(|| format!("Invalid clip {id}"))?;
         settings.validate()?;
         let mut playback_variable = None;
+        let mut duration_variable = None;
         if let Some(reference) = &settings.variable_binding_set {
             let b = graph
                 .objects
@@ -119,8 +124,7 @@ pub fn compile(graph: &Document, types: &[u8]) -> Result<BTreeMap<String, Clip>>
                 .context("Invalid clip bindings")?
             {
                 ensure!(
-                    binding["memberPath"] == "playbackSpeed"
-                        && binding["bindingType"] == 0
+                    binding["bindingType"] == 0
                         && binding["bitIndex"] == -1,
                     "Unsupported clip binding: {binding}"
                 );
@@ -129,11 +133,16 @@ pub fn compile(graph: &Document, types: &[u8]) -> Result<BTreeMap<String, Clip>>
                     .context("Invalid clip variable")? as usize;
                 ensure!(
                     types.get(index) == Some(&4),
-                    "Clip playback speed requires real variable"
+                    "Clip field requires a real variable"
                 );
+                let target = match binding["memberPath"].as_str() {
+                    Some("playbackSpeed") => &mut playback_variable,
+                    Some("enforcedDuration") => &mut duration_variable,
+                    _ => anyhow::bail!("Unsupported clip binding: {binding}"),
+                };
                 ensure!(
-                    playback_variable.replace(index).is_none(),
-                    "Duplicate playback-speed binding"
+                    target.replace(index).is_none(),
+                    "Duplicate clip field binding"
                 );
             }
         }
@@ -165,6 +174,7 @@ pub fn compile(graph: &Document, types: &[u8]) -> Result<BTreeMap<String, Clip>>
                 settings,
                 triggers,
                 playback_variable,
+                duration_variable,
             },
         );
     }

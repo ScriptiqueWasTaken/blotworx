@@ -2,18 +2,23 @@
 
 Blotworx is an experimental Rust runtime for loading local Epic Mickey game data. It builds independently of BlueThinner. The project has no game installation, extracted game assets, or decompiled Lua source in Git.
 
+## Public demo
+
+Download the Windows demo and open **Blotworx.exe**. On first launch, supply your Epic Mickey Wii disc image. Blotworx imports it locally and opens the original title screen. Use the same save slot to resume from its last checkpoint. [Releases](https://github.com/Bloticle/blotworx/releases) · [Setup and compatibility](docs/PUBLIC_DEMO.md)
+
 ## Build and run
 
-The current development target is 64-bit Windows. Install Rust and the Visual Studio C++ build tools. Cargo builds the bundled native dependencies. The optional embedded movie UI features are experimental and require a JDK.
+The current development target is 64-bit Windows. Install Rust and the Visual Studio C++ build tools. Cargo builds the bundled native dependencies. The default build includes the EM1 gameplay HUD renderer. It loads the HUD movie and textures from your game installation.
 
 ```powershell
-cargo build --locked --bin blotworx
-cargo run --locked --bin blotworx -- --help
-cargo run --locked --bin blotworx -- --data "C:/Games/EM1/DATA" --level "Levels/EB_VillageTest.level"
-cargo run --locked --bin blotworx -- --data "C:/Games/EM2" --level "Levels/YensidsLab.lvlc" --shared-playtest
+cargo run --locked
 ```
 
-Use your own extracted EM1 data or the EM2 PC installation. An existing BlueThinner import can be passed directly. Omitting `--data` tries the existing BlueThinner build cache. This is a development runtime. The EM2 startup camera and several original material inputs remain incomplete.
+Import a Wii disc image or choose an existing extracted game folder. Open **F10 → Game** to change levels and **F10 → Tools** to unlock preview abilities for the session. In the EM2 PC preview, **F6** toggles the shared controller.
+
+The EM2 startup camera and several material inputs are still incomplete. For automated captures and validation, use `cargo run --locked -- diagnose --help`.
+
+For interactive debugging, use the standard `dev` build shown above. It keeps debug assertions and optimizes the engine and its dependencies across all levels. Avoid reusing executables built with an `opt-level=0` override for playtesting. Press F3 in EM1 to view runtime frame timings.
 
 ## Layout
 

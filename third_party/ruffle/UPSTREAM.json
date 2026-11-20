@@ -6,7 +6,8 @@
   "files": 960,
   "bytes": 6459588,
   "license": "../licenses/ruffle-LICENSE.md",
-  "patched_tree_sha256": "1a2bd55250e86ef91cc5ed5c0297f1eef56731df6d87e51908a36b74851a4613",
-  "patch": "Additive synchronous UpdateContext FSCommand hook in three core source files and root movie bitmap updates for game-owned dynamic textures",
+  "patched_tree_sha256": "a5e60a134262681220c760d60a29443a04379adcae5613f2e5865d9b5e77d394",
+  "patch": "Synchronous UpdateContext FSCommand hook and rendering for authored MovieClip scaling grids and root movie bitmap updates for game-owned dynamic textures",
+  "movie_clip_sha256": "dcec087bb317b9d013d2fdcd44329578d5c83a83f0d7c4d27aca7a49b1b6d05d",
   "player_sha256": "9185291947b1a4faf2f7b4d3f2891443c62dc89f42e0820d798a7b3ce36b8b00"
 }

@@ -82,6 +82,12 @@ impl Preview {
                 self.rejected += 1;
                 continue;
             };
+            if target.has_character_body() {
+                // Actor impacts go through their FX and counter receivers.
+                // Decal projection is for world surfaces.
+                self.rejected += 1;
+                continue;
+            }
             let body = target.projectile_target_body();
             // Selected rigid-body components override the shape's real bit.
             // Otherwise retain the imported filter's bit; never invent it.

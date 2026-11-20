@@ -25,6 +25,7 @@ pub struct Store {
     archives: Vec<Archive>,
     entries: Vec<Entry>,
     names: BTreeMap<String, usize>,
+    palette_scenes: Option<std::sync::Arc<Vec<(String, epic_mickey_lib_rs::scene_file::SceneFile)>>>,
     pub reads: u64,
     pub bytes_read: u64,
     pub loose_reads: u64,
@@ -42,6 +43,7 @@ impl Store {
     pub fn new(root: &Path, packs: &[String]) -> Result<Self> {
         let mut store = Self {
             root:root.canonicalize()?,archives:Vec::new(),entries:Vec::new(),names:BTreeMap::new(),
+            palette_scenes: None,
             reads:0,bytes_read:0,loose_reads:0,
         };
         store.admit_packs(packs)?;
@@ -61,6 +63,11 @@ impl Store {
             let members=crate::pack_io::index(&path)?.into_iter().map(|member|Ok((key(&member.path)?,member))).collect::<Result<Vec<_>>>()?;
             let archive=self.archives.len();
             for (identity,member) in members {
+                if identity.starts_with("palettes/") && identity.ends_with(".bin")
+                    && !self.names.contains_key(&identity)
+                {
+                    self.palette_scenes = None;
+                }
                 self.names.entry(identity).or_insert(self.entries.len());
                 self.entries.push(Entry{archive,member});
             }
@@ -170,13 +177,24 @@ impl Store {
         ))
     }
     /// Palette declarations only; model/texture payloads remain lazy.
-    pub(super) fn palette_files(&mut self) -> Result<Vec<VirtualFile>> {
+    pub(super) fn palette_scenes(&mut self) -> Result<std::sync::Arc<Vec<(String, epic_mickey_lib_rs::scene_file::SceneFile)>>> {
+        if let Some(scenes) = &self.palette_scenes {
+            return Ok(scenes.clone());
+        }
         let mut seen = BTreeSet::new();
         let indices = self.entries.iter().enumerate().filter_map(|(index, entry)| {
             let path = entry.member.path.replace('\\', "/").to_ascii_lowercase();
             (path.starts_with("palettes/") && path.ends_with(".bin") && seen.insert(path)).then_some(index)
         }).collect::<Vec<_>>();
-        indices.into_iter().map(|index| self.read_index(index)).collect()
+        let mut scenes = Vec::with_capacity(indices.len());
+        for index in indices {
+            let file = self.read_index(index)?;
+            let scene = super::scene_loading::parse_scene(&file.path, &file.data)?;
+            scenes.push((file.path, scene));
+        }
+        let scenes = std::sync::Arc::new(scenes);
+        self.palette_scenes = Some(scenes.clone());
+        Ok(scenes)
     }
     fn texture(&self, path: &str) -> Result<Option<usize>> {
         if path.is_empty() {

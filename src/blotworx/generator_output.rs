@@ -100,6 +100,7 @@ pub fn compose(
                     },
                 },
                 "hkbModifierList"
+                | "hkbEventDrivenModifier"
                 | "hkbEvaluateExpressionModifier"
                 | "hkbAttributeModifier"
                 | "hkbTwistModifier"

@@ -305,9 +305,9 @@ impl World {
         }
         Ok(mlua::MultiValue::new())
     }
-    /// Demo scalar bridge. The motion step reads acceleration on every tick;
+    /// The motion step reads acceleration on every tick;
     /// this retains current angular velocity instead of restarting the motor.
-    pub(super) fn set_demo_rotator_acceleration(
+    pub(super) fn set_rotator_acceleration(
         &mut self,
         entity: usize,
         value: f32,

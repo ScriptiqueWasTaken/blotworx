@@ -23,6 +23,15 @@ pub struct Blend {
     pub flags: u16,
     pub end_mode: u8,
     pub blend_curve: u8,
+    #[serde(skip)]
+    pub duration_variable: Option<usize>,
+}
+impl Blend {
+    pub(super) fn duration_for(&self, words: &[u32]) -> Result<f32> {
+        self.duration_variable.map(|i| words.get(i).copied().map(f32::from_bits)
+            .context("Missing transition duration variable")).transpose()
+            .map(|bound| bound.unwrap_or(self.duration))
+    }
 }
 #[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
@@ -53,7 +62,7 @@ pub fn compile(graph: &Document) -> Result<BTreeMap<String, Definition>> {
                         "Transition bone alignment is not implemented: {id}"
                     );
                 }
-                let d: Blend = serde_json::from_value(fields)?;
+                let mut d: Blend = serde_json::from_value(fields)?;
                 ensure!(
                     d.duration.is_finite()
                         && d.duration >= 0.
@@ -65,10 +74,18 @@ pub fn compile(graph: &Document) -> Result<BTreeMap<String, Definition>> {
                         && d.flags & !3 == 0,
                     "Invalid blending transition {id}"
                 );
-                ensure!(
-                    d.variable_binding_set.is_none(),
-                    "Transition bindings require implementation: {id}"
-                );
+                if let Some(reference) = &d.variable_binding_set {
+                    let set = graph.objects.get(&reference.id).context("Missing transition binding set")?;
+                    ensure!(set.klass == "hkbVariableBindingSet" && set.fields["indexOfBindingToEnable"] == -1,
+                        "Unsupported transition binding set: {id}");
+                    let bindings = set.fields["bindings"].as_array().context("Invalid transition binding list")?;
+                    for binding in bindings {
+                        ensure!(binding["memberPath"] == "duration" && binding["bindingType"] == 0 && binding["bitIndex"] == -1,
+                            "Unsupported transition field binding: {binding}");
+                        let index = binding["variableIndex"].as_u64().context("Invalid transition variable index")? as usize;
+                        ensure!(d.duration_variable.replace(index).is_none(), "Duplicate duration binding: {id}");
+                    }
+                }
                 Definition::Blend(d)
             }
             "hkbGeneratorTransitionEffect" => {
@@ -144,13 +161,19 @@ fn event_mode(authored: u8, global: u8) -> Result<u8> {
 
 pub struct Blending {
     pub clock: BlendingClock,
+    pub duration: f32,
     pub target_was_active: bool,
 }
 impl Blending {
     /// 0x8021d410: query target activity before graph topology is changed.
     pub fn activate(d: &Blend, target_was_active: bool) -> Result<Self> {
+        Self::activate_with_variables(d, &[], target_was_active)
+    }
+    pub(super) fn activate_with_variables(d: &Blend, words: &[u32], target_was_active: bool) -> Result<Self> {
+        let duration = d.duration_for(words)?;
         Ok(Self {
-            clock: BlendingClock::new(d.duration)?,
+            clock: BlendingClock::new(duration)?,
+            duration,
             target_was_active,
         })
     }
@@ -201,7 +224,7 @@ impl Blending {
         // branch supplies source sync (virtual +0x70 -> 0x8021dbbc).
         let end = if same_generator { &output } else { from };
         self.clock.remaining = match d.end_mode {
-            0 => d.duration - self.clock.time,
+            0 => self.duration - self.clock.time,
             1 => {
                 if end.frequency != 0. {
                     1. / end.frequency - end.time
@@ -211,7 +234,7 @@ impl Blending {
             }
             2 => {
                 if end.frequency != 0. {
-                    (d.duration - self.clock.time).min(1. / end.frequency - end.time)
+                    (self.duration - self.clock.time).min(1. / end.frequency - end.time)
                 } else {
                     0.
                 }
@@ -557,6 +580,7 @@ mod tests {
             flags: 0,
             end_mode: 0,
             blend_curve: 1,
+            duration_variable: None,
         };
         let mut runtime = Blending::activate(&d, true)?;
         let mut operations = vec![];

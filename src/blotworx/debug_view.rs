@@ -830,7 +830,7 @@ impl DebugView {
             text(ui,format!("Quest slots {} / authored {} / current {} (evaluation pending)",w.quests.slots.len(),
                 w.quests.slots.iter().filter(|slot|slot.definition.is_some()).count(),
                 w.quests.slots.iter().filter(|slot|slot.current!=u16::MAX).count()));
-            text(ui,format!("Pause map {} / type {} (pause-menu rendering pending)",w.map_info.map,w.map_info.map_type));
+            text(ui,format!("Pause map {} / {}",w.map_info.map,w.map_info.map_type));
             if let Some(spawn)=w.player_spawn.override_transform {
                 text(ui,format!("Stored player spawn {:.2}, {:.2}, {:.2} / scale {} (checkpoint reload pending)",
                     spawn.position[0],spawn.position[1],spawn.position[2],spawn.scale));

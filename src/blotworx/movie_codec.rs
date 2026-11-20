@@ -48,7 +48,7 @@ pub fn provision() -> Result<PathBuf> {
     }
     let cache = dirs::cache_dir()
         .context("No codec cache directory")?
-        .join("BlueThinner/runtime/ffmpeg-7.1");
+        .join("Blotworx Engine/runtime/ffmpeg-7.1");
     let exe = cache.join("ffmpeg.exe");
     if valid(&exe) {
         return Ok(exe);

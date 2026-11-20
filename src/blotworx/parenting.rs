@@ -42,7 +42,7 @@ impl World {
         self.change_transform_parent(parent,None)?;
         Ok(())
     }
-    fn prepare_child_slots(&mut self,owner:usize)->Result<bool> {
+    pub(super) fn prepare_child_slots(&mut self,owner:usize)->Result<bool> {
         if self.live_child_slots.contains_key(&owner) {return Ok(true);}
         let entity=&self.entities[owner];
         let Some(component)=entity.components.iter().find(|c|c.class_name=="ChildComponent") else {return Ok(false)};

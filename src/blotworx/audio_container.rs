@@ -177,6 +177,15 @@ impl Switch<'_> {
     }
 }
 impl<'a> Object<'a> {
+    pub fn unmodulated_layer_children(&self, feedback: bool) -> Result<Vec<u32>> {
+        ensure!(self.kind == 9, "Object is not a layer container");
+        let (_, bytes) = Common::parse(self.payload, feedback)?;
+        let (children, layers) = children(bytes)?;
+        // The Global bank's thinner impact container retains a child list
+        // followed by zero modulation layers. Layer curves remain separate.
+        ensure!(layers == [0; 4], "Authored audio layer modulation is not connected");
+        Ok(children)
+    }
     pub fn switch_container(&self, feedback: bool) -> Result<Switch<'a>> {
         ensure!(self.kind == 6, "Object is not a switch container");
         let (common, bytes) = Common::parse(self.payload, feedback)?;

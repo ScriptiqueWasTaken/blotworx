@@ -29,6 +29,10 @@ pub struct State {
     steering: BTreeMap<usize, Steering>,
     attacking: BTreeMap<usize, Attack>,
     pub attacks: u64,
+    pub charge_windups: u64,
+    pub charge_rolls: u64,
+    pub charge_contacts: u64,
+    pub charge_recoveries: u64,
     pub movement_updates: u64,
     pub decisions: BTreeMap<usize, Decision>,
 }
@@ -47,11 +51,151 @@ struct Steering {
 }
 #[derive(Clone, Copy)]
 struct Attack {
+    windup_end: Option<f32>,
+    windup_idle: f32,
+    weapon: usize,
+    ranged_target: Option<usize>,
+    charge: Option<Charge>,
+    prepared: bool,
+    phase: AttackPhase,
+    contact_open: bool,
+    hit: bool,
+}
+#[derive(Clone, Copy)]
+struct Charge {
+    distance: f32,
+    move_speed: f32,
+    top_speed: f32,
+    ramp_time: f32,
+    blocked_time: f32,
     started: f32,
-    target: usize,
-    phase: u8,
+    origin: [f32; 3],
+    direction: [f32; 2],
+    progress: f32,
+    stopped: f32,
+}
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum WeaponKind {
+    Melee = 0,
+    Ranged = 1,
+    Charge = 2,
+}
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum AttackPhase {
+    Windup,
+    AwaitStrike,
+    Striking,
+    Recovery,
 }
 impl World {
+    fn demo_weapon(&self, actor: usize, distance: f32, max_reach: f32, kind: WeaponKind) -> Option<(usize, f32)> {
+        let active = self.entities[actor].components.iter()
+            .find(|c| c.class_name == "ArsenalComponent")?
+            .properties.iter().find(|p| p.name == "ActiveWeapon")?
+            .value.as_u64().and_then(|index| usize::try_from(index).ok())?;
+        self.live_child_slots.get(&actor)?.iter().flatten().copied()
+            .filter(|child| !self.removed_entities.contains(child))
+            .filter_map(|child| self.entities[child].components.iter()
+                .find(|c| c.class_name == "WeaponComponent").map(|component| (child, component)))
+            .enumerate()
+            .filter_map(|(index, (weapon, component))| {
+                let field = |name| component.properties.iter().find(|p| p.name == name).map(|p| &p.value);
+                let ranged = kind == WeaponKind::Ranged;
+                let component_name = if ranged { "ShooterComponent" } else { "TriggerDamageComponent" };
+                if field("WeaponType")?.as_u64()? != kind as u64
+                    || field("WeaponFiringMethod")?.as_u64()? != u64::from(!ranged)
+                    || !self.entities[weapon].components.iter().any(|c| c.class_name == component_name)
+                {
+                    return None;
+                }
+                let minimum = field("WeaponMinRange")?.as_f64()? as f32;
+                let maximum = field("WeaponMaxRange")?.as_f64()? as f32;
+                let windup = field("Weapon Windup Idle Time")?.as_f64()? as f32;
+                (distance >= minimum && distance <= maximum.min(max_reach))
+                    .then_some((index != active, weapon, windup))
+            })
+            .min_by_key(|&(alternate, _, _)| alternate)
+            .map(|(_, weapon, windup)| (weapon, windup))
+    }
+    pub(super) fn demo_melee_trigger_enabled(&self, weapon: usize) -> Option<bool> {
+        let parent = self.transform_hierarchy.get(&weapon)?.parent;
+        if let Some(attack) = self.demo_story.ai.attacking.get(&parent) {
+            if attack.weapon == weapon {
+                return Some(attack.contact_open);
+            }
+        }
+        if !self.ai_brains.get(&parent).is_some_and(|brain| brain.ai_type.eq_ignore_ascii_case("FodderBlotling")) {
+            return None;
+        }
+        let component = self.entities[weapon].components.iter().find(|c| c.class_name == "WeaponComponent")?;
+        component.properties.iter().any(|p| p.name == "WeaponType" && p.value.as_u64() == Some(2))
+            .then_some(false)
+    }
+    pub(super) fn record_demo_melee_contact(&mut self, weapon: usize) {
+        if self.demo_melee_trigger_enabled(weapon) != Some(true) {
+            return;
+        }
+        let parent = self.transform_hierarchy[&weapon].parent;
+        let attack = self.demo_story.ai.attacking.get_mut(&parent).unwrap();
+        if !attack.hit {
+            attack.hit = true;
+            self.demo_story.ai.attacks += 1;
+            self.demo_story.ai.charge_contacts += u64::from(attack.charge.is_some());
+        }
+    }
+    pub(super) fn advance_demo_attack_animation(&mut self, actor: usize, event: u32) -> Result<()> {
+        let Some(attack) = self.demo_story.ai.attacking.get_mut(&actor) else {
+            return Ok(());
+        };
+        if attack.charge.is_some() {
+            if event == 0xc1 && attack.phase == AttackPhase::Recovery {
+                self.demo_story.ai.attacking.remove(&actor);
+            }
+            return Ok(());
+        }
+        if let Some(target) = attack.ranged_target {
+            match (event, attack.phase) {
+                (0x95, AttackPhase::Windup) if attack.windup_end.is_none() => {
+                    attack.windup_end = Some(self.animation_time + attack.windup_idle);
+                }
+                (0x98, AttackPhase::AwaitStrike) => attack.prepared = true,
+                (0x7a, AttackPhase::AwaitStrike) if attack.prepared => {
+                    self.demo_story.projectiles.queue(actor, attack.weapon, target);
+                    attack.phase = AttackPhase::Recovery;
+                }
+                (0xc1, AttackPhase::AwaitStrike | AttackPhase::Recovery) => {
+                    self.demo_story.ai.attacking.remove(&actor);
+                }
+                _ => {}
+            }
+            return Ok(());
+        }
+        match (event, attack.phase) {
+            (0x75, AttackPhase::Windup) if attack.windup_end.is_none() => {
+                attack.windup_end = Some(self.animation_time + attack.windup_idle);
+            }
+            (0x7a, AttackPhase::AwaitStrike) => {
+                attack.phase = AttackPhase::Striking;
+                attack.contact_open = true;
+            }
+            // Some graphs stop the weapon in the follow-through clip,
+            // while others stop it before branching to hit or miss.
+            (0x7b, _) => attack.contact_open = false,
+            (0x79, AttackPhase::AwaitStrike | AttackPhase::Striking) => {
+                attack.phase = AttackPhase::Recovery;
+                self.authored_havok.send_event(actor, if attack.hit {
+                    "EVENT_Finish_AttackMeleeSuccess"
+                } else {
+                    "EVENT_Finish_AttackMeleeFail"
+                })?;
+            }
+            (0xc1, AttackPhase::Recovery) => {
+                self.demo_story.ai.attacking.remove(&actor);
+            }
+            _ => {}
+        }
+        Ok(())
+    }
     pub(super) fn clear_ai_combat_target(&mut self, entity: usize) {
         let Some(brain) = self.ai_brains.get_mut(&entity) else {
             return;
@@ -636,13 +780,14 @@ impl World {
                     .components
                     .iter()
                     .find(|c| c.class_name == "TeamComponent")
-                    .and_then(|c| {
-                        c.properties
-                            .iter()
-                            .find(|p| p.name == "CurrentTeam")
-                            .or_else(|| c.properties.iter().find(|p| p.name == "Team"))
+                    .and_then(|component| {
+                        let team = |name| component.properties.iter()
+                            .find(|property| property.name == name)
+                            .and_then(|property| property.value.as_i64());
+                        // Seer stores zero in the cooked CurrentTeam slot.
+                        // The authored Team supplies the initial allegiance.
+                        team("CurrentTeam").filter(|team| *team != 0).or_else(|| team("Team"))
                     })
-                    .and_then(|p| p.value.as_i64())
                     .unwrap_or(0);
                 // EM1's authored Spatter encounter distinguishes hostile (2)
                 // from converted (3). Mickey's own team (1) is not this state.
@@ -663,10 +808,39 @@ impl World {
         let _ = lua;
         Ok(mlua::MultiValue::new())
     }
+    fn seer_charge(&self, weapon: usize, windup: f32) -> Result<(Charge, f32)> {
+        let component = self.entities[weapon].components.iter().find(|c| c.class_name == "WeaponComponent")
+            .context("Charge weapon component missing")?;
+        let distance = component.properties.iter().find(|p| p.name == "Weapon Charge Distance")
+            .and_then(|p| p.value.as_f64()).context("Charge weapon distance missing")? as f32;
+        let setting = |key: &str| -> Result<f32> {
+            let key = format!("BEH_ChargeAttack_FodderBlotling_{key}");
+            let value = self.runtime_settings.get(&key).with_context(|| format!("Missing {key}"))?;
+            super::config_value::decimal_float(value).map_err(|error| anyhow::anyhow!("{key}: {error}"))
+        };
+        Ok((Charge {
+            distance,
+            move_speed: setting("MoveSpeed")?,
+            top_speed: setting("TopMoveSpeed")?,
+            ramp_time: setting("RampUpTime")?,
+            blocked_time: setting("TimeStoppedToDetectHit")?,
+            started: 0.,
+            origin: [0.; 3],
+            direction: [0.; 2],
+            progress: 0.,
+            stopped: 0.,
+        }, if windup < 0. { setting("WindupIdleTime")? } else { windup }))
+    }
     pub(super) fn advance_demo_ai(&mut self, delta: f32) -> Result<()> {
         if !self.demo_story.enabled {
             return Ok(());
         }
+        let melee_setting = |name: &str, default| self.runtime_settings.get(name)
+            .and_then(|value| super::config_value::decimal_float(value).ok())
+            .unwrap_or(default);
+        let melee_radius = melee_setting("SpatterMelee_AttackRadius", 1.25);
+        let melee_chase = melee_setting("SpatterMelee_ChaseSpeed", 5.);
+        let melee_walk = melee_setting("SpatterMelee_DefaultSpeed", 3.);
         let ids = self
             .ai_brains
             .iter()
@@ -733,48 +907,118 @@ impl World {
                 .get(&entity)
                 .is_some_and(|h| h.health <= 0)
                 || status == 2;
-            let patrol_target = self
-                .demo_story
-                .ai
-                .patrol
-                .get(&entity)
-                .copied()
-                .filter(|&id| id < self.entities.len() && !self.removed_entities.contains(&id));
-            let target=patrol_target.unwrap_or(self.player_entity);
             let source = pose.position;
             self.publish_ai_actor_position(entity)?;
             let navigation_position=self.npc_relocations.get(&entity).and_then(|state|state.navigation_position);
             let navigation_floor=self.npc_relocations.get(&entity).and_then(|state|state.navigation_floor);
+            let player = self.player_entity;
+            let player_position: [f32; 3] = self.entities[player].transform[12..15].try_into()?;
+            let player_distance = (player_position[0] - source[0]).hypot(player_position[2] - source[2]);
+            let in_range = player_distance < 18. && (player_position[1] - source[1]).abs() < 4.;
+            let previous_target = self.ai_brains[&entity].combat_target;
+            let hostile = status != 1 && !dead && !paused
+                && (in_range || previous_target == Some(player) && self.demo_story.ai.attacking.contains_key(&entity))
+                && (previous_target == Some(player) || self.demo_melee_clear(shape, source, player_position, player)?);
+            self.ai_brains.get_mut(&entity).unwrap().combat_target = hostile.then_some(player);
+            if hostile && previous_target != Some(player) {
+                self.emit_entity_output(entity, "OnPlayerSighted", player);
+            }
+            // Retain the patrol node so the actor can resume it after losing
+            // the target. A current patrol must not suppress acquisition.
+            let patrol_target = (!hostile).then(|| self.demo_story.ai.patrol.get(&entity).copied()).flatten()
+                .filter(|&id| id < self.entities.len() && !self.removed_entities.contains(&id));
+            let target = patrol_target.unwrap_or(player);
             let destination: [f32; 3] = self.entities[target].transform[12..15].try_into()?;
             let dx = destination[0] - source[0];
             let dz = destination[2] - source[2];
-            let distance = (dx * dx + dz * dz).sqrt();
-            let in_range = distance < 18. && (destination[1] - source[1]).abs() < 4.;
-            let brain = self.ai_brains.get_mut(&entity).unwrap();
-            brain.combat_target = if status != 1 && !dead && !paused && target == self.player_entity
-                && (in_range || brain.combat_target == Some(target)
-                    && self.demo_story.ai.attacking.contains_key(&entity))
-            {
-                Some(target)
-            } else {
-                None
-            };
-            let hostile = brain.combat_target.is_some();
+            let distance = dx.hypot(dz);
+            let melee_spatter = self.ai_brains[&entity].ai_type.eq_ignore_ascii_case("SpatterMelee");
+            let ranged_spatter = self.ai_brains[&entity].ai_type.eq_ignore_ascii_case("SpatterRanged");
+            let seer = self.ai_brains[&entity].ai_type.eq_ignore_ascii_case("FodderBlotling");
             if paused || dead || !hostile {
-                self.demo_story.ai.attacking.remove(&entity);
+                if self.demo_story.ai.attacking.remove(&entity).is_some_and(|attack| attack.charge.is_some())
+                    && !dead && self.authored_havok.contains(entity)
+                {
+                    self.authored_havok.send_event(entity, "EVENT_ForceNormalIdle")?;
+                }
+            }
+            let mut charge_motion = None;
+            if let Some(attack) = self.demo_story.ai.attacking.get_mut(&entity) {
+                if let Some(charge) = &mut attack.charge {
+                    if attack.phase == AttackPhase::Windup
+                        && self.authored_havok.active_state_time(entity, "ChargeAttack_WindupIdle")
+                            .is_some_and(|time| time >= attack.windup_idle)
+                    {
+                        charge.direction = [dx / distance.max(0.001), dz / distance.max(0.001)];
+                        charge.origin = source;
+                        charge.started = self.animation_time;
+                        attack.phase = AttackPhase::Striking;
+                        self.authored_havok.send_event(entity, "EVENT_Finish_AttackChargeWindup")?;
+                    }
+                    if attack.phase == AttackPhase::Striking {
+                        if !attack.contact_open {
+                            attack.contact_open = self.authored_havok
+                                .active_state_time(entity, "ChargeAttack_Attack").is_some();
+                            self.demo_story.ai.charge_rolls += u64::from(attack.contact_open);
+                        }
+                        if attack.contact_open {
+                            let progress = (source[0] - charge.origin[0]) * charge.direction[0]
+                                + (source[2] - charge.origin[2]) * charge.direction[1];
+                            if progress - charge.progress < 0.01 {
+                                charge.stopped += delta;
+                            } else {
+                                charge.stopped = 0.;
+                            }
+                            charge.progress = progress;
+                            if attack.hit || progress >= charge.distance || charge.stopped > charge.blocked_time {
+                                attack.phase = AttackPhase::Recovery;
+                                self.demo_story.ai.charge_recoveries += 1;
+                                attack.contact_open = false;
+                                self.authored_havok.send_event(entity, "EVENT_Finish_AttackCharge")?;
+                            } else {
+                                let elapsed = self.animation_time - charge.started;
+                                let amount = if charge.ramp_time > 0. { (elapsed / charge.ramp_time).min(1.) } else { 1. };
+                                let speed = charge.move_speed + (charge.top_speed - charge.move_speed) * amount;
+                                charge_motion = Some((charge.direction, speed));
+                            }
+                        }
+                    }
+                }
             }
             let attacking = self.demo_story.ai.attacking.contains_key(&entity);
+            let mut selected = None;
+            if hostile && !attacking
+                && self.authored_havok.contains(entity) && self.prepare_child_slots(entity)?
+            {
+                let reach = if melee_spatter { melee_radius } else { f32::INFINITY };
+                if (destination[1] - source[1]).abs() < 1.5 {
+                    selected = self.demo_weapon(entity, distance, reach, WeaponKind::Melee).map(|v| (v, WeaponKind::Melee));
+                }
+                if selected.is_none() && ranged_spatter {
+                    selected = self.demo_weapon(entity, distance, f32::INFINITY, WeaponKind::Ranged).map(|v| (v, WeaponKind::Ranged));
+                }
+                if selected.is_none() && seer && distance > 0.001 && (destination[1] - source[1]).abs() < 1.5 {
+                    selected = self.demo_weapon(entity, distance, f32::INFINITY, WeaponKind::Charge)
+                        .map(|v| (v, WeaponKind::Charge));
+                }
+                if selected.is_some() && !self.demo_melee_clear(shape, source, destination, target)? {
+                    selected = None;
+                }
+            }
             let wants_move = !paused
                 && self.npc_relocations.get(&entity).is_none_or(|s|s.input_flags&2!=0)
                 && !dead
                 && !attacking
+                && selected.is_none()
                 // Perception limits belong to this provisional combat planner,
                 // not an explicit authored patrol destination. Applying them to
                 // both silently discards real routes (the airlock requests29m).
-                && (patrol_target.is_some() || in_range)
-                && distance > if hostile { 1.3 } else { 0.25 }
+                && (patrol_target.is_some() || hostile)
+                && distance > if !hostile { 0.25 } else if melee_spatter { melee_radius } else { 1.3 }
                 && (status != 1 || target != self.player_entity);
-            let direction = if wants_move {
+            let direction = if let Some((direction, _)) = charge_motion {
+                direction
+            } else if wants_move {
                 self.demo_steer(entity, shape, source, destination, false)?
             } else {
                 [0.; 2]
@@ -786,7 +1030,7 @@ impl World {
                     dead,
                     hostile,
                     in_range,
-                    movement_requested: wants_move,
+                    movement_requested: wants_move || charge_motion.is_some(),
                     scripted_patrol: patrol_target.is_some(),
                     target,
                     distance,
@@ -797,15 +1041,21 @@ impl World {
                     navigation_position,
                 },
             );
-            let moving = wants_move && direction != [0.; 2];
-            let speed = if moving {
+            let moving = (wants_move || charge_motion.is_some()) && direction != [0.; 2];
+            let speed = if let Some((_, speed)) = charge_motion {
+                speed
+            } else if moving {
                 let patrol_speed = patrol_target.and_then(|_| {
                     self.entities[entity].components.iter()
                         .find(|component| component.class_name == "BasicAIControllerComponent")?
                         .properties.iter().find(|property| property.name == "PatrolSpeed")?
                         .value.as_f64().map(|speed| speed as f32)
                 });
-                patrol_speed.unwrap_or(if distance > 3. { 3. } else { 2. })
+                patrol_speed.unwrap_or_else(|| {
+                    if melee_spatter {
+                        if hostile { melee_chase } else { melee_walk }
+                    } else if distance > 3. { 3. } else { 2. }
+                })
             } else {
                 0.
             };
@@ -813,7 +1063,7 @@ impl World {
             // reach the real BasicAI input setters instead of leaving that
             // controller at its constructor's zero-speed input forever.
             if self.entities[entity].components.iter().any(|c|c.class_name=="BasicAIControllerComponent") {
-                if moving || attacking {
+                if moving || attacking || selected.is_some() {
                     let facing=if moving {direction} else {[dx/distance.max(0.001),dz/distance.max(0.001)]};
                     self.publish_npc_ai_facing(entity,[facing[0],0.,facing[1]])?;
                 }
@@ -829,7 +1079,7 @@ impl World {
                 )?;
             }
             let mut turn_speed = 0.;
-            if moving || attacking {
+            if moving || attacking || selected.is_some() {
                 if moving {
                     self.demo_story.ai.movement_updates += 1;
                 }
@@ -881,7 +1131,7 @@ impl World {
                     u32::from(hostile),
                 )?;
                 let previous = self.demo_story.ai.moving.insert(entity, moving);
-                if previous != Some(moving) {
+                if previous != Some(moving) && charge_motion.is_none() {
                     // Graphs filter absent events; this adapter does not inject
                     // unknown native event IDs or fabricate feedback callbacks.
                     let event = if moving {
@@ -892,93 +1142,63 @@ impl World {
                     let _ = self.authored_havok.send_event(entity, event);
                 }
             }
-            if let Some(mut attack) = self.demo_story.ai.attacking.get(&entity).copied() {
-                let elapsed = self.animation_time - attack.started;
-                if attack.phase == 0 && elapsed >= 0.35 {
-                    if self.authored_havok.contains(entity) {
-                        let _ = self
-                            .authored_havok
-                            .send_event(entity, "EVENT_Finish_AttackMeleeWindup");
-                    }
-                    attack.phase = 1;
+            if let Some(attack) = self.demo_story.ai.attacking.get_mut(&entity) {
+                if attack.phase == AttackPhase::Windup
+                    && attack.windup_end.is_some_and(|end| self.animation_time >= end)
+                {
+                    attack.phase = AttackPhase::AwaitStrike;
+                    let event = if attack.ranged_target.is_some() {
+                        "EVENT_Finish_AttackRangedWindup"
+                    } else {
+                        "EVENT_Finish_AttackMeleeWindup"
+                    };
+                    self.authored_havok.send_event(entity, event)?;
                 }
-                if attack.phase == 1 && elapsed >= 0.5 {
-                    let hit = attack.target == target
-                        && distance < 1.9
-                        && (destination[1] - source[1]).abs() < 1.5
-                        && self.demo_melee_clear(shape, source, destination, target)?;
-                    if self.authored_havok.contains(entity) {
-                        let _ = self.authored_havok.send_event(
-                            entity,
-                            if hit {
-                                "EVENT_Finish_AttackMeleeSuccess"
-                            } else {
-                                "EVENT_Finish_AttackMeleeFail"
-                            },
-                        );
-                    }
-                    if hit {
-                        self.demo_story.ai.attacks += 1;
-                        let emission = super::projectile_stimulus::Emission {
-                            stimulus: 2,
-                            amount: 1.,
-                            position: destination,
-                            direction: if distance > 0.001 {
-                                [dx / distance, 0., dz / distance]
-                            } else {
-                                [0., 0., 1.]
-                            },
-                            target: Some(target as u64),
-                            owner: Some(entity as u64),
-                            tag: "Demo melee".into(),
-                            delivery: super::projectile_stimulus::Delivery::Target,
-                        };
-                        self.receive_combat(target, &[emission])?;
-                    }
-                    attack.phase = 2;
-                }
-                if elapsed >= 1.1 {
-                    self.demo_story.ai.attacking.remove(&entity);
-                    if self.authored_havok.contains(entity) {
-                        let _ = self
-                            .authored_havok
-                            .send_event(entity, "EVENT_ForceNormalIdle");
-                    }
-                } else {
-                    self.demo_story.ai.attacking.insert(entity, attack);
-                }
-            } else if hostile
-                && !paused
-                && !dead
-                && distance < 1.65
-                && (destination[1] - source[1]).abs() < 1.5
-                && self.animation_time
-                    >= self
+            } else if let Some(((weapon, windup), kind)) = selected {
+                if self.animation_time
+                    < self
                         .demo_story
                         .ai
                         .attack_at
                         .get(&entity)
                         .copied()
                         .unwrap_or(0.)
-                && self.demo_melee_clear(shape, source, destination, target)?
-            {
+                {
+                    continue;
+                }
                 self.demo_story
                     .ai
                     .attack_at
                     .insert(entity, self.animation_time + 1.6);
+                let (charge, windup) = if kind == WeaponKind::Charge {
+                    let (charge, windup) = self.seer_charge(weapon, windup)?;
+                    (Some(charge), windup)
+                } else {
+                    (None, windup.max(0.))
+                };
                 self.demo_story.ai.attacking.insert(
                     entity,
                     Attack {
-                        started: self.animation_time,
-                        target,
-                        phase: 0,
+                        windup_end: (!ranged_spatter && charge.is_none()).then_some(self.animation_time + windup),
+                        windup_idle: windup,
+                        weapon,
+                        ranged_target: (kind == WeaponKind::Ranged).then_some(target),
+                        charge,
+                        prepared: false,
+                        phase: AttackPhase::Windup,
+                        contact_open: false,
+                        hit: false,
                     },
                 );
-                if self.authored_havok.contains(entity) {
-                    let _ = self
-                        .authored_havok
-                        .send_event(entity, "EVENT_Start_AttackMelee");
-                }
+                let event = match kind {
+                    WeaponKind::Melee => "EVENT_Start_AttackMelee",
+                    WeaponKind::Ranged => "EVENT_Start_AttackRanged",
+                    WeaponKind::Charge => {
+                        self.demo_story.ai.charge_windups += 1;
+                        "EVENT_Start_AttackCharge"
+                    }
+                };
+                self.authored_havok.send_event(entity, event)?;
             }
         }
         let _ = delta;

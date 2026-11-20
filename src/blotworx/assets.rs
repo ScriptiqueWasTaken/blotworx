@@ -1591,11 +1591,16 @@ impl World {
         if self.demo_story.enabled && name == "Acceleration" {
             return self.set_demo_rotator_acceleration(entity, value);
         }
+        if name == "InitialSpeed" {
+            ensure!(self.entities[entity].components.iter()
+                .any(|component| component.class_name == "SplineFollowerComponent"),
+                "Missing SplineFollowerComponent owner for InitialSpeed");
+            return self.set_live_spline_speed(entity, value);
+        }
         let scalar_owner = match name {
             "Spawn Delay" | "Spawn Radius" => Some("TemplateSpawnerComponent"),
             // REL3c764c/3c7818 -> 3c7c64 -> 123d80 stores the target value.
             "Target Value" => Some("TargetableComponent"),
-            "InitialSpeed" => Some("SplineFollowerComponent"),
             _ => None,
         };
         if let Some(owner) = scalar_owner {
@@ -1628,9 +1633,6 @@ impl World {
                         false,
                         serde_json::json!(value),
                     ));
-            }
-            if name == "InitialSpeed" {
-                self.publish_spline_initial_speed(entity, value);
             }
             return Ok(());
         }
@@ -1788,6 +1790,7 @@ impl World {
         // still exist. It detaches surviving children, then its own parent.
         self.detach_retiring_transform(entity)?;
         self.removed_entities.insert(entity);
+        self.demo_story.motion.retire(entity);
         self.spawner_sources.remove(&entity);
         self.live_transform_children.remove(&entity);
         self.controller_feedback.pushed_emitters.remove(&entity);
@@ -4557,6 +4560,13 @@ impl World {
                         self.set_entity_float_property(entity, &property, value)
                             .map_err(mlua::Error::external)?;
                         return Ok(mlua::MultiValue::new());
+                    }
+                    if property == "InitialSpeed" {
+                        if let Some(speed) = self.live_spline_speed(entity) {
+                            return Ok(mlua::MultiValue::from_vec(vec![mlua::Value::Number(
+                                f64::from(speed),
+                            )]));
+                        }
                     }
                     let scalar = first
                         .map(|(_, candidate)| {

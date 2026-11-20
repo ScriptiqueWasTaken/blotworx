@@ -5,6 +5,15 @@ use std::collections::BTreeMap;
 #[derive(Default)]
 pub struct State {
     movers: BTreeMap<usize, Mover>,
+    // Live speed can be written before a preview route starts, or with
+    // preview traversal disabled altogether.
+    spline_speed_overrides: BTreeMap<usize, f32>,
+}
+impl State {
+    pub(super) fn retire(&mut self, owner: usize) {
+        self.movers.remove(&owner);
+        self.spline_speed_overrides.remove(&owner);
+    }
 }
 struct Mover {
     passes: super::spline_events::PassState,
@@ -14,6 +23,7 @@ struct Mover {
     stop: Option<Stop>,
     reverse: bool,
     disabled: bool,
+    stopped: bool,
 }
 #[derive(Clone, Copy)]
 struct Stop {
@@ -231,12 +241,15 @@ impl World {
     }
     pub(super) fn initialize_demo_motion_range(&mut self, range: std::ops::Range<usize>) {
         for owner in range {
-            let Some(speed) = property(
-                &self.entities[owner],
-                "SplineFollowerComponent",
-                "InitialSpeed",
-            )
-            .and_then(|v| v.as_f64()) else {
+            if self.demo_story.motion.movers.contains_key(&owner) {
+                continue;
+            }
+            let Some(speed) = self.demo_story.motion.spline_speed_overrides.get(&owner)
+                .copied()
+                .or_else(|| property(&self.entities[owner], "SplineFollowerComponent", "InitialSpeed")
+                    .and_then(|value| value.as_f64())
+                    .map(|value| value as f32))
+            else {
                 continue;
             };
             let disabled = property(
@@ -252,6 +265,7 @@ impl World {
                 "InitialKnotName",
                 "InitialKnotEntity",
             ) {
+                self.demo_story.motion.spline_speed_overrides.remove(&owner);
                 let hold = property(
                     &self.entities[owner],
                     "SplineFollowerComponent",
@@ -271,19 +285,19 @@ impl World {
                     Mover {
                         passes: Default::default(),
                         target,
-                        speed: speed as f32,
+                        speed,
                         hold,
                         stop: None,
                         reverse,
                         disabled,
+                        stopped: false,
                     },
                 );
             }
         }
     }
-    /// The original wrapper at REL .text 26445c calls the live setter at
-    /// 3ba5d8. This compatibility path still writes InitialSpeed and mirrors
-    /// the value to the provisional mover.
+    /// REL .text 26445c calls the same live setter as the reflected
+    /// SplineFollowerComponent.InitialSpeed field (3bb204 -> 3ba5d8).
     pub(super) fn spline_initial_speed_lua(
         &mut self,
         lua: &mlua::Lua,
@@ -292,8 +306,7 @@ impl World {
         if args.len() != 2 {
             return Err(mlua::Error::external("SetSplineFollowerInitialSpeed requires an entity and speed"));
         }
-        let speed = lua.coerce_number(args[1].clone())?
-            .ok_or_else(|| mlua::Error::external("Spline speed must be numeric"))? as f32;
+        let speed = lua.coerce_number(args[1].clone())?.unwrap_or(0.) as f32;
         let Some(owner) = self.scripts.resolve_native_entity_argument(lua, args[0].clone())?
             .filter(|owner| !self.removed_entities.contains(owner))
         else {
@@ -301,18 +314,34 @@ impl World {
         };
         if self.entities[owner].components.iter()
             .any(|component| component.class_name == "SplineFollowerComponent") {
-            self.set_entity_float_property(owner, "InitialSpeed", speed)
+            self.set_live_spline_speed(owner, speed)
                 .map_err(mlua::Error::external)?;
         }
         Ok(mlua::MultiValue::new())
     }
 
-    pub(super) fn publish_spline_initial_speed(&mut self, owner: usize, speed: f32) {
+    pub(super) fn live_spline_speed(&self, owner: usize) -> Option<f32> {
+        self.demo_story.motion.movers.get(&owner).map(|mover| mover.speed)
+            .or_else(|| self.demo_story.motion.spline_speed_overrides.get(&owner).copied())
+    }
+
+    pub(super) fn set_live_spline_speed(&mut self, owner: usize, speed: f32) -> Result<()> {
+        ensure!(speed.is_finite(), "Spline speed must be finite");
         if let Some(mover) = self.demo_story.motion.movers.get_mut(&owner) {
+            // 3ba5d8 clears the previous OnPass knot at +0x6c only when
+            // the signed product is negative. Zero keeps that latch.
+            if mover.speed * speed < 0. {
+                mover.passes = Default::default();
+            }
             mover.speed = speed;
-        } else if self.demo_story.enabled {
-            self.initialize_demo_motion_range(owner..owner + 1);
+            mover.stopped = false;
+        } else {
+            self.demo_story.motion.spline_speed_overrides.insert(owner, speed);
+            if self.demo_story.enabled {
+                self.initialize_demo_motion_range(owner..owner + 1);
+            }
         }
+        Ok(())
     }
 
     pub(super) fn demo_motion_lua(
@@ -386,13 +415,14 @@ impl World {
                 .map_err(mlua::Error::external)?;
             self.move_demo_spline_owner(owner, position, self.entities[owner].runtime_rotation)
                 .map_err(mlua::Error::external)?;
-            let speed = property(
+            let speed = self.live_spline_speed(owner).unwrap_or_else(|| property(
                 &self.entities[owner],
                 "SplineFollowerComponent",
                 "InitialSpeed",
             )
             .and_then(|v| v.as_f64())
-            .unwrap_or(0.) as f32;
+            .unwrap_or(0.) as f32);
+            self.demo_story.motion.spline_speed_overrides.remove(&owner);
             let mover = self.demo_story.motion.movers.entry(owner).or_insert(Mover {
                 passes: Default::default(),
                 target: knot,
@@ -401,6 +431,7 @@ impl World {
                 stop: None,
                 reverse: false,
                 disabled: false,
+                stopped: false,
             });
             mover.target = knot;
             mover.hold = 0.;
@@ -425,6 +456,7 @@ impl World {
                     "InitialKnotName",
                     "InitialKnotEntity",
                 ) {
+                    self.demo_story.motion.spline_speed_overrides.remove(&owner);
                     self.demo_story.motion.movers.insert(
                         owner,
                         Mover {
@@ -435,12 +467,13 @@ impl World {
                             stop: None,
                             reverse: false,
                             disabled: false,
+                            stopped: false,
                         },
                     );
                 }
             }
-            if let Some(m) = self.demo_story.motion.movers.get_mut(&owner) {
-                m.speed = speed;
+            if self.demo_story.motion.movers.contains_key(&owner) {
+                self.set_live_spline_speed(owner, speed).map_err(mlua::Error::external)?;
             }
         } else {
             // EM1 REL3be468 takes exactly four arguments. REL3bdadc stores
@@ -503,6 +536,7 @@ impl World {
                     .copied()
                     .unwrap_or(m.disabled);
                 if disabled
+                    || m.stopped
                     || m.speed == 0.
                     || self.removed_entities.contains(&owner)
                     || self.removed_entities.contains(&m.target)
@@ -548,7 +582,7 @@ impl World {
                         }
                     }
                     if m.stop.is_some() {
-                        m.speed = 0.;
+                        m.stopped = true;
                         continue;
                     }
                     let next = if m.reverse {
@@ -583,7 +617,7 @@ impl World {
                     if let Some(next) = next {
                         m.target = next;
                     } else {
-                        m.speed = 0.;
+                        m.stopped = true;
                     }
                 }
             }
@@ -635,6 +669,17 @@ pub(super) fn validate_spline_events()->Result<()> {
     world.move_demo_spline_owner(owner,world.entities[knot].transform[12..15].try_into()?,world.entities[owner].runtime_rotation)?;
     let mover=world.demo_story.motion.movers.get_mut(&owner).context("Door spline missing")?;
     mover.target=knot;mover.speed=10.;mover.hold=0.;mover.stop=None;
+    let authored = property(&world.entities[owner], "SplineFollowerComponent", "InitialSpeed").cloned();
+    mover.passes.pass(Some(knot));
+    world.set_live_spline_speed(owner, 0.)?;
+    ensure!(world.demo_story.motion.movers.get_mut(&owner).unwrap().passes.pass(Some(knot)).is_none(),
+        "A zero speed write cleared the last OnPass knot");
+    world.set_live_spline_speed(owner, -10.)?;
+    ensure!(world.demo_story.motion.movers.get_mut(&owner).unwrap().passes.pass(Some(knot)).is_none(),
+        "Starting from zero cleared the last OnPass knot");
+    world.set_live_spline_speed(owner, 10.)?;
+    ensure!(property(&world.entities[owner], "SplineFollowerComponent", "InitialSpeed") == authored.as_ref(),
+        "A live speed write modified the authored property");
     world.advance_demo_motion(0.)?;
     ensure!(world.entity_event_queue.entries().iter().any(|entry|matches!(&entry.event,super::entity_events::Event::Basic(event) if event.event_kind==0x1c && event.source==Some(knot) && event.header==Some(owner))),"Actual arrival did not enqueue OnPass with moving-door context");
     let audio_before=world.audio_playback.game_post_requests;

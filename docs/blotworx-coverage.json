@@ -283,12 +283,11 @@
       },
       {
         "scope": "EM1 spline follower speed binding",
-        "state": "The current Lua binding writes the reflected InitialSpeed property and updates preview motion. This conflates live speed and configured initial speed.",
-        "source": "The Wii registration at REL .text 267f38 names the callback at 26445c. That callback resolves the follower through 3ddac and calls 3ba5d8. It writes live speed at +0x34 and clears +0x6c when the product of old and new speed is negative.",
-        "evidence": "The imported Zone S replay exercises the existing binding and initial-speed property. Its round trip does not establish equivalence with the original live-speed callback.",
+        "state": "The named Lua command and reflected InitialSpeed both access the live speed. The imported component value remains the original startup seed. A sign change clears the previous OnPass knot when preview traversal is active. Zero preserves it.",
+        "source": "Wii REL .text 267f38 registers callback 26445c, which calls 3ba5d8. The InitialSpeed descriptor registers accessors at 3ba910..3ba928. Its getter at 3bb200 resolves the same float at +0x34, and setter 3bb204 calls 3ba5d8. The latter clears +0x6c on a negative speed product. 3bb614 compares that slot before dispatching OnPass.",
+        "evidence": "The imported Zone S fixture covers both Lua entry points, signed speed and zero coercion. The headless spline event validation checks that a reversal re-enables OnPass, zero preserves its previous knot, and live writes leave the authored property intact.",
         "open": [
-          "Separate the live-speed callback from InitialSpeed reflection and restore its direction-change side effect.",
-          "Native path progression, authored segment times and easing, and player support over moving collision. Motion tests still use the provisional preview follower."
+          "Native path progression, authored segment times and easing, and player support over moving collision. The 48 isolated timing cases at 3bc7dc..3bc8a4 verify the main and branch time override when above 2^-23, the length/speed fallback, and signed normalized motion. These timing rules are not yet connected to the preview follower."
         ]
       },
       {

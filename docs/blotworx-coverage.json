@@ -302,6 +302,17 @@
         ]
       },
       {
+        "scope": "EM1 authored Extras landing and selected save",
+        "state": "ExtrasMenuLoad uses its authored slot number to open the shipped Extras movie. Its four counters are populated from the selected GAME header and original collectibles database. FadeIn waits for DelayedInit to release the authored HoldFade.",
+        "source": "Wii REL1fd328..1fd360 slot selection, bc610 category tables, bc008..bc234 count publication, and extrasmenu.gfx Initialize and DelayedInit.",
+        "evidence": "frontend-extras-final.runtime.json captures ExtrasMenuLoad Slot1 and the authored Extras display with counts 0/50, 4/39, 0/2 and 1/1. An independent parse of the two scratch saves and collectibles.pak predicts 4/39 for the selected save and 5/39 if combined. Both save hashes are unchanged.",
+        "open": [
+          "Category item browsing, media playback and Extras credits/teaser",
+          "Dynamic label localization and visual comparison with the original Wii UI",
+          "Live validation of returning to Main Menu"
+        ]
+      },
+      {
         "scope": "EM1 completed slot to next playthrough",
         "state": "Continuing from a completed slot loads the configured first level with a fresh world, quests and player state. The native carryover owners are populated before scripts run, and the first new checkpoint replaces the completed save stream.",
         "source": "Retail REL2b030..2b0a4 and its extras, selective collectibles, options, pin and metadata readers. The start level comes from MainMenu gamestart in the imported game configuration.",

@@ -18,7 +18,9 @@ impl FsCommandProvider for Events {
             | "MainMenuAction"
             | "SaveStartupCheck"
             | "MainMenuDelete"
-            | "ExtrasMenuLoad" => {
+            | "ExtrasMenuLoad"
+            | "Extras"
+            | "ExtrasSub" => {
                 self.0
                     .lock()
                     .unwrap()
@@ -425,8 +427,75 @@ impl Title {
     }
 }
 
+struct ExtrasMenu {
+    stage: Stage,
+    initialized: bool,
+    fade_started: bool,
+    slot: usize,
+    counts: [String; 4],
+}
+
+impl ExtrasMenu {
+    fn load(root: &Path, directory: &Path, slot: usize) -> Result<Self> {
+        use super::super::{assets, save_service::Service};
+        let (_, mut database) = assets::collectible_owners_from_game(root)?;
+        // REL1fd328 selects the slot carried by ExtrasMenuLoad.
+        match Service::read_checkpoint(directory, slot) {
+            Ok(snapshot) => database.restore_save_header(&snapshot.bytes)?,
+            Err(error) if error.downcast_ref::<std::io::Error>()
+                .is_some_and(|error| error.kind() == std::io::ErrorKind::NotFound) => {}
+            Err(error) => return Err(error).context("Read Extras unlocks from the selected save"),
+        }
+        // RELbc610 fills the category tables. RELbc018 publishes Concept Art,
+        // Cartoon and Film counts in this order, with a constant Credits row.
+        let [art, cartoons, films] = ["Concept_Art", "Cartoon", "Film"].map(|kind| {
+            let entries = database.entries.iter().filter(|entry| entry.kind == kind);
+            let total = entries.clone().count();
+            let unlocked = entries.filter(|entry| entry.unlocked).count();
+            format!("{unlocked}/{total}")
+        });
+        let stage = Stage::load(
+            root,
+            "HUDElements/Flash/cooked/extrasmenu.gfx",
+            &["Initialize", "FadeIn"],
+        )?;
+        Ok(Self {
+            stage,
+            initialized: false,
+            fade_started: false,
+            slot,
+            counts: [art, cartoons, films, "1/1".into()],
+        })
+    }
+
+    fn initialize(&mut self) -> Result<()> {
+        if !self.initialized {
+            {
+                let mut player = lock(&self.stage.handle)?;
+                player.call_internal_interface("__bwx_frontend_set", [
+                    Value::String("_global.EXTRASMENU".into()),
+                    Value::List(self.counts.iter().cloned().map(Value::String).collect()),
+                ]);
+            }
+            self.initialized = self.stage.call("Initialize")?;
+        } else if !self.fade_started {
+            // DelayedInit clears intervalID and enters HoldFade. Starting
+            // FadeIn before this point leaves the menu behind its hold frame.
+            let ready = {
+                let mut player = lock(&self.stage.handle)?;
+                matches!(read(&mut player, "_root.intervalID"), Value::Null | Value::Undefined)
+            };
+            if ready {
+                self.fade_started = self.stage.call("FadeIn")?;
+            }
+        }
+        Ok(())
+    }
+}
+
 pub(in crate::blotworx) struct Menu {
     stage: Stage,
+    extras: Option<ExtrasMenu>,
     root: PathBuf,
     directory: PathBuf,
     background: Option<super::super::movie::Player>,
@@ -458,10 +527,12 @@ impl Menu {
                 "FadeIn",
                 "RefreshLoadGameButtons",
                 "MaintoLoadGame",
+                "ExtraToMain",
             ],
         )?;
         Ok(Self {
             stage,
+            extras: None,
             root,
             directory,
             background: None,
@@ -563,6 +634,7 @@ impl Menu {
         let delta = now.duration_since(self.last).as_secs_f64();
         self.last = now;
         self.elapsed += delta;
+        let stage = self.extras.as_mut().map_or(&mut self.stage, |extras| &mut extras.stage);
         {
             let rect = ui.max_rect();
             let size = egui::vec2(640., 480.);
@@ -570,7 +642,7 @@ impl Menu {
                 rect.center(),
                 size * (rect.width() / size.x).min(rect.height() / size.y),
             );
-            let mut player = lock(&self.stage.handle)?;
+            let mut player = lock(&stage.handle)?;
             player.tick(FloatDuration::from_secs(delta));
             let mut pointer = |pos: egui::Pos2, press| {
                 let x = f64::from((pos.x - target.left()) / target.width()) * 640.;
@@ -668,15 +740,20 @@ impl Menu {
                 }
             }
         }
-        self.stage.executor.run();
-        if !self.initialized && self.stage.call("Initialize")? {
+        stage.executor.run();
+        if let Some(extras) = &mut self.extras {
+            extras.initialize()?;
+        } else if !self.initialized && self.stage.call("Initialize")? {
             self.initialized = true;
             self.save_info()?;
             self.stage.call("FadeIn")?;
             self.stage.refresh_labels()?;
         }
         let mut selection = None;
-        let events = std::mem::take(&mut *self.stage.events.0.lock().unwrap());
+        let events = {
+            let stage = self.extras.as_ref().map_or(&self.stage, |extras| &extras.stage);
+            std::mem::take(&mut *stage.events.0.lock().unwrap())
+        };
         for (command, args) in events {
             match command.as_str() {
                 "PlayMovie" => {
@@ -699,16 +776,28 @@ impl Menu {
                 }
                 "MainMenuAction" if args == "FadeInComplete" => self.stage.refresh_labels()?,
                 "MainMenuLoad" => {
-                    selection = args
-                        .strip_prefix("Slot")
-                        .and_then(|slot| slot.parse::<usize>().ok())
-                        .filter(|slot| (1..=3).contains(slot))
-                        .map(|slot| slot - 1);
-                    ensure!(selection.is_some(), "Invalid authored save slot {args:?}");
+                    selection = Some(menu_slot(&args)?);
                 }
-                "MainMenuDelete" | "ExtrasMenuLoad" => {
-                    self.notice = Some(format!("{command} is unavailable"))
+                "ExtrasMenuLoad" if self.extras.is_none() => {
+                    self.extras = Some(ExtrasMenu::load(&self.root, &self.directory, menu_slot(&args)?)?);
+                    self.background = Some(super::super::movie::Player::title_background(
+                        self.root.clone(), "FE_Extras_Loop.bik".into(), true,
+                    ));
+                    self.next = None;
+                    self.notice = None;
+                    self.in_slots = false;
                 }
+                "Extras" if args == "MainMenu" && self.extras.is_some() => {
+                    self.extras = None;
+                    self.background = None;
+                    self.next = None;
+                    self.notice = None;
+                    self.stage.call("ExtraToMain")?;
+                }
+                "Extras" | "ExtrasSub" if self.extras.is_some() => {
+                    self.notice = Some("This Extras category is unavailable.".into());
+                }
+                "MainMenuDelete" => self.notice = Some("Delete is unavailable.".into()),
                 _ => {}
             }
             self.commands.push((command, args));
@@ -737,7 +826,8 @@ impl Menu {
             ui.painter()
                 .rect_filled(ui.max_rect(), 0., egui::Color32::BLACK);
         }
-        self.stage.paint(ui)?;
+        let stage = self.extras.as_mut().map_or(&mut self.stage, |extras| &mut extras.stage);
+        stage.paint(ui)?;
         if let Some(notice) = &self.notice {
             ui.label(notice);
         }
@@ -746,9 +836,18 @@ impl Menu {
 
     pub(in crate::blotworx) fn summary(&self) -> serde_json::Value {
         serde_json::json!({"initialized":self.initialized,"in_slots":self.in_slots,"commands":self.commands,
+            "extras":self.extras.as_ref().map(|extras| serde_json::json!({"initialized":extras.initialized,"fade_started":extras.fade_started,"slot":extras.slot,"counts":extras.counts})),
             "background":self.background.as_ref().map(super::super::movie::Player::summary),
             "child_movies":self.stage.host.0.lock().unwrap().fetches})
     }
+}
+
+fn menu_slot(name: &str) -> Result<usize> {
+    name.strip_prefix("Slot")
+        .and_then(|slot| slot.parse::<usize>().ok())
+        .filter(|slot| (1..=3).contains(slot))
+        .map(|slot| slot - 1)
+        .with_context(|| format!("Invalid authored save slot {name:?}"))
 }
 
 // Save headers carry the same Wii timebase sample published at RTC boot.

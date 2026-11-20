@@ -16,6 +16,14 @@ pub struct Socket {
 }
 impl Socket {
     pub fn load(component: &Component) -> Result<Option<Self>> {
+        let name = component.properties.iter()
+            .find(|property| property.name == "Bone Attach Name")
+            .and_then(|property| property.value.as_str())
+            .unwrap_or("");
+        Self::load_with_name(component, name)
+    }
+
+    fn load_with_name(component: &Component, name: &str) -> Result<Option<Self>> {
         let value = |name| {
             component
                 .properties
@@ -23,9 +31,6 @@ impl Socket {
                 .find(|p| p.name == name)
                 .map(|p| &p.value)
         };
-        let name = value("Bone Attach Name")
-            .and_then(|value| value.as_str())
-            .unwrap_or("");
         if name.is_empty() {
             return Ok(None);
         }
@@ -50,7 +55,7 @@ impl Socket {
             "Nonfinite attachment parameters"
         );
         Ok(Some(Self {
-            // REL3570e8..357114 copies the string, calls NiString::ToLower,
+            // REL .text 356fa4..356fd0 copies the string, calls NiString::ToLower,
             // then stores that normalized name before binding the parent.
             name: name.to_ascii_lowercase(),
             offset,
@@ -221,6 +226,54 @@ pub(super) fn cache_with_point(parent:Transform,bone:Pose,socket:&Socket,point:O
     Ok(out.0)
 }
 impl super::assets::World {
+    /// REL .text 35392c stores a changed name and refreshes the parent's
+    /// binding. The parent-binding path normalizes the name at 356fa4.
+    pub(super) fn set_bone_attachment_name(
+        &mut self,
+        entity: usize,
+        component: usize,
+        field: Option<usize>,
+        name: &str,
+    ) -> Result<()> {
+        if self.removed_entities.contains(&entity) {
+            return Ok(());
+        }
+        let parent = self.transform_hierarchy.get(&entity).map(|local| local.parent);
+        let component = &mut self.entities[entity].components[component];
+        if field.is_some_and(|field| component.properties[field].value.as_str() == Some(name)) {
+            return Ok(());
+        }
+        let socket = if parent.is_some() {
+            Socket::load_with_name(component, name)?
+        } else {
+            None
+        };
+        let value = serde_json::json!(socket.as_ref().map_or(name, |socket| socket.name.as_str()));
+        if let Some(field) = field {
+            component.properties[field].value = value;
+        } else {
+            component.properties.push(epic_mickey_lib_rs::scene_file::Property::new(
+                "String".into(), "Bone Attach Name".into(), false, false, false, value,
+            ));
+        }
+        if let Some(parent) = parent {
+            let attached_to_bone = socket.is_some();
+            self.transform_hierarchy.get_mut(&entity).unwrap().socket = socket;
+            if self.entity_scene_active(entity) {
+                if attached_to_bone {
+                    self.update_skeletal_children_range_strict(entity..entity + 1)?;
+                } else {
+                    super::rotator_runtime::propagate(
+                        parent, &self.transform_hierarchy, &mut self.entities, &mut self.draws,
+                    )?;
+                }
+                self.force_dynamic_entity_pose(entity)?;
+            }
+            self.scene_motion_prepared_at = None;
+        }
+        Ok(())
+    }
+
     fn node_attachment_pose(&self, owner: usize, name: &str, parent: Transform) -> Result<Pose> {
         use epic_mickey_lib_rs::nif_file::{Matrix3, NiTransform, Vector3};
         let entity = self

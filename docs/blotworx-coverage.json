@@ -301,6 +301,15 @@
         ]
       },
       {
+        "scope": "Live bone attachment name writes",
+        "state": "SetPropertyString handles Bone Attach Name in both runtime modes. It updates the active socket when a parent is bound and restores ordinary parent following when the name is cleared.",
+        "source": "Wii REL .text 3526a8..352748 registers the property. Setter 35392c changes its interned name and refreshes the parent binding through 353aa0. The binding normalizes the socket name at 356fa4.",
+        "evidence": "Four isolated Wii setter calls distinguish changed, cleared, unchanged and initialization-only writes. The dbc_bone_attachment Lua fixture streams the castle scene and checks the reflected write, invalid index and restore.",
+        "open": [
+          "Exact socket pose and body refresh parity across every attachment mode."
+        ]
+      },
+      {
         "scope": "EM1 authored ending sequence and title handoff",
         "state": "UpdatePins captures the 57 original named global bytes. CleanLoadLevel takes the original ending flag and completed slot into a fresh Main_Menu world. PreStartScreenAction selects EndGame:0, and the original opening, nine configured outcomes and closing play on a continuous sample clock. The localized Play_fmv_endgame soundtrack stays active across all eleven clips and mixes with the embedded Bink tracks.",
         "source": "Wii REL353ac and relocated pin table at section 7 +0x1c4, CleanLoadLevel at 2f314, SetEndingGame at 26c944, and frontend movie list builder ba148. Shipped StartScreen.lua and ConfigFiles.ini supply the sequence request and variant movie paths.",

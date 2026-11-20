@@ -1,0 +1,18 @@
+Wait(1)
+StartFadeOut(0)
+Wait(0.2)
+StreamZones(GetPlayer(), "stream_3")
+WaitForLevelLoad()
+StartFadeIn(0.25)
+
+local guardian = assert(GetEntity("dbc_scaletest.guardianmickeyhead 01.Guardian_Mickey_Shape 01"))
+local property = "Bone Attach Name"
+assert(select("#", SetPropertyString(guardian, property, "head", 0)) == 0)
+assert(GetPropertyString(guardian, property) == "head")
+assert(select("#", SetPropertyString(guardian, property, "", 1)) == 0)
+assert(GetPropertyString(guardian, property) == "head")
+assert(select("#", SetPropertyString(guardian, property, "", 0)) == 0)
+assert(GetPropertyString(guardian, property) == "")
+assert(select("#", SetPropertyString(guardian, property, "head", 0)) == 0)
+assert(GetPropertyString(guardian, property) == "head")
+Print("BLOTWORX_BONE_ATTACHMENT_PASS")

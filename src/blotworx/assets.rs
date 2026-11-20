@@ -3965,7 +3965,7 @@ impl World {
                             .find(|(_, field)| field.name == property)
                             .map(|(field_index, field)| (component_index, field_index, field))
                     });
-                if self.demo_story.enabled && expected == "String" && property == "Bone Attach Name" {
+                if expected == "String" && property == "Bone Attach Name" {
                     let transform = match found {
                         Some((component, field, value))
                             if self.entities[entity].components[component].class_name == "JPSTransformationComponent"
@@ -3976,22 +3976,8 @@ impl World {
                         _ => None,
                     };
                     if let Some((component, field)) = transform.filter(|_| index == 0) {
-                        let value = serde_json::json!(value.as_str().unwrap_or_default().to_ascii_lowercase());
-                        let component = &mut self.entities[entity].components[component];
-                        if let Some(field) = field {
-                            component.properties[field].value = value;
-                        } else {
-                            component.properties.push(epic_mickey_lib_rs::scene_file::Property::new(
-                                expected.into(), property, false, false, false, value,
-                            ));
-                        }
-                        let socket = super::skeletal_children::Socket::load(component)
+                        self.set_bone_attachment_name(entity, component, field, value.as_str().unwrap_or_default())
                             .map_err(mlua::Error::external)?;
-                        if let Some(local) = self.transform_hierarchy.get_mut(&entity) {
-                            local.socket = socket;
-                            self.update_skeletal_children_range_strict(entity..entity + 1)
-                                .map_err(mlua::Error::external)?;
-                        }
                     }
                     return Ok(mlua::MultiValue::new());
                 }

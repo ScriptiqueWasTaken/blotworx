@@ -5,7 +5,8 @@ param(
     [Parameter(Mandatory)][string] $Codec,
     [Parameter(Mandatory)][string] $CodecLicense,
     [Parameter(Mandatory)][string] $Keystore,
-    [Parameter(Mandatory)][string] $Output
+    [Parameter(Mandatory)][string] $Output,
+    [switch] $Allow4KiBEngine
 )
 $ErrorActionPreference = 'Stop'
 $env:JAVA_HOME = (Resolve-Path -LiteralPath $Jdk).Path
@@ -21,16 +22,17 @@ function Invoke-Tool([string] $Tool, [string[]] $Arguments) {
     & $Tool @Arguments
     if ($LASTEXITCODE -ne 0) { throw "$Tool failed with exit $LASTEXITCODE" }
 }
-function Copy-ArmLibrary([string] $Path, [string] $Name) {
+function Copy-ArmLibrary([string] $Path, [string] $Name, [switch] $Allow4KiB) {
     $result = & "$ndk/bin/llvm-readelf.exe" -lW $Path
     if ($LASTEXITCODE -ne 0) { throw "Cannot inspect $Name" }
     $segments = @($result | Where-Object { $_ -match '^\s*LOAD\s' })
-    if (!$segments.Count -or @($segments | Where-Object { $_ -notmatch '\s0x(?:4000|10000)\s*$' }).Count) {
-        throw "$Name has a load segment without 16 KiB alignment"
+    $alignment = if ($Allow4KiB) { '\s0x(?:1000|4000|10000)\s*$' } else { '\s0x(?:4000|10000)\s*$' }
+    if (!$segments.Count -or @($segments | Where-Object { $_ -notmatch $alignment }).Count) {
+        throw "$Name has an unsupported load segment alignment"
     }
     Invoke-Tool "$ndk/bin/llvm-strip.exe" @('--strip-unneeded', '-o', "$work/$Name", $Path)
 }
-Copy-ArmLibrary $Engine 'libblotworx.so'
+Copy-ArmLibrary $Engine 'libblotworx.so' -Allow4KiB:$Allow4KiBEngine
 Copy-ArmLibrary $Codec 'libbwx_ffmpeg.so'
 Copy-ArmLibrary $libcpp 'libc++_shared.so'
 $symbols = & "$ndk/bin/llvm-readelf.exe" --wide --dyn-syms "$work/libblotworx.so"

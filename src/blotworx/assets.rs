@@ -6294,6 +6294,8 @@ impl World {
         // REL34d8b0..34da2c scans Prefab Entities, then each member's
         // InputOutputComponent EntityGroups. It compares interned strings
         // exactly; the rendered entity name is not part of this lookup.
+        let mut caged_actor = None;
+        let mut ambiguous_caged_actor = false;
         for member in members {
             let id = u32::try_from(member.as_u64().context("Invalid prefab member ID")?)?;
             if id == 0 {
@@ -6323,17 +6325,22 @@ impl World {
                     .as_array()
                     .context("Prefab member EntityGroups must be an array")?
                 {
-                    if group
-                        .as_str()
-                        .context("Prefab member EntityGroups entry must be a string")?
-                        == suffix
-                    {
+                    let group = group.as_str().context("Prefab member EntityGroups entry must be a string")?;
+                    if group == suffix {
                         return Ok(Some(index));
+                    }
+                    // Space Voyage's three cage instances omit the dot and
+                    // give both the cage and its occupant the same group.
+                    if self.demo_story.enabled && suffix == ".caged_gremlin" && group == "caged_gremlin"
+                        && entity.components.iter().any(|c| c.class_name == "PhysicsRigidBodyCharacterComponent")
+                    {
+                        ambiguous_caged_actor |= caged_actor.is_some_and(|actor| actor != index);
+                        caged_actor = Some(index);
                     }
                 }
             }
         }
-        Ok(None)
+        Ok(caged_actor.filter(|_| !ambiguous_caged_actor))
     }
     pub(super) fn child_entity_by_name(&self, owner: usize, name: &str) -> Result<Option<usize>> {
         let requested = super::named_effects::lookup_key(name)?;

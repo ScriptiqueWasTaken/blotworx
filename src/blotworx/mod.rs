@@ -2284,6 +2284,7 @@ pub fn run() -> Result<()> {
     }
     let capture_expected = o.capture.is_some();
     let (capture_tx, capture_rx) = mpsc::channel();
+    log::info!(target: "blotworx_phase", "Starting application window and graphics context");
     eframe::run_native(
         "Blotworx Engine",
         eframe::NativeOptions {
@@ -2299,6 +2300,7 @@ pub fn run() -> Result<()> {
             ..Default::default()
         },
         Box::new(move |cc| {
+            log::info!(target: "blotworx_phase", "Application window and graphics context ready");
             let mut engine = Engine::new(cc, o);
             engine.capture_result = Some(capture_tx);
             Ok(Box::new(engine))
@@ -3708,7 +3710,7 @@ impl Engine {
         if !self.diagnostic_serial_hud {
             if let Some(hud) = &mut self.hud {
                 if let Err(error) =
-                    hud.prepare(ui.available_rect_before_wrap(), world, controller.ticks,
+                    hud.prepare(ui.available_rect_before_wrap(), ui.ctx().pixels_per_point(), world, controller.ticks,
                         self.pause_menu_opened.map(|opened| opened.elapsed().as_secs_f64()), std::mem::take(&mut pause_input), hud_cursor)
                 {
                     self.error = Some(format!("Gameplay HUD preparation: {error:#}"));
@@ -4051,7 +4053,7 @@ impl Engine {
         if let Some(hud) = &mut self.hud {
             let result = (|| -> Result<()> {
                 if self.diagnostic_serial_hud {
-                    hud.prepare(rect, world, controller.ticks,
+                    hud.prepare(rect, ui.ctx().pixels_per_point(), world, controller.ticks,
                         self.pause_menu_opened.map(|opened| opened.elapsed().as_secs_f64()), std::mem::take(&mut pause_input), hud_cursor)?;
                 }
                 if self.preferences.hud || self.pause_menu_opened.is_some() { hud.present(ui, rect, world)?; }
@@ -4660,6 +4662,9 @@ impl eframe::App for Engine {
         }
         #[cfg(feature = "blotworx-ui-render")]
         if self.title.is_some() || self.main_menu.is_some() {
+            if self.capture.is_none() {
+                loading_screen::report_button(ui.ctx(), Some(&self.level), self.error.as_deref(), None);
+            }
             return;
         }
         // Automated captures must not spin forever when loading or simulation fails.
@@ -4827,6 +4832,9 @@ impl eframe::App for Engine {
                     }
                 }
             }
+        }
+        if self.capture.is_none() && self.world.is_none() {
+            loading_screen::report_button(ui.ctx(), Some(&self.level), self.error.as_deref(), None);
         }
         if self.debug.open {
             let mut lines = Vec::new();
@@ -5026,11 +5034,13 @@ impl Engine {
         let title_tick = menu.start_tick;
         let tick = title_tick + (menu.elapsed * 30.) as u64;
         let replay = self.input_playback.as_ref().and_then(|playback| playback.frames.get(tick as usize)).copied();
-        let buttons = input::poll().buttons;
+        let pad = input::poll();
+        let buttons = pad.buttons;
         let edges = buttons & !self.previous_buttons;
         let released = self.previous_buttons & !buttons;
         self.previous_buttons = buttons;
-        match menu.show(ui, edges, released, replay) {
+        let pointer_stick = if pad.left == [0.; 2] { pad.right } else { pad.left };
+        match menu.show(ui, edges, released, pointer_stick, replay) {
             Ok(Some(slot)) => {
                 if let Err(error) = self.open_menu_slot(ui.ctx(), slot) {
                     self.error = Some(format!("Open save slot: {error:#}"));
@@ -5084,6 +5094,9 @@ impl Engine {
     fn paint_loading_screen(&mut self, ui: &mut egui::Ui) {
         if let Some(screen) = &mut self.loading_screen {
             screen.paint(ui);
+            if self.capture.is_none() {
+                loading_screen::report_button(ui.ctx(), Some(&self.level), self.error.as_deref(), Some(screen.elapsed()));
+            }
         }
     }
 

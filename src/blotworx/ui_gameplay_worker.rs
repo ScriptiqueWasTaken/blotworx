@@ -77,8 +77,8 @@ impl GameplayWorker {
             }
         }
     }
-    pub(crate) fn prepare(&mut self,rect:egui::Rect,world:&mut World,tick:u64,pause_time:Option<f64>,pause_input:Vec<PauseInput>,cursor:Option<[f32;2]>)->Result<()> {
-        self.submit(rect,world,tick,None,pause_time,pause_input,cursor)
+    pub(crate) fn prepare(&mut self,rect:egui::Rect,pixels_per_point:f32,world:&mut World,tick:u64,pause_time:Option<f64>,pause_input:Vec<PauseInput>,cursor:Option<[f32;2]>)->Result<()> {
+        self.submit(rect,pixels_per_point,world,tick,None,pause_time,pause_input,cursor)
     }
     pub(crate) fn take_pause_exit(&mut self) -> (bool, bool) {
         (std::mem::take(&mut self.pause_resume), std::mem::take(&mut self.pause_quit))
@@ -89,17 +89,17 @@ impl GameplayWorker {
         response.recv().context("HUD worker stopped before scrolling dialogue")?
     }
     pub fn present_movie(&mut self,ui:&egui::Ui,rect:egui::Rect,world:&mut World,tick:u64,movie:MovieHud)->Result<()> {
-        self.submit(rect,world,tick,Some(movie),None,Vec::new(),None)?;
+        self.submit(rect,ui.ctx().pixels_per_point(),world,tick,Some(movie),None,Vec::new(),None)?;
         self.present(ui,rect,world)
     }
-    fn submit(&mut self,rect:egui::Rect,world:&mut World,tick:u64,movie:Option<MovieHud>,pause_time:Option<f64>,pause_input:Vec<PauseInput>,cursor:Option<[f32;2]>)->Result<()> {
+    fn submit(&mut self,rect:egui::Rect,pixels_per_point:f32,world:&mut World,tick:u64,movie:Option<MovieHud>,pause_time:Option<f64>,pause_input:Vec<PauseInput>,cursor:Option<[f32;2]>)->Result<()> {
         // A scene-presentation error can abort a previous UI frame. Commit its
         // successful message prefix before submitting a new snapshot; never
         // replay already delivered calls or leave an unbounded frame queue.
         if self.pending.as_ref().is_some_and(|pending|!pending.presented){self.deferred+=1;}
         self.finish_previous(world)?;
         let started=std::time::Instant::now();
-        let mut input=HudFrameInput::from_world(rect,world,tick)?;input.movie=movie;input.pause_time=pause_time;input.cursor=cursor;
+        let mut input=HudFrameInput::from_world(rect,world,tick)?;input.pixels_per_point=pixels_per_point;input.movie=movie;input.pause_time=pause_time;input.cursor=cursor;
         if pause_time.is_some() {
             input.pause_input = pause_input;
             input.pause_map = Some(world.map_info.clone());

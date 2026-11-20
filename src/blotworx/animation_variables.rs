@@ -41,16 +41,18 @@ impl World {
             // EM1's verified animation table maps slot 0x30 to VAR_NPC_State.
             self.write_animation_variable(entity, 0x30, 1, state as u32)
                 .map_err(mlua::Error::external)?;
-            // The caged prefab uses a non-supporting collision layer. Keep its
-            // authored pose on the preview backend until the cage's release
-            // callback explicitly enables motion.
-            if state == 1 && self.relative_prefab_entity(entity, ".caged_gremlin")
-                .map_err(mlua::Error::external)? == Some(entity)
-                && self.character_physics.get(&entity).is_some_and(Result::is_ok)
-            {
-                self.clear_character_linear_velocity(entity)
-                    .and_then(|()| self.set_entity_motion_enabled(entity, false))
-                    .map_err(mlua::Error::external)?;
+            // State 1 keeps caged actors in their placed pose and attached
+            // actors on their animated socket until motion is enabled again.
+            if state == 1 && self.character_physics.get(&entity).is_some_and(Result::is_ok) {
+                let caged = self.relative_prefab_entity(entity, ".caged_gremlin")
+                    .map_err(mlua::Error::external)? == Some(entity);
+                let attached = self.transform_hierarchy.get(&entity)
+                    .is_some_and(|child| child.socket.is_some());
+                if caged || attached {
+                    self.clear_character_linear_velocity(entity)
+                        .and_then(|()| self.set_entity_motion_enabled(entity, false))
+                        .map_err(mlua::Error::external)?;
+                }
             }
         }
         Ok(mlua::MultiValue::new())

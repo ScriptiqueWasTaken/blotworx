@@ -565,6 +565,11 @@ impl World {
             self.suspend_character_motion(entity, !enabled)?;
         }
         if let Some((index, controller)) = controller {
+            if self.demo_story.enabled && character && controller == "BasicAIControllerComponent" {
+                // The compatibility character body above owns motion here.
+                // Disabling the whole AI component would also stop conversations.
+                return Ok(());
+            }
             anyhow::ensure!(entity!=self.player_entity && controller=="BasicMotionControllerComponent",
                 "Native controller motion suspension requires {controller} modifier/flag delivery (REL299608..299690)");
             // Native inherited virtual+2f0 writes suspension into base+20 bit80.

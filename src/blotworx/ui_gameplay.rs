@@ -14,6 +14,7 @@ pub struct Gameplay {
     root:PathBuf, resources:Rc<RefCell<super::resource_store::Store>>,
     images: Rc<RefCell<super::ui_images::Images>>,
     initialized:bool,last_tick:u64,aspect:f32,visible:Option<bool>,
+    raster_height: u32,
     movie_time:Option<f64>,skip_duration:Option<f32>,
     pause_time:Option<f64>,
     pause_page: PausePage,
@@ -40,7 +41,7 @@ type HudTiming = super::performance::Timing;
 type HudMessage=(&'static str,&'static str,&'static str);
 #[cfg(feature="blotworx-ui-render")]
 #[derive(Clone)]
-struct HudFrameInput {data:Arc<PlayerData>,visible:bool,tick:u64,rect:egui::Rect,messages:Vec<HudMessage>,popups:Vec<super::collectibles::Notification>,popup_duration:f64,movie:Option<MovieHud>,pause_time:Option<f64>,pause_input:Vec<PauseInput>,pause_map:Option<super::map_info::State>,pause_lists:Option<Arc<PauseLists>>,pause_settings:[i32;3],pause_defaults:[i32;3],pause_collectibles:[f64;4],cursor:Option<[f32;2]>,ticket_timing:[f64;3],ticket_hud_gain:Option<(u64,f32,f32)>,dialogue:Option<DialogueHud>,portrait_packs:Vec<String>}
+struct HudFrameInput {data:Arc<PlayerData>,visible:bool,tick:u64,rect:egui::Rect,pixels_per_point:f32,messages:Vec<HudMessage>,popups:Vec<super::collectibles::Notification>,popup_duration:f64,movie:Option<MovieHud>,pause_time:Option<f64>,pause_input:Vec<PauseInput>,pause_map:Option<super::map_info::State>,pause_lists:Option<Arc<PauseLists>>,pause_settings:[i32;3],pause_defaults:[i32;3],pause_collectibles:[f64;4],cursor:Option<[f32;2]>,ticket_timing:[f64;3],ticket_hud_gain:Option<(u64,f32,f32)>,dialogue:Option<DialogueHud>,portrait_packs:Vec<String>}
 #[cfg(feature="blotworx-ui-render")]
 #[derive(Clone, Copy)]
 pub struct MovieHud {
@@ -113,7 +114,7 @@ impl HudFrameInput {
             .and_then(|value| crate::blotworx::config_value::decimal_float(value).ok())
             .filter(|value| value.is_finite() && *value > 0.).map_or(4., f64::from);
         Ok(Self{data:Arc::new(PlayerData::gameplay(world)?),visible,
-            tick,rect,messages:world.ability_hud_requests.clone(),popups:Vec::new(),popup_duration,movie:None,pause_time:None,pause_input:Vec::new(),pause_map:None,pause_lists:None,pause_settings:[0,100,100],pause_defaults:[0,100,100],pause_collectibles:[0.;4],cursor:None,ticket_timing,ticket_hud_gain:world.ticket_hud_gain,dialogue,portrait_packs})
+            tick,rect,pixels_per_point:1.,messages:world.ability_hud_requests.clone(),popups:Vec::new(),popup_duration,movie:None,pause_time:None,pause_input:Vec::new(),pause_map:None,pause_lists:None,pause_settings:[0,100,100],pause_defaults:[0,100,100],pause_collectibles:[0.;4],cursor:None,ticket_timing,ticket_hud_gain:world.ticket_hud_gain,dialogue,portrait_packs})
     }
 }
 #[cfg(feature="blotworx-ui-render")]
@@ -452,10 +453,10 @@ impl Gameplay {
             player.set_background_color(Some(swf::Color{r:0,g:0,b:0,a:0}));
             // Ruffle recreates its target, surface and texture pool on every
             // set_viewport_dimensions call, even for identical dimensions.
-            // This offscreen movie stays853x480; aspect changes go through Init.
+            // Start at the movie's reference raster until the first frame arrives.
             player.set_viewport_dimensions(ruffle_render::backend::ViewportDimensions{width:853,height:480,scale_factor:1.});
         }
-        Ok(Self{handle,executor,host,root,resources,images,initialized:false,last_tick:0,aspect:0.,visible:None,movie_time:None,skip_duration:None,pause_time:None,pause_page:PausePage::Main,pause_map_shown:false,pause_options:PauseOptions::Closed,cursor:None,ticket_hud_gain:None,ticket_dropdown_updates:0,ticket_hide_tick:None,dialogue:None,dialogue_updates:0,dialogue_reveal_tick:None,portrait_anchor:None,popups:Default::default(),popup_active:false,popup_icon:None,values:Default::default(),texture:None,errors:Default::default(),frames:0,delivered_ability_messages:0,timings:Default::default(),graphics})
+        Ok(Self{handle,executor,host,root,resources,images,initialized:false,last_tick:0,aspect:0.,visible:None,raster_height:480,movie_time:None,skip_duration:None,pause_time:None,pause_page:PausePage::Main,pause_map_shown:false,pause_options:PauseOptions::Closed,cursor:None,ticket_hud_gain:None,ticket_dropdown_updates:0,ticket_hide_tick:None,dialogue:None,dialogue_updates:0,dialogue_reveal_tick:None,portrait_anchor:None,popups:Default::default(),popup_active:false,popup_icon:None,values:Default::default(),texture:None,errors:Default::default(),frames:0,delivered_ability_messages:0,timings:Default::default(),graphics})
     }
     fn scroll_dialogue(&mut self) -> Result<bool> {
         let mut player = lock(&self.handle)?;
@@ -483,6 +484,16 @@ impl Gameplay {
         self.host.0.lock().unwrap().player=Some(data.clone());
         self.executor.run();
         let mut player=lock(&self.handle)?;
+        let height = (rect.height() * input.pixels_per_point).round().clamp(480., 1080.) as u32;
+        let width = (height * 853 + 240) / 480;
+        let resized = self.raster_height != height;
+        if resized {
+            player.set_viewport_dimensions(ruffle_render::backend::ViewportDimensions {
+                width, height, scale_factor: f64::from(height) / 480.,
+            });
+            self.raster_height = height;
+            dirty = true;
+        }
         let ready=self.host.0.lock().unwrap().callbacks.contains("__bwx_Init");
         let aspect=rect.width()/rect.height().max(1.);
         if ready && (!self.initialized || (aspect-self.aspect).abs()>0.001) {
@@ -541,7 +552,7 @@ impl Gameplay {
             }
             let cursor = input.cursor.filter(|_| pause_time.is_some() || (visible && input.dialogue.is_none()))
                 .map(|pointer| (pointer, if pause_time.is_some() { 7 } else { 4 }));
-            if cursor != self.cursor || self.visible.is_none() {
+            if resized || cursor != self.cursor || self.visible.is_none() {
                 use super::ui_calls::Value as V;
                 let mut view = NativeView{player:&mut player,host:&self.host};
                 if let Some(([x, y], kind)) = cursor {
@@ -549,7 +560,7 @@ impl Gameplay {
                         super::ui_calls::invoke("ShowReticles", &[], &mut view)?;
                     }
                     view.player.handle_event(ruffle_core::events::PlayerEvent::MouseMove {
-                        x: f64::from(x) * 853., y: f64::from(y) * 480.,
+                        x: f64::from(x) * f64::from(width), y: f64::from(y) * f64::from(height),
                     });
                     write(view.player, "_global.P1_CURSOR_DATA", Value::List(vec![Value::Number(f64::from(kind))]));
                 }
@@ -900,6 +911,6 @@ impl Gameplay {
         let display=match lock(&self.handle) {Ok(mut player)=>snapshot(&mut player),Err(error)=>serde_json::json!({"error":format!("{error:#}")})};
         serde_json::json!({"movie":"mickeycontainer.gfx","initialized":self.initialized,"native_initialized":initialized,
             "frames":self.frames,"last_tick":self.last_tick,"values":self.values,"skip_duration":self.skip_duration,"pause_time":self.pause_time,"ticket_dropdown_updates":self.ticket_dropdown_updates,"dialogue_updates":self.dialogue_updates,"delivered_ability_messages":self.delivered_ability_messages,
-            "popup_active":self.popup_active,"pending_popups":self.popups.len(),"display":display,"graphics":self.graphics,"render_reuse":render_reuse,"timings":self.timings,"errors":self.errors,"gameplay_connected":true,"native_render_parity_validated":false})
+            "popup_active":self.popup_active,"pending_popups":self.popups.len(),"display":display,"graphics":self.graphics,"raster_height":self.raster_height,"render_reuse":render_reuse,"timings":self.timings,"errors":self.errors,"gameplay_connected":true,"native_render_parity_validated":false})
     }
 }

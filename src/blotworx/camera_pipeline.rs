@@ -106,7 +106,11 @@ impl super::assets::World {
         // but do not present a released/retired authored owner as a live view.
         // The default generator is still explicitly unavailable.
         if self.nif_camera.is_none() {
-            return self.side_scroller_frame().map(|f|f.map(|f|self.script_feedback.apply(f)));
+            let frame = match self.side_scroller_frame()? {
+                Some(frame) => Some(frame),
+                None => self.short_spline_camera_frame()?,
+            };
+            return Ok(frame.map(|frame| self.script_feedback.apply(frame)));
         }
         if self.camera_pipeline.application.transform.is_none() {
             return Ok(None);
@@ -134,6 +138,72 @@ impl super::assets::World {
             }
             Ok(Some(self.script_feedback.apply(frame)))
         })
+    }
+
+    fn short_spline_camera_frame(&self) -> Result<Option<super::nif_camera::Frame>> {
+        use super::physics::{add, cross, dot, length, mul, sub};
+
+        let Some(owner) = self.demo_story.camera_override else { return Ok(None) };
+        if self.removed_entities.contains(&owner) || !self.entity_scene_active(owner) {
+            return Ok(None);
+        }
+        let Some(settings) = self.entities[owner].components.iter()
+            .find(|component| component.class_name == "CameraOverrideComponent")
+        else { return Ok(None) };
+        let property = |name: &str| settings.properties.iter()
+            .find(|property| property.name == name).map(|property| &property.value);
+        // Straight, instantaneous two-knot rails such as the trebuchet view.
+        // Longer paths and time-dependent camera modes need their own generator.
+        if property("SplineTransitionTime").and_then(|value| value.as_f64()) != Some(0.) {
+            return Ok(None);
+        }
+        let scene = &self.entities[owner].scene;
+        let resolve = |id: u64| self.entities.iter().enumerate().find_map(|(index, entity)| {
+            (&entity.scene == scene && u64::from(entity.id) == id && id != 0
+                && !self.removed_entities.contains(&index)).then_some(entity)
+        });
+        let knot = |component: &epic_mickey_lib_rs::scene_file::Component| {
+            component.properties.iter().find(|property| property.name == "NextStopEntity")
+                .and_then(|property| property.value.as_u64()).filter(|&id| id != 0)
+        };
+        let Some(first) = property("CameraSplineKnot").and_then(|value| value.as_u64())
+            .and_then(resolve)
+        else { return Ok(None) };
+        let Some(first_knot) = first.components.iter()
+            .find(|component| component.class_name == "SplineKnotComponent")
+        else { return Ok(None) };
+        let Some(last) = knot(first_knot).and_then(resolve) else { return Ok(None) };
+        if first_knot.properties.len() != 1 || !last.components.iter().any(|component| {
+            component.class_name == "SplineKnotComponent" && component.properties.is_empty()
+        }) {
+            return Ok(None);
+        }
+        let a = first.transform[12..15].try_into().unwrap();
+        let b = last.transform[12..15].try_into().unwrap();
+        let position = self.entities[self.player_entity].transform[12..15].try_into().unwrap();
+        let target = add(position, [0., 1., 0.]);
+        let edge = sub(b, a);
+        let squared = dot(edge, edge);
+        let phase = if squared > f32::EPSILON { (dot(sub(target, a), edge) / squared).clamp(0., 1.) } else { 0. };
+        let eye = add(a, mul(edge, phase));
+        let direction = sub(target, eye);
+        let horizontal = cross([0., 1., 0.], direction);
+        if length(horizontal) <= f32::EPSILON {
+            return Ok(None);
+        }
+        let direction = mul(direction, length(direction).recip());
+        let left = mul(horizontal, length(horizontal).recip());
+        let up = cross(direction, left);
+        let rotation = std::array::from_fn(|i| [left, up, direction][i / 3][i % 3]);
+        let fov = self.camera_lens.field_of_view;
+        super::nif_camera::Frame::from_information(
+            Information {
+                transform: super::native_hk_transform::from_entity(rotation, eye),
+                field_of_view: fov,
+                focus: [target[0], target[1], target[2], 0.],
+            },
+            self.camera_lens.sample(fov),
+        ).map(Some)
     }
     /// Publish after model/controller and blend updates. Inspection cameras
     /// are presentation-only and never become the application source.

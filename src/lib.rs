@@ -15,6 +15,8 @@ mod lua_diagnostics;
 mod lua_expression;
 mod lua_syntax;
 pub mod memory_profile;
+#[doc(hidden)]
+pub mod startup_log;
 mod mod_project;
 mod nif_properties;
 mod nif_save;

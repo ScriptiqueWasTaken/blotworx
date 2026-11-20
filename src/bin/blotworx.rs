@@ -4,6 +4,20 @@ static MEMORY_PROFILE_ALLOCATOR: blotworx::memory_profile::TrackingAllocator =
     blotworx::memory_profile::TrackingAllocator;
 
 fn main() -> anyhow::Result<()> {
+    use blotworx::startup_log;
+    let first_arg = std::env::args_os().nth(1);
+    if first_arg.as_deref() == Some(std::ffi::OsStr::new("--support-report")) {
+        print!("{}", startup_log::report(None, None, None));
+        return Ok(());
+    }
+    #[cfg(windows)]
+    if std::env::var_os(startup_log::GAME_PROCESS_ENV).is_none()
+        && !first_arg.as_deref().is_some_and(|arg| {
+            matches!(arg.to_str(), Some("diagnose" | "--apply-update" | "-h" | "--help"))
+        })
+    {
+        return startup_log::supervise();
+    }
     #[cfg(debug_assertions)]
     let validation = {
         let mut args = std::env::args().skip(1);
@@ -47,7 +61,7 @@ fn main() -> anyhow::Result<()> {
     if validation.as_deref() == Some("--validate-dbc-courtyard-armor") {
         return blotworx::blotworx::validate_dbc_courtyard_armor();
     }
-    if startup_log::install().is_none() {
+    if first_arg.as_deref() == Some(std::ffi::OsStr::new("diagnose")) || startup_log::install().is_none() {
         let _ = env_logger::try_init();
     }
     #[cfg(debug_assertions)]
@@ -129,5 +143,3 @@ fn main() -> anyhow::Result<()> {
     if validation.as_deref() == Some("--validate-gv-encounter") {return blotworx::blotworx::validate_gv_encounter();}
     blotworx::blotworx::run().inspect_err(|error| log::error!("Application exited: {error:#}"))
 }
-#[path = "../startup_log.rs"]
-mod startup_log;

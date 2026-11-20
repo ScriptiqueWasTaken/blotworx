@@ -14,4 +14,6 @@ Blotworx checks GitHub for updates at launch. The update prompt shows the releas
 
 Press **Esc** to pause and **F10** to open Blotworx settings. This is a development preview. Later-level progression, game behavior and visual accuracy are still being worked on.
 
-If the demo closes during startup, copy `%LOCALAPPDATA%\Blotworx Engine\blotworx.log` before launching it again and attach it to your bug report. Each launch replaces the log.
+If the demo closes unexpectedly on Windows, choose **Yes** in the crash window to save a diagnostic report. If the splash screen stays open, use **Save diagnostic report** once it appears. Attach the text file and describe what happened. The report includes recent engine logs and may include local paths. Review it before sharing.
+
+If the window cannot open, the latest and previous logs are under `%LOCALAPPDATA%\Blotworx Engine`. Run `Blotworx.exe --support-report` from a terminal to see the same diagnostic text without starting the game.

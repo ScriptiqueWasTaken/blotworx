@@ -112,9 +112,30 @@ struct Stage {
     executor: NullExecutor,
     texture: Option<egui::TextureHandle>,
     labels: Labels,
+    viewport: [u32; 2],
 }
 
 impl Stage {
+    fn rect(ui: &egui::Ui) -> egui::Rect {
+        let rect = ui.max_rect();
+        let size = egui::vec2(640., 480.);
+        egui::Rect::from_center_size(rect.center(), size * (rect.width() / size.x).min(rect.height() / size.y))
+    }
+
+    fn resize(&mut self, ui: &egui::Ui, target: egui::Rect) -> Result<()> {
+        let height = (target.height() * ui.ctx().pixels_per_point()).round().clamp(1., 1440.) as u32;
+        let viewport = [(height * 4).div_ceil(3), height];
+        if viewport != self.viewport {
+            lock(&self.handle)?.set_viewport_dimensions(ruffle_render::backend::ViewportDimensions {
+                width: viewport[0],
+                height: viewport[1],
+                scale_factor: f64::from(height) / 480.,
+            });
+            self.viewport = viewport;
+        }
+        Ok(())
+    }
+
     fn load(root: &Path, path_name: &str, methods: &[&str]) -> Result<Self> {
         Self::load_with_labels(root, path_name, methods, std::iter::empty())
     }
@@ -199,6 +220,7 @@ impl Stage {
             executor,
             texture: None,
             labels,
+            viewport: [640, 480],
         })
     }
 
@@ -297,6 +319,8 @@ impl Stage {
     }
 
     fn paint(&mut self, ui: &mut egui::Ui) -> Result<()> {
+        let target = Self::rect(ui);
+        self.resize(ui, target)?;
         let mut player = lock(&self.handle)?;
         if player.needs_render() || self.texture.is_none() {
             player.render();
@@ -304,7 +328,10 @@ impl Stage {
                 .downcast_ref::<Renderer>()
                 .context("Title renderer unavailable")?;
             if let Some(frame) = renderer.capture_frame() {
-                let image = egui::ColorImage::from_rgba_premultiplied([640, 480], frame.as_raw());
+                let image = egui::ColorImage::from_rgba_unmultiplied(
+                    [frame.width() as usize, frame.height() as usize],
+                    frame.as_raw(),
+                );
                 if let Some(texture) = &mut self.texture {
                     texture.set(image, egui::TextureOptions::LINEAR);
                 } else {
@@ -317,12 +344,6 @@ impl Stage {
             }
         }
         if let Some(texture) = &self.texture {
-            let rect = ui.max_rect();
-            let size = egui::vec2(640., 480.);
-            let target = egui::Rect::from_center_size(
-                rect.center(),
-                size * (rect.width() / size.x).min(rect.height() / size.y),
-            );
             ui.painter().image(
                 texture.id(),
                 target,
@@ -781,6 +802,7 @@ pub(in crate::blotworx) struct Menu {
     commands: Vec<(String, String)>,
     delete: Option<DeleteConfirmation>,
     last_deleted_slot: Option<usize>,
+    pad_cursor: Option<[f32; 2]>,
 }
 
 struct DeleteConfirmation {
@@ -865,6 +887,7 @@ impl Menu {
             commands: Vec::new(),
             delete: None,
             last_deleted_slot: None,
+            pad_cursor: None,
         })
     }
 
@@ -945,6 +968,7 @@ impl Menu {
         ui: &mut egui::Ui,
         pad_edges: u16,
         pad_released: u16,
+        pad_stick: [f32; 2],
         replay: Option<super::super::input_playback::Frame>,
     ) -> Result<Option<usize>> {
         use ruffle_core::events::{
@@ -997,19 +1021,17 @@ impl Menu {
             return Ok(None);
         }
 
+        let target = Stage::rect(ui);
         let stage = self.extras.as_mut().map_or(&mut self.stage, |extras| &mut extras.stage);
+        stage.resize(ui, target)?;
         {
-            let rect = ui.max_rect();
-            let size = egui::vec2(640., 480.);
-            let target = egui::Rect::from_center_size(
-                rect.center(),
-                size * (rect.width() / size.x).min(rect.height() / size.y),
-            );
+            let viewport = stage.viewport;
+            let point = |[x, y]: [f32; 2]| target.left_top() + egui::vec2(x * target.width(), y * target.height());
             let mut player = lock(&stage.handle)?;
             player.tick(FloatDuration::from_secs(delta));
             let mut pointer = |pos: egui::Pos2, press| {
-                let x = f64::from((pos.x - target.left()) / target.width()) * 640.;
-                let y = f64::from((pos.y - target.top()) / target.height()) * 480.;
+                let x = f64::from((pos.x - target.left()) / target.width().max(1.)) * f64::from(viewport[0]);
+                let y = f64::from((pos.y - target.top()) / target.height().max(1.)) * f64::from(viewport[1]);
                 player.handle_event(match press {
                     None => PlayerEvent::MouseMove { x, y },
                     Some(true) => PlayerEvent::MouseDown {
@@ -1027,8 +1049,7 @@ impl Menu {
             };
             if let Some(frame) = replay {
                 if let Some([x, y]) = frame.aim {
-                    let pos =
-                        target.left_top() + egui::vec2(x * target.width(), y * target.height());
+                    let pos = point([x, y]);
                     pointer(pos, None);
                     if frame.interact_pressed && !self.replay_down {
                         pointer(pos, Some(true));
@@ -1039,17 +1060,33 @@ impl Menu {
             } else {
                 for event in ui.input(|i| i.events.clone()) {
                     match event {
-                        egui::Event::PointerMoved(pos) if target.contains(pos) => {
-                            pointer(pos, None)
+                        egui::Event::PointerMoved(pos) => {
+                            self.pad_cursor = None;
+                            pointer(pos, None);
                         }
                         egui::Event::PointerButton {
                             pos,
                             button: egui::PointerButton::Primary,
                             pressed,
                             ..
-                        } if target.contains(pos) => pointer(pos, Some(pressed)),
+                        } if target.contains(pos) || !pressed => {
+                            self.pad_cursor = None;
+                            pointer(pos, Some(pressed));
+                        }
                         _ => {}
                     }
+                }
+                if pad_stick != [0.; 2] {
+                    let cursor = self.pad_cursor.get_or_insert([0.5; 2]);
+                    let step = delta.min(0.05) as f32;
+                    cursor[0] = (cursor[0] + pad_stick[0] * step * 0.75).clamp(0., 0.999);
+                    cursor[1] = (cursor[1] - pad_stick[1] * step).clamp(0., 0.999);
+                }
+                if let Some(cursor) = self.pad_cursor {
+                    let pos = point(cursor);
+                    pointer(pos, None);
+                    if pad_edges & 0x1000 != 0 { pointer(pos, Some(true)); }
+                    if pad_released & 0x1000 != 0 { pointer(pos, Some(false)); }
                 }
             }
             for (egui_key, physical_key, logical_key, bit) in [
@@ -1095,7 +1132,8 @@ impl Menu {
                     (egui_key == egui::Key::Escape && replay_back_pressed)
                         || (egui_key == egui::Key::PageUp && replay.is_some_and(|frame| frame.menu_delete_pressed))
                 } else {
-                    pad_edges & bit != 0 || ui.input(|i| i.key_pressed(egui_key))
+                    (pad_edges & bit != 0 && (bit != 0x1000 || self.pad_cursor.is_none()))
+                        || ui.input(|i| i.key_pressed(egui_key))
                 };
                 if pressed {
                     let key = KeyDescriptor {
@@ -1230,6 +1268,17 @@ impl Menu {
         }
         let stage = self.extras.as_mut().map_or(&mut self.stage, |extras| &mut extras.stage);
         stage.paint(ui)?;
+        if let Some([x, y]) = self.pad_cursor {
+            let tip = target.left_top() + egui::vec2(x * target.width(), y * target.height());
+            let outline = [[0., 0.], [2., 19.], [15., 12.]];
+            ui.painter().add(egui::Shape::convex_polygon(
+                outline.into_iter().map(|[x, y]| tip + egui::vec2(x, y)).collect(),
+                egui::Color32::WHITE,
+                egui::Stroke::new(1.5, egui::Color32::BLACK),
+            ));
+        } else {
+            ui.ctx().set_cursor_icon(egui::CursorIcon::Default);
+        }
         Ok(selection)
     }
 

@@ -6,7 +6,7 @@ use anyhow::{ensure, Context, Result};
 use epic_mickey_lib_rs::{
     file_manipulator::EndianType, packfile::VirtualFile, scene_file::SceneFile,
 };
-use std::{collections::VecDeque, path::Path, sync::Arc};
+use std::{collections::VecDeque, path::Path, sync::{Arc, mpsc}};
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum Admission {
@@ -17,8 +17,49 @@ pub enum Admission {
 #[derive(Default)]
 pub struct Requests {
     pending: VecDeque<Option<Arc<str>>>,
+    preparation: Option<Preparation>,
 }
+struct Preparation {
+    name: Arc<str>,
+    receiver: mpsc::Receiver<Result<Source>>,
+    result: Option<Result<Source>>,
+}
+
 impl Requests {
+    pub(super) fn prepare_front(
+        &mut self,
+        root: &Path,
+        ctx: &egui::Context,
+        published: &[String],
+    ) -> bool {
+        let Some(name) = self.pending.front().and_then(Option::as_ref) else {
+            return true;
+        };
+        if published.iter().any(|path| matches_scene(path, name)) {
+            return true;
+        }
+        let preparation = self.preparation.get_or_insert_with(|| {
+            let (sender, receiver) = mpsc::channel();
+            let name = Arc::clone(name);
+            let requested = Arc::clone(&name);
+            let root = root.to_owned();
+            let ctx = ctx.clone();
+            std::thread::spawn(move || {
+                let _ = sender.send(Source::read(&root, requested));
+                ctx.request_repaint();
+            });
+            Preparation { name, receiver, result: None }
+        });
+        preparation.poll()
+    }
+
+    pub(super) fn take_prepared(&mut self, name: &str) -> Option<Result<Source>> {
+        if self.preparation.as_ref().is_some_and(|load| load.name.as_ref() == name) {
+            return self.preparation.take().and_then(|load| load.result);
+        }
+        None
+    }
+
     /// This is the native ring capacity, not an editor/import limit.
     pub const CAPACITY: usize = 32;
     pub fn request(&mut self, name: &str) -> Admission {
@@ -39,6 +80,9 @@ impl Requests {
     }
     pub fn cancel(&mut self, name: &str) {
         let name = name.split('\0').next().unwrap_or("");
+        if self.preparation.as_ref().is_some_and(|load| load.name.as_ref() == name) {
+            self.preparation = None;
+        }
         for slot in &mut self.pending {
             if slot.as_deref() == Some(name) {
                 *slot = None;
@@ -54,11 +98,46 @@ impl Requests {
     /// None means busy/empty; Some(None) consumes a cancelled native slot.
     /// Do not drain multiple slots just because the first one was cancelled.
     pub fn consume(&mut self, loader_busy: bool) -> Option<Option<Arc<str>>> {
-        if loader_busy {
+        if loader_busy || self.preparation.as_mut().is_some_and(|load| !load.poll()) {
             None
         } else {
             self.pending.pop_front()
         }
+    }
+}
+
+impl Preparation {
+    fn poll(&mut self) -> bool {
+        if self.result.is_none() {
+            self.result = match self.receiver.try_recv() {
+                Ok(result) => Some(result),
+                Err(mpsc::TryRecvError::Empty) => None,
+                Err(mpsc::TryRecvError::Disconnected) => Some(Err(anyhow::anyhow!(
+                    "Scene preparation stopped while loading {}", self.name
+                ))),
+            };
+        }
+        self.result.is_some()
+    }
+}
+
+pub(super) fn matches_scene(path: &str, request: &str) -> bool {
+    let normalize = |path: &str| {
+        super::resource_path::canonical(path).unwrap_or_else(|_| path.replace('\\', "/"))
+    };
+    let path = normalize(path);
+    let request = normalize(request);
+    let path = path.trim_matches('/');
+    let request = request.trim_matches('/');
+    if path.eq_ignore_ascii_case(request) {
+        return true;
+    }
+    match (path.rsplit_once('.'), request.rsplit_once('.')) {
+        (Some((loaded, ext)), Some((requested, other))) => {
+            ext.eq_ignore_ascii_case("bin") && other.eq_ignore_ascii_case("gsa")
+                && loaded.eq_ignore_ascii_case(requested)
+        }
+        _ => false,
     }
 }
 

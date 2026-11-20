@@ -177,23 +177,20 @@ impl World {
         let Some(Some(requested)) = self.scene_requests.consume(false) else {
             return Ok(());
         };
-        let key = key(&requested);
-        let path = key
-            .strip_suffix(".gsa")
-            .map(|stem| format!("{stem}.bin"))
-            .unwrap_or(key);
-        if self
-            .report
-            .scenes
-            .iter()
-            .any(|scene| super::key(scene) == path)
+        if self.report.scenes.iter().any(|scene| {
+            super::super::scene_loading::matches_scene(scene, &requested)
+        })
         {
             self.activate_streamed_scene(&requested)?;
             return Ok(());
         }
         let root = self.data_root.clone();
         let ctx = self.asset_context.clone();
-        self.import_incoming_scene(&root, &requested, &ctx)?;
+        if let Some(source) = self.scene_requests.take_prepared(&requested) {
+            self.publish_incoming_source(&root, source?, &ctx)?;
+        } else {
+            self.import_incoming_scene(&root, &requested, &ctx)?;
+        }
         let limitation="Scene request admission follows the original queue. Publication currently runs synchronously before the world script update; native loader phase budgets/timing and activation event dispatch remain unvalidated.";
         if !self
             .report
@@ -749,6 +746,15 @@ impl World {
         ctx: &egui::Context,
     ) -> Result<std::ops::Range<usize>> {
         let incoming = super::super::scene_loading::Source::read(root, Arc::from(requested))?;
+        self.publish_incoming_source(root, incoming, ctx)
+    }
+
+    fn publish_incoming_source(
+        &mut self,
+        root: &Path,
+        incoming: super::super::scene_loading::Source,
+        ctx: &egui::Context,
+    ) -> Result<std::ops::Range<usize>> {
         let published_name = incoming.path.clone();
         let incoming_archive=incoming.archive.clone();
         ensure!(

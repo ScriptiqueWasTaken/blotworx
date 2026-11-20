@@ -38,6 +38,7 @@ impl Instance {
         let mut controllers = Vec::new();
         let mut material_controllers = Vec::new();
         let mut seen = BTreeSet::new();
+        let mut seen_material_targets = BTreeSet::new();
         let mut pending: Vec<_> = hierarchy.roots.iter().rev().flatten().copied().collect();
         while let Some(id) = pending.pop() {
             let node = &hierarchy.nodes[&id];
@@ -49,9 +50,8 @@ impl Instance {
                         "Transform target outside model"
                     );
                     controllers.push(Playback::load(c)?);
-                } else if c.texture_transform.is_some()
-                    || ((c.color.is_some() || c.indirect_scale.is_some())
-                        && c.target.is_some() && seen.insert(c.block))
+                } else if (c.texture_transform.is_some() || c.color.is_some() || c.indirect_scale.is_some())
+                    && c.target.is_some_and(|mesh| seen_material_targets.insert((c.block, mesh)))
                 {
                     material_controllers.push(MaterialController { control: c.clone(), clock: Default::default() });
                 }
@@ -163,7 +163,12 @@ impl Instance {
             let samples = self.texture_transforms.range((mesh, false, 0, 0)..=(mesh, true, u32::MAX, u32::MAX));
             for (&(_, shader_map, slot, operation), &sample) in samples {
                 let map = (shader_map, slot);
-                let Some(Ok(original)) = material.texture_transforms.get(&map) else { continue; };
+                let original = match material.texture_transforms.get(&map) {
+                    Some(Err(_)) => continue,
+                    Some(Ok(transform)) => *transform,
+                    None if shader_map && draw.material_images.iter().any(|image| u32::from(image.slot) == slot) => None,
+                    None => continue,
+                };
                 let transform = transforms.entry(map).or_insert_with(|| original.unwrap_or_default());
                 super::nif_properties::DirectTextureTransform::apply(operation, sample, transform);
             }

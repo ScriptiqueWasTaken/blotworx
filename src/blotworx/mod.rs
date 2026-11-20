@@ -3231,7 +3231,7 @@ impl Engine {
         let mut aim_target = None;
         let mut aim_ray = None;
         let simulation_started = Instant::now();
-        let stream_screen_ready = self
+        let mut stream_screen_ready = self
             .stream_loading_screen
             .as_ref()
             .is_some_and(loading_screen::Screen::ready_to_dismiss);
@@ -3250,6 +3250,9 @@ impl Engine {
                 if !stream_screen_ready && world.fading_scene_load_pending() {
                     world.scene_requests_prepared_for_models = true;
                 } else {
+                    if world.fading_scene_load_pending() {
+                        stream_screen_ready = false;
+                    }
                     world.with_live_player(player,|world|world.prepare_gameplay_scene_requests())?;
                 }
                 world.advance_demo_motion(STEP)?;
@@ -4910,7 +4913,9 @@ impl Engine {
             world.frame_clock.suspend_for_loading();
             loading_screen::Screen::load(ui.ctx(), world.source_data_root(), Some(&world.report.level))
         });
-        if allow_publication && screen.ready_to_dismiss() {
+        let root = world.source_data_root().to_owned();
+        let prepared = world.scene_requests.prepare_front(&root, ui.ctx(), &world.report.scenes);
+        if allow_publication && screen.ready_to_dismiss() && prepared {
             return false;
         }
         screen.paint(ui);

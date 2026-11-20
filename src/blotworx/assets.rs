@@ -2094,6 +2094,9 @@ impl World {
                 }
             }
         }
+        let ids = emissions.iter().map(|e| e.stimulus).collect::<Vec<_>>();
+        let activator = first.owner.and_then(|owner| usize::try_from(owner).ok())
+            .filter(|owner| *owner < self.entities.len());
         if let Some(authored) = self.authored_health.get(&target) {
             let component = components
                 .iter()
@@ -2136,6 +2139,9 @@ impl World {
                 {
                     property.value = serde_json::json!(runtime.health);
                 }
+                // Infinite-health targets can accept damage without changing
+                // their health value. Their authored outputs still have to fire.
+                self.outputs.emit_combat(target, "OnDamage", activator.or(Some(target)), self.animation_time, &ids);
                 let actions = self
                     .component_events
                     .receive_damage(target, self.animation_time)?;
@@ -2145,7 +2151,7 @@ impl World {
         if let Some((direction, amount)) = character_impulse {
             self.demo_character_knockback(target, direction, amount)?;
         }
-        let ids = emissions.iter().map(|e| e.stimulus).collect::<Vec<_>>();
+        self.outputs.emit_combat(target, "OnStimulus", activator, self.animation_time, &ids);
         if self.demo_story.enabled {
             self.demo_counter_stimulus(target, &effective, first.owner == Some(target as u64))?;
         }
@@ -6201,7 +6207,7 @@ impl World {
                         name => self.resolve_io_target(connection.owner,name)?,
                     };
                     let result = if let Some(target) = target {
-                        self.dispatch_actor_input(target, delivery.activator, &connection)
+                        self.dispatch_actor_input(target, delivery.activator, &connection, delivery.stimulus.as_ref())
                     } else {
                         // The retail IO dispatcher still calls the function,
                         // with nil as its first argument (REL328e28..328e64).
@@ -6214,14 +6220,14 @@ impl World {
                             self.scripts.queue_io_from(
                                 &connection.input,
                                 context,
-                                &connection.parameters,connection.owner,true,
+                                &connection.parameters,connection.owner,true,delivery.stimulus.as_ref(),
                             )
                         } else {
                             self.with_script_world_host(Self::script_world_api, |scripts| {
                                 scripts.call_io_from(
                                     &connection.input,
                                     context,
-                                    &connection.parameters,connection.owner,true,
+                                    &connection.parameters,connection.owner,true,delivery.stimulus.as_ref(),
                                 )
                             })
                         }
@@ -6252,6 +6258,7 @@ impl World {
         target: usize,
         activator: Option<usize>,
         connection: &super::actor_io::Connection,
+        stimulus: Option<&super::actor_io::StimulusEvent>,
     ) -> Result<()> {
         ensure!(
             !self.removed_entities.contains(&target),
@@ -6273,10 +6280,10 @@ impl World {
                 if self.scripts.is_execution_detached() {
                     return self
                         .scripts
-                        .queue_io_from(input, context, &connection.parameters,connection.owner,false);
+                        .queue_io_from(input, context, &connection.parameters,connection.owner,false,stimulus);
                 }
                 self.with_script_world_host(Self::script_world_api, |scripts| {
-                    scripts.call_io_from(input, context, &connection.parameters,connection.owner,false)
+                    scripts.call_io_from(input, context, &connection.parameters,connection.owner,false,stimulus)
                 })
             }
         }
@@ -11803,6 +11810,7 @@ mod tests {
         world.dispatch_actor_deliveries(vec![super::super::actor_io::Delivery {
             connection: connection.clone(),
             activator: Some(1),
+            stimulus: None,
         }]);
         world.scripts.ensure_global_module(
             "io-group-count.lua",
@@ -11823,6 +11831,7 @@ mod tests {
         world.dispatch_actor_deliveries(vec![super::super::actor_io::Delivery {
             connection: ordinary,
             activator: Some(1),
+            stimulus: None,
         }]);
         world.scripts.ensure_global_module(
             "io-group-final-assert.lua",

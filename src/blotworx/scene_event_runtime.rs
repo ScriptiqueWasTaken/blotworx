@@ -1239,6 +1239,7 @@ impl Runtime {
                                 &row.parameters,
                                 row.owner,
                                 false,
+                                delivery.stimulus.as_ref(),
                             ),
                         )
                             .with_context(|| {

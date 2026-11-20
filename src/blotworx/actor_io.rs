@@ -416,14 +416,22 @@ mod tests {
         assert!(outputs.ready(3.).is_empty());
     }
 }
+/// One grouped hit. Delayed outputs retain the same stimulus types even
+/// after the combat call that built them has returned.
+#[derive(Clone)]
+pub(super) struct StimulusEvent(pub(super) std::sync::Arc<[u32]>);
+impl mlua::UserData for StimulusEvent {}
+
 #[derive(Clone)]
 pub struct Delivery {
     pub connection: Connection,
     pub activator: Option<usize>,
+    pub(super) stimulus: Option<StimulusEvent>,
 }
 struct Pending {
     index: usize,
     activator: Option<usize>,
+    stimulus: Option<StimulusEvent>,
     due: f32,
 }
 #[derive(Default)]
@@ -583,6 +591,31 @@ impl Outputs {
         self.emit_optional(owner,output,Some(activator),time);
     }
     pub(super) fn emit_optional(&mut self, owner:usize,output:&str,activator:Option<usize>,time:f32) {
+        self.emit_with_payload(owner, output, activator, time, None);
+    }
+
+    pub(super) fn emit_combat(
+        &mut self,
+        owner: usize,
+        output: &str,
+        activator: Option<usize>,
+        time: f32,
+        types: &[u32],
+    ) {
+        if self.has_connections(owner, output) {
+            self.emit_with_payload(owner, output, activator, time,
+                Some(StimulusEvent(types.into())));
+        }
+    }
+
+    fn emit_with_payload(
+        &mut self,
+        owner: usize,
+        output: &str,
+        activator: Option<usize>,
+        time: f32,
+        stimulus: Option<StimulusEvent>,
+    ) {
         let Some(indices) = self.order.get_mut(&(owner, output.to_owned())) else {
             return;
         };
@@ -593,6 +626,7 @@ impl Outputs {
             self.pending.push(Pending {
                 index,
                 activator,
+                stimulus: stimulus.clone(),
                 due: time + connection.delay,
             });
             // REL32859c/3286cc: consume after dispatch admission, swapping the
@@ -618,6 +652,7 @@ impl Outputs {
                 ready.push(Delivery {
                     connection: connection.clone(),
                     activator: pending.activator,
+                    stimulus: pending.stimulus.clone(),
                 });
                 false
             } else {

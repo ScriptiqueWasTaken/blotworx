@@ -84,12 +84,25 @@
       "source": "GV_JungleToAsiaAirlock.lua, the Pete spawner and PatrolNode 02 in gv_jungletoasiaairlock.bin, and src/blotworx/entity_registry.rs",
       "evidence": "The staged valve replay fails a live-handle assertion on the previous build. On the updated build, direct lookup, group count and group iteration pass. The original camera callback opens the gate and the patrol action reaches the spawned actor, who plays pete_mov_walk_pos.hkx. The 1110-tick replay records zero Lua or runtime errors. In a separate 1070-tick replay, staging the actor with TeleportToEntity(spawned_pete, patrol_node) fires the authored patrol-arrival event and completes GV_Pete_Intro with input released and zero Lua or runtime errors. The 1070-tick gate-wait replay reaches that same conversation and departure after the authored valves without repositioning Pete or hiding the door. Player input returns to depth zero. A separate physics probe checked all 14 door bodies against their animated poses and verified the center ray is blocked in RestUnlock and clear in Open. A 1280-tick follow-up stages Mickey at the authored entrance, fires the Zone D intro, streams the Oswald scene and completes the airlock script cleanup.",
       "open": [
-        "Original Wii patrol timing and path parity",
-        "Zone D audio entry plane reports an Enable/Disable argument error during the intro"
+        "Original Wii patrol timing and path parity"
       ]
     },
       {
-        "scope": "Zone C entry, maintenance chest spline, and Asia airlock",
+        "scope": "Gremlin Village Zone D arrival",
+      "state": "The authored intro relinquishes its camera and input ownership and writes a Zone D checkpoint after the Asia airlock handoff.",
+      "source": "GV_ZoneD.lua, Prefab_GrabCameraFancy.lua, PlaneTrigger_Entry in gremlinvillage_zoned.pak, REL328e30..329090 and REL263b50.",
+      "evidence": "Replay tools/blotworx/fixtures/gv_asia_airlock_valves.lua from Levels/GV_ZoneC_Start.level for 1810 ticks with dialogue choice 0 every 12 ticks. The capture finishes GV_ZoneD_NeedToReachExit, releases the camera and input, clears the fade, and writes GV_ZoneD_LoadCheckpoint. The sole Lua error is an authored one-shot Disable connection. Its _player target and additional Trigger_Portal string produce two arguments in the original dispatcher, while the retail function requires one.",
+      "open": ["Original Wii timing and visual comparison", "Continuous movement into Zone D, standalone boot and checkpoint reload"]
+    },
+    {
+      "scope": "Gremlin Village Zone D valve damage routing",
+      "state": "Combat IO keeps the grouped stimulus types with delayed deliveries. The original valve's OnDamage callback can identify spin and start the timed fan puzzle.",
+      "source": "GV_ZoneD.lua, the authored GV_FanGear01 OnDamage row, and REL32326c.",
+      "evidence": "diagnose --validate-io-admission dispatches one grouped spin hit through the original Zone D valve's damage receivers. Its Lua callback recognizes the spin and knockback IDs, rejects physical damage, advances the valve index and starts the timer.",
+      "open": ["The staged controller replay reaches the first valve but fails to establish spin contact. Retail RELb7fec calls REL2969f0 for the overlap origin, while the current spin query uses the player controller position.", "All four valves, timeout recovery and vent gate progression through normal gameplay"]
+    },
+    {
+      "scope": "Zone C entry, maintenance chest spline, and Asia airlock",
         "state": "The original Zone C maintenance-room call can clear a spline stop. Restarting motion remains a separate authored action. Completing the preceding Zone B cutscene before staging the transfer lets the following Zone C intro release its own input restrictions.",
         "source": "GV_ZoneC_MaintenanceRoomChest, GV_JTA_Timer, GV_JTA_Camera1GlobalSet, and EM1 REL 3be6dc and 3bdbbc",
         "evidence": "The 3630-tick airlock-to-Zone-C replay completes the introductory conversations with input depth zero. The 165-tick spline replay verifies a fractional stop, unchanged speed on clear, the authored cleanup knot, and actual maintenance-chest motion. The 610-tick Asia airlock replay solves the timer puzzle and spawns Pete. All three replays record zero Lua or runtime errors.",

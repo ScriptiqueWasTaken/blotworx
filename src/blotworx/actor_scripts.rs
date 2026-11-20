@@ -837,9 +837,32 @@ impl Scripts {
         }
         // Verified stimulus registration: REL28a5bc..28a818. Keep these
         // original IDs rather than conflating health damage with knockback.
-        for (name, value) in [("ST_PHYSICAL", 2), ("ST_KNOCKBACK", 3), ("ST_BREAKABLE", 5)] {
+        for (name, value) in [("ST_PHYSICAL", 2), ("ST_KNOCKBACK", 3), ("ST_BREAKABLE", 5), ("ST_SPIN", 8)] {
             lua.globals().set(name, value)?;
         }
+        lua.globals().set(
+            "StimulusEvent_HasStimulusType",
+            lua.create_function(|_, (event, kind): (mlua::AnyUserData, u32)| {
+                let event = event.borrow::<super::actor_io::StimulusEvent>()?;
+                Ok(event.0.contains(&kind))
+            })?,
+        )?;
+        // REL32326c accepts an event and an integer/global stimulus ID, then
+        // searches the stimulus vector carried by the damage event.
+        lua.globals().set(
+            "DamageEvent_HasStimulusType",
+            lua.create_function(|lua, args: mlua::MultiValue| {
+                if args.len() != 2 {
+                    return Err(mlua::Error::external("DamageEvent_HasStimulusType requires an event and stimulus type"));
+                }
+                let kind = super::score_state::integer_argument(lua, args[1].clone())? as u32;
+                let mlua::Value::UserData(event) = &args[0] else {
+                    return Err(mlua::Error::external("Expected damage event"));
+                };
+                let event = event.borrow::<super::actor_io::StimulusEvent>()?;
+                Ok(event.0.contains(&kind))
+            })?,
+        )?;
         let source_files: Arc<Mutex<BTreeMap<String, Arc<[u8]>>>> = Default::default();
         let sources = source_files.clone();
         // Retail REL26cd5c returns the literal FINAL. This is the supported
@@ -1338,7 +1361,7 @@ impl Scripts {
         context: CallbackContext,
         parameter: &str,
     ) -> Result<()> {
-        self.queue_io_target(name, context, parameter, false, context.entity)
+        self.queue_io_target(name, context, parameter, false, context.entity, None)
     }
     pub fn queue_missing_io_callback(
         &mut self,
@@ -1346,10 +1369,13 @@ impl Scripts {
         context: CallbackContext,
         parameter: &str,
     ) -> Result<()> {
-        self.queue_io_target(name, context, parameter, true, context.entity)
+        self.queue_io_target(name, context, parameter, true, context.entity, None)
     }
-    pub(super) fn queue_io_from(&mut self,name:&str,context:CallbackContext,parameter:&str,owner:usize,nil_target:bool)->Result<()> {
-        self.queue_io_target(name,context,parameter,nil_target,Some(owner))
+    pub(super) fn queue_io_from(
+        &mut self, name: &str, context: CallbackContext, parameter: &str,
+        owner: usize, nil_target: bool, stimulus: Option<&super::actor_io::StimulusEvent>,
+    ) -> Result<()> {
+        self.queue_io_target(name, context, parameter, nil_target, Some(owner), stimulus)
     }
     fn queue_io_target(
         &mut self,
@@ -1358,12 +1384,13 @@ impl Scripts {
         parameter: &str,
         nil_target: bool,
         io_owner: Option<usize>,
+        stimulus: Option<&super::actor_io::StimulusEvent>,
     ) -> Result<()> {
         ensure!(
             self.scheduler_detached && context.entity.is_some_and(|entity| self.has_entity(entity)),
             "IO callout requires a live detached owner"
         );
-        let parameters = self.io_parameter_from(context, parameter, io_owner)?;
+        let parameters = self.io_parameter_from(context, parameter, io_owner, stimulus)?;
         self.callouts
             .lock()
             .map_err(|_| anyhow::anyhow!("Callout queue poisoned"))?
@@ -1919,13 +1946,21 @@ impl Scripts {
     ) -> Result<()> {
         self.call_context_target(name, context, self.io_parameter(context, parameter)?, true)
     }
-    pub(super) fn call_io_from(&mut self,name:&str,context:CallbackContext,parameter:&str,owner:usize,nil_target:bool)->Result<()> {
-        self.call_context_target(name,context,self.io_parameter_from(context,parameter,Some(owner))?,nil_target)
+    pub(super) fn call_io_from(
+        &mut self, name: &str, context: CallbackContext, parameter: &str,
+        owner: usize, nil_target: bool, stimulus: Option<&super::actor_io::StimulusEvent>,
+    ) -> Result<()> {
+        let parameters = self.io_parameter_from(context, parameter, Some(owner), stimulus)?;
+        self.call_context_target(name, context, parameters, nil_target)
     }
     fn io_parameter(&self, context: CallbackContext, parameter: &str) -> Result<Vec<Value>> {
-        self.io_parameter_from(context,parameter,context.entity)
+        self.io_parameter_from(context, parameter, context.entity, None)
     }
-    fn io_parameter_from(&self, context: CallbackContext, parameter: &str, owner:Option<usize>) -> Result<Vec<Value>> {
+    fn io_parameter_from(
+        &self, context: CallbackContext, parameter: &str, owner: Option<usize>,
+        stimulus: Option<&super::actor_io::StimulusEvent>,
+    ) -> Result<Vec<Value>> {
+        let mut event = None;
         super::actor_io::parameters(parameter).into_iter().map(|parameter| {
             Ok(match parameter.as_str() {
                 "_activator" => match context.activator {
@@ -1940,7 +1975,13 @@ impl Scripts {
                     Some(entity) => Value::LightUserData(handle(&self.entities,entity)?),
                     None => Value::Nil,
                 },
-                "_event" => anyhow::bail!("IO _event requires original event-payload ownership"),
+                "_event" => {
+                    if event.is_none() {
+                        let stimulus = stimulus.context("IO _event has no supported payload")?;
+                        event = Some(self.lua.create_userdata(stimulus.clone())?);
+                    }
+                    Value::UserData(event.clone().unwrap())
+                }
                 _ => Value::String(self.lua.create_string(parameter)?),
             })
         }).collect()
@@ -3047,13 +3088,13 @@ mod native_io_arguments_tests {
         facade.call_input("Direct",1,Some("literal,comma"))?;
         let context=CallbackContext{entity:Some(1),activator:None};
         let parameters=r"literal\,comma,_activator,_self,_player, tail ";
-        facade.call_io_from("Observe",context,parameters,0,false)?;
+        facade.call_io_from("Observe",context,parameters,0,false,None)?;
         facade.advance(0.1)?;
         facade.evaluate_callback_fixture("assert(seen==2)")?;
         let mut execution=facade.detach_scheduler()?;
         execution.with_world_host(|_,name,_| {
             assert_eq!(name,"QueueParameters");
-            facade.queue_io_from("Observe",context,parameters,0,false).map_err(mlua::Error::external)?;
+            facade.queue_io_from("Observe",context,parameters,0,false,None).map_err(mlua::Error::external)?;
             Ok(mlua::MultiValue::new())
         },|scripts|scripts.call("Invoke",0))?;
         execution.advance(0.2)?;

@@ -303,13 +303,12 @@
       },
       {
         "scope": "EM1 authored Extras landing and selected save",
-        "state": "ExtrasMenuLoad uses its authored slot number to open the shipped Extras movie. Its four counters are populated from the selected GAME header and original collectibles database. FadeIn waits for DelayedInit to release the authored HoldFade.",
-        "source": "Wii REL1fd328..1fd360 slot selection, bc610 category tables, bc008..bc234 count publication, and extrasmenu.gfx Initialize and DelayedInit.",
-        "evidence": "frontend-extras-final.runtime.json captures ExtrasMenuLoad Slot1 and the authored Extras display with counts 0/50, 4/39, 0/2 and 1/1. An independent parse of the two scratch saves and collectibles.pak predicts 4/39 for the selected save and 5/39 if combined. Both save hashes are unchanged.",
+        "state": "ExtrasMenuLoad uses its authored slot number to open the shipped Extras movie. Its four counters are populated from the selected GAME header and original collectibles database. FadeIn waits for DelayedInit to release the authored HoldFade. Card titles and unlock captions read the original dictionary. Authored zero-alpha counter backing fields remain transparent during timeline updates.",
+        "source": "Wii REL1fd328..1fd360 slot selection, bc610 category tables, bc008..bc234 count publication, and extrasmenu.gfx Initialize, DelayedInit and the EditText layout. English_NTSC.pak contains the shipped text.",
+        "evidence": "frontend-extras-final.runtime.json captures ExtrasMenuLoad Slot1 and the authored Extras display with counts 0/50, 4/39, 0/2 and 1/1. An independent parse of the two scratch saves and collectibles.pak predicts 4/39 for the selected save and 5/39 if combined. Both save hashes are unchanged. The frontend-extras-localization replay reads the localized text directly from the four authored cards. The frontend-extras-back replay routes Escape through the authored B handler, then plays FE_Extras_to_Main and resumes FE_MainMenu_Loop with both scratch saves unchanged.",
         "open": [
           "Category item browsing, media playback and Extras credits/teaser",
-          "Dynamic label localization and visual comparison with the original Wii UI",
-          "Live validation of returning to Main Menu"
+          "Frame and timing comparison with the original Wii UI"
         ]
       },
       {

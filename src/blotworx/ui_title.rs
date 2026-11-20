@@ -1,7 +1,20 @@
 use super::*;
+use std::collections::BTreeMap;
 use ruffle_render_wgpu::{backend::WgpuRenderBackend, target::TextureTarget};
 
 type Renderer = WgpuRenderBackend<TextureTarget>;
+type Labels = BTreeMap<&'static str, String>;
+
+const EXTRAS_CARDS: [&str; 4] = ["Concept", "Cartoons", "Movies", "Credits"];
+const EXTRAS_LABEL_FIELDS: [&str; 3] = ["textField", "textField3", "textField3_static"];
+
+fn extras_label_paths() -> impl Iterator<Item = String> {
+    EXTRAS_CARDS.into_iter().flat_map(|card| {
+        EXTRAS_LABEL_FIELDS.map(|field| {
+            format!("_root.ExtrasMC.ExtrasMenuMC.{card}.{field}.text")
+        })
+    })
+}
 
 #[derive(Clone, Default)]
 struct Events(Arc<Mutex<Vec<(String, String)>>>);
@@ -35,7 +48,7 @@ impl FsCommandProvider for Events {
 fn localize_frontend_labels(
     movie: &mut crate::gfx::GfxFile,
     resources: &mut super::super::resource_store::Store,
-) -> Result<[Option<String>; 3]> {
+) -> Result<Labels> {
     use epic_mickey_lib_rs::dct::{epic_mickey_hash, DCT};
     resources.admit_packs(&["English_NTSC.pak".into()])?;
     let file = resources.read("Localize/ENGLISH_NTSC_RVL.dct")?;
@@ -75,14 +88,15 @@ fn localize_frontend_labels(
             tag.body.push(0);
         }
     }
-    Ok(["UI_StartGame", "UI_Extras", "UI_NewGame"].map(|key| {
+    Ok([
+        "UI_StartGame", "UI_Extras", "UI_NewGame", "UI_ExtrasConcept", "UI_ExtrasCartoons",
+        "UI_ExtrasMovies", "UI_ExtrasCredits", "UI_Unlocked", "UI_Unlocked_Singular",
+    ].into_iter().filter_map(|key| {
         let hash = epic_mickey_hash(key.as_bytes(), locale.hash_seed);
-        locale
-            .dialog_entries
-            .iter()
+        locale.dialog_entries.iter()
             .find(|entry| entry.hashed_key == hash)
-            .map(|entry| entry.text.clone())
-    }))
+            .map(|entry| (key, entry.text.clone()))
+    }).collect())
 }
 
 struct Stage {
@@ -91,7 +105,7 @@ struct Stage {
     events: Events,
     executor: NullExecutor,
     texture: Option<egui::TextureHandle>,
-    labels: [Option<String>; 3],
+    labels: Labels,
 }
 
 impl Stage {
@@ -191,11 +205,11 @@ impl Stage {
     fn refresh_labels(&self) -> Result<()> {
         let mut player = lock(&self.handle)?;
         let base = "_root.MMC.MainMenuMC";
-        for (button, label) in ["StartGameButton", "ExtrasButton"]
-            .into_iter()
-            .zip(&self.labels)
-        {
-            if let Some(label) = label {
+        for (button, key) in [
+            ("StartGameButton", "UI_StartGame"),
+            ("ExtrasButton", "UI_Extras"),
+        ] {
+            if let Some(label) = self.labels.get(key) {
                 let path = format!("{base}.MainPage.{button}.label");
                 player.call_internal_interface(
                     "__bwx_frontend_set",
@@ -203,10 +217,57 @@ impl Stage {
                 );
             }
         }
-        if let Some(label) = &self.labels[2] {
+        if let Some(label) = self.labels.get("UI_NewGame") {
             for slot in 1..=3 {
                 let path = format!("{base}.LoadMenu.Slot{slot}.TitleMC.Title.text");
                 if read(&mut player, &path) == Value::String("UI_NewGame".into()) {
+                    player.call_internal_interface(
+                        "__bwx_frontend_set",
+                        [Value::String(path), Value::String(label.clone())],
+                    );
+                }
+            }
+        }
+        Ok(())
+    }
+
+    fn bind_menu_controls(&self) -> Result<()> {
+        let mut player = lock(&self.handle)?;
+        for (key, code) in [
+            ("aKey", 13.), ("bKey", 27.), ("plusKey", 34.), ("minusKey", 33.),
+            ("upKey", 38.), ("downKey", 40.), ("leftKey", 37.), ("rightKey", 39.),
+        ] {
+            player.call_internal_interface(
+                "__bwx_frontend_set",
+                [Value::String(format!("_global.{key}")), Value::Number(code)],
+            );
+        }
+        Ok(())
+    }
+
+    fn hide_extras_counter_sources(&self) -> Result<()> {
+        let mut player = lock(&self.handle)?;
+        // The original EditText definitions for these backing fields have
+        // zero alpha. Scaleform keeps them hidden when text is assigned.
+        for card in EXTRAS_CARDS {
+            for field in ["textField2_static", "textField3_static"] {
+                let path = format!("_root.ExtrasMC.ExtrasMenuMC.{card}.{field}._alpha");
+                player.call_internal_interface(
+                    "__bwx_frontend_set",
+                    [Value::String(path), Value::Number(0.)],
+                );
+            }
+        }
+        Ok(())
+    }
+
+    fn refresh_extras_labels(&self) -> Result<()> {
+        let mut player = lock(&self.handle)?;
+        // Rollover and fade frames can replace these text fields. Translate
+        // the key on the live field without changing the authored label ID.
+        for path in extras_label_paths() {
+            if let Value::String(key) = read(&mut player, &path) {
+                if let Some(label) = self.labels.get(key.as_str()) {
                     player.call_internal_interface(
                         "__bwx_frontend_set",
                         [Value::String(path), Value::String(label.clone())],
@@ -470,6 +531,7 @@ impl ExtrasMenu {
 
     fn initialize(&mut self) -> Result<()> {
         if !self.initialized {
+            self.stage.bind_menu_controls()?;
             {
                 let mut player = lock(&self.stage.handle)?;
                 player.call_internal_interface("__bwx_frontend_set", [
@@ -486,10 +548,24 @@ impl ExtrasMenu {
                 matches!(read(&mut player, "_root.intervalID"), Value::Null | Value::Undefined)
             };
             if ready {
+                self.stage.hide_extras_counter_sources()?;
                 self.fade_started = self.stage.call("FadeIn")?;
             }
         }
         Ok(())
+    }
+
+    fn summary(&self) -> serde_json::Value {
+        let labels = lock(&self.stage.handle).map(|mut player| {
+            extras_label_paths().filter_map(|path| match read(&mut player, &path) {
+                Value::String(value) => Some((path, value)),
+                _ => None,
+            }).collect::<BTreeMap<_, _>>()
+        }).ok();
+        serde_json::json!({
+            "initialized": self.initialized, "fade_started": self.fade_started,
+            "slot": self.slot, "counts": self.counts, "labels": labels,
+        })
     }
 }
 
@@ -727,9 +803,12 @@ impl Menu {
                     0x0008,
                 ),
             ] {
-                if replay.is_none()
-                    && (pad_edges & bit != 0 || ui.input(|i| i.key_pressed(egui_key)))
-                {
+                let pressed = if let Some(frame) = replay {
+                    egui_key == egui::Key::Escape && frame.spin_pressed
+                } else {
+                    pad_edges & bit != 0 || ui.input(|i| i.key_pressed(egui_key))
+                };
+                if pressed {
                     let key = KeyDescriptor {
                         physical_key,
                         logical_key: LogicalKey::Named(logical_key),
@@ -743,11 +822,17 @@ impl Menu {
         stage.executor.run();
         if let Some(extras) = &mut self.extras {
             extras.initialize()?;
-        } else if !self.initialized && self.stage.call("Initialize")? {
-            self.initialized = true;
-            self.save_info()?;
-            self.stage.call("FadeIn")?;
-            self.stage.refresh_labels()?;
+            if extras.fade_started {
+                extras.stage.refresh_extras_labels()?;
+            }
+        } else if !self.initialized {
+            if self.stage.call("Initialize")? {
+                self.initialized = true;
+                self.stage.bind_menu_controls()?;
+                self.save_info()?;
+                self.stage.call("FadeIn")?;
+                self.stage.refresh_labels()?;
+            }
         }
         let mut selection = None;
         let events = {
@@ -836,7 +921,7 @@ impl Menu {
 
     pub(in crate::blotworx) fn summary(&self) -> serde_json::Value {
         serde_json::json!({"initialized":self.initialized,"in_slots":self.in_slots,"commands":self.commands,
-            "extras":self.extras.as_ref().map(|extras| serde_json::json!({"initialized":extras.initialized,"fade_started":extras.fade_started,"slot":extras.slot,"counts":extras.counts})),
+            "extras":self.extras.as_ref().map(ExtrasMenu::summary),
             "background":self.background.as_ref().map(super::super::movie::Player::summary),
             "child_movies":self.stage.host.0.lock().unwrap().fetches})
     }

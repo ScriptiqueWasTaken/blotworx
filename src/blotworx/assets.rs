@@ -4328,6 +4328,23 @@ impl World {
                 )]))
             }
             "SetPropertyVector" => self.set_vector_property_lua(lua,args),
+            "SplineKnotComponent_SetBranchProbability" => {
+                if args.len() != 2 {
+                    return Err(mlua::Error::external("SetBranchProbability requires a spline knot and a probability"));
+                }
+                let chance = lua.coerce_number(args[1].clone())?
+                    .context("Spline branch probability must be numeric")
+                    .map_err(mlua::Error::external)? as f32;
+                if let Some(entity) = self.scripts.resolve_native_entity_argument(lua, args[0].clone())?
+                    .filter(|entity| !self.removed_entities.contains(entity)
+                        && self.entities[*entity].components.iter()
+                            .any(|component| component.class_name == "SplineKnotComponent"))
+                {
+                    self.set_entity_float_property(entity, "BranchPathChance", chance)
+                        .map_err(mlua::Error::external)?;
+                }
+                Ok(mlua::MultiValue::new())
+            }
             "GetPropertyFloat" | "SetPropertyFloat" => {
                 let setter = name == "SetPropertyFloat";
                 let required = if setter { 3 } else { 2 };
@@ -4497,8 +4514,12 @@ impl World {
                                 .ok_or_else(|| mlua::Error::external("Invalid rotator float"))?
                                 as f32
                         }
-                        "NegativeThreshold" | "PositiveThreshold" | "Wander Radius" => {
-                            let owner=if property=="Wander Radius" {"AIBrainComponent"} else {"MoodComponent"};
+                        "NegativeThreshold" | "PositiveThreshold" | "Wander Radius" | "BranchPathChance" => {
+                            let owner = match property.as_str() {
+                                "Wander Radius" => "AIBrainComponent",
+                                "BranchPathChance" => "SplineKnotComponent",
+                                _ => "MoodComponent",
+                            };
                             if component.class_name!=owner {
                                 return Err(mlua::Error::external("Stored scalar has an unsupported owner"));
                             }

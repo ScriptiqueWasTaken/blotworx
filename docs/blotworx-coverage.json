@@ -79,6 +79,16 @@
   ],
   "validated_connections": [
       {
+        "scope": "Gremlin Village airlock entry and Zone B boat junction",
+        "state": "The staged airlock approach reaches the authored Zone B intro, which calls the original Zone A cleanup. Zone B's boat handoff can now set the live spline junction probability through its native Lua API.",
+        "source": "GV_ZoneA.lua, GV_ZoneB2.lua, and the authored SK_BoatPath08 junction in gv_zoneb.pak",
+        "evidence": "The live airlock run crosses gv_zoneb.Trigger_Intro and confirms Cleanup_GV_ZoneA removed itself. tools/blotworx/fixtures/gv_boat_branch.lua invokes the original boat handoff and asserts the switch from 1 to 0 and the completed callback state.",
+        "open": [
+          "Unstaged traversal from the airlock through the full boat ride and into the next area",
+          "Original Wii traversal timing"
+        ]
+      },
+      {
         "scope": "EM1 loading-screen presentation",
         "state": "Full level loads show original imported artwork and cycle eight authored dot frames. The loading screen is shown for at least one UI frame. Level descriptors select destination artwork, while boot and missing or unspecified artwork use the opening screen.",
         "source": "loading_screen_texture in levels.pak, loose LoadingScreens assets, and src/blotworx/loading_screen.rs",

@@ -933,6 +933,7 @@ impl Scripts {
         scripts.bind_world_api("GetPropertyBool")?;
         scripts.bind_world_api("SetPropertyBool")?;
         scripts.bind_world_api("SetPropertyFloat")?;
+        scripts.bind_world_api("SplineKnotComponent_SetBranchProbability")?;
         scripts.bind_world_api("SetPropertyVector")?;
         scripts.bind_world_api("SetPropertyEntity")?;
         scripts.bind_world_api("SetPropertyString")?;

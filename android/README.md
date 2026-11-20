@@ -8,7 +8,7 @@ Blotworx checks GitHub for updates at startup. It verifies the download and asks
 
 ## Build
 
-Use Rust with the `aarch64-linux-android` target, Android NDK `27.3.13750724`, Android SDK platform 35 and Build Tools `35.0.0`. On Windows set `CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER`, `CC_aarch64_linux_android`, `CXX_aarch64_linux_android` and `AR_aarch64_linux_android` to the corresponding API 26 NDK compiler and archiver. Run `cargo build --locked --lib --target aarch64-linux-android`.
+Use Rust with the `aarch64-linux-android` target, Android NDK `27.3.13750724`, Android SDK platform 35 and Build Tools `35.0.0`. On Windows set `CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER`, `CC_aarch64_linux_android`, `CXX_aarch64_linux_android` and `AR_aarch64_linux_android` to the corresponding API 26 NDK compiler and archiver. The combined release script disables optimization in Ruffle for the Android build to avoid a Rust 1.98 Windows compiler crash and requests 16 KiB native alignment.
 
 Download and unpack `ffmpeg-7.1.5.tar.xz`. Its SHA-256 is `de668509caf9e35e3cd162473441fdb29538c6d96ed080292b3cf9e6fc5d558f`. From the FFmpeg source directory, run `build-codec.sh` with the NDK toolchain directory and GNU make path using Git Bash. This builds the LGPL FFmpeg executable without external libraries. [FFmpeg source archive](https://ffmpeg.org/releases/ffmpeg-7.1.5.tar.xz)
 

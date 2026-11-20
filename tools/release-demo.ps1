@@ -49,13 +49,21 @@ try {
     cargo build --locked --bin blotworx --target x86_64-pc-windows-msvc
     if ($LASTEXITCODE -ne 0) { throw 'Windows build failed.' }
     & "$PSScriptRoot/package-demo.ps1" -Executable "$env:CARGO_TARGET_DIR/x86_64-pc-windows-msvc/debug/blotworx.exe" -OutputDirectory $output
-    cargo build --locked --lib --target aarch64-linux-android
+    # Rust 1.98's Windows host crashes optimizing Ruffle for Android.
+    cargo rustc --locked --jobs 2 --config 'profile.dev.package.ruffle_core.opt-level=0' --lib --target aarch64-linux-android -- '-Clink-arg=-Wl,-z,max-page-size=16384'
     if ($LASTEXITCODE -ne 0) { throw 'Android build failed.' }
     & "$root/android/package-apk.ps1" @android
 } finally {
     Pop-Location
 }
 if (!$Publish) { return }
+# Existing Android installations only accept updates signed by this certificate.
+$signer = & "$Sdk/build-tools/35.0.0/apksigner.bat" verify --print-certs $android.Output |
+    Select-String 'certificate SHA-256 digest:'
+if ($LASTEXITCODE -ne 0 -or $signer.Count -ne 1 -or
+    $signer.Line -notmatch 'c92044dcb05269ed29c9ccdd5688bd74f273e4ff481b3717050543757c95f55e$') {
+    throw 'The Android APK is not signed with the existing release certificate.'
+}
 if ((git -C $root rev-parse HEAD) -ne $commit -or (git -C $root status --porcelain)) {
     throw 'Source changed during the build.'
 }

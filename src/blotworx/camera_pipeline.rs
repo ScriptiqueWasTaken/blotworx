@@ -162,20 +162,28 @@ impl super::assets::World {
             (&entity.scene == scene && u64::from(entity.id) == id && id != 0
                 && !self.removed_entities.contains(&index)).then_some(entity)
         });
-        let knot = |component: &epic_mickey_lib_rs::scene_file::Component| {
+        let next = |component: &epic_mickey_lib_rs::scene_file::Component| {
             component.properties.iter().find(|property| property.name == "NextStopEntity")
                 .and_then(|property| property.value.as_u64()).filter(|&id| id != 0)
+        };
+        let straight = |component: &epic_mickey_lib_rs::scene_file::Component| {
+            component.class_name == "SplineKnotComponent"
+                && component.properties.iter().all(|property| match property.name.as_str() {
+                    "IncomingHandle" | "OutgoingHandle" =>
+                        crate::render_support::scene::parse_point3(&property.value) == Some([0.; 3]),
+                    "BranchPathEntity" => property.value.as_u64() == Some(0),
+                    "BranchPathTarget" | "NextStopTarget" => property.value.as_str() == Some(""),
+                    _ => true,
+                })
         };
         let Some(first) = property("CameraSplineKnot").and_then(|value| value.as_u64())
             .and_then(resolve)
         else { return Ok(None) };
         let Some(first_knot) = first.components.iter()
-            .find(|component| component.class_name == "SplineKnotComponent")
+            .find(|component| straight(component))
         else { return Ok(None) };
-        let Some(last) = knot(first_knot).and_then(resolve) else { return Ok(None) };
-        if first_knot.properties.len() != 1 || !last.components.iter().any(|component| {
-            component.class_name == "SplineKnotComponent" && component.properties.is_empty()
-        }) {
+        let Some(last) = next(first_knot).and_then(resolve) else { return Ok(None) };
+        if !last.components.iter().any(|component| straight(component) && next(component).is_none()) {
             return Ok(None);
         }
         let a = first.transform[12..15].try_into().unwrap();

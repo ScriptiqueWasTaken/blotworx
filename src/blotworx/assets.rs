@@ -6331,7 +6331,7 @@ impl World {
                     }
                     // Space Voyage's three cage instances omit the dot and
                     // give both the cage and its occupant the same group.
-                    if self.demo_story.enabled && suffix == ".caged_gremlin" && group == "caged_gremlin"
+                    if suffix == ".caged_gremlin" && group == "caged_gremlin"
                         && entity.components.iter().any(|c| c.class_name == "PhysicsRigidBodyCharacterComponent")
                     {
                         ambiguous_caged_actor |= caged_actor.is_some_and(|actor| actor != index);

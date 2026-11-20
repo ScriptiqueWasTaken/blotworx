@@ -2984,27 +2984,28 @@ pub(crate) fn render_viewport(
                     // draws have populated depth, as NiAlphaAccumulator does.
                     let mut immediate = Vec::with_capacity(draw_commands.len());
                     let mut blended = Vec::new();
-                    let mut scene_color = Vec::new();
                     for (index, cmd) in draw_commands.iter().enumerate() {
                         if rejected[index] || cmd.indices.is_empty() || cmd.v_data.is_empty() {
                             continue;
                         }
                         let managed = native_managed.as_ref().is_some_and(|values| values[index].0);
-                        if cmd.preview.as_ref().and_then(|p| p.as_ref().ok())
-                            .is_some_and(|program| program.scene_color_slot.is_some())
-                            && prepared_materials[index].is_some()
-                        {
-                            scene_color.push(index);
-                        } else if cmd.needs_alpha_sort(prepared_materials[index].is_some(), managed) {
-                            blended.push((index, cmd.alpha_depth(&view_mat)));
+                        let samples_scene_color = prepared_materials[index].is_some()
+                            && cmd.preview.as_ref().and_then(|p| p.as_ref().ok())
+                            .is_some_and(|program| program.scene_color_slot.is_some());
+                        if samples_scene_color || cmd.needs_alpha_sort(prepared_materials[index].is_some(), managed) {
+                            blended.push((index, cmd.alpha_depth(&view_mat), samples_scene_color));
                         } else {
                             immediate.push(index);
                         }
                     }
-                    blended.sort_unstable_by(|&(left_index, left_depth), &(right_index, right_depth)| {
-                        right_depth.total_cmp(&left_depth).then(left_index.cmp(&right_index))
+                    // A scene-color material captures the layers behind it, including
+                    // translucent draws. Coplanar regular draws enter that capture first.
+                    blended.sort_unstable_by(|&(left_index, left_depth, left_capture), &(right_index, right_depth, right_capture)| {
+                        right_depth.total_cmp(&left_depth)
+                            .then(left_capture.cmp(&right_capture))
+                            .then(left_index.cmp(&right_index))
                     });
-                    for draw_index in immediate.into_iter().chain(scene_color).chain(blended.into_iter().map(|(index, _)| index)) {
+                    for draw_index in immediate.into_iter().chain(blended.into_iter().map(|(index, _, _)| index)) {
                         let cmd = &draw_commands[draw_index];
                         let prepared = &prepared_materials[draw_index];
 

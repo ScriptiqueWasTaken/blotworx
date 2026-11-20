@@ -5,12 +5,13 @@ use std::{
 };
 
 const DEFAULT_ART: &str = "LoadingScreens/MickeyInitialScreen.dds";
+const MINIMUM_PRESENTATION: Duration = Duration::from_millis(330);
+const DOT_FRAME: Duration = Duration::from_millis(110);
 
 pub(super) struct Screen {
     background: TextureHandle,
     dots: Vec<TextureHandle>,
-    started: Instant,
-    pub(super) presented: bool,
+    first_paint: Option<Instant>,
 }
 
 impl Screen {
@@ -36,16 +37,25 @@ impl Screen {
         };
         let mut dots = Vec::with_capacity(8);
         for index in 1..=8 {
-            dots.push(texture(
+            match texture(
                 ctx,
                 &mut store,
                 &format!("LoadingScreens/LoadingDots_{index:02}.tga"),
-            )?);
+            ) {
+                Ok(frame) => dots.push(frame),
+                Err(error) => log::warn!("Loading indicator frame {index}: {error:#}"),
+            }
         }
-        Ok(Self { background, dots, started: Instant::now(), presented: false })
+        Ok(Self { background, dots, first_paint: None })
+    }
+
+    pub(super) fn ready_to_dismiss(&self) -> bool {
+        self.first_paint
+            .is_some_and(|start| start.elapsed() >= MINIMUM_PRESENTATION)
     }
 
     pub(super) fn paint(&mut self, ui: &mut Ui) {
+        let elapsed = self.first_paint.get_or_insert_with(Instant::now).elapsed();
         let viewport = ui.max_rect();
         let size = self.background.size_vec2();
         let scale = (viewport.width() / size.x).min(viewport.height() / size.y);
@@ -54,18 +64,14 @@ impl Screen {
         let painter = ui.painter();
         painter.rect_filled(viewport, 0., Color32::BLACK);
         painter.image(self.background.id(), image, uv, Color32::WHITE);
-        let frame_time = Duration::from_millis(110);
-        let frame = (self.started.elapsed().as_millis() / frame_time.as_millis()) as usize;
-        let dot = &self.dots[frame % self.dots.len()];
-        let corner = image.right_bottom() - Vec2::splat(18. * scale);
-        let marker = Rect::from_min_max(corner - dot.size_vec2() * scale, corner);
-        painter.image(dot.id(), marker, uv, Color32::WHITE);
-        if self.presented {
-            ui.ctx().request_repaint_after(frame_time);
-        } else {
-            self.presented = true;
-            ui.ctx().request_repaint();
+        if !self.dots.is_empty() {
+            let frame = (elapsed.as_millis() / DOT_FRAME.as_millis()) as usize;
+            let dot = &self.dots[frame % self.dots.len()];
+            let corner = image.right_bottom() - Vec2::splat(18. * scale);
+            let marker = Rect::from_min_max(corner - dot.size_vec2() * scale, corner);
+            painter.image(dot.id(), marker, uv, Color32::WHITE);
         }
+        ui.ctx().request_repaint_after(DOT_FRAME);
     }
 }
 

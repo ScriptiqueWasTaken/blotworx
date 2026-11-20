@@ -2630,8 +2630,6 @@ impl Engine {
             self.error=Some(format!("No game packfiles found in {}. Choose the extracted game, DATA, files or packfiles folder.",self.root));
             return;
         }
-        let (tx, rx) = mpsc::channel();
-        self.receiver = Some(rx);
         self.error = None;
         self.simulation_active = false;
         self.previous_buttons = 0;
@@ -2726,6 +2724,8 @@ impl Engine {
         let runtime_script = self.runtime_script.take();
         self.loading_screen = loading_screen::Screen::load(ctx, &root, self.world.as_ref().map(|_| level.as_str()))
             .inspect_err(|error| log::warn!("Loading screen: {error:#}")).ok();
+        let (tx, rx) = mpsc::channel();
+        self.receiver = Some(rx);
         drop(self.world.take());
         self.controller = None;
         self.ear_pose = None;
@@ -4129,7 +4129,7 @@ impl eframe::App for Engine {
     }
     fn ui(&mut self, ui: &mut egui::Ui, _: &mut eframe::Frame) {
         if self.receiver.is_some() {
-            if let Some(screen) = self.loading_screen.as_mut().filter(|screen| !screen.presented) {
+            if let Some(screen) = self.loading_screen.as_mut().filter(|screen| !screen.ready_to_dismiss()) {
                 screen.paint(ui);
                 return;
             }
@@ -4456,8 +4456,13 @@ impl eframe::App for Engine {
         if self.receiver.is_some() {
             if let Some(screen) = &mut self.loading_screen {
                 screen.paint(ui);
-                return;
+            } else {
+                let viewport = ui.max_rect();
+                ui.painter().rect_filled(viewport, 0., egui::Color32::BLACK);
+                let indicator = egui::Rect::from_center_size(viewport.center(), egui::vec2(24., 24.));
+                ui.put(indicator, egui::Spinner::new());
             }
+            return;
         } else {
             self.loading_screen = None;
         }

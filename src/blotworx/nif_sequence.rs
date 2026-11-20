@@ -1394,11 +1394,13 @@ pub struct ActorBindings {
     pub morph_sequences:
         std::collections::BTreeMap<u32, std::collections::BTreeMap<(u32, usize), BoundMorph>>,
     property_sequences: std::collections::BTreeMap<u32, Vec<super::nif_properties::Channel>>,
+    emission_sequences: std::collections::BTreeMap<u32, Vec<(u32, std::sync::Arc<super::brush_particles::ManagedEmission>)>>,
     /// These channels are not handled by the prepared pose handlers.
     pub other_evaluators: std::collections::BTreeSet<String>,
 }
 #[derive(Debug)]
 pub struct ActorPose {
+    pub(super) emissions: super::brush_particles::EmissionSamples,
     pub colors: std::collections::BTreeMap<(u32, usize), [f32; 4]>,
     pub visibility: std::collections::BTreeMap<u32, f32>,
     pub transforms: std::collections::BTreeMap<u32, super::nif_transform::Pose>,
@@ -1422,13 +1424,16 @@ impl ActorBindings {
         let mut palette = ObjectPalette::new(Some(actor_root));
         let mut sequences = std::collections::BTreeMap::new();
         let mut morph_sequences = std::collections::BTreeMap::new();
+        use super::brush_particles::{ActivationTrack, EmissionController, EmissionEvaluator, ManagedEmission, RateTrack};
         let mut property_sequences = std::collections::BTreeMap::new();
+        let mut emission_sequences = std::collections::BTreeMap::new();
         let mut geometry = std::collections::BTreeMap::new();
         let mut other_evaluators = std::collections::BTreeSet::new();
         for (id, _) in resources.sequences() {
             let (sequence, keyframes) = resources.get(id).context("Missing prepared sequence")?;
             let mut morph_channels = std::collections::BTreeMap::<u32, Vec<FloatEvaluator>>::new();
             let mut properties = Vec::new();
+            let mut emitters = std::collections::BTreeMap::<u32, (Option<ActivationTrack>, Option<RateTrack>)>::new();
             for &block in &sequence.evaluators {
                 let evaluator = keyframes
                     .blocks
@@ -1437,14 +1442,41 @@ impl ActorBindings {
                 if matches!(evaluator.type_name(), "NiTransformEvaluator" | "NiBSplineCompTransformEvaluator") {
                     continue;
                 }
-                // Gamebryo also uses property evaluators for non-render
-                // component state (for example NiPSEmitParticlesCtlr's
-                // EmitterActive/BirthRate channels). A qualified binding is
-                // outside the color/visibility handlers below, but must not
-                // prevent this sequence's transform evaluators from binding.
-                // Keep parsing errors for the supported, unqualified channel
-                // formats; only the explicitly unsupported qualification is
-                // omitted from this actor pose.
+                let emission = (|| -> Result<_> {
+                    let Some((system, emitter, value)) = EmissionEvaluator::load(keyframes, block)? else {
+                        return Ok(None);
+                    };
+                    let target = palette.get(hierarchy, system)?
+                        .with_context(|| format!("Missing particle system {system:?}"))?;
+                    let mut owners = hierarchy.nodes[&target].controllers.iter()
+                        .filter(|controller| controller.class_name == "NiPSEmitParticlesCtlr"
+                            && controller.target == Some(target) && controller.flags & 0x20 != 0);
+                    let mut owner = None;
+                    for controller in &mut owners {
+                        let source = EmissionController::load(model, controller.block)?;
+                        if model.string_table.get(source.emitter_name as usize).map(String::as_str) == Some(emitter) {
+                            ensure!(owner.replace(controller.block).is_none(), "Ambiguous particle emitter {emitter:?}");
+                        }
+                    }
+                    Ok(Some((owner.with_context(|| format!("Missing managed particle emitter {emitter:?}"))?, value)))
+                })();
+                match emission {
+                    Ok(Some((owner, value))) => {
+                        let pair = emitters.entry(owner).or_default();
+                        match value {
+                            EmissionEvaluator::Active(track) => ensure!(pair.0.replace(track).is_none(), "Duplicate EmitterActive evaluator"),
+                            EmissionEvaluator::Rate(track) => ensure!(pair.1.replace(track).is_none(), "Duplicate BirthRate evaluator"),
+                        }
+                        continue;
+                    }
+                    Ok(None) => {}
+                    Err(error) => {
+                        other_evaluators.insert(format!("Particle emission: {error:#}"));
+                        continue;
+                    }
+                }
+                // Keep unsupported qualifications visible in the inventory
+                // without dropping the other channels in the sequence.
                 let property_channel =
                     match super::nif_properties::Channel::load(keyframes, block, |name| {
                         palette.get(hierarchy, name)
@@ -1547,6 +1579,19 @@ impl ActorBindings {
             }
             morph_sequences.insert(id, morphs);
             property_sequences.insert(id, properties);
+            let mut emissions = Vec::new();
+            for (owner, (active, rate)) in emitters {
+                if let (Some(active), Some(rate)) = (active, rate) {
+                    emissions.push((owner, std::sync::Arc::new(ManagedEmission {
+                        active,
+                        rate,
+                        bounds: [0., sequence.duration],
+                    })));
+                } else {
+                    other_evaluators.insert(format!("Incomplete emission pair on controller {owner}"));
+                }
+            }
+            emission_sequences.insert(id, emissions);
             sequences.insert(
                 id,
                 BoundTransforms::bind(keyframes, sequence, |name| palette.get(hierarchy, name))
@@ -1558,12 +1603,17 @@ impl ActorBindings {
             sequences,
             morph_sequences,
             property_sequences,
+            emission_sequences,
             other_evaluators,
         })
     }
     /// One clip-time snapshot for both handlers. This does not activate clips,
     /// dispatch events, apply cumulative motion or blend concurrent sequences.
     pub fn sample(&self, id: u32, time: f32) -> Result<ActorPose> {
+        self.sample_activation(id, time, 0)
+    }
+
+    pub(super) fn sample_activation(&self, id: u32, time: f32, activation: u64) -> Result<ActorPose> {
         // Apply every evaluator this runtime understands. An unsupported
         // channel remains visible through `other_evaluators`, but must not
         // cancel the whole authored sequence and strand its Lua coroutine.
@@ -1600,7 +1650,15 @@ impl ActorBindings {
                 }
             }
         }
+        let emissions = self.emission_sequences[&id].iter()
+            .map(|(owner, keys)| (*owner, super::brush_particles::EmissionSample {
+                keys: keys.clone(),
+                scaled: time,
+                activation,
+            }))
+            .collect();
         Ok(ActorPose {
+            emissions,
             transforms,
             morphs,
             colors,

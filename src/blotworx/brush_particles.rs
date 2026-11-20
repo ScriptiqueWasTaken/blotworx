@@ -122,6 +122,9 @@ impl RateTrack {
         let cached = r.float()?;
         let data = r.uint()?;
         r.done()?;
+        Self::from_data(nif, data, cached)
+    }
+    fn from_data(nif: &NifFile, data: u32, cached: f32) -> Result<Self> {
         if data == u32::MAX {
             ensure!(cached != -f32::MAX, "Invalid posed particle rate");
             return Ok(Self::Constant(cached));
@@ -236,15 +239,76 @@ pub struct EmissionClock {
     pub key_start: f32,
     pub key_stop: f32,
 }
-/// Direct (non-manager) controller playback. Target/emitter binding is supplied
-/// by the owning particle system; sequence-manager dispatch remains separate.
+/// The native controller receives two referenced evaluators and walks their
+/// keys itself. Resolving them to just the current float/bool loses births
+/// when a game tick crosses one or more activation boundaries.
+#[derive(Debug)]
+pub(super) enum EmissionEvaluator {
+    Rate(RateTrack),
+    Active(ActivationTrack),
+}
+impl EmissionEvaluator {
+    pub(super) fn load(
+        nif: &NifFile,
+        block: u32,
+    ) -> Result<Option<(&str, &str, Self)>> {
+        let kind = nif.blocks.get(block as usize).context("Missing emitter evaluator")?.type_name();
+        if !matches!(kind, "NiFloatEvaluator" | "NiConstFloatEvaluator" |
+            "NiBoolEvaluator" | "NiConstBoolEvaluator") {
+            return Ok(None);
+        }
+        let mut reader = raw(nif, block, kind)?;
+        let node = reader.uint()?;
+        let property = reader.uint()?;
+        let controller = reader.uint()?;
+        let emitter = reader.uint()?;
+        let channel = reader.uint()?;
+        let name = |index| nif.string_table.get(index as usize).map(String::as_str);
+        if name(controller) != Some("NiPSEmitParticlesCtlr") {
+            return Ok(None);
+        }
+        ensure!(property == u32::MAX, "Unexpected particle evaluator property");
+        let flags = reader.take::<4>()?;
+        let value = match (kind, name(channel), flags) {
+            ("NiFloatEvaluator", Some("BirthRate"), [3, 0, 0, 1]) =>
+                Self::Rate(RateTrack::from_data(nif, reader.uint()?, -f32::MAX)?),
+            ("NiConstFloatEvaluator", Some("BirthRate"), [0x43, 0, 0, 1]) =>
+                Self::Rate(RateTrack::Constant(reader.float()?)),
+            ("NiBoolEvaluator", Some("EmitterActive"), [2, 0, 0, 1]) =>
+                Self::Active(ActivationTrack::from_data(nif, reader.uint()?, u8::MAX)?),
+            ("NiConstBoolEvaluator", Some("EmitterActive"), [0x42, 0, 0, 1]) =>
+                Self::Active(ActivationTrack::Constant(reader.float()? >= 0.5)),
+            _ => anyhow::bail!("Unsupported particle emission evaluator binding {kind} {flags:?}"),
+        };
+        reader.done()?;
+        Ok(Some((name(node).context("Missing particle system name")?,
+            name(emitter).context("Missing emitter name")?, value)))
+    }
+}
+
+#[derive(Debug)]
+pub(super) struct ManagedEmission {
+    pub active: ActivationTrack,
+    pub rate: RateTrack,
+    pub bounds: [f32; 2],
+}
+
+#[derive(Debug)]
+pub(super) struct EmissionSample {
+    pub keys: Arc<ManagedEmission>,
+    pub scaled: f32,
+    pub activation: u64,
+}
+
+pub(super) type EmissionSamples = std::collections::BTreeMap<u32, EmissionSample>;
+
+/// Direct and manager-driven playback share an emitter and its birth history.
 #[derive(Clone)]
 pub struct EmissionPlayback {
     block: u32,
     application_start: Option<f32>,
     pub controller: EmissionController,
-    active: ActivationTrack,
-    rate: RateTrack,
+    direct: Option<(ActivationTrack, RateTrack)>,
     time: ControllerTime,
     state: EmissionState,
     scaled: Option<f32>,
@@ -334,14 +398,19 @@ impl EmissionPlayback {
         let mut controller = EmissionController::load(nif, index)?;
         // NiTimeController::LoadBinary restores transient flags.
         controller.flags = (controller.flags | 0x40) & !0x80;
-        let active = ActivationTrack::load(nif, controller.active)?;
-        let rate = RateTrack::load(nif, controller.rate)?;
+        let direct = if controller.flags & 0x20 == 0 {
+            Some((
+                ActivationTrack::load(nif, controller.active)?,
+                RateTrack::load(nif, controller.rate)?,
+            ))
+        } else {
+            None
+        };
         Ok(Self {
             block: index,
             application_start: None,
             controller,
-            active,
-            rate,
+            direct,
             time: ControllerTime::default(),
             state: EmissionState::default(),
             scaled: None,
@@ -405,16 +474,31 @@ impl EmissionPlayback {
             key_start: self.controller.start,
             key_stop: self.controller.stop,
         };
+        let (active, rate) = self.direct.as_ref().context("Missing direct emission tracks")?;
         self.state.update_timed(
-            time,
-            scaled,
-            false,
-            self.controller.rate as u64,
-            &self.active,
-            &self.rate,
-            &clock,
-            emit,
+            time, scaled, false, self.controller.rate as u64, active, rate, &clock, emit,
         )
+    }
+
+    fn update_managed(
+        &mut self,
+        time: f32,
+        previous: f32,
+        sample: &EmissionSample,
+        emit: impl FnMut(f32, ActiveSpan, BirthAges) -> Result<()>,
+    ) -> Result<()> {
+        // NiPSEmitParticlesCtlr::UpdateParticleSystemEval returns before
+        // resetting its cached evaluator for a posed inactive channel.
+        if matches!(sample.keys.active, ActivationTrack::Constant(false)) {
+            return Ok(());
+        }
+        let clock = EmissionClock {
+            system_last: Some(previous),
+            key_start: sample.keys.bounds[0],
+            key_stop: sample.keys.bounds[1],
+        };
+        self.state.update_timed(time, sample.scaled, true, sample.activation,
+            &sample.keys.active, &sample.keys.rate, &clock, emit)
     }
 }
 impl EmissionState {
@@ -918,6 +1002,9 @@ impl ActivationTrack {
         let cached = r.byte()?;
         let data = r.uint()?;
         r.done()?;
+        Self::from_data(nif, data, cached)
+    }
+    fn from_data(nif: &NifFile, data: u32, cached: u8) -> Result<Self> {
         if data == u32::MAX {
             ensure!(cached <= 1, "Invalid posed particle activation");
             return Ok(Self::Constant(cached != 0));
@@ -4594,11 +4681,12 @@ impl Hose {
                             if attached {
                                 let mut r = raw(&n, link, &step.type_name)?;
                                 for _ in 0..r.uint()? {
-                                    forces.push(fields::Force::load(
-                                        &n,
-                                        r.uint()?,
-                                        inverse_system.as_ref(),
-                                    )?);
+                                    let force = r.uint()?;
+                                    forces.push(if playback.direct.is_none() {
+                                        fields::Force::load_animated(&n, force)?
+                                    } else {
+                                        fields::Force::load(&n, force, inverse_system.as_ref())?
+                                    });
                                 }
                                 r.done()?;
                             } else {
@@ -4932,7 +5020,7 @@ impl Hose {
         origin: [f32; 3],
         direction: [f32; 3],
     ) -> Result<()> {
-        self.advance_with_attachment(dt, enabled, origin, direction, None)
+        self.advance_with_attachment(dt, enabled, origin, direction, None, None)
     }
     pub fn set_subgraph_constant(
         &mut self,
@@ -4990,11 +5078,18 @@ impl Hose {
         enabled: bool,
         attachment: [f32; 16],
     ) -> Result<()> {
-        ensure!(
-            attachment.iter().all(|v| v.is_finite()),
-            "Invalid effect attachment"
-        );
-        self.advance_with_attachment(dt, enabled, [0.; 3], [0., 0., 1.], Some(attachment))
+        self.advance_animated_attached(dt, enabled, attachment, None)
+    }
+
+    pub(super) fn advance_animated_attached(
+        &mut self,
+        dt: f32,
+        enabled: bool,
+        attachment: [f32; 16],
+        samples: Option<&EmissionSamples>,
+    ) -> Result<()> {
+        ensure!(attachment.iter().all(|v| v.is_finite()), "Invalid effect attachment");
+        self.advance_with_attachment(dt, enabled, [0.; 3], [0., 0., 1.], Some(attachment), samples)
     }
     fn advance_with_attachment(
         &mut self,
@@ -5003,6 +5098,7 @@ impl Hose {
         origin: [f32; 3],
         direction: [f32; 3],
         attachment: Option<[f32; 16]>,
+        samples: Option<&EmissionSamples>,
     ) -> Result<()> {
         ensure!(
             self.absolute_time.is_none(),
@@ -5025,6 +5121,7 @@ impl Hose {
             origin,
             direction,
             attachment,
+            samples,
             &mut random,
         );
         if let super::particle_random::Stream::Preview { seed } = random {
@@ -5071,6 +5168,7 @@ impl Hose {
             [0.; 3],
             [0., 0., 1.],
             Some(attachment),
+            None,
             &mut super::particle_random::Stream::Game(random),
         )
     }
@@ -5103,6 +5201,7 @@ impl Hose {
         origin: [f32; 3],
         direction: [f32; 3],
         attachment: Option<[f32; 16]>,
+        samples: Option<&EmissionSamples>,
         random: &mut super::particle_random::Stream<'_>,
     ) -> Result<()> {
         self.attach_for_render(attachment.as_ref())?;
@@ -5190,11 +5289,17 @@ impl Hose {
             // Publishing controller-local birth times makes a late-started
             // effect age by its entire pre-start wait on the following frame.
             let system_offset = self.time - time;
-            l.playback
-                .update(time, true, Some(previous), |birth_time, _, ages| {
+            if l.playback.direct.is_some() {
+                l.playback.update(time, true, Some(previous), |birth_time, _, ages| {
                     births.extend(ages.map(|age| (birth_time + system_offset, age)));
                     Ok(())
                 })?;
+            } else if let Some(sample) = samples.and_then(|samples| samples.get(&l.playback.block)) {
+                l.playback.update_managed(self.time, system_last, sample, |birth_time, _, ages| {
+                    births.extend(ages.map(|age| (birth_time, age)));
+                    Ok(())
+                })?;
+            }
             for (birth_time, age) in births {
                 let e = &l.emitter;
                 // Preserve the recovered birth/RNG order. Delta previews use

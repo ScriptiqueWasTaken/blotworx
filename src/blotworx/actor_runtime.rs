@@ -8,13 +8,15 @@ use std::collections::BTreeMap;
 
 struct Clip {
     id: u32,
+    activation: u64,
     clock: UnsynchronizedClock,
 }
 impl Clip {
-    fn new(resources: &SequenceResources, id: u32) -> Result<Self> {
+    fn new(resources: &SequenceResources, id: u32, activation: u64) -> Result<Self> {
         let (sequence, _) = resources.get(id).context("Unknown actor sequence ID")?;
         Ok(Self {
             id,
+            activation,
             clock: UnsynchronizedClock::new(0., sequence.frequency)?,
         })
     }
@@ -25,11 +27,8 @@ impl Clip {
         time: f32,
     ) -> Result<ActorPose> {
         let (sequence, _) = resources.get(self.id).context("Missing active sequence")?;
-        bindings.sample(
-            self.id,
-            self.clock
-                .sample(time, sequence.duration, sequence.cycle_type)?,
-        )
+        let scaled = self.clock.sample(time, sequence.duration, sequence.cycle_type)?;
+        bindings.sample_activation(self.id, scaled, self.activation)
     }
 }
 struct CrossFade {
@@ -42,6 +41,7 @@ pub struct Actor {
     current: Option<Clip>,
     transition: Option<CrossFade>,
     pending: Option<u32>,
+    last_activation: u64,
     /// AnimationComponentGB's retained default sequence (+7c), updated by
     /// REL2f3ecc before manager playback. Reset retains this target.
     requested: Option<u32>,
@@ -60,6 +60,7 @@ impl Actor {
             current: None,
             transition: None,
             pending: None,
+            last_activation: 0,
             requested: None,
             end_event: None,
             ended: None,
@@ -122,6 +123,7 @@ impl Actor {
             self.pending = Some(id);
             return Ok(());
         }
+        let activation = self.last_activation + 1;
         if let Some(current) = &self.current {
             let policy = resources
                 .transition(current.id, id)?
@@ -136,7 +138,7 @@ impl Actor {
                 "Invalid KFM transition duration"
             );
             let duration = policy.duration;
-            let destination = Clip::new(resources, id)?;
+            let destination = Clip::new(resources, id, activation)?;
             if duration > 0. {
                 let mut source = self.current.take().unwrap();
                 source.clock.prepare_crossfade_source()?;
@@ -148,8 +150,9 @@ impl Actor {
             }
             self.current = Some(destination);
         } else {
-            self.current = Some(Clip::new(resources, id)?)
+            self.current = Some(Clip::new(resources, id, activation)?)
         }
+        self.last_activation = activation;
         Ok(())
     }
     pub fn reset(&mut self) {
@@ -227,6 +230,20 @@ fn blend(mut a: ActorPose, wa: f32, b: ActorPose, wb: f32) -> Result<ActorPose> 
     );
     let x = wa / (wa + wb);
     let y = wb / (wa + wb);
+    // NiPoseBlender forwards the highest weighted referenced evaluator.
+    // Zero-weight sequences cannot contribute a reference of their own.
+    if wa == 0. {
+        a.emissions.clear();
+    }
+    if wb > 0. {
+        for (controller, emission) in b.emissions {
+            if wb > wa {
+                a.emissions.insert(controller, emission);
+            } else {
+                a.emissions.entry(controller).or_insert(emission);
+            }
+        }
+    }
     for (key, value) in b.colors {
         if let Some(old) = a.colors.get_mut(&key) {
             *old = std::array::from_fn(|i| old[i] * x + value[i] * y);
@@ -309,6 +326,7 @@ mod tests {
                 },
             )]),
             morphs: BTreeMap::new(),
+            emissions: BTreeMap::new(),
             colors: BTreeMap::new(),
             visibility: BTreeMap::new(),
         };

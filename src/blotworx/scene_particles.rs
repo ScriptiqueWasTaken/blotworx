@@ -299,12 +299,23 @@ impl World {
             if self.removed_entities.contains(&entity) || !active.contains(&entity) {
                 continue;
             }
+            let animated = self.actor_playback.as_ref()
+                .filter(|playback| playback.entity == entity)
+                .map(|playback| (&playback.pose, &playback.world))
+                .or_else(|| self.actors.get(&entity)
+                    .and_then(|actor| actor.pose.as_ref().map(|pose| (pose, &actor.world))));
+            if let Some((_, world)) = animated {
+                instance.particles.publish_model_transforms(world)
+                    .with_context(|| format!("Particle pose {}", self.entities[entity].name))?;
+            }
+            let samples = animated.map(|(pose, _)| &pose.emissions);
             instance
                 .particles
-                .advance_attached(
+                .advance_animated_attached(
                     dt,
                     instance.enabled && !self.hidden_entities.contains(&entity),
                     self.entities[entity].transform,
+                    samples,
                 )
                 .with_context(|| format!("Scene particles {}", self.entities[entity].name))?;
         }

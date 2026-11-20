@@ -258,8 +258,18 @@
         "evidence": "zones-splines-inspect.json records all seven actors binding three clips and no missing morph target errors. The zones-wilt-rest and zones-wilt-active replays start the original Zone S, invoke the authored group request after two seconds, and record active clip 1 then clip 2 on the first tentacle without script or runtime errors. An isolated original Wii fill routine supplied the weights and control points for 35 synthetic sample checks with tolerance 2e-6. Seven samples of the original Tentacle01A Wilt morph track differed by at most 3e-8.",
         "open": [
           "Natural fight and ending callback from player inputs",
-          "Qualified particle channels and mode 6 socket effects",
+          "Remaining emitter properties, curve emitters, and mode 6 socket effects",
           "Frame and blend comparison against the Wii game"
+        ]
+      },
+      {
+        "scope": "EM1 Zone S blister particle playback",
+        "state": "The Gamebryo actor binds referenced BirthRate and EmitterActive evaluator pairs through the particle-system node and emitter name. Playback forwards the dominant clip's keyed tracks and activation ID to the existing birth scheduler. The animated emitter and field transforms are published before simulation.",
+        "source": "DBC_TentacleSore_01 NIF/KFM/KF, Wii DOL804d12d4..804d1568 (paired update and activation ID) and DOL804d1dfc (key-driven emission). Gamebryo NiPoseBlender selects referenced evaluators by weight.",
+        "evidence": "Run blotworx diagnose --strict-runtime --level Levels/DBC_Start_ZoneS.level --run-script tools/blotworx/fixtures/dbc_zone_s_sore_pop.lua --capture <image> --capture-tick <tick> with imported EM1 data. The first placed blister has 0, 31 and 0 live particles at ticks 24, 49 and 161, with zero runtime errors. Only three NiPSCurveEmitter admissions still fail in this scene, down from 49 total particle admission errors in the baseline.",
+        "open": [
+          "The original damage callback still stops at SetPropertyFloat Target Value before removing the next blister's invulnerability. Zone S initialization also reports a missing SetSplineFollowerInitialSpeed binding.",
+          "Curve emitters, the animated emitter rotation-speed variance, dynamic particle bounds, and Wii visual and birth-by-birth parity."
         ]
       },
       {

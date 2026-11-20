@@ -5273,6 +5273,10 @@ impl Engine {
                         "states":brain.conversations,"current":brain.selector.current,
                         "selection_connected":false})).collect::<Vec<_>>());
                 report["script_transformations"] = serde_json::json!(world.script_transformations);
+                report["wall_walk"] = serde_json::json!({
+                    "script_enabled": !world.wall_pushing_disabled.contains(&world.player_entity),
+                    "controller_implemented": false,
+                });
                 report["script_transform_lod_resets"] = serde_json::json!(world.script_transform_lod_resets);
                 report["parenting"] = serde_json::json!({
                     "changed_child_lists":world.live_child_slots.len(),

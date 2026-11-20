@@ -1071,6 +1071,7 @@ impl Scripts {
             scripts.bind_world_api(name)?;
         }
         scripts.bind_world_api("SetLedgeGrabEnabled")?;
+        scripts.bind_world_api("SetWallPushingEnabled")?;
         scripts.bind_world_api("GrabCameraNif")?;
         scripts.bind_world_api("GrabCamera")?;
         scripts.bind_world_api("SetLetterbox")?;

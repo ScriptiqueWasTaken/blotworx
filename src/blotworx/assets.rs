@@ -318,6 +318,7 @@ pub struct World {
         super::action_event_dispatch::EventRegistry<super::entity_events::Event>,
     pub render_options: super::render_options::State,
     pub ledge_controls: BTreeMap<usize, super::ledge_control::State>,
+    pub(super) wall_pushing_disabled: HashSet<usize>,
     pub nif_camera: Option<super::nif_camera::Selection>,
     pub nif_camera_transition: Option<super::nif_camera::Transition>,
     pub nif_camera_completed_frame: Option<super::nif_camera::Frame>,
@@ -1840,6 +1841,7 @@ impl World {
         self.cutscene_actions
             .retire(entity, &mut self.entity_event_registry);
         self.ledge_controls.remove(&entity);
+        self.wall_pushing_disabled.remove(&entity);
         if self
             .nif_camera
             .is_some_and(|camera| camera.entity == entity)
@@ -3845,11 +3847,11 @@ impl World {
                 .map_err(mlua::Error::external)?;
                 Ok(mlua::MultiValue::new())
             }
-            "SetLedgeGrabEnabled" => {
+            "SetLedgeGrabEnabled" | "SetWallPushingEnabled" => {
                 if args.len() != 2 {
-                    return Err(mlua::Error::external(
-                        "SetLedgeGrabEnabled requires entity and native boolean value",
-                    ));
+                    return Err(mlua::Error::external(format!(
+                        "{name} requires entity and native boolean value"
+                    )));
                 }
                 // Native stack conversion reads the boolean before resolving
                 // the entity; a missing/non-Mickey target legitimately declines.
@@ -3860,12 +3862,22 @@ impl World {
                             component.class_name == "MickeyPlayerMotionControllerComponent"
                         })
                     {
-                        self.ledge_controls
-                            .get_mut(&entity)
-                            .ok_or_else(|| {
-                                mlua::Error::external("Mickey ledge gate was not initialized")
-                            })?
-                            .set_script_gate(enabled);
+                        if name == "SetWallPushingEnabled" {
+                            // REL 9c87c writes the per-controller byte at
+                            // +0x498. Constructor 957e0 defaults it to true.
+                            if enabled {
+                                self.wall_pushing_disabled.remove(&entity);
+                            } else {
+                                self.wall_pushing_disabled.insert(entity);
+                            }
+                        } else {
+                            self.ledge_controls
+                                .get_mut(&entity)
+                                .ok_or_else(|| {
+                                    mlua::Error::external("Mickey ledge gate was not initialized")
+                                })?
+                                .set_script_gate(enabled);
+                        }
                     }
                 }
                 Ok(mlua::MultiValue::new())
@@ -9926,6 +9938,7 @@ pub(super) fn load_with_bootstrap_mode(
         entity_event_registry: Default::default(),
         render_options,
         ledge_controls: BTreeMap::new(),
+        wall_pushing_disabled: HashSet::new(),
         nif_camera: None,
         nif_camera_transition: None,
         nif_camera_completed_frame: None,

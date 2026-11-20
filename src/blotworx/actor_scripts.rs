@@ -1098,6 +1098,7 @@ impl Scripts {
             "PlayerSetDripsVisible",
             "SetSplineFollowerInitialSpeed",
             "SplineFollower_StopAtPosition",
+            "SplineFollower_ClearStopPosition",
             "SetNextPatrolNode",
             "ClearNextPatrolNode",
             "ResumePatrol",

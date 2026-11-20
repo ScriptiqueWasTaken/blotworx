@@ -975,6 +975,7 @@ impl super::assets::World {
             "PlayerSetDripsVisible",
             "SetSplineFollowerInitialSpeed",
             "SplineFollower_StopAtPosition",
+            "SplineFollower_ClearStopPosition",
             "SetNextPatrolNode",
             "ClearNextPatrolNode",
             "ResumePatrol",

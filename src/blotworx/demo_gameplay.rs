@@ -287,6 +287,20 @@ impl World {
         name: &str,
         args: mlua::MultiValue,
     ) -> mlua::Result<mlua::MultiValue> {
+        if name == "SplineFollower_ClearStopPosition" {
+            let owner = self.scripts.resolve_native_entity_argument(
+                lua, args.back().cloned().unwrap_or(mlua::Value::Nil),
+            )?;
+            let follower = owner.filter(|owner| {
+                !self.removed_entities.contains(owner) && self.entities[*owner].components
+                    .iter().any(|component| component.class_name == "SplineFollowerComponent")
+            });
+            if let Some(mover) = follower.and_then(|owner| self.demo_story.motion.movers.get_mut(&owner)) {
+                // REL3bdbbc clears the stop flags. Speed is set separately.
+                mover.stop = None;
+            }
+            return Ok(mlua::MultiValue::from_vec(vec![mlua::Value::Boolean(follower.is_some())]));
+        }
         if name == "SplineFollower_StopAtPosition" && args.len() != 4 {
             return Err(mlua::Error::external(
                 "SplineFollower_StopAtPosition requires owner, start knot, end knot and position",

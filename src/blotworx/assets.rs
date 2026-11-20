@@ -3367,6 +3367,7 @@ impl World {
             | "Reverse"
             | "SplineFollower_SetDisabled"
             | "SplineFollower_StopAtPosition"
+            | "SplineFollower_ClearStopPosition"
             | "SplineFollower_TeleportToKnot"
                 if self.demo_story.enabled =>
             {

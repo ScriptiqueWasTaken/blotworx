@@ -79,6 +79,17 @@
   ],
   "validated_connections": [
       {
+        "scope": "Zone C entry, maintenance chest spline, and Asia airlock",
+        "state": "The original Zone C maintenance-room call can clear a spline stop. Restarting motion remains a separate authored action. Completing the preceding Zone B cutscene before staging the transfer lets the following Zone C intro release its own input restrictions.",
+        "source": "GV_ZoneC_MaintenanceRoomChest, GV_JTA_Timer, GV_JTA_Camera1GlobalSet, and EM1 REL 3be6dc and 3bdbbc",
+        "evidence": "The 3630-tick airlock-to-Zone-C replay completes the introductory conversations with input depth zero. The 165-tick spline replay verifies a fractional stop, unchanged speed on clear, the authored cleanup knot, and actual maintenance-chest motion. The 610-tick Asia airlock replay solves the timer puzzle and spawns Pete. All three replays record zero Lua or runtime errors.",
+        "open": [
+          "Native spline interpolation and original Wii timing comparison",
+          "Pete's scripted patrol and conversation handoff",
+          "Unstaged travel through Zone C and the Asia airlock"
+        ]
+      },
+      {
         "scope": "Spawner source lifetime in Tim's paint follow-up",
         "state": "Scene admission retains hidden Objects To Spawn sources without delivering their clone-spawn callback. Newly created copies keep the existing deferred spawn event and can retire independently.",
         "source": "gv_zoneb_dynamic.Spawner_PipeBurst and gv_zoneb_dynamic.FX_PipeBurst in gv_zoneb.bin. The latter has a two-second self-DestroyEntity connection on OnSpawned.",

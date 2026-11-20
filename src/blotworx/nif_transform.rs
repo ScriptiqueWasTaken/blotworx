@@ -566,6 +566,7 @@ mod tests {
         let c = super::super::scene_bounds::Controller {
             block: 1,
             class_name: "NiTransformController".into(),
+            color: None,
             flags: 0xcc,
             frequency: 1.,
             phase: 0.,

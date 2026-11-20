@@ -6606,11 +6606,12 @@ impl World {
             {
                 continue;
             }
-            if animation.poses.is_empty() {
-                continue;
-            }
             let runtime = &self.entities[entity];
             for (&mesh, indices) in &runtime.mesh_draws {
+                for &index in indices {
+                    let draw = draws.get_mut(index).context("Animated draw missing")?;
+                    animation.apply_material(mesh, draw);
+                }
                 if !animation.affected.contains(&mesh) {
                     continue;
                 }

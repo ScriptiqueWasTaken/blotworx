@@ -8,14 +8,9 @@ pub(super) struct Screen {
 }
 
 impl Screen {
-    pub(super) fn load(ctx: &egui::Context, root: &Path, initial: bool) -> anyhow::Result<Self> {
+    pub(super) fn load(ctx: &egui::Context, root: &Path, destination: Option<&str>) -> anyhow::Result<Self> {
         let directory = root.join("LoadingScreens");
-        let filename = if initial {
-            directory.join("MickeyInitialScreen.dds")
-        } else {
-            directory.join("Localize/English_NTSC/MickeySplashScreen.dds")
-        };
-        let background = texture(ctx, &filename)?;
+        let background = texture(ctx, &directory.join(artwork(destination)))?;
         let mut dots = Vec::with_capacity(8);
         for index in 1..=8 {
             dots.push(texture(ctx, &directory.join(format!("LoadingDots_{index:02}.tga")))?);
@@ -40,6 +35,30 @@ impl Screen {
         painter.image(dot.id(), marker, uv, Color32::WHITE);
         ui.ctx().request_repaint_after(frame_time);
     }
+}
+
+// Temporary area selection until the retail loading-screen policy is recovered.
+// Images come from the imported installation, including the generic fallback.
+fn artwork(destination: Option<&str>) -> &'static str {
+    let Some(level) = destination else { return "MickeyInitialScreen.dds"; };
+    let name = level.rsplit(['/', '\\']).next().unwrap_or(level).to_ascii_lowercase();
+    for (prefix, filename) in [
+        ("dbc_", "Postcard_DBC_Rocket_Down.dds"),
+        ("gv_", "Postcard_GV_ClockTower.dds"),
+        ("meanstreet", "Postcard_Mean_Streets.dds"),
+        ("toontown", "Postcard_HUB_Ostown_V3.dds"),
+        ("ventureland", "Postcard_Ventureland.dds"),
+        ("potw_", "Postcard_POTW_Tortooga.dds"),
+        ("hauntedmansion", "Postcard_LM_Manor_House.dds"),
+        ("hm_", "Postcard_LM_Manor_House.dds"),
+        ("mjm_", "Postcard_MJM_Osmore_Caverns.dds"),
+        ("shadowblot", "Postcard_ShadowBlot_Mickey_Fight.dds"),
+    ] {
+        if name.starts_with(prefix) {
+            return filename;
+        }
+    }
+    "MickeyInitialScreen.dds"
 }
 
 fn texture(ctx: &egui::Context, path: &Path) -> anyhow::Result<TextureHandle> {

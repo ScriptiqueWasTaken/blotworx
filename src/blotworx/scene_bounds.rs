@@ -24,6 +24,7 @@ pub struct Controller {
     pub stop: f32,
     pub target: Option<u32>,
     pub transform: Option<Result<super::nif_transform::Interpolator, String>>,
+    pub(super) color: Option<super::nif_properties::DirectColor>,
 }
 impl Controller {
     /// EM1 Vis update80425124 changes only NiAVObject flags18 bit0;
@@ -95,6 +96,17 @@ pub(super) fn controllers(nif: &NifFile, mut next: Option<u32>) -> Result<Vec<Co
         } else {
             None
         };
+        let color = if raw.type_name == "NiColorExtraDataController" && bytes.len() == 34 {
+            match super::nif_properties::DirectColor::load(nif, uint(30), uint(26)) {
+                Ok(color) => color,
+                Err(error) => {
+                    log::warn!("Direct material color controller {id}: {error:#}");
+                    None
+                }
+            }
+        } else {
+            None
+        };
         result.push(Controller {
             block: id,
             class_name: raw.type_name.clone(),
@@ -105,6 +117,7 @@ pub(super) fn controllers(nif: &NifFile, mut next: Option<u32>) -> Result<Vec<Co
             stop: f32::from_bits(uint(18)),
             target: link(22)?,
             transform,
+            color,
         });
     }
     Ok(result)
@@ -1378,6 +1391,7 @@ mod tests {
         node.controllers.push(Controller {
             block: 9,
             class_name: "NiTransformController".into(),
+            color: None,
             flags: 108,
             frequency: 1.,
             phase: 0.,
@@ -1466,6 +1480,7 @@ mod tests {
         node.controllers.push(Controller {
             block: 2,
             class_name: "NiTransformController".into(),
+            color: None,
             flags: 0x20,
             frequency: 1.,
             phase: 0.,

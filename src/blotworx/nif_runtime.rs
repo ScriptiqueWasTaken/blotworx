@@ -14,7 +14,14 @@ pub fn effect_template_flags(flags: u16) -> u16 {
     (flags | 1) & !8
 }
 
+struct MaterialColor {
+    control: super::scene_bounds::Controller,
+    clock: super::brush_particles::ControllerTime,
+}
+
 pub struct Instance {
+    material_colors: Vec<MaterialColor>,
+    colors: BTreeMap<(u32, usize), [f32; 4]>,
     pub component_clock: Option<super::nif_sequence::ComponentClock>,
     controllers: Vec<Playback>,
     controller_owners: BTreeMap<u32, usize>,
@@ -27,6 +34,7 @@ pub struct Instance {
 impl Instance {
     pub fn load(hierarchy: &Hierarchy) -> Result<Option<Self>> {
         let mut controllers = Vec::new();
+        let mut material_colors = Vec::new();
         let mut seen = BTreeSet::new();
         let mut pending: Vec<_> = hierarchy.roots.iter().rev().flatten().copied().collect();
         while let Some(id) = pending.pop() {
@@ -39,11 +47,13 @@ impl Instance {
                         "Transform target outside model"
                     );
                     controllers.push(Playback::load(c)?);
+                } else if c.color.is_some() && c.target.is_some() && seen.insert(c.block) {
+                    material_colors.push(MaterialColor { control: c.clone(), clock: Default::default() });
                 }
             }
             pending.extend(node.children.iter().rev().flatten().copied());
         }
-        if controllers.is_empty() {
+        if controllers.is_empty() && material_colors.is_empty() {
             return Ok(None);
         }
         let controller_owners = controllers
@@ -58,6 +68,8 @@ impl Instance {
             .collect();
         Ok(Some(Self {
             component_clock: None,
+            material_colors,
+            colors: BTreeMap::new(),
             controllers,
             controller_owners,
             published_locals: locals.clone(),
@@ -96,8 +108,30 @@ impl Instance {
         Ok(())
     }
     pub fn update(&mut self, hierarchy: &Hierarchy, time: f32) -> Result<()> {
+        for state in &mut self.material_colors {
+            let c = &state.control;
+            if c.flags & 8 == 0 || c.flags & 0x20 != 0 {
+                continue;
+            }
+            let time = state.clock.scale_parameters(time, c.flags, c.frequency, c.phase, c.start, c.stop)?;
+            let channel = c.color.as_ref().context("Direct color channel missing")?;
+            if let Some(color) = channel.sample(time)? {
+                let target = c.target.context("Direct color target missing")?;
+                self.colors.insert((target, channel.slot), super::nif_properties::packed_color(color)?);
+            }
+        }
         self.update_with_writes(hierarchy, time, |_, _| Ok(()))
     }
+    pub(super) fn apply_material(&self, mesh: u32, draw: &mut crate::render_support::viewport3d::GpuDrawCommand) {
+        for (&(_, slot), &color) in self.colors.range((mesh, 0)..=(mesh, 6)) {
+            if let Some(Ok(program)) = &draw.preview {
+                if let Some(defaults) = program.register_defaults {
+                    draw.material_registers.get_or_insert(defaults)[slot] = color;
+                }
+            }
+        }
+    }
+
     /// Publish only writes performed by this update. Reapplying the cached
     /// pose after an Unchanged outcome would overwrite later local edits.
     pub fn update_with_writes(
@@ -267,6 +301,7 @@ mod tests {
             .push(super::super::scene_bounds::Controller {
                 block: 10,
                 class_name: "NiTransformController".into(),
+                color: None,
                 flags: 0x4d,
                 frequency: 1.,
                 phase: 0.,
@@ -327,6 +362,7 @@ mod tests {
         let c = super::super::scene_bounds::Controller {
             block: 10,
             class_name: "NiTransformController".into(),
+            color: None,
             flags: 0x45,
             frequency: 1.,
             phase: 0.,
@@ -383,6 +419,7 @@ mod tests {
             super::super::scene_bounds::Controller {
                 block: 10,
                 class_name: "NiTransformController".into(),
+                color: None,
                 flags: 0x4d,
                 frequency: 1.,
                 phase: 0.,

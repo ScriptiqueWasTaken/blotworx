@@ -2724,7 +2724,7 @@ impl Engine {
             .unwrap_or_default();
         // A diagnostic script belongs to the level the run started in.
         let runtime_script = self.runtime_script.take();
-        self.loading_screen = loading_screen::Screen::load(ctx, &root, self.world.is_none())
+        self.loading_screen = loading_screen::Screen::load(ctx, &root, self.world.as_ref().map(|_| level.as_str()))
             .inspect_err(|error| log::warn!("Loading screen: {error:#}")).ok();
         drop(self.world.take());
         self.controller = None;

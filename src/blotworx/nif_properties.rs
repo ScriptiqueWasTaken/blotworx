@@ -170,6 +170,48 @@ impl Channel {
         }))
     }
 }
+#[derive(Clone, Debug, serde::Serialize)]
+pub(super) struct DirectColor {
+    pub slot: usize,
+    pub track: Option<super::nif_transform::Track>,
+    pub value: [f32; 4],
+}
+
+impl DirectColor {
+    pub(super) fn load(nif: &NifFile, name: u32, interpolator: u32) -> Result<Option<Self>> {
+        let Some(name) = nif.string_table.get(name as usize) else { return Ok(None); };
+        let slot = if let Some(index) = name.strip_prefix("Constant_Color_") {
+            index.parse::<usize>().ok().filter(|&i| i < 4).map(|i| i + 3)
+        } else if let Some(index) = name.strip_prefix("Color_Register_") {
+            index.parse::<usize>().ok().filter(|&i| i < 3)
+        } else {
+            None
+        };
+        let Some(slot) = slot else { return Ok(None); };
+        let Some(NiObject::Unknown(raw)) = nif.blocks.get(interpolator as usize) else {
+            anyhow::bail!("Color controller is missing its interpolator");
+        };
+        ensure!(raw.type_name == "NiColorInterpolator" && raw.raw_data.len() == 20,
+            "Unsupported direct color interpolator");
+        let word = |offset| {
+            let bytes = raw.raw_data[offset..offset + 4].try_into().unwrap();
+            if nif.source_is_little_endian { u32::from_le_bytes(bytes) } else { u32::from_be_bytes(bytes) }
+        };
+        let data = word(16);
+        let track = (data != u32::MAX).then(|| super::nif_transform::Track::load_color_data(nif, data)).transpose()?;
+        let value = std::array::from_fn(|i| f32::from_bits(word(i * 4)));
+        Ok(Some(Self { slot, track, value }))
+    }
+
+    pub(super) fn sample(&self, time: f32) -> Result<Option<[f32; 4]>> {
+        if let Some(track) = &self.track {
+            track.sample_vector::<4>(time)
+        } else {
+            Ok((self.value[0] != -f32::MAX).then_some(self.value))
+        }
+    }
+}
+
 pub fn packed_color(color: [f32; 4]) -> Result<[f32; 4]> {
     let mut result = [0.; 4];
     for (out, value) in result.iter_mut().zip(color) {

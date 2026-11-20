@@ -107,6 +107,9 @@ impl Instance {
             self.controllers[index].start_at(time);
         } else {
             self.set_material_controller_active(block, true)?;
+            // An effect can be drawn on the frame it spawns or restarts.
+            // Replace its previous material sample before that draw.
+            self.sample_materials(time, Some(block))?;
         }
         Ok(())
     }
@@ -127,9 +130,14 @@ impl Instance {
         Ok(())
     }
     pub fn update(&mut self, hierarchy: &Hierarchy, time: f32) -> Result<()> {
+        self.sample_materials(time, None)?;
+        self.update_with_writes(hierarchy, time, |_, _| Ok(()))
+    }
+
+    fn sample_materials(&mut self, time: f32, only: Option<u32>) -> Result<()> {
         for state in &mut self.material_controllers {
             let c = &state.control;
-            if c.flags & 8 == 0 || c.flags & 0x20 != 0 {
+            if only.is_some_and(|block| c.block != block) || c.flags & 8 == 0 || c.flags & 0x20 != 0 {
                 continue;
             }
             let time = state.clock.scale_parameters(time, c.flags, c.frequency, c.phase, c.start, c.stop)?;
@@ -155,7 +163,7 @@ impl Instance {
                 }
             }
         }
-        self.update_with_writes(hierarchy, time, |_, _| Ok(()))
+        Ok(())
     }
     pub(super) fn apply_material(&self, mesh: u32, draw: &mut crate::render_support::viewport3d::GpuDrawCommand) -> Result<()> {
         if let Some(material) = &draw.material {
@@ -473,6 +481,56 @@ mod tests {
         assert_eq!(writes, 1);
         Ok(())
     }
+    #[test]
+    fn restarting_material_controller_replaces_its_sample_before_the_next_tick() -> Result<()> {
+        use super::super::nif_transform::{Key, Track};
+        use epic_mickey_lib_rs::nif_file::{NiNodeData, NiObject, NifFile};
+        let mut graph = Hierarchy::load(&NifFile {
+            blocks: vec![NiObject::NiNode(NiNodeData::default())],
+            roots: vec![Some(0)],
+            ..Default::default()
+        })?;
+        graph.nodes.get_mut(&0).unwrap().controllers.push(
+            super::super::scene_bounds::Controller {
+                block: 1,
+                class_name: "NiColorExtraDataController".into(),
+                color: Some(super::super::nif_properties::DirectColor {
+                    slot: 1,
+                    track: Some(Track {
+                        kind: 1,
+                        keys: [(0., 0.), (1., 1.)].into_iter().map(|(time, alpha)| Key {
+                            time,
+                            value: vec![0., 0., 0., alpha],
+                            tangents: None,
+                            tcb: None,
+                        }).collect(),
+                    }),
+                    value: [0.; 4],
+                }),
+                indirect_scale: None,
+                texture_transform: None,
+                flags: 0x45,
+                frequency: 1.,
+                phase: 0.,
+                start: 0.,
+                stop: 1.,
+                target: Some(0),
+                transform: None,
+            }
+        );
+        let mut instance = Instance::load(&graph)?.unwrap();
+        instance.start_controller(1, 10.)?;
+        assert_eq!(instance.colors[&(0, 1)][3], 0.);
+        instance.update(&graph, 11.)?;
+        assert_eq!(instance.colors[&(0, 1)][3], 1.);
+        instance.stop_controller(1)?;
+        instance.start_controller(1, 25.)?;
+        assert_eq!(instance.colors[&(0, 1)][3], 0.);
+        instance.update(&graph, 25.5)?;
+        assert_eq!(instance.colors[&(0, 1)][3], 127. / 255.);
+        Ok(())
+    }
+
     #[test]
     fn effect_template_flags_match_native_registration() -> Result<()> {
         let data: serde_json::Value = serde_json::from_str(include_str!(

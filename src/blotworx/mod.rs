@@ -4525,6 +4525,11 @@ impl eframe::App for Engine {
         #[cfg(feature = "blotworx-ui-render")]
         self.present_title(ui);
         #[cfg(feature = "blotworx-ui-render")]
+        if self.receiver.is_some() {
+            self.paint_loading_screen(ui);
+            return;
+        }
+        #[cfg(feature = "blotworx-ui-render")]
         if self.title.is_some() || self.main_menu.is_some() {
             return;
         }
@@ -4881,6 +4886,9 @@ impl Engine {
             Ok(None) => {}
             Err(error) => self.error = Some(format!("Main menu: {error:#}")),
         }
+        if self.receiver.is_some() {
+            return;
+        }
         self.draw_options(ui.ctx());
         if let Some(error) = &self.error { ui.colored_label(egui::Color32::LIGHT_RED, error); }
         self.capture_frame(ui, self.capture_movie_frame.is_none() && tick >= self.capture_tick.unwrap_or(title_tick + 160));
@@ -4929,18 +4937,23 @@ impl Engine {
 
     fn present_stream_load(&mut self, ui: &mut egui::Ui, before_gameplay: bool) -> bool {
         let Some(world) = self.world.as_mut().filter(|world| {
-            self.error.is_none() && world.faded_scene_load_pending()
+            self.error.is_none() && world.fading_scene_load_pending()
         }) else {
             self.stream_loading_screen = None;
             return false;
         };
+        // Prepare archive data during the fade. Keep gameplay running until
+        // the fade is opaque, then present the load and publish the new scene.
+        let root = world.source_data_root().to_owned();
+        let prepared = world.scene_requests.prepare_front(&root, ui.ctx(), &world.report.scenes);
+        if !world.faded_scene_load_pending() {
+            return false;
+        }
         let screen = self.stream_loading_screen.get_or_insert_with(|| {
             self.simulation_active = false;
             world.frame_clock.suspend_for_loading();
-            loading_screen::Screen::load(ui.ctx(), world.source_data_root(), Some(&world.report.level))
+            loading_screen::Screen::load(ui.ctx(), &root, Some(&world.report.level))
         });
-        let root = world.source_data_root().to_owned();
-        let prepared = world.scene_requests.prepare_front(&root, ui.ctx(), &world.report.scenes);
         if before_gameplay && screen.ready_to_dismiss() && prepared {
             // Publish one scene while the previous loading frame is onscreen.
             // Keep the overlay for this frame, including the last publication.

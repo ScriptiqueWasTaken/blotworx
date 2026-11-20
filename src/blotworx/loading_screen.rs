@@ -153,14 +153,26 @@ impl Artwork {
                 .inspect_err(|error| log::warn!("Level loading artwork: {error:#}"))
                 .ok()
                 .flatten())
-            .map(|path| localized_path(&path));
+            .map(|path| path.replace('\\', "/"));
         let mut read = |path: &str| {
             texture(&mut store, path)
                 .inspect_err(|error| log::warn!("Loading artwork {path}: {error:#}"))
                 .ok()
         };
-        let background = requested.as_deref().and_then(&mut read)
-            .or_else(|| read(DEFAULT_ART));
+        let background = requested.as_deref().and_then(|path| {
+            let Some(localized) = localized_path(path, &language(root)) else {
+                return read(path);
+            };
+            read(&localized)
+                .or_else(|| {
+                    let english = localized_path(path, "English_NTSC")?;
+                    if english == localized {
+                        return None;
+                    }
+                    read(&english)
+                })
+                .or_else(|| read(path))
+        }).or_else(|| read(DEFAULT_ART));
         let dots = (1..=8)
             .filter_map(|index| read(&format!("LoadingScreens/LoadingDots_{index:02}.tga")))
             .collect();
@@ -186,18 +198,26 @@ impl Artwork {
     }
 }
 
-fn localized_path(path: &str) -> String {
-    let normalized = path.replace('\\', "/");
-    if let Some((directory, name)) = normalized.rsplit_once('/') {
-        if directory.eq_ignore_ascii_case("LoadingScreens")
-            && ["GuardianSplashScreen.dds", "MickeySplashScreen.dds"]
-                .iter()
-                .any(|splash| splash.eq_ignore_ascii_case(name))
-        {
-            return format!("{directory}/Localize/English_NTSC/{name}");
-        }
-    }
-    normalized
+fn language(root: &Path) -> String {
+    use crate::render_support::game_config::setting_value;
+    [("cmdline.txt", true), ("ConfigFiles.ini", false)]
+        .into_iter()
+        .find_map(|(file, command)| {
+            let text = std::fs::read_to_string(root.join(file)).ok()?;
+            setting_value(&text, "Language", command).filter(|value| {
+                !value.is_empty() && value.bytes().all(|b| b.is_ascii_alphabetic() || b == b'_')
+            })
+        })
+        .unwrap_or_else(|| "English_NTSC".into())
+}
+
+fn localized_path(path: &str, language: &str) -> Option<String> {
+    let (directory, name) = path.rsplit_once('/')?;
+    (directory.eq_ignore_ascii_case("LoadingScreens")
+        && ["GuardianSplashScreen.dds", "MickeySplashScreen.dds"]
+            .iter()
+            .any(|splash| splash.eq_ignore_ascii_case(name)))
+        .then(|| format!("{directory}/Localize/{language}/{name}"))
 }
 
 fn texture(

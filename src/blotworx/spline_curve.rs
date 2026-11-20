@@ -60,6 +60,36 @@ pub(super) fn ease_phase(phase: f32, no_start: bool, no_end: bool) -> f32 {
     }
 }
 
+#[derive(Debug, PartialEq)]
+pub(super) struct PhaseStep {
+    pub(super) phase: f32,
+    pub(super) boundary: i8,
+    pub(super) residual: f32,
+}
+
+pub(super) fn phase_step(phase: f32, dt: f32, length: f32, duration: f32, reversed: bool) -> PhaseStep {
+    // REL 3bc84c..3bc9fc reports a crossing only after leaving the phase range.
+    let direction = if reversed { -1. } else { 1. };
+    if length < 0.001 {
+        let delta = (1. - phase) * direction;
+        return PhaseStep { phase: (phase + delta).clamp(0., 1.), boundary: 0, residual: 0. };
+    }
+    let delta = (dt * duration.recip()) * direction;
+    let next = phase + delta;
+    let (boundary, excess) = if next > 1. {
+        (1, next - 1.)
+    } else if next < 0. {
+        (-1, next)
+    } else {
+        return PhaseStep { phase: next, boundary: 0, residual: 0. };
+    };
+    PhaseStep {
+        phase: (phase + (delta - excess)).clamp(0., 1.),
+        boundary,
+        residual: (excess * duration).abs(),
+    }
+}
+
 pub(super) struct Path {
     curve: Hermite,
     main_path: bool,
@@ -108,6 +138,8 @@ impl Path {
             self.rebuild_lengths();
         }
     }
+
+    pub(super) fn length(&self) -> f32 { self.total }
 
     pub(super) fn duration(&self, authored: f32, speed: f32) -> f32 {
         // Knot preparation clamps explicit times at length / 200. Omitted
@@ -196,6 +228,14 @@ pub(super) fn validate() -> anyhow::Result<()> {
                 "Spline easing differs at phase {phase}, flags {no_start}/{no_end}: {actual:08x} vs {expected}");
         }
     }
-    println!("PASS: 27 position and 52 easing samples match the decoded Wii spline kernels bit for bit");
+    let samples: Vec<([f32; 4], bool, (f32, i8, f32))> = serde_json::from_str(include_str!(
+        "../../tools/blotworx/fixtures/spline_phase_kernel.json"
+    ))?;
+    for ([phase, dt, length, duration], reversed, (sampled, boundary, residual)) in samples {
+        let actual = phase_step(phase, dt, length, duration, reversed);
+        anyhow::ensure!(actual == PhaseStep { phase: sampled, boundary, residual },
+            "Spline phase step differs at {phase}, dt {dt}, length {length}, duration {duration}, reverse {reversed}: {actual:?}");
+    }
+    println!("PASS: Wii spline position, easing and phase step fixtures match");
     Ok(())
 }

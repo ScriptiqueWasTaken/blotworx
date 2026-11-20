@@ -21,4 +21,14 @@ Print(("GV_CLOUD_UNTIMED_ACCELERATED %.4f %.4f %.4f"):format(accelerated.r, acce
 assert(math.abs(accelerated.r - 137.0337) <= 0.24)
 assert(math.abs(accelerated.y - 47.1542) <= 0.24)
 assert(math.abs(accelerated.z + 268.2238) <= 0.24)
+-- A negative speed on the untimed edge rewinds the same phase. Equal
+-- time at the opposite speed returns to the original sampled position.
+SetSplineFollowerInitialSpeed(cloud, -4)
+Wait(0.5)
+local rewound = GetPosition(cloud)
+Print(("GV_CLOUD_UNTIMED_REWOUND %.4f %.4f %.4f"):format(rewound.r, rewound.y, rewound.z))
+assert(rewound.r > accelerated.r + 1.5)
+assert(math.abs(rewound.r - p.r) <= 0.3)
+assert(math.abs(rewound.y - p.y) <= 0.3)
+assert(math.abs(rewound.z - p.z) <= 0.3)
 Print("BLOTWORX_GV_CLOUD_UNTIMED_PASS")

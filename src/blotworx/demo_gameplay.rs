@@ -37,20 +37,6 @@ struct Segment {
     path: spline_curve::Path,
 }
 
-impl Segment {
-    fn advance(&mut self, delta: f32, speed: f32) -> f32 {
-        let duration = self.path.duration(self.authored_duration, speed);
-        if duration == 0. {
-            self.phase = 1.;
-            return 1.;
-        }
-        // REL .text 3bc884..3bc8a0 forms the reciprocal before scaling dt.
-        // Preview phase runs from the departure knot to the arrival knot.
-        self.phase = (self.phase + delta * duration.recip()).min(1.);
-        self.phase
-    }
-}
-
 #[derive(Clone, Copy)]
 struct Stop {
     start: usize,
@@ -579,144 +565,168 @@ impl World {
                 {
                     continue;
                 }
-                let travel_delta = (delta - m.hold.max(0.)).max(0.);
-                m.hold = (m.hold - delta).max(0.);
-                if m.hold > 0. {
-                    continue;
-                }
-                let source = &self.entities[owner];
-                let position: [f32; 3] = source.transform[12..15].try_into()?;
-                let rotation = source.runtime_rotation;
-                // Explicit stops still use the supplied, unclamped coordinate.
-                let target: [f32; 3] = if let Some(stop) = m.stop {
-                    stop.destination(
-                        self.entities[stop.start].transform[12..15].try_into()?,
-                        self.entities[stop.end].transform[12..15].try_into()?,
-                    )
-                } else {
-                    self.entities[m.target].transform[12..15].try_into()?
-                };
-                if m.segment.as_ref().is_some_and(|segment| self.removed_entities.contains(&segment.origin)) {
-                    m.segment = None;
-                }
-                let (destination, fraction) = if let Some(segment) = &mut m.segment {
-                    let origin = self.entities[segment.origin].transform[12..15].try_into()?;
-                    let (start, end, start_pos, end_pos) = if segment.reversed {
-                        (m.target, segment.origin, target, origin)
+                let mut remaining = delta;
+                loop {
+                    if self.removed_entities.contains(&m.target) {
+                        break;
+                    }
+                    let travel_delta = (remaining - m.hold.max(0.)).max(0.);
+                    m.hold = (m.hold - remaining).max(0.);
+                    if m.hold > 0. {
+                        break;
+                    }
+                    let source = &self.entities[owner];
+                    let position: [f32; 3] = source.transform[12..15].try_into()?;
+                    let rotation = source.runtime_rotation;
+                    // Explicit stops still use the supplied, unclamped coordinate.
+                    let target: [f32; 3] = if let Some(stop) = m.stop {
+                        stop.destination(
+                            self.entities[stop.start].transform[12..15].try_into()?,
+                            self.entities[stop.end].transform[12..15].try_into()?,
+                        )
                     } else {
-                        (segment.origin, m.target, origin, target)
+                        self.entities[m.target].transform[12..15].try_into()?
                     };
-                    segment.path.update_endpoints(start_pos, end_pos);
-                    let fraction = segment.advance(travel_delta, m.speed.abs());
-                    let destination = if fraction == 1. {
-                        target
-                    } else {
-                        let phase = if segment.reversed { 1. - fraction } else { fraction };
-                        let phase = if property(&self.entities[owner], "SplineFollowerComponent", "EaseInOut")
-                            .and_then(serde_json::Value::as_bool).unwrap_or(false)
-                        {
-                            let no_ease = |knot: usize| {
-                                property(&self.entities[knot], "SplineKnotComponent", "Do Not Ease In/Out")
-                                    .and_then(serde_json::Value::as_bool).unwrap_or(false)
+                    if m.segment.as_ref().is_some_and(|segment| self.removed_entities.contains(&segment.origin)) {
+                        m.segment = None;
+                    }
+                    let previous_phase = m.segment.as_ref().map(|segment| segment.phase);
+                    let (destination, arrived, reverse, residual) = if let Some(segment) = &mut m.segment {
+                        let origin = self.entities[segment.origin].transform[12..15].try_into()?;
+                        let (start, end, start_pos, end_pos) = if segment.reversed {
+                            (m.target, segment.origin, target, origin)
+                        } else {
+                            (segment.origin, m.target, origin, target)
+                        };
+                        segment.path.update_endpoints(start_pos, end_pos);
+                        let previous = segment.phase;
+                        let length = segment.path.length();
+                        let duration = segment.path.duration(segment.authored_duration, m.speed);
+                        ensure!(length.is_finite(), "Nonfinite demo platform route");
+                        let step = spline_curve::phase_step(previous, travel_delta, length, duration, m.reverse);
+                        segment.phase = step.phase;
+                        if step.boundary != 0 {
+                            m.target = if step.boundary < 0 { start } else { end };
+                        }
+                        let destination = if step.phase == 0. {
+                            start_pos
+                        } else if step.phase == 1. {
+                            end_pos
+                        } else {
+                            let phase = step.phase;
+                            let phase = if property(&self.entities[owner], "SplineFollowerComponent", "EaseInOut")
+                                .and_then(serde_json::Value::as_bool).unwrap_or(false)
+                            {
+                                let no_ease = |knot: usize| {
+                                    property(&self.entities[knot], "SplineKnotComponent", "Do Not Ease In/Out")
+                                        .and_then(serde_json::Value::as_bool).unwrap_or(false)
+                                };
+                                spline_curve::ease_phase(phase, no_ease(start), no_ease(end))
+                            } else {
+                                phase
                             };
-                            spline_curve::ease_phase(phase, no_ease(start), no_ease(end))
-                        } else {
-                            phase
+                            segment.path.sample(phase)
                         };
-                        segment.path.sample(phase)
-                    };
-                    (destination, fraction)
-                } else {
-                    let difference = std::array::from_fn::<_, 3, _>(|i| target[i] - position[i]);
-                    let distance = difference.iter().map(|v| v * v).sum::<f32>().sqrt();
-                    ensure!(distance.is_finite(), "Nonfinite demo platform route");
-                    let step = m.speed.abs() * travel_delta;
-                    let fraction = if distance > step { step / distance } else { 1. };
-                    let destination = if fraction == 1. {
-                        target
+                        (destination, step.boundary != 0, step.boundary < 0, step.residual)
                     } else {
-                        std::array::from_fn(|i| position[i] + difference[i] * fraction)
+                        let difference = std::array::from_fn::<_, 3, _>(|i| target[i] - position[i]);
+                        let distance = difference.iter().map(|v| v * v).sum::<f32>().sqrt();
+                        ensure!(distance.is_finite(), "Nonfinite demo platform route");
+                        let step = m.speed.abs() * travel_delta;
+                        let fraction = if distance > step { step / distance } else { 1. };
+                        let destination = if fraction == 1. {
+                            target
+                        } else {
+                            std::array::from_fn(|i| position[i] + difference[i] * fraction)
+                        };
+                        (destination, fraction == 1., m.reverse, 0.)
                     };
-                    (destination, fraction)
-                };
-                self.move_demo_spline_owner(owner, destination, rotation)?;
-                if fraction == 1. {
-                    self.emit_entity_output(owner, "OnReachedPosition", owner);
-                    if m.stop.is_none_or(|s| s.position == 0. || s.position == 1.) {
-                        if let Some(knot)=m.passes.pass(Some(m.target)) {
-                            self.queue_spline_knot_event(owner,knot,0x1c)?;
+                    self.move_demo_spline_owner(owner, destination, rotation)?;
+                    if arrived {
+                        self.emit_entity_output(owner, "OnReachedPosition", owner);
+                        if m.stop.is_none_or(|s| s.position == 0. || s.position == 1.) {
+                            if let Some(knot)=m.passes.pass(Some(m.target)) {
+                                self.queue_spline_knot_event(owner,knot,0x1c)?;
+                            }
+                        }
+                        if m.stop.is_some() {
+                            m.stopped = true;
+                            break;
+                        }
+                        let next = if reverse {
+                            (0..self.entities.len()).find(|&i| {
+                                self.demo_link(
+                                    i,
+                                    "SplineKnotComponent",
+                                    "NextStopTarget",
+                                    "NextStopEntity",
+                                ) == Some(m.target)
+                            }).map(|target| (target, false))
+                        } else {
+                            let normal=self.demo_link(m.target,"SplineKnotComponent","NextStopTarget","NextStopEntity");
+                            if self.entities[m.target].components.iter().any(|c|c.class_name=="SplineKnotComponent") {
+                                let branch=self.demo_link(m.target,"SplineKnotComponent","BranchPathTarget","BranchPathEntity");
+                                let chance=property(&self.entities[m.target],"SplineKnotComponent","BranchPathChance").and_then(|v|v.as_f64()).unwrap_or(0.) as f32;
+                                // Native consumes rand even with a null branch/zero
+                                // chance. Select self means no further segment.
+                                let (selected, branched)=super::spline_branch::select(m.target,normal,branch,chance,self.game_random.draw());
+                                (selected != m.target).then_some((selected, branched))
+                            } else {
+                                normal.map(|target| (target, false))
+                            }
+                        };
+                        // Native terminal traversal returns before reading HoldTime
+                        // or emitting OnHold. Keep the arrived knot until its hold
+                        // event has been admitted, then retain the onward target.
+                        if super::spline_events::enter_hold(&mut m.hold, next.is_some(), || {
+                            property(&self.entities[m.target], "SplineKnotComponent", "HoldTime")
+                                .and_then(|v| v.as_f64()).unwrap_or(0.) as f32
+                        }) {
+                            self.queue_spline_knot_event(owner,m.target,0x1d)?;
+                        }
+                        if let Some((next, branched)) = next {
+                            // Main and branch durations live on the departure
+                            // knot of the authored edge, even in reverse.
+                            let (start, end) = if reverse { (next, m.target) } else { (m.target, next) };
+                            let key = if branched { "BranchPathTime" } else { "MainPathTime" };
+                            let duration = property(&self.entities[start], "SplineKnotComponent", key)
+                                .and_then(|value| value.as_f64())
+                                .map(|value| value as f32)
+                                .filter(|&duration| duration.is_finite())
+                                .unwrap_or(0.);
+                            let handle = |knot: usize, name: &str| {
+                                property(&self.entities[knot], "SplineKnotComponent", name)
+                                    .map(|value| crate::render_support::scene::parse_point3(value)
+                                        .with_context(|| format!("Invalid spline {name} on {}", self.entities[knot].name)))
+                                    .transpose()
+                                    .map(|value| value.unwrap_or([0.; 3]))
+                            };
+                            let path = spline_curve::Path::new(
+                                self.entities[start].transform[12..15].try_into()?,
+                                handle(start, "OutgoingHandle")?,
+                                handle(end, "IncomingHandle")?,
+                                self.entities[end].transform[12..15].try_into()?,
+                                !branched,
+                            );
+                            m.segment = Some(Segment {
+                                origin: m.target,
+                                authored_duration: duration,
+                                phase: if reverse { 1. } else { 0. },
+                                reversed: reverse,
+                                path,
+                            });
+                            m.target = next;
+                        } else {
+                            m.stopped = true;
                         }
                     }
-                    if m.stop.is_some() {
-                        m.stopped = true;
-                        continue;
+                    // Retail 3bc534 keeps stepping only while time remains and
+                    // either the residual or the phase has changed.
+                    let phase = m.segment.as_ref().map(|segment| segment.phase);
+                    if m.stopped || residual <= 0. || (residual == remaining && phase == previous_phase) {
+                        break;
                     }
-                    let next = if m.reverse {
-                        (0..self.entities.len()).find(|&i| {
-                            self.demo_link(
-                                i,
-                                "SplineKnotComponent",
-                                "NextStopTarget",
-                                "NextStopEntity",
-                            ) == Some(m.target)
-                        }).map(|target| (target, false))
-                    } else {
-                        let normal=self.demo_link(m.target,"SplineKnotComponent","NextStopTarget","NextStopEntity");
-                        if self.entities[m.target].components.iter().any(|c|c.class_name=="SplineKnotComponent") {
-                            let branch=self.demo_link(m.target,"SplineKnotComponent","BranchPathTarget","BranchPathEntity");
-                            let chance=property(&self.entities[m.target],"SplineKnotComponent","BranchPathChance").and_then(|v|v.as_f64()).unwrap_or(0.) as f32;
-                            // Native consumes rand even with a null branch/zero
-                            // chance. Select self means no further segment.
-                            let (selected, branched)=super::spline_branch::select(m.target,normal,branch,chance,self.game_random.draw());
-                            (selected != m.target).then_some((selected, branched))
-                        } else {
-                            normal.map(|target| (target, false))
-                        }
-                    };
-                    // Native terminal traversal returns before reading HoldTime
-                    // or emitting OnHold. Keep the arrived knot until its hold
-                    // event has been admitted, then retain the onward target.
-                    if super::spline_events::enter_hold(&mut m.hold, next.is_some(), || {
-                        property(&self.entities[m.target], "SplineKnotComponent", "HoldTime")
-                            .and_then(|v| v.as_f64()).unwrap_or(0.) as f32
-                    }) {
-                        self.queue_spline_knot_event(owner,m.target,0x1d)?;
-                    }
-                    if let Some((next, branched)) = next {
-                        // Main and branch durations live on the departure
-                        // knot of the authored edge, even in reverse.
-                        let (start, end) = if m.reverse { (next, m.target) } else { (m.target, next) };
-                        let key = if branched { "BranchPathTime" } else { "MainPathTime" };
-                        let duration = property(&self.entities[start], "SplineKnotComponent", key)
-                            .and_then(|value| value.as_f64())
-                            .map(|value| value as f32)
-                            .filter(|&duration| duration.is_finite())
-                            .unwrap_or(0.);
-                        let handle = |knot: usize, name: &str| {
-                            property(&self.entities[knot], "SplineKnotComponent", name)
-                                .map(|value| crate::render_support::scene::parse_point3(value)
-                                    .with_context(|| format!("Invalid spline {name} on {}", self.entities[knot].name)))
-                                .transpose()
-                                .map(|value| value.unwrap_or([0.; 3]))
-                        };
-                        let path = spline_curve::Path::new(
-                            self.entities[start].transform[12..15].try_into()?,
-                            handle(start, "OutgoingHandle")?,
-                            handle(end, "IncomingHandle")?,
-                            self.entities[end].transform[12..15].try_into()?,
-                            !branched,
-                        );
-                        m.segment = Some(Segment {
-                            origin: m.target,
-                            authored_duration: duration,
-                            phase: 0.,
-                            reversed: m.reverse,
-                            path,
-                        });
-                        m.target = next;
-                    } else {
-                        m.stopped = true;
-                    }
+                    remaining = residual;
                 }
             }
             Ok(())
@@ -791,5 +801,45 @@ pub(super) fn validate_spline_events()->Result<()> {
     ensure!(!world.removed_entities.contains(&knot),"OnPass destroyed its knot instead of the activator");
     ensure!(world.deferred_event_runtime.spline_io_deliveries>0,"Spline IO receiver was not used");
     println!("PASS: original door arrival queues native OnPass context, posts its enabled authored audio row and preserves the disabled cleanup row and source knot");
+    drop(world);
+    validate_spline_residual(std::path::Path::new(&root))
+}
+
+#[cfg(debug_assertions)]
+fn validate_spline_residual(root: &std::path::Path) -> Result<()> {
+    let mut world = super::assets::load(root, "Levels/GV_ZoneI_Start.level", &egui::Context::default())?;
+    world.enable_demo_story()?;
+    let find = |name| world.entities.iter().position(|entity| entity.name == name)
+        .with_context(|| format!("Missing imported spline entity {name}"));
+    let owner = find("gv_zonei_dynamic.GV_ZoneI_Cloud 01")?;
+    let departure = find("gv_zonei_dynamic.CloudSK 01")?;
+    let arrival = find("gv_zonei_dynamic.CloudSK 02")?;
+    let scene = world.entities[owner].scene.clone();
+    world.activate_streamed_scene(&scene)?;
+    world.run_callback_fixture(r#"
+        local cloud = GetEntity("gv_zonei_dynamic.GV_ZoneI_Cloud 01")
+        SetSplineFollowerInitialSpeed(cloud, 0.2)
+        SplineFollower_TeleportToKnot(cloud, GetEntity("gv_zonei_dynamic.CloudSK 01"))
+        SplineFollower_SetDisabled(cloud, false)
+    "#)?;
+    world.advance_demo_motion(0.)?;
+
+    // One second of departure hold, eight seconds outbound, four seconds
+    // at the next knot, then two seconds along the eight-second return.
+    world.advance_demo_motion(15.)?;
+    let mover = &world.demo_story.motion.movers[&owner];
+    ensure!(mover.target == departure && mover.hold == 0.
+        && mover.segment.as_ref().is_some_and(|segment| segment.phase == 0.25),
+        "Spline did not carry two seconds onto the return edge");
+    let passes: Vec<_> = world.entity_event_queue.entries().iter().filter_map(|entry| match &entry.event {
+        super::entity_events::Event::Basic(e) if e.event_kind == 0x1c && e.header == Some(owner) => e.source,
+        _ => None,
+    }).collect();
+    ensure!(passes == [departure, arrival], "Spline pass events were out of order: {passes:?}");
+    let position = &world.entities[owner].transform[12..15];
+    ensure!(position.iter().zip([117.32754, 49.47174, -290.47675])
+        .all(|(actual, expected)| (actual - expected).abs() < 0.001),
+        "Spline return position after carrying time is wrong: {position:?}");
+    println!("PASS: imported cloud carried two residual seconds onto its return edge and queued OnPass in order");
     Ok(())
 }

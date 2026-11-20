@@ -312,7 +312,10 @@ fn launch_installer(exe: &Path, digest: &str) -> Result<()> {
         let runtime_search = std::env::join_paths(
             std::iter::once(dir.to_owned()).chain(std::env::split_paths(&path)),
         )?;
-        command.env("PATH", runtime_search).creation_flags(0x08000000);
+        command
+            .env("PATH", runtime_search)
+            .env_remove(crate::startup_log::GAME_PROCESS_ENV)
+            .creation_flags(0x08000000);
     }
     command.spawn()?;
     Ok(())

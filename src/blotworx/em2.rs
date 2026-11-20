@@ -67,6 +67,9 @@ impl eframe::App for Startup {
                 Ok(result) => result,
                 Err(mpsc::TryRecvError::Empty) => {
                     screen.paint(ui);
+                    if !self.wants_capture {
+                        super::loading_screen::report_button(ui.ctx(), None, None, Some(screen.elapsed()));
+                    }
                     return;
                 }
                 Err(mpsc::TryRecvError::Disconnected) => Err(anyhow::anyhow!("EM2 startup worker stopped")),
@@ -89,6 +92,7 @@ impl eframe::App for Startup {
         } else if let Some(error) = &self.error {
             ui.heading("Couldn’t load Epic Mickey 2");
             ui.label(error);
+            super::loading_screen::report_button(ui.ctx(), None, Some(error), None);
         }
     }
 

@@ -2284,6 +2284,7 @@ pub fn run() -> Result<()> {
     }
     let capture_expected = o.capture.is_some();
     let (capture_tx, capture_rx) = mpsc::channel();
+    log::info!(target: "blotworx_phase", "Starting application window and graphics context");
     eframe::run_native(
         "Blotworx Engine",
         eframe::NativeOptions {
@@ -2299,6 +2300,7 @@ pub fn run() -> Result<()> {
             ..Default::default()
         },
         Box::new(move |cc| {
+            log::info!(target: "blotworx_phase", "Application window and graphics context ready");
             let mut engine = Engine::new(cc, o);
             engine.capture_result = Some(capture_tx);
             Ok(Box::new(engine))
@@ -4660,6 +4662,9 @@ impl eframe::App for Engine {
         }
         #[cfg(feature = "blotworx-ui-render")]
         if self.title.is_some() || self.main_menu.is_some() {
+            if self.capture.is_none() {
+                loading_screen::report_button(ui.ctx(), Some(&self.level), self.error.as_deref(), None);
+            }
             return;
         }
         // Automated captures must not spin forever when loading or simulation fails.
@@ -4827,6 +4832,9 @@ impl eframe::App for Engine {
                     }
                 }
             }
+        }
+        if self.capture.is_none() && self.world.is_none() {
+            loading_screen::report_button(ui.ctx(), Some(&self.level), self.error.as_deref(), None);
         }
         if self.debug.open {
             let mut lines = Vec::new();
@@ -5084,6 +5092,9 @@ impl Engine {
     fn paint_loading_screen(&mut self, ui: &mut egui::Ui) {
         if let Some(screen) = &mut self.loading_screen {
             screen.paint(ui);
+            if self.capture.is_none() {
+                loading_screen::report_button(ui.ctx(), Some(&self.level), self.error.as_deref(), Some(screen.elapsed()));
+            }
         }
     }
 

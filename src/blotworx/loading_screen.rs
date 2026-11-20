@@ -60,8 +60,12 @@ impl Screen {
     }
 
     pub(super) fn ready_to_dismiss(&self) -> bool {
-        self.first_paint
-            .is_some_and(|start| start.elapsed() >= MINIMUM_PRESENTATION)
+        self.first_paint.is_some_and(|start| start.elapsed() >= MINIMUM_PRESENTATION)
+            || self.elapsed() >= Duration::from_secs(2)
+    }
+
+    pub(super) fn elapsed(&self) -> Duration {
+        self.opened.elapsed()
     }
 
     pub(super) fn paint(&mut self, ui: &mut Ui) {
@@ -134,6 +138,41 @@ impl Screen {
         let repaint = if self.dots.is_empty() { Duration::from_millis(16) } else { DOT_FRAME };
         ctx.request_repaint_after(repaint);
     }
+}
+
+pub(super) fn report_button(
+    ctx: &egui::Context,
+    level: Option<&str>,
+    error: Option<&str>,
+    elapsed: Option<Duration>,
+) {
+    if error.is_none() && elapsed.is_none_or(|time| time < Duration::from_secs(15)) {
+        return;
+    }
+    let overlay = egui::Area::new(egui::Id::new("startup_diagnostics"))
+        .order(egui::Order::Foreground)
+        .anchor(egui::Align2::RIGHT_BOTTOM, [-20., -20.])
+        .show(ctx, |ui| {
+            egui::Frame::popup(ui.style()).show(ui, |ui| {
+                ui.set_max_width(340.);
+                if error.is_some() {
+                    ui.strong("Blotworx couldn’t finish loading");
+                } else {
+                    ui.label("Loading is taking longer than usual.");
+                }
+                if ui.button("Save diagnostic report…").clicked() {
+                    let report = crate::startup_log::report(level, error, elapsed);
+                    if let Err(error) = crate::startup_log::save_report(&report) {
+                        rfd::MessageDialog::new()
+                            .set_title("Could not save the report")
+                            .set_description(error.to_string())
+                            .set_level(rfd::MessageLevel::Error)
+                            .show();
+                    }
+                }
+            });
+        });
+    ctx.move_to_top(overlay.response.layer_id);
 }
 
 type Texture = (String, ColorImage);

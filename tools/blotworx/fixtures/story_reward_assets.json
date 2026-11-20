@@ -1,0 +1,581 @@
+{
+  "parsed": 1622,
+  "counts": {
+    "5": 17,
+    "0": 44,
+    "1": 1,
+    "3": 1,
+    "7": 8
+  },
+  "rows": [
+    {
+      "pack": "bogeasy_visit1_wrapper.pak",
+      "path": "Apprentice/Meanstreet/Gus/MSS_GusPickedUpSpark.bsq",
+      "category": 5,
+      "item": "Power_Spark",
+      "quantity": 1,
+      "amount": 1
+    },
+    {
+      "pack": "bogeasy_visit1_wrapper.pak",
+      "path": "Apprentice/NewOrleansSquare/Ian/NO_BuyLouisBadge.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 200
+    },
+    {
+      "pack": "bogeasy_visit1_wrapper.pak",
+      "path": "Apprentice/NewOrleansSquare/Louis/NO_Louis_CourageChatter.bsq",
+      "category": 1,
+      "item": "Health1",
+      "quantity": 1,
+      "amount": 1
+    },
+    {
+      "pack": "bogeasy_visit2_wrapper.pak",
+      "path": "Apprentice/MeanStreet V2/Gunter/MSS_foundaxe.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 75
+    },
+    {
+      "pack": "bogeasy_visit2_wrapper.pak",
+      "path": "Apprentice/MeanStreet V2/Gunter/MSS_foundaxe.bsq",
+      "category": 5,
+      "item": "Power_Spark",
+      "quantity": 1,
+      "amount": 1
+    },
+    {
+      "pack": "bogeasy_visit2_wrapper.pak",
+      "path": "Apprentice/NewOrleansSquare/Bertrand/NO_signturnin2.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 50
+    },
+    {
+      "pack": "bogeasy_visit2_wrapper.pak",
+      "path": "Apprentice/NewOrleansSquare/Gilbert/NO_GilbertBoatalreadyreleased.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 80
+    },
+    {
+      "pack": "bogeasy_visit2_wrapper.pak",
+      "path": "Apprentice/NewOrleansSquare/Gilda/MSS_GildaRace5Completed.bsq",
+      "category": 5,
+      "item": "Power_Spark",
+      "quantity": 1,
+      "amount": 1
+    },
+    {
+      "pack": "bogeasy_visit2_wrapper.pak",
+      "path": "Apprentice/NewOrleansSquare/Gilda/MSS_GildaRace5Completed.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 50
+    },
+    {
+      "pack": "bogeasy_visit2_wrapper.pak",
+      "path": "Apprentice/NewOrleansSquare/Ian/NO_FreeGhostsComplete.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 100
+    },
+    {
+      "pack": "bogeasy_visit2_wrapper.pak",
+      "path": "Apprentice/NewOrleansSquare/Ian/NO_V2_IanGivesPin.bsq",
+      "category": 3,
+      "item": "Well_Read",
+      "quantity": 1,
+      "amount": 1
+    },
+    {
+      "pack": "gremlinvillage_zoned.pak",
+      "path": "Apprentice/GremlinVillage_ZoneD/Gremlin Herman/GV_ZoneD_Herman_Freed.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 4294967196
+    },
+    {
+      "pack": "gremlinvillage_zonef.pak",
+      "path": "Apprentice/GremlinVillage_ZoneF/Gremlin Calvin/GV_ZoneF_CalvinReward.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 50
+    },
+    {
+      "pack": "hauntedmansion_zoneh.pak",
+      "path": "Apprentice/HauntedMansion_Library/Gremlin/HM_Grem_HelpThank.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 4294967246
+    },
+    {
+      "pack": "hauntedmansion_zonek.pak",
+      "path": "Apprentice/HauntedMansion_Ballroom/Gremlin Stuffus/HM_Ballroom_Merc.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 4294967196
+    },
+    {
+      "pack": "hub_adventureland_v1.pak",
+      "path": "Apprentice/Adventureland/Damien Salt/AL_V1_DamienHeartbroken.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 4294967246
+    },
+    {
+      "pack": "hub_adventureland_v1.pak",
+      "path": "Apprentice/Adventureland/Scurvy Pat/AL_BuyCompass.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 4294967271
+    },
+    {
+      "pack": "hub_adventureland_v2_nopirates.pak",
+      "path": "Apprentice/Adventureland/Botanist Darvin/AL_V2_PlantsDone.bsq",
+      "category": 5,
+      "item": "Power_Spark",
+      "quantity": 1,
+      "amount": 1
+    },
+    {
+      "pack": "hub_adventureland_v2_nopirates.pak",
+      "path": "Apprentice/Adventureland/Botanist Darvin/AL_V2_PlantsDone.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 50
+    },
+    {
+      "pack": "hub_adventureland_v2_nopirates.pak",
+      "path": "Apprentice/Adventureland/Botanist Darvin/VL_V2_BogEasyPlantEnd.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 150
+    },
+    {
+      "pack": "hub_adventureland_v2_nopirates.pak",
+      "path": "Apprentice/Adventureland/Jim the Puzzled/AL_V2_JimAdditional.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 50
+    },
+    {
+      "pack": "hub_adventureland_v2_nopirates.pak",
+      "path": "Apprentice/Adventureland/Jim the Puzzled/AL_V2_MSRiddleComplete.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 100
+    },
+    {
+      "pack": "hub_adventureland_v2_nopirates.pak",
+      "path": "Apprentice/Adventureland/Jim the Puzzled/AL_V2_RadioRiddleComplete.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 150
+    },
+    {
+      "pack": "hub_adventureland_v2_np_defaultinterior.pak",
+      "path": "Apprentice/Adventureland/Animatronic Daisy/AL_DaisyTurnInVoodooDoll.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 100
+    },
+    {
+      "pack": "hub_adventureland_v2_np_defaultinterior.pak",
+      "path": "Apprentice/Adventureland/Animatronic Daisy/AL_V2_Daisy_AlbumComplete.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 100
+    },
+    {
+      "pack": "hub_adventureland_v2_np_defaultinterior.pak",
+      "path": "Apprentice/Adventureland/Animatronic Daisy/AL_V2_ReAssemble.bsq",
+      "category": 5,
+      "item": "Power_Spark",
+      "quantity": 1,
+      "amount": 1
+    },
+    {
+      "pack": "hub_adventureland_v2_np_defaultinterior.pak",
+      "path": "Apprentice/Adventureland/Animatronic Daisy/AL_V2_ReAssemble.bsq",
+      "category": 5,
+      "item": "Power_Spark",
+      "quantity": 1,
+      "amount": 1
+    },
+    {
+      "pack": "hub_adventureland_v2_pirates.pak",
+      "path": "Apprentice/Adventureland/Bosun Blake/AL_V2_Housequery.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 30
+    },
+    {
+      "pack": "hub_meanstreet_detectiveagency.pak",
+      "path": "Apprentice/MeanStreet V2/Horace Horsecollar/MSS_V2_hatrecovered.bsq",
+      "category": 5,
+      "item": "Power_Spark",
+      "quantity": 1,
+      "amount": 1
+    },
+    {
+      "pack": "hub_meanstreet_detectiveagency.pak",
+      "path": "Apprentice/MeanStreet V3/Horace Horsecollar/MSS_V3_footprintitemrecovered.bsq",
+      "category": 5,
+      "item": "Power_Spark",
+      "quantity": 1,
+      "amount": 1
+    },
+    {
+      "pack": "hub_meanstreet_detectiveagency.pak",
+      "path": "Apprentice/MeanStreet V4/Horace Horsecollar/MSS_indianjournalturnin.bsq",
+      "category": 5,
+      "item": "Power_Spark",
+      "quantity": 1,
+      "amount": 1
+    },
+    {
+      "pack": "hub_meanstreet_detectiveagency.pak",
+      "path": "Apprentice/MeanStreet V4/Horace Horsecollar/MSS_indianjournalturnin.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 100
+    },
+    {
+      "pack": "hub_meanstreet_detectiveagency.pak",
+      "path": "Apprentice/MeanStreet V4/Horace Horsecollar/MSS_V4_footprintitemrecovered.bsq",
+      "category": 5,
+      "item": "Power_Spark",
+      "quantity": 1,
+      "amount": 1
+    },
+    {
+      "pack": "hub_meanstreet_emporium.pak",
+      "path": "Apprentice/Meanstreet/Casey/MSS_FindkeyComplete.bsq",
+      "category": 5,
+      "item": "Power_Spark",
+      "quantity": 1,
+      "amount": 1
+    },
+    {
+      "pack": "hub_meanstreet_museum.pak",
+      "path": "Apprentice/Meanstreet/Laralee/MSS_MuseumLocket.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 250
+    },
+    {
+      "pack": "hub_meanstreet_townhall.pak",
+      "path": "Apprentice/MeanStreet V3/Pete/MS_V3_Pete_DaisyAlbum_Intro.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 4294967196
+    },
+    {
+      "pack": "hub_meanstreet_townhall.pak",
+      "path": "Apprentice/MeanStreet V3/Pete/MSS_petetronicturnin.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 30
+    },
+    {
+      "pack": "hub_meanstreet_townhall.pak",
+      "path": "Apprentice/MeanStreet V3/Pete/MSS_V3_BunnyCompleted.bsq",
+      "category": 5,
+      "item": "Power_Spark",
+      "quantity": 1,
+      "amount": 1
+    },
+    {
+      "pack": "hub_meanstreet_townhall.pak",
+      "path": "Apprentice/MeanStreet V4/Pete/MSS_petepanturnin.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 30
+    },
+    {
+      "pack": "hub_meanstreet_townhall.pak",
+      "path": "Apprentice/MeanStreet V5/Pete/MSS_petecolonelturnin.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 100
+    },
+    {
+      "pack": "hub_meanstreet_townhall.pak",
+      "path": "Apprentice/MeanStreet V5/Pete/MSS_V5_BunnyCompleted.bsq",
+      "category": 5,
+      "item": "Power_Spark",
+      "quantity": 1,
+      "amount": 1
+    },
+    {
+      "pack": "hub_meanstreet_townhall.pak",
+      "path": "Apprentice/Meanstreet/Pete/MSS_PeteVoodooDoll.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 200
+    },
+    {
+      "pack": "hub_meanstreet_v1_defaultinterior.pak",
+      "path": "Apprentice/Meanstreet/Gremlin Markus/MSS_PowerSparkTurnIn.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 30
+    },
+    {
+      "pack": "hub_meanstreet_v1_defaultinterior.pak",
+      "path": "Apprentice/Meanstreet/Pete/MSS_PeteIntro.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 30
+    },
+    {
+      "pack": "hub_meanstreet_v5_defaultinterior.pak",
+      "path": "Apprentice/MeanStreet V5/Oswald/MS_CompletePalQuest.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 100
+    },
+    {
+      "pack": "hub_meanstreet_v6_defaultinterior.pak",
+      "path": "Apprentice/Meanstreet/The Usher/MSS_UsherFilmTurnIn.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 30
+    },
+    {
+      "pack": "hub_meanstreet_v6_defaultinterior.pak",
+      "path": "Apprentice/Meanstreet/The Usher/MSS_UsherFilmTurnIn.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 1000
+    },
+    {
+      "pack": "hub_meanstreet_v6_defaultinterior.pak",
+      "path": "Apprentice/Meanstreet/The Usher/MSS_UsherGear.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 4294967266
+    },
+    {
+      "pack": "hub_meanstreet_v6_defaultinterior.pak",
+      "path": "Apprentice/Meanstreet/The Usher/MSS_UsherGearSellCutlass.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 4294967266
+    },
+    {
+      "pack": "meanstreet_visit1_wrapper.pak",
+      "path": "Apprentice/Meanstreet/Jack Kelly/MSS_V1_InfoToBuy.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 4294967291
+    },
+    {
+      "pack": "meanstreet_visit1_wrapper.pak",
+      "path": "Apprentice/ToonTown/Ezra/TT_V2_Footprintsellstolen.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 4294967246
+    },
+    {
+      "pack": "meanstreet_visit2_wrapper.pak",
+      "path": "Apprentice/MeanStreet V2/Jack Kelly/MSS_V2_InfoToBuy.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 4294967291
+    },
+    {
+      "pack": "meanstreet_visit3_wrapper.pak",
+      "path": "Apprentice/MeanStreet V3/Jack Kelly/MSS_V3_InfoToBuy.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 4294967291
+    },
+    {
+      "pack": "meanstreet_visit4_wrapper.pak",
+      "path": "Apprentice/MeanStreet V4/Gus/MSS_FoundBunnyGear.bsq",
+      "category": 5,
+      "item": "Power_Spark",
+      "quantity": 1,
+      "amount": 1
+    },
+    {
+      "pack": "meanstreet_visit4_wrapper.pak",
+      "path": "Apprentice/MeanStreet V4/Jack Kelly/MSS_V4_InfoToBuy.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 4294967291
+    },
+    {
+      "pack": "meanstreet_visit5_wrapper.pak",
+      "path": "Apprentice/MeanStreet V5/Jack Kelly/MSS_V5_InfoToBuy.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 4294967291
+    },
+    {
+      "pack": "ostown_visit1_wrapper.pak",
+      "path": "Apprentice/ToonTown/Abner/TT_ThinGagEnd.bsq",
+      "category": 5,
+      "item": "Power_Spark",
+      "quantity": 1,
+      "amount": 1
+    },
+    {
+      "pack": "ostown_visit2_wrapper.pak",
+      "path": "Apprentice/ToonTown/Gilda/MSS_GildaRace2Completed.bsq",
+      "category": 5,
+      "item": "Power_Spark",
+      "quantity": 1,
+      "amount": 1
+    },
+    {
+      "pack": "ostown_visit2_wrapper.pak",
+      "path": "Apprentice/ToonTown/Moody/TT_MoodyCousinFound.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 100
+    },
+    {
+      "pack": "potw_zoneb_ai.pak",
+      "path": "Apprentice/Pirates_Tortuga/Beluga Billy/Pirate_Guide_BagCheck.bsq",
+      "category": 7,
+      "item": "Sketch_Watch",
+      "quantity": 1,
+      "amount": 1
+    },
+    {
+      "pack": "potw_zoneb_ai.pak",
+      "path": "Apprentice/Pirates_Tortuga/Beluga Billy/Pirate_Guide_V1_OpenPortal.bsq",
+      "category": 7,
+      "item": "Sketch_Watch",
+      "quantity": 1,
+      "amount": 1
+    },
+    {
+      "pack": "potw_zoneb_ai_3.pak",
+      "path": "Apprentice/Pirates_Tortuga/Cutpurse Tycho/Jailed_Pirate2_Tortooga.bsq",
+      "category": 7,
+      "item": "Sketch_Watch",
+      "quantity": 1,
+      "amount": 1
+    },
+    {
+      "pack": "potw_zoneb_ai_3.pak",
+      "path": "Apprentice/Pirates_Tortuga/Ruffian Branderson/Jailed_Pirate3_Tortooga.bsq",
+      "category": 0,
+      "item": "Thinner",
+      "quantity": 10,
+      "amount": 2
+    },
+    {
+      "pack": "potw_zoneb_ai_3.pak",
+      "path": "Apprentice/Pirates_Tortuga/Scallywag Gabe/Jailed_Pirate_Tortooga.bsq",
+      "category": 7,
+      "item": "Sketch_TV",
+      "quantity": 1,
+      "amount": 1
+    },
+    {
+      "pack": "tlmh_visit1onlyworking.pak",
+      "path": "Apprentice/TomorrowLand/Gremlin Apollo/TLMH_Apollo_Store_Use.bsq",
+      "category": 7,
+      "item": "Sketch_TV",
+      "quantity": 1,
+      "amount": 1
+    },
+    {
+      "pack": "tlmh_visit1onlyworking.pak",
+      "path": "Apprentice/TomorrowLand/Gremlin Apollo/TMLH_Apollo_Store.bsq",
+      "category": 7,
+      "item": "Sketch_TV",
+      "quantity": 1,
+      "amount": 1
+    },
+    {
+      "pack": "tlmh_visit1onlyworking.pak",
+      "path": "Apprentice/TomorrowLand/Gremlin Apollo/TMLH_Apollo_Store.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 4294967246
+    },
+    {
+      "pack": "tl_minihub_zoned2.pak",
+      "path": "Apprentice/TomorrowLand/Mister Rover/D2_Rover_TV_give.bsq",
+      "category": 7,
+      "item": "Sketch_TV",
+      "quantity": 1,
+      "amount": 1
+    },
+    {
+      "pack": "tl_minihub_zoned2.pak",
+      "path": "Apprentice/TomorrowLand/Mister Rover/D2_Rover_TVSell.bsq",
+      "category": 7,
+      "item": "Sketch_TV",
+      "quantity": 1,
+      "amount": 1
+    },
+    {
+      "pack": "ventureland_visit2nopirates_wrapper.pak",
+      "path": "Apprentice/Adventureland/Dolly Dalmatian/AL_V2_Footprintsellstolen.bsq",
+      "category": 0,
+      "item": "ETicket",
+      "quantity": 1,
+      "amount": 4294967246
+    },
+    {
+      "pack": "ventureland_visit2nopirates_wrapper.pak",
+      "path": "Apprentice/Adventureland/Gilda/MSS_GildaRace4Completed.bsq",
+      "category": 5,
+      "item": "Power_Spark",
+      "quantity": 1,
+      "amount": 1
+    }
+  ],
+  "errors": []
+}

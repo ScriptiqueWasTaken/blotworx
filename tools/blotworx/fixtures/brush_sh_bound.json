@@ -1,0 +1,12 @@
+{
+  "dol_sha256": "994779fa2e276983efdb50f02c406568f285a82558cb5d54bbdf74651a98a920",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "scenario": "GV Zone A opening; stopped SH-update snapshot; distinct MagicBrush owner",
+  "samples": [
+    {
+      "model_bound": "3c7ec6d03f94b51ebc28f280403fe7c0",
+      "world_transform": "bf43fb013f1349fbbe936cc33f21c5073f169a35bf012c2bbdf7a350bf1177b6bf505e00c12d84273eb0d7d640b0f8e23dcccccd",
+      "world_bound": "c12c76063ed49b1c40aee16a3e998633"
+    }
+  ]
+}

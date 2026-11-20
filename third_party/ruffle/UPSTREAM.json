@@ -1,0 +1,12 @@
+{
+  "upstream": "https://github.com/ruffle-rs/ruffle",
+  "revision": "45366370ed7d1a59c89aa3cf7b765c7a274407cd",
+  "scope": "Ruffle core only before native-host patch; shared Cargo checkout unchanged",
+  "source_tree_sha256": "e19c64737a992184db26bf9af61ff57ba7a791245a43774446e33cb474f914c2",
+  "files": 960,
+  "bytes": 6459588,
+  "license": "../licenses/ruffle-LICENSE.md",
+  "patched_tree_sha256": "490c67b8cc423b4a4726f35e27a8d578d3fc853ba5c21f6912df2a1da866da7d",
+  "patch": "Additive synchronous UpdateContext FSCommand hook in three core source files",
+  "verification": "tools/blotworx/vendor_ui_runtime.py <pinned-checkout> third_party/ruffle --verify"
+}

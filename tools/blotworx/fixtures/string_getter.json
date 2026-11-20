@@ -1,0 +1,415 @@
+{
+  "scope": "Execute retail Lua GetPropertyString265c68 wrapper, research only.\n\nLua stack operations, interned identities, entity/property lookup and the\ncomponent getter are supplied boundaries. This checks wrapper admission,\nargument order and result counts, NOT arbitrary component getter semantics.\n",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "dol_sha256": "994779fa2e276983efdb50f02c406568f285a82558cb5d54bbdf74651a98a920",
+  "cases": [
+    {
+      "entity": false,
+      "found": false,
+      "string": false,
+      "index": 0,
+      "result": {
+        "returns": 0,
+        "output": [],
+        "trace": [
+          "index",
+          "property",
+          "entity"
+        ],
+        "instructions": 55
+      }
+    },
+    {
+      "entity": false,
+      "found": false,
+      "string": false,
+      "index": 1,
+      "result": {
+        "returns": 0,
+        "output": [],
+        "trace": [
+          "index",
+          "property",
+          "entity"
+        ],
+        "instructions": 55
+      }
+    },
+    {
+      "entity": false,
+      "found": false,
+      "string": false,
+      "index": 4294967295,
+      "result": {
+        "returns": 0,
+        "output": [],
+        "trace": [
+          "index",
+          "property",
+          "entity"
+        ],
+        "instructions": 55
+      }
+    },
+    {
+      "entity": false,
+      "found": false,
+      "string": true,
+      "index": 0,
+      "result": {
+        "returns": 0,
+        "output": [],
+        "trace": [
+          "index",
+          "property",
+          "entity"
+        ],
+        "instructions": 55
+      }
+    },
+    {
+      "entity": false,
+      "found": false,
+      "string": true,
+      "index": 1,
+      "result": {
+        "returns": 0,
+        "output": [],
+        "trace": [
+          "index",
+          "property",
+          "entity"
+        ],
+        "instructions": 55
+      }
+    },
+    {
+      "entity": false,
+      "found": false,
+      "string": true,
+      "index": 4294967295,
+      "result": {
+        "returns": 0,
+        "output": [],
+        "trace": [
+          "index",
+          "property",
+          "entity"
+        ],
+        "instructions": 55
+      }
+    },
+    {
+      "entity": false,
+      "found": true,
+      "string": false,
+      "index": 0,
+      "result": {
+        "returns": 0,
+        "output": [],
+        "trace": [
+          "index",
+          "property",
+          "entity"
+        ],
+        "instructions": 55
+      }
+    },
+    {
+      "entity": false,
+      "found": true,
+      "string": false,
+      "index": 1,
+      "result": {
+        "returns": 0,
+        "output": [],
+        "trace": [
+          "index",
+          "property",
+          "entity"
+        ],
+        "instructions": 55
+      }
+    },
+    {
+      "entity": false,
+      "found": true,
+      "string": false,
+      "index": 4294967295,
+      "result": {
+        "returns": 0,
+        "output": [],
+        "trace": [
+          "index",
+          "property",
+          "entity"
+        ],
+        "instructions": 55
+      }
+    },
+    {
+      "entity": false,
+      "found": true,
+      "string": true,
+      "index": 0,
+      "result": {
+        "returns": 0,
+        "output": [],
+        "trace": [
+          "index",
+          "property",
+          "entity"
+        ],
+        "instructions": 55
+      }
+    },
+    {
+      "entity": false,
+      "found": true,
+      "string": true,
+      "index": 1,
+      "result": {
+        "returns": 0,
+        "output": [],
+        "trace": [
+          "index",
+          "property",
+          "entity"
+        ],
+        "instructions": 55
+      }
+    },
+    {
+      "entity": false,
+      "found": true,
+      "string": true,
+      "index": 4294967295,
+      "result": {
+        "returns": 0,
+        "output": [],
+        "trace": [
+          "index",
+          "property",
+          "entity"
+        ],
+        "instructions": 55
+      }
+    },
+    {
+      "entity": true,
+      "found": false,
+      "string": false,
+      "index": 0,
+      "result": {
+        "returns": 0,
+        "output": [],
+        "trace": [
+          "index",
+          "property",
+          "entity",
+          "type"
+        ],
+        "instructions": 72
+      }
+    },
+    {
+      "entity": true,
+      "found": false,
+      "string": false,
+      "index": 1,
+      "result": {
+        "returns": 0,
+        "output": [],
+        "trace": [
+          "index",
+          "property",
+          "entity",
+          "type"
+        ],
+        "instructions": 72
+      }
+    },
+    {
+      "entity": true,
+      "found": false,
+      "string": false,
+      "index": 4294967295,
+      "result": {
+        "returns": 0,
+        "output": [],
+        "trace": [
+          "index",
+          "property",
+          "entity",
+          "type"
+        ],
+        "instructions": 72
+      }
+    },
+    {
+      "entity": true,
+      "found": false,
+      "string": true,
+      "index": 0,
+      "result": {
+        "returns": 0,
+        "output": [],
+        "trace": [
+          "index",
+          "property",
+          "entity",
+          "type"
+        ],
+        "instructions": 72
+      }
+    },
+    {
+      "entity": true,
+      "found": false,
+      "string": true,
+      "index": 1,
+      "result": {
+        "returns": 0,
+        "output": [],
+        "trace": [
+          "index",
+          "property",
+          "entity",
+          "type"
+        ],
+        "instructions": 72
+      }
+    },
+    {
+      "entity": true,
+      "found": false,
+      "string": true,
+      "index": 4294967295,
+      "result": {
+        "returns": 0,
+        "output": [],
+        "trace": [
+          "index",
+          "property",
+          "entity",
+          "type"
+        ],
+        "instructions": 72
+      }
+    },
+    {
+      "entity": true,
+      "found": true,
+      "string": false,
+      "index": 0,
+      "result": {
+        "returns": 0,
+        "output": [],
+        "trace": [
+          "index",
+          "property",
+          "entity",
+          "type"
+        ],
+        "instructions": 76
+      }
+    },
+    {
+      "entity": true,
+      "found": true,
+      "string": false,
+      "index": 1,
+      "result": {
+        "returns": 0,
+        "output": [],
+        "trace": [
+          "index",
+          "property",
+          "entity",
+          "type"
+        ],
+        "instructions": 76
+      }
+    },
+    {
+      "entity": true,
+      "found": true,
+      "string": false,
+      "index": 4294967295,
+      "result": {
+        "returns": 0,
+        "output": [],
+        "trace": [
+          "index",
+          "property",
+          "entity",
+          "type"
+        ],
+        "instructions": 76
+      }
+    },
+    {
+      "entity": true,
+      "found": true,
+      "string": true,
+      "index": 0,
+      "result": {
+        "returns": 1,
+        "output": [
+          "Gremlin:Variant4"
+        ],
+        "trace": [
+          "index",
+          "property",
+          "entity",
+          "type",
+          "getter",
+          "push"
+        ],
+        "instructions": 115
+      }
+    },
+    {
+      "entity": true,
+      "found": true,
+      "string": true,
+      "index": 1,
+      "result": {
+        "returns": 1,
+        "output": [
+          null
+        ],
+        "trace": [
+          "index",
+          "property",
+          "entity",
+          "type",
+          "getter",
+          "push"
+        ],
+        "instructions": 118
+      }
+    },
+    {
+      "entity": true,
+      "found": true,
+      "string": true,
+      "index": 4294967295,
+      "result": {
+        "returns": 1,
+        "output": [
+          null
+        ],
+        "trace": [
+          "index",
+          "property",
+          "entity",
+          "type",
+          "getter",
+          "push"
+        ],
+        "instructions": 118
+      }
+    }
+  ]
+}

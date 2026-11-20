@@ -1,0 +1,16 @@
+/target/
+/.codex/
+/.idea/
+/.vscode/
+/local/
+/game-scripts/
+*.log
+
+# Local game inputs and diagnostic output
+*.iso
+*.rvz
+*.wbfs
+*.pak
+*.nif_wii
+*.hkx_wii
+/captures/

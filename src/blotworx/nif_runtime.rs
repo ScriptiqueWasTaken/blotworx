@@ -1,0 +1,500 @@
+//! Per-model direct transform controllers and their shared resolved pose.
+use super::{
+    nif_transform::{Playback, Pose, Update},
+    scene_bounds::Hierarchy,
+};
+use anyhow::{ensure, Context, Result};
+use epic_mickey_lib_rs::nif_file::NiTransform;
+use std::collections::{BTreeMap, BTreeSet};
+
+/// HUD registration20ec6c invokes15b620: set APP_INIT and clear Active
+/// before any clone is made. This is a runtime template change, not a rewrite
+/// of the source NIF's flags or a private-clock workaround.
+pub fn effect_template_flags(flags: u16) -> u16 {
+    (flags | 1) & !8
+}
+
+pub struct Instance {
+    pub component_clock: Option<super::nif_sequence::ComponentClock>,
+    controllers: Vec<Playback>,
+    controller_owners: BTreeMap<u32, usize>,
+    locals: BTreeMap<u32, NiTransform>,
+    published_locals: BTreeMap<u32, NiTransform>,
+    pub poses: BTreeMap<u32, Pose>,
+    pub world: BTreeMap<u32, NiTransform>,
+    pub affected: BTreeSet<u32>,
+}
+impl Instance {
+    pub fn load(hierarchy: &Hierarchy) -> Result<Option<Self>> {
+        let mut controllers = Vec::new();
+        let mut seen = BTreeSet::new();
+        let mut pending: Vec<_> = hierarchy.roots.iter().rev().flatten().copied().collect();
+        while let Some(id) = pending.pop() {
+            let node = &hierarchy.nodes[&id];
+            for c in &node.controllers {
+                if c.class_name == "NiTransformController" && seen.insert(c.block) {
+                    ensure!(
+                        c.target
+                            .is_some_and(|target| hierarchy.nodes.contains_key(&target)),
+                        "Transform target outside model"
+                    );
+                    controllers.push(Playback::load(c)?);
+                }
+            }
+            pending.extend(node.children.iter().rev().flatten().copied());
+        }
+        if controllers.is_empty() {
+            return Ok(None);
+        }
+        let controller_owners = controllers
+            .iter()
+            .enumerate()
+            .map(|(index, controller)| (controller.block, index))
+            .collect();
+        let locals: BTreeMap<_, _> = hierarchy
+            .nodes
+            .iter()
+            .map(|(&id, node)| (id, node.local.clone()))
+            .collect();
+        Ok(Some(Self {
+            component_clock: None,
+            controllers,
+            controller_owners,
+            published_locals: locals.clone(),
+            locals,
+            poses: BTreeMap::new(),
+            world: hierarchy.base_world_transforms(None)?,
+            affected: BTreeSet::new(),
+        }))
+    }
+    pub fn owns_controller(&self, block: u32) -> bool {
+        self.controllers.iter().any(|c| c.block == block)
+    }
+    pub fn prepare_effect_template(&mut self, ids: &BTreeSet<u32>) {
+        for controller in &mut self.controllers {
+            if ids.contains(&controller.block) {
+                controller.flags = effect_template_flags(controller.flags);
+            }
+        }
+    }
+    pub fn start_controller(&mut self, block: u32, time: f32) -> Result<()> {
+        let controller = self
+            .controllers
+            .iter_mut()
+            .find(|c| c.block == block)
+            .ok_or_else(|| anyhow::anyhow!("Transform controller {block} has no owner"))?;
+        controller.start_at(time);
+        Ok(())
+    }
+    pub fn stop_controller(&mut self, block: u32) -> Result<()> {
+        let controller = self
+            .controllers
+            .iter_mut()
+            .find(|c| c.block == block)
+            .ok_or_else(|| anyhow::anyhow!("Transform controller {block} has no owner"))?;
+        controller.stop();
+        Ok(())
+    }
+    pub fn update(&mut self, hierarchy: &Hierarchy, time: f32) -> Result<()> {
+        self.update_with_writes(hierarchy, time, |_, _| Ok(()))
+    }
+    /// Publish only writes performed by this update. Reapplying the cached
+    /// pose after an Unchanged outcome would overwrite later local edits.
+    pub fn update_with_writes(
+        &mut self,
+        hierarchy: &Hierarchy,
+        time: f32,
+        mut write: impl FnMut(u32, &Pose) -> Result<()>,
+    ) -> Result<()> {
+        // Reuse mutable state instead of rebuilding a map or replaying cached
+        // poses on every frame. Restore ownership even if an update fails.
+        let mut locals = std::mem::take(&mut self.locals);
+        let result = self.update_with_local_state(hierarchy, time, &mut locals, |target, pose| {
+            write(target, pose)
+        });
+        self.locals = locals;
+        result
+    }
+    /// Direct transform phase of the native downward walk. Publish each
+    /// node immediately after its own controllers. A later child's write to
+    /// an already visited node changes its local state, not its published
+    /// world frame until that node is visited again. This is not a substitute
+    /// for property controllers, mesh modifiers or particle pre/post phases.
+    pub fn update_with_local_state(
+        &mut self,
+        hierarchy: &Hierarchy,
+        time: f32,
+        locals: &mut BTreeMap<u32, NiTransform>,
+        mut write: impl FnMut(u32, &Pose) -> Result<()>,
+    ) -> Result<()> {
+        self.affected.clear();
+        let mut pending: Vec<_> = hierarchy
+            .roots
+            .iter()
+            .rev()
+            .flatten()
+            .map(|id| (*id, None, false))
+            .collect();
+        while let Some((id, parent, parent_animated)) = pending.pop() {
+            let node = &hierarchy.nodes[&id];
+            for attached in &node.controllers {
+                let Some(&owner) = self.controller_owners.get(&attached.block) else {
+                    continue;
+                };
+                match self.controllers[owner].update(time)? {
+                    Update::Pose { target, pose } => {
+                        write(target, &pose)?;
+                        let local = locals
+                            .get_mut(&target)
+                            .context("Transform controller targets missing local state")?;
+                        *local = pose.apply_to(local)?;
+                        let state = self.poses.entry(target).or_insert(Pose {
+                            translation: None,
+                            rotation: None,
+                            scale: None,
+                        });
+                        if pose.translation.is_some() {
+                            state.translation = pose.translation;
+                        }
+                        if pose.rotation.is_some() {
+                            state.rotation = pose.rotation;
+                        }
+                        if pose.scale.is_some() {
+                            state.scale = pose.scale;
+                        }
+                    }
+                    // These are native direct-update outcomes, not substitutes for
+                    // sequence-manager playback. Its missing integration is reported.
+                    Update::ManagerControlled
+                    | Update::Inactive
+                    | Update::Unchanged
+                    | Update::NoInterpolator
+                    | Update::NoValue => {}
+                }
+            }
+            let parent = parent
+                .map(|id| {
+                    self.world
+                        .get(&id)
+                        .context("Parent world frame has not been published")
+                })
+                .transpose()?;
+            let local = locals.get(&id).context("Node local state missing")?;
+            let world = super::scene_bounds::compose(parent, local)?;
+            self.published_locals.insert(id, local.clone());
+            self.world.insert(id, world);
+            let animated = parent_animated || self.poses.contains_key(&id);
+            if animated {
+                self.affected.insert(id);
+            }
+            pending.extend(
+                node.children
+                    .iter()
+                    .rev()
+                    .flatten()
+                    .map(|child| (*child, Some(id), animated)),
+            );
+        }
+        Ok(())
+    }
+    pub fn bounds(
+        &self,
+        hierarchy: &Hierarchy,
+        parent: &NiTransform,
+        previous: &BTreeMap<u32, super::scene_bounds::Sphere>,
+    ) -> Result<BTreeMap<u32, super::scene_bounds::Sphere>> {
+        // Only resolve the controller guard when every attached controller is
+        // a direct transform controller. Other bound producers stay explicit.
+        let world = hierarchy.base_world_transforms_with_overrides(
+            Some(parent),
+            &BTreeMap::new(),
+            &self.published_locals,
+        )?;
+        hierarchy.bounds_from_world(&world, previous, true, false)
+    }
+}
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn later_child_write_does_not_republish_its_already_visited_parent() -> Result<()> {
+        use epic_mickey_lib_rs::nif_file::{NiMeshData, NiNodeData, NiObject, NifFile, Vector3};
+        let reference: serde_json::Value = serde_json::from_str(include_str!(
+            "../../tools/blotworx/fixtures/model_update_order.json"
+        ))?;
+        let trace = reference["cases"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|case| {
+                case["nodes"]
+                    == serde_json::json!([{"id":0,"kind":"node","children":[1]},
+                {"id":1,"kind":"mesh","controllers":1}])
+                    && case["update_controllers"] == true
+            })
+            .context("Missing original parent-before-child-controller trace")?;
+        assert_eq!(
+            trace["calls"],
+            serde_json::json!([
+                ["world", 0],
+                ["controller", 1, 0],
+                ["modifiers", 1],
+                ["world", 1],
+                ["bound", 1]
+            ])
+        );
+        let mut root = NiNodeData::default();
+        root.base.transform.scale = 1.;
+        root.children = vec![Some(1)];
+        let mut child = NiMeshData::default();
+        child.base.base.transform.scale = 1.;
+        child.bound_center = Vector3 {
+            x: 2.,
+            y: 0.,
+            z: 0.,
+        };
+        child.bound_radius = 1.;
+        let mut graph = Hierarchy::load(&NifFile {
+            roots: vec![Some(0)],
+            blocks: vec![NiObject::NiNode(root), NiObject::NiMesh(child)],
+            ..Default::default()
+        })?;
+        graph
+            .nodes
+            .get_mut(&1)
+            .unwrap()
+            .controllers
+            .push(super::super::scene_bounds::Controller {
+                block: 10,
+                class_name: "NiTransformController".into(),
+                flags: 0x4d,
+                frequency: 1.,
+                phase: 0.,
+                start: 0.,
+                stop: 10.,
+                target: Some(0),
+                transform: Some(Ok(super::super::nif_transform::Interpolator {
+                    translation: [9., 0., 0.],
+                    rotation: [-f32::MAX; 4],
+                    scale: -f32::MAX,
+                    data: None,
+                    channels: None,
+                })),
+            });
+        let mut runtime = Instance::load(&graph)?.unwrap();
+        let mut locals = graph
+            .nodes
+            .iter()
+            .map(|(&id, node)| (id, node.local.clone()))
+            .collect();
+        runtime.update_with_local_state(&graph, 0., &mut locals, |_, _| Ok(()))?;
+        assert_eq!(locals[&0].translation.x, 9.);
+        assert_eq!(
+            runtime.world[&0].translation.x, 0.,
+            "Child retroactively published its parent"
+        );
+        assert_eq!(
+            runtime.world[&1].translation.x, 0.,
+            "Child used unpublished parent local state"
+        );
+        let bounds = runtime.bounds(&graph, &graph.nodes[&0].local, &BTreeMap::new())?;
+        assert_eq!(
+            bounds[&1].center[0], 2.,
+            "Bounds used a later local write instead of the published frame"
+        );
+        runtime.update_with_local_state(&graph, 0., &mut locals, |_, _| Ok(()))?;
+        assert_eq!(runtime.world[&0].translation.x, 9.);
+        assert_eq!(runtime.world[&1].translation.x, 9.);
+        assert_eq!(
+            runtime.bounds(&graph, &graph.nodes[&0].local, &BTreeMap::new())?[&1].center[0],
+            11.
+        );
+        Ok(())
+    }
+    #[test]
+    fn shared_transform_controller_has_one_playback_owner() -> Result<()> {
+        use epic_mickey_lib_rs::nif_file::{NiNodeData, NiObject, NifFile};
+        let mut root = NiNodeData::default();
+        root.base.transform.scale = 1.;
+        root.children = vec![Some(1)];
+        let mut child = NiNodeData::default();
+        child.base.transform.scale = 1.;
+        let mut graph = Hierarchy::load(&NifFile {
+            blocks: vec![NiObject::NiNode(root), NiObject::NiNode(child)],
+            roots: vec![Some(0)],
+            ..Default::default()
+        })?;
+        let c = super::super::scene_bounds::Controller {
+            block: 10,
+            class_name: "NiTransformController".into(),
+            flags: 0x45,
+            frequency: 1.,
+            phase: 0.,
+            start: 0.,
+            stop: 10.,
+            target: Some(0),
+            transform: Some(Ok(super::super::nif_transform::Interpolator {
+                translation: [1., 2., 3.],
+                rotation: [-f32::MAX; 4],
+                scale: -f32::MAX,
+                data: None,
+                channels: None,
+            })),
+        };
+        graph.nodes.get_mut(&0).unwrap().controllers.push(c.clone());
+        graph.nodes.get_mut(&1).unwrap().controllers.push(c);
+        let mut instance = Instance::load(&graph)?.unwrap();
+        assert_eq!(instance.controllers.len(), 1);
+        instance.start_controller(10, 12.25)?;
+        let mut writes = 0;
+        instance.update_with_writes(&graph, 12.25, |_, _| {
+            writes += 1;
+            Ok(())
+        })?;
+        assert_eq!(writes, 1);
+        Ok(())
+    }
+    #[test]
+    fn effect_template_flags_match_native_registration() -> Result<()> {
+        let data: serde_json::Value = serde_json::from_str(include_str!(
+            "../../tools/blotworx/fixtures/effect_template_flags.json"
+        ))?;
+        assert_eq!(data["cases"].as_array().unwrap().len(), 64);
+        for case in data["cases"].as_array().unwrap() {
+            assert_eq!(
+                effect_template_flags(case["flags"].as_u64().unwrap() as u16),
+                case["output"].as_u64().unwrap() as u16
+            );
+        }
+        Ok(())
+    }
+    #[test]
+    fn unchanged_controller_does_not_reapply_cached_pose_over_later_local_write() -> Result<()> {
+        use epic_mickey_lib_rs::nif_file::{NiNodeData, NiObject, NifFile};
+        let mut node = NiNodeData::default();
+        node.base.transform.scale = 1.;
+        let nif = NifFile {
+            blocks: vec![NiObject::NiNode(node)],
+            roots: vec![Some(0)],
+            ..Default::default()
+        };
+        let mut hierarchy = Hierarchy::load(&nif)?;
+        hierarchy.nodes.get_mut(&0).unwrap().controllers.push(
+            super::super::scene_bounds::Controller {
+                block: 10,
+                class_name: "NiTransformController".into(),
+                flags: 0x4d,
+                frequency: 1.,
+                phase: 0.,
+                start: 0.,
+                stop: 10.,
+                target: Some(0),
+                transform: Some(Ok(super::super::nif_transform::Interpolator {
+                    translation: [1., 2., 3.],
+                    rotation: [-f32::MAX; 4],
+                    scale: -f32::MAX,
+                    data: None,
+                    channels: None,
+                })),
+            },
+        );
+        let mut runtime = Instance::load(&hierarchy)?.unwrap();
+        let mut local = hierarchy.nodes[&0].local.clone();
+        runtime.update_with_writes(&hierarchy, 0., |_, pose| {
+            local = pose.apply_to(&local)?;
+            Ok(())
+        })?;
+        assert_eq!(local.translation.x, 1.);
+        local.translation.x = 9.;
+        runtime.update_with_writes(&hierarchy, 0., |_, pose| {
+            local = pose.apply_to(&local)?;
+            Ok(())
+        })?;
+        assert_eq!(
+            local.translation.x, 9.,
+            "Cached pose overwrote a later placement without an actual controller write"
+        );
+        runtime.update_with_writes(&hierarchy, 1., |_, pose| {
+            local = pose.apply_to(&local)?;
+            Ok(())
+        })?;
+        assert_eq!(
+            local.translation.x, 1.,
+            "A subsequent real controller write must still take effect"
+        );
+        Ok(())
+    }
+    #[test]
+    fn imported_bind_inverse_handles_rotation_scale_translation() -> Result<()> {
+        let bind = [
+            [0., -2., 0., 3.],
+            [3., 0., 0., 4.],
+            [0., 0., 4., 5.],
+            [0., 0., 0., 1.],
+        ];
+        let inverse = inverse(bind)?;
+        let flat = std::array::from_fn(|i| bind[i % 4][i / 4]);
+        let identity = super::super::skin::matrix_product(&flat, &inverse);
+        for (i, value) in identity.into_iter().enumerate() {
+            assert!((value - if i % 5 == 0 { 1. } else { 0. }).abs() < 1e-6);
+        }
+        let mut singular = bind;
+        singular[2] = [0.; 4];
+        assert!(super::inverse(singular).is_err());
+        Ok(())
+    }
+}
+pub fn matrix(t: &NiTransform) -> [f32; 16] {
+    std::array::from_fn(|i| {
+        let (row, col) = (i % 4, i / 4);
+        if row < 3 && col < 3 {
+            t.rotation.rows[row][col] * t.scale
+        } else if col == 3 && row < 3 {
+            [t.translation.x, t.translation.y, t.translation.z][row]
+        } else if row == 3 && col == 3 {
+            1.
+        } else {
+            0.
+        }
+    })
+}
+/// Invert the actual transform baked into imported vertices, once at load.
+pub fn inverse(m: [[f32; 4]; 4]) -> Result<[f32; 16]> {
+    ensure!(
+        m.iter().flatten().all(|v| v.is_finite()) && m[3] == [0., 0., 0., 1.],
+        "Invalid mesh bind transform"
+    );
+    let cross = |a: [f64; 3], b: [f64; 3]| {
+        [
+            a[1] * b[2] - a[2] * b[1],
+            a[2] * b[0] - a[0] * b[2],
+            a[0] * b[1] - a[1] * b[0],
+        ]
+    };
+    let rows: [[f64; 3]; 3] = std::array::from_fn(|r| std::array::from_fn(|c| m[r][c] as f64));
+    let cof = [
+        cross(rows[1], rows[2]),
+        cross(rows[2], rows[0]),
+        cross(rows[0], rows[1]),
+    ];
+    let determinant = (0..3).map(|i| rows[0][i] * cof[0][i]).sum::<f64>();
+    ensure!(
+        determinant != 0. && determinant.is_finite(),
+        "Singular mesh bind transform requires original local vertices"
+    );
+    let mut out = [0.; 16];
+    out[15] = 1.;
+    for r in 0..3 {
+        for c in 0..3 {
+            out[c * 4 + r] = (cof[c][r] / determinant) as f32;
+        }
+        out[12 + r] = -(0..3)
+            .map(|c| cof[c][r] / determinant * m[c][3] as f64)
+            .sum::<f64>() as f32;
+    }
+    ensure!(
+        out.iter().all(|v| v.is_finite()),
+        "Mesh bind inverse overflow"
+    );
+    Ok(out)
+}

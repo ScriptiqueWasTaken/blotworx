@@ -1,0 +1,20 @@
+{
+  "repository": "https://github.com/icculus/mojoshader",
+  "revision": "ad5dff84830c2863c841f4b1f4e3df78c705b383",
+  "license": "zlib",
+  "source_changes": false,
+  "purpose": "Original Direct3D shader bytecode translation; upstream sources unmodified; Blotworx bridge lives outside vendor directory.",
+  "files": {
+    "LICENSE.txt": "45ef88b10f267efa7cd4cf9415096f3078d184be60bde56b5886e22d8f747a29",
+    "mojoshader.c": "4e486d1d4b8e57cb874c4cc3a57247af1d1926dfffa10343195d767f5563f1a4",
+    "mojoshader.h": "62558d0c07d69cf743df315a7736f3da6209f276601ca27a46f342d8ee26e5c4",
+    "mojoshader_common.c": "7adc6c7a47874e66d0fc56ad3d722e38dabd36e80bdc6892c8c8852a64f47ae3",
+    "mojoshader_internal.h": "db6d37ef10be8593a9fa63d83e3874d24e2ebad43c36190e342b9641e33dcad9",
+    "README.md": "0425aeb3762a9f57ff268dcc8410a03cb312536869390cbcf49255f26871d6c2",
+    "profiles/mojoshader_profile.h": "dc65b228b7446d07ef3280577a1ba8e5e580578cb75ccb008a9ea8430cf39090",
+    "profiles/mojoshader_profile_common.c": "4c3cf7294674231110d9388fc2463b359e521a38477c7ff110e4cefcc1c8f306",
+    "profiles/mojoshader_profile_glsl.c": "0ae5b44eb4bb6a968887b7da936b6bc5fca9bf16d67463cbc35b102e1cb27ccb"
+  },
+  "effect_runtime_enabled": false,
+  "cpu_preshader_policy": "Retain original CPU bytecode separately; translate GPU stream without executing the unmodified upstream preshader parser."
+}

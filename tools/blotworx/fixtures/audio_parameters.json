@@ -1,0 +1,150 @@
+{
+  "scope": "Execute original static node conversion and voice pitch clamp/exponent.\nceil/floor/pow and compiler save thunks are supplied boundaries. Native SRC,\nLPF, hierarchy aggregation, RTPC and randomized parameters are not covered.\n",
+  "dol_sha256": "994779fa2e276983efdb50f02c406568f285a82558cb5d54bbdf74651a98a920",
+  "parameters": [
+    {
+      "input_bits": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "native": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "input_bits": [
+        3240099840,
+        0,
+        3272998912,
+        1100480512
+      ],
+      "native": [
+        -100,
+        0,
+        -150,
+        19
+      ]
+    },
+    {
+      "input_bits": [
+        1028443341,
+        3175926989,
+        1125574246,
+        1100952371
+      ],
+      "native": [
+        1,
+        -1,
+        150,
+        19
+      ]
+    },
+    {
+      "input_bits": [
+        3175658553,
+        1028174905,
+        3273057894,
+        3220386611
+      ],
+      "native": [
+        0,
+        0,
+        -150,
+        255
+      ]
+    },
+    {
+      "input_bits": [
+        1162661069,
+        3310145126,
+        1191182336,
+        1132462080
+      ],
+      "native": [
+        -32768,
+        32767,
+        -32768,
+        0
+      ]
+    },
+    {
+      "input_bits": [
+        1041865114,
+        3189348762,
+        1056964608,
+        1065185444
+      ],
+      "native": [
+        2,
+        -2,
+        0,
+        0
+      ]
+    },
+    {
+      "input_bits": [
+        3189348762,
+        1041865114,
+        3204448256,
+        1120403456
+      ],
+      "native": [
+        -2,
+        2,
+        0,
+        100
+      ]
+    }
+  ],
+  "pitch": [
+    {
+      "input_bits": 3317399552,
+      "ratio_bits": 1048576000
+    },
+    {
+      "input_bits": 3306557440,
+      "ratio_bits": 1048576000
+    },
+    {
+      "input_bits": 3306553344,
+      "ratio_bits": 1048576000
+    },
+    {
+      "input_bits": 3298164736,
+      "ratio_bits": 1056964608
+    },
+    {
+      "input_bits": 3272998912,
+      "ratio_bits": 1063960775
+    },
+    {
+      "input_bits": 0,
+      "ratio_bits": 1065353216
+    },
+    {
+      "input_bits": 1056964608,
+      "ratio_bits": 1065355639
+    },
+    {
+      "input_bits": 1150681088,
+      "ratio_bits": 1073741824
+    },
+    {
+      "input_bits": 1159069696,
+      "ratio_bits": 1082130432
+    },
+    {
+      "input_bits": 1159073792,
+      "ratio_bits": 1082130432
+    },
+    {
+      "input_bits": 1169915904,
+      "ratio_bits": 1082130432
+    }
+  ]
+}

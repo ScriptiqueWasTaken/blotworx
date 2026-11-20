@@ -1,0 +1,3141 @@
+{
+  "scope": "Original workspace resize with concrete goto virtual54 reset and list\noperations. Only allocation/free services are supplied. Initial traversal has\nno selected seed node (native constructor word40=-1); no World search executes.\n",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "dol_sha256": "994779fa2e276983efdb50f02c406568f285a82558cb5d54bbdf74651a98a920",
+  "cases": [
+    {
+      "input": {
+        "initial": null,
+        "requested": 0,
+        "observer": false,
+        "real_reset": true
+      },
+      "trace": [
+        [
+          "allocate",
+          28,
+          100
+        ],
+        [
+          "allocate",
+          108,
+          101
+        ],
+        [
+          "allocate",
+          28,
+          102
+        ],
+        [
+          "allocate",
+          108,
+          103
+        ],
+        [
+          "reset",
+          1,
+          [
+            100,
+            102
+          ]
+        ]
+      ],
+      "state": {
+        "count": 1,
+        "pools": [
+          100,
+          102
+        ],
+        "target": 4294967295
+      },
+      "store": {
+        "pools": {
+          "100": {
+            "allocation": 101,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 1,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          },
+          "102": {
+            "allocation": 103,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 1,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          }
+        }
+      },
+      "instructions": 447
+    },
+    {
+      "input": {
+        "initial": null,
+        "requested": 0,
+        "observer": true,
+        "real_reset": true
+      },
+      "trace": [
+        [
+          "allocate",
+          28,
+          100
+        ],
+        [
+          "observer",
+          100,
+          28,
+          123
+        ],
+        [
+          "allocate",
+          108,
+          101
+        ],
+        [
+          "observer",
+          101,
+          108,
+          123
+        ],
+        [
+          "allocate",
+          28,
+          102
+        ],
+        [
+          "observer",
+          102,
+          28,
+          123
+        ],
+        [
+          "allocate",
+          108,
+          103
+        ],
+        [
+          "observer",
+          103,
+          108,
+          123
+        ],
+        [
+          "reset",
+          1,
+          [
+            100,
+            102
+          ]
+        ]
+      ],
+      "state": {
+        "count": 1,
+        "pools": [
+          100,
+          102
+        ],
+        "target": 4294967295
+      },
+      "store": {
+        "pools": {
+          "100": {
+            "allocation": 101,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 1,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          },
+          "102": {
+            "allocation": 103,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 1,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          }
+        }
+      },
+      "instructions": 463
+    },
+    {
+      "input": {
+        "initial": null,
+        "requested": 1,
+        "observer": false,
+        "real_reset": true
+      },
+      "trace": [
+        [
+          "allocate",
+          28,
+          100
+        ],
+        [
+          "allocate",
+          108,
+          101
+        ],
+        [
+          "allocate",
+          28,
+          102
+        ],
+        [
+          "allocate",
+          108,
+          103
+        ],
+        [
+          "reset",
+          1,
+          [
+            100,
+            102
+          ]
+        ]
+      ],
+      "state": {
+        "count": 1,
+        "pools": [
+          100,
+          102
+        ],
+        "target": 4294967295
+      },
+      "store": {
+        "pools": {
+          "100": {
+            "allocation": 101,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 1,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          },
+          "102": {
+            "allocation": 103,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 1,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          }
+        }
+      },
+      "instructions": 448
+    },
+    {
+      "input": {
+        "initial": null,
+        "requested": 1,
+        "observer": true,
+        "real_reset": true
+      },
+      "trace": [
+        [
+          "allocate",
+          28,
+          100
+        ],
+        [
+          "observer",
+          100,
+          28,
+          123
+        ],
+        [
+          "allocate",
+          108,
+          101
+        ],
+        [
+          "observer",
+          101,
+          108,
+          123
+        ],
+        [
+          "allocate",
+          28,
+          102
+        ],
+        [
+          "observer",
+          102,
+          28,
+          123
+        ],
+        [
+          "allocate",
+          108,
+          103
+        ],
+        [
+          "observer",
+          103,
+          108,
+          123
+        ],
+        [
+          "reset",
+          1,
+          [
+            100,
+            102
+          ]
+        ]
+      ],
+      "state": {
+        "count": 1,
+        "pools": [
+          100,
+          102
+        ],
+        "target": 4294967295
+      },
+      "store": {
+        "pools": {
+          "100": {
+            "allocation": 101,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 1,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          },
+          "102": {
+            "allocation": 103,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 1,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          }
+        }
+      },
+      "instructions": 464
+    },
+    {
+      "input": {
+        "initial": null,
+        "requested": 3,
+        "observer": false,
+        "real_reset": true
+      },
+      "trace": [
+        [
+          "allocate",
+          28,
+          100
+        ],
+        [
+          "allocate",
+          292,
+          101
+        ],
+        [
+          "allocate",
+          28,
+          102
+        ],
+        [
+          "allocate",
+          292,
+          103
+        ],
+        [
+          "reset",
+          3,
+          [
+            100,
+            102
+          ]
+        ]
+      ],
+      "state": {
+        "count": 3,
+        "pools": [
+          100,
+          102
+        ],
+        "target": 4294967295
+      },
+      "store": {
+        "pools": {
+          "100": {
+            "allocation": 101,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 3,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": 1,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 0,
+                "next": 2,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 1,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          },
+          "102": {
+            "allocation": 103,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 3,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": 1,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 0,
+                "next": 2,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 1,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          }
+        }
+      },
+      "instructions": 736
+    },
+    {
+      "input": {
+        "initial": null,
+        "requested": 3,
+        "observer": true,
+        "real_reset": true
+      },
+      "trace": [
+        [
+          "allocate",
+          28,
+          100
+        ],
+        [
+          "observer",
+          100,
+          28,
+          123
+        ],
+        [
+          "allocate",
+          292,
+          101
+        ],
+        [
+          "observer",
+          101,
+          292,
+          123
+        ],
+        [
+          "allocate",
+          28,
+          102
+        ],
+        [
+          "observer",
+          102,
+          28,
+          123
+        ],
+        [
+          "allocate",
+          292,
+          103
+        ],
+        [
+          "observer",
+          103,
+          292,
+          123
+        ],
+        [
+          "reset",
+          3,
+          [
+            100,
+            102
+          ]
+        ]
+      ],
+      "state": {
+        "count": 3,
+        "pools": [
+          100,
+          102
+        ],
+        "target": 4294967295
+      },
+      "store": {
+        "pools": {
+          "100": {
+            "allocation": 101,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 3,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": 1,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 0,
+                "next": 2,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 1,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          },
+          "102": {
+            "allocation": 103,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 3,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": 1,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 0,
+                "next": 2,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 1,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          }
+        }
+      },
+      "instructions": 752
+    },
+    {
+      "input": {
+        "initial": 1,
+        "requested": 0,
+        "observer": false,
+        "real_reset": true
+      },
+      "trace": [
+        [
+          "reset",
+          1,
+          [
+            100,
+            102
+          ]
+        ]
+      ],
+      "state": {
+        "count": 1,
+        "pools": [
+          100,
+          102
+        ],
+        "target": 4294967295
+      },
+      "store": {
+        "pools": {
+          "100": {
+            "allocation": 101,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 1,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          },
+          "102": {
+            "allocation": 103,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 1,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          }
+        }
+      },
+      "instructions": 546
+    },
+    {
+      "input": {
+        "initial": 1,
+        "requested": 0,
+        "observer": true,
+        "real_reset": true
+      },
+      "trace": [
+        [
+          "reset",
+          1,
+          [
+            100,
+            102
+          ]
+        ]
+      ],
+      "state": {
+        "count": 1,
+        "pools": [
+          100,
+          102
+        ],
+        "target": 4294967295
+      },
+      "store": {
+        "pools": {
+          "100": {
+            "allocation": 101,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 1,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          },
+          "102": {
+            "allocation": 103,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 1,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          }
+        }
+      },
+      "instructions": 562
+    },
+    {
+      "input": {
+        "initial": 1,
+        "requested": 1,
+        "observer": false,
+        "real_reset": true
+      },
+      "trace": [
+        [
+          "reset",
+          1,
+          [
+            100,
+            102
+          ]
+        ]
+      ],
+      "state": {
+        "count": 1,
+        "pools": [
+          100,
+          102
+        ],
+        "target": 4294967295
+      },
+      "store": {
+        "pools": {
+          "100": {
+            "allocation": 101,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 1,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          },
+          "102": {
+            "allocation": 103,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 1,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          }
+        }
+      },
+      "instructions": 547
+    },
+    {
+      "input": {
+        "initial": 1,
+        "requested": 1,
+        "observer": true,
+        "real_reset": true
+      },
+      "trace": [
+        [
+          "reset",
+          1,
+          [
+            100,
+            102
+          ]
+        ]
+      ],
+      "state": {
+        "count": 1,
+        "pools": [
+          100,
+          102
+        ],
+        "target": 4294967295
+      },
+      "store": {
+        "pools": {
+          "100": {
+            "allocation": 101,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 1,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          },
+          "102": {
+            "allocation": 103,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 1,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          }
+        }
+      },
+      "instructions": 563
+    },
+    {
+      "input": {
+        "initial": 1,
+        "requested": 3,
+        "observer": false,
+        "real_reset": true
+      },
+      "trace": [
+        [
+          "free",
+          101,
+          [
+            100,
+            102
+          ]
+        ],
+        [
+          "free",
+          100,
+          [
+            100,
+            102
+          ]
+        ],
+        [
+          "free",
+          103,
+          [
+            null,
+            102
+          ]
+        ],
+        [
+          "free",
+          102,
+          [
+            null,
+            102
+          ]
+        ],
+        [
+          "allocate",
+          28,
+          104
+        ],
+        [
+          "allocate",
+          292,
+          105
+        ],
+        [
+          "allocate",
+          28,
+          106
+        ],
+        [
+          "allocate",
+          292,
+          107
+        ],
+        [
+          "reset",
+          3,
+          [
+            104,
+            106
+          ]
+        ]
+      ],
+      "state": {
+        "count": 3,
+        "pools": [
+          104,
+          106
+        ],
+        "target": 4294967295
+      },
+      "store": {
+        "pools": {
+          "104": {
+            "allocation": 105,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 3,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": 1,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 0,
+                "next": 2,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 1,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          },
+          "106": {
+            "allocation": 107,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 3,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": 1,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 0,
+                "next": 2,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 1,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          }
+        }
+      },
+      "instructions": 1386
+    },
+    {
+      "input": {
+        "initial": 1,
+        "requested": 3,
+        "observer": true,
+        "real_reset": true
+      },
+      "trace": [
+        [
+          "free",
+          101,
+          [
+            100,
+            102
+          ]
+        ],
+        [
+          "free",
+          100,
+          [
+            100,
+            102
+          ]
+        ],
+        [
+          "free",
+          103,
+          [
+            null,
+            102
+          ]
+        ],
+        [
+          "free",
+          102,
+          [
+            null,
+            102
+          ]
+        ],
+        [
+          "allocate",
+          28,
+          104
+        ],
+        [
+          "observer",
+          104,
+          28,
+          123
+        ],
+        [
+          "allocate",
+          292,
+          105
+        ],
+        [
+          "observer",
+          105,
+          292,
+          123
+        ],
+        [
+          "allocate",
+          28,
+          106
+        ],
+        [
+          "observer",
+          106,
+          28,
+          123
+        ],
+        [
+          "allocate",
+          292,
+          107
+        ],
+        [
+          "observer",
+          107,
+          292,
+          123
+        ],
+        [
+          "reset",
+          3,
+          [
+            104,
+            106
+          ]
+        ]
+      ],
+      "state": {
+        "count": 3,
+        "pools": [
+          104,
+          106
+        ],
+        "target": 4294967295
+      },
+      "store": {
+        "pools": {
+          "104": {
+            "allocation": 105,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 3,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": 1,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 0,
+                "next": 2,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 1,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          },
+          "106": {
+            "allocation": 107,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 3,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": 1,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 0,
+                "next": 2,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 1,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          }
+        }
+      },
+      "instructions": 1418
+    },
+    {
+      "input": {
+        "initial": 2,
+        "requested": 0,
+        "observer": false,
+        "real_reset": true
+      },
+      "trace": [
+        [
+          "reset",
+          2,
+          [
+            100,
+            102
+          ]
+        ]
+      ],
+      "state": {
+        "count": 2,
+        "pools": [
+          100,
+          102
+        ],
+        "target": 4294967295
+      },
+      "store": {
+        "pools": {
+          "100": {
+            "allocation": 101,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 2,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": 1,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 0,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          },
+          "102": {
+            "allocation": 103,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 2,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": 1,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 0,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          }
+        }
+      },
+      "instructions": 690
+    },
+    {
+      "input": {
+        "initial": 2,
+        "requested": 0,
+        "observer": true,
+        "real_reset": true
+      },
+      "trace": [
+        [
+          "reset",
+          2,
+          [
+            100,
+            102
+          ]
+        ]
+      ],
+      "state": {
+        "count": 2,
+        "pools": [
+          100,
+          102
+        ],
+        "target": 4294967295
+      },
+      "store": {
+        "pools": {
+          "100": {
+            "allocation": 101,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 2,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": 1,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 0,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          },
+          "102": {
+            "allocation": 103,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 2,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": 1,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 0,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          }
+        }
+      },
+      "instructions": 706
+    },
+    {
+      "input": {
+        "initial": 2,
+        "requested": 1,
+        "observer": false,
+        "real_reset": true
+      },
+      "trace": [
+        [
+          "reset",
+          2,
+          [
+            100,
+            102
+          ]
+        ]
+      ],
+      "state": {
+        "count": 2,
+        "pools": [
+          100,
+          102
+        ],
+        "target": 4294967295
+      },
+      "store": {
+        "pools": {
+          "100": {
+            "allocation": 101,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 2,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": 1,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 0,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          },
+          "102": {
+            "allocation": 103,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 2,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": 1,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 0,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          }
+        }
+      },
+      "instructions": 691
+    },
+    {
+      "input": {
+        "initial": 2,
+        "requested": 1,
+        "observer": true,
+        "real_reset": true
+      },
+      "trace": [
+        [
+          "reset",
+          2,
+          [
+            100,
+            102
+          ]
+        ]
+      ],
+      "state": {
+        "count": 2,
+        "pools": [
+          100,
+          102
+        ],
+        "target": 4294967295
+      },
+      "store": {
+        "pools": {
+          "100": {
+            "allocation": 101,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 2,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": 1,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 0,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          },
+          "102": {
+            "allocation": 103,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 2,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": 1,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 0,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          }
+        }
+      },
+      "instructions": 707
+    },
+    {
+      "input": {
+        "initial": 2,
+        "requested": 3,
+        "observer": false,
+        "real_reset": true
+      },
+      "trace": [
+        [
+          "free",
+          101,
+          [
+            100,
+            102
+          ]
+        ],
+        [
+          "free",
+          100,
+          [
+            100,
+            102
+          ]
+        ],
+        [
+          "free",
+          103,
+          [
+            null,
+            102
+          ]
+        ],
+        [
+          "free",
+          102,
+          [
+            null,
+            102
+          ]
+        ],
+        [
+          "allocate",
+          28,
+          104
+        ],
+        [
+          "allocate",
+          292,
+          105
+        ],
+        [
+          "allocate",
+          28,
+          106
+        ],
+        [
+          "allocate",
+          292,
+          107
+        ],
+        [
+          "reset",
+          3,
+          [
+            104,
+            106
+          ]
+        ]
+      ],
+      "state": {
+        "count": 3,
+        "pools": [
+          104,
+          106
+        ],
+        "target": 4294967295
+      },
+      "store": {
+        "pools": {
+          "104": {
+            "allocation": 105,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 3,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": 1,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 0,
+                "next": 2,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 1,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          },
+          "106": {
+            "allocation": 107,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 3,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": 1,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 0,
+                "next": 2,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 1,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          }
+        }
+      },
+      "instructions": 1578
+    },
+    {
+      "input": {
+        "initial": 2,
+        "requested": 3,
+        "observer": true,
+        "real_reset": true
+      },
+      "trace": [
+        [
+          "free",
+          101,
+          [
+            100,
+            102
+          ]
+        ],
+        [
+          "free",
+          100,
+          [
+            100,
+            102
+          ]
+        ],
+        [
+          "free",
+          103,
+          [
+            null,
+            102
+          ]
+        ],
+        [
+          "free",
+          102,
+          [
+            null,
+            102
+          ]
+        ],
+        [
+          "allocate",
+          28,
+          104
+        ],
+        [
+          "observer",
+          104,
+          28,
+          123
+        ],
+        [
+          "allocate",
+          292,
+          105
+        ],
+        [
+          "observer",
+          105,
+          292,
+          123
+        ],
+        [
+          "allocate",
+          28,
+          106
+        ],
+        [
+          "observer",
+          106,
+          28,
+          123
+        ],
+        [
+          "allocate",
+          292,
+          107
+        ],
+        [
+          "observer",
+          107,
+          292,
+          123
+        ],
+        [
+          "reset",
+          3,
+          [
+            104,
+            106
+          ]
+        ]
+      ],
+      "state": {
+        "count": 3,
+        "pools": [
+          104,
+          106
+        ],
+        "target": 4294967295
+      },
+      "store": {
+        "pools": {
+          "104": {
+            "allocation": 105,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 3,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": 1,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 0,
+                "next": 2,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 1,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          },
+          "106": {
+            "allocation": 107,
+            "active_head": null,
+            "active_tail": null,
+            "free_head": 0,
+            "word14": 0,
+            "count": 3,
+            "nodes": [
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": null,
+                "next": 1,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 0,
+                "next": 2,
+                "byte58": 0
+              },
+              {
+                "word8": -1,
+                "values_c_14": [
+                  0,
+                  0,
+                  0
+                ],
+                "word18": 0,
+                "word1c": -1,
+                "values20_24": [
+                  2139095039,
+                  2139095039
+                ],
+                "scalar2c": 0,
+                "word30": 0,
+                "values34_3c": [
+                  2139095039,
+                  2139095039,
+                  2139095039
+                ],
+                "word44": 0,
+                "word4c": 0,
+                "previous": 1,
+                "next": null,
+                "byte58": 0
+              }
+            ]
+          }
+        }
+      },
+      "instructions": 1610
+    }
+  ]
+}

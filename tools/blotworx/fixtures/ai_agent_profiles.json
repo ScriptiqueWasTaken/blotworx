@@ -1,0 +1,1304 @@
+{
+  "scope": "Native EM1 navigation descriptor/profile builders; string/tree services supplied.\nDoes not create Kynapse agents, run navigation or validate NPC trajectories.\n",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "descriptors": [
+    {
+      "radius": -1,
+      "height": -1,
+      "movement": 0,
+      "name": "",
+      "instructions": 34
+    },
+    {
+      "radius": -1,
+      "height": -1,
+      "movement": 1,
+      "name": "Biped",
+      "instructions": 39
+    },
+    {
+      "radius": -1,
+      "height": -1,
+      "movement": 2,
+      "name": "",
+      "instructions": 34
+    },
+    {
+      "radius": -1,
+      "height": 0,
+      "movement": 0,
+      "name": "Short",
+      "instructions": 35
+    },
+    {
+      "radius": -1,
+      "height": 0,
+      "movement": 1,
+      "name": "ShortBiped",
+      "instructions": 40
+    },
+    {
+      "radius": -1,
+      "height": 0,
+      "movement": 2,
+      "name": "Short",
+      "instructions": 35
+    },
+    {
+      "radius": -1,
+      "height": 1,
+      "movement": 0,
+      "name": "",
+      "instructions": 37
+    },
+    {
+      "radius": -1,
+      "height": 1,
+      "movement": 1,
+      "name": "Biped",
+      "instructions": 42
+    },
+    {
+      "radius": -1,
+      "height": 1,
+      "movement": 2,
+      "name": "",
+      "instructions": 37
+    },
+    {
+      "radius": -1,
+      "height": 2,
+      "movement": 0,
+      "name": "Tall",
+      "instructions": 38
+    },
+    {
+      "radius": -1,
+      "height": 2,
+      "movement": 1,
+      "name": "TallBiped",
+      "instructions": 43
+    },
+    {
+      "radius": -1,
+      "height": 2,
+      "movement": 2,
+      "name": "Tall",
+      "instructions": 38
+    },
+    {
+      "radius": -1,
+      "height": 3,
+      "movement": 0,
+      "name": "",
+      "instructions": 34
+    },
+    {
+      "radius": -1,
+      "height": 3,
+      "movement": 1,
+      "name": "Biped",
+      "instructions": 39
+    },
+    {
+      "radius": -1,
+      "height": 3,
+      "movement": 2,
+      "name": "",
+      "instructions": 34
+    },
+    {
+      "radius": -1,
+      "height": 12,
+      "movement": 0,
+      "name": "",
+      "instructions": 34
+    },
+    {
+      "radius": -1,
+      "height": 12,
+      "movement": 1,
+      "name": "Biped",
+      "instructions": 39
+    },
+    {
+      "radius": -1,
+      "height": 12,
+      "movement": 2,
+      "name": "",
+      "instructions": 34
+    },
+    {
+      "radius": 0,
+      "height": -1,
+      "movement": 0,
+      "name": "Thin",
+      "instructions": 37
+    },
+    {
+      "radius": 0,
+      "height": -1,
+      "movement": 1,
+      "name": "ThinBiped",
+      "instructions": 42
+    },
+    {
+      "radius": 0,
+      "height": -1,
+      "movement": 2,
+      "name": "Thin",
+      "instructions": 37
+    },
+    {
+      "radius": 0,
+      "height": 0,
+      "movement": 0,
+      "name": "ShortThin",
+      "instructions": 38
+    },
+    {
+      "radius": 0,
+      "height": 0,
+      "movement": 1,
+      "name": "ShortThinBiped",
+      "instructions": 43
+    },
+    {
+      "radius": 0,
+      "height": 0,
+      "movement": 2,
+      "name": "ShortThin",
+      "instructions": 38
+    },
+    {
+      "radius": 0,
+      "height": 1,
+      "movement": 0,
+      "name": "Thin",
+      "instructions": 40
+    },
+    {
+      "radius": 0,
+      "height": 1,
+      "movement": 1,
+      "name": "ThinBiped",
+      "instructions": 45
+    },
+    {
+      "radius": 0,
+      "height": 1,
+      "movement": 2,
+      "name": "Thin",
+      "instructions": 40
+    },
+    {
+      "radius": 0,
+      "height": 2,
+      "movement": 0,
+      "name": "TallThin",
+      "instructions": 41
+    },
+    {
+      "radius": 0,
+      "height": 2,
+      "movement": 1,
+      "name": "TallThinBiped",
+      "instructions": 46
+    },
+    {
+      "radius": 0,
+      "height": 2,
+      "movement": 2,
+      "name": "TallThin",
+      "instructions": 41
+    },
+    {
+      "radius": 0,
+      "height": 3,
+      "movement": 0,
+      "name": "Thin",
+      "instructions": 37
+    },
+    {
+      "radius": 0,
+      "height": 3,
+      "movement": 1,
+      "name": "ThinBiped",
+      "instructions": 42
+    },
+    {
+      "radius": 0,
+      "height": 3,
+      "movement": 2,
+      "name": "Thin",
+      "instructions": 37
+    },
+    {
+      "radius": 0,
+      "height": 12,
+      "movement": 0,
+      "name": "Thin",
+      "instructions": 37
+    },
+    {
+      "radius": 0,
+      "height": 12,
+      "movement": 1,
+      "name": "ThinBiped",
+      "instructions": 42
+    },
+    {
+      "radius": 0,
+      "height": 12,
+      "movement": 2,
+      "name": "Thin",
+      "instructions": 37
+    },
+    {
+      "radius": 1,
+      "height": -1,
+      "movement": 0,
+      "name": "",
+      "instructions": 34
+    },
+    {
+      "radius": 1,
+      "height": -1,
+      "movement": 1,
+      "name": "Biped",
+      "instructions": 39
+    },
+    {
+      "radius": 1,
+      "height": -1,
+      "movement": 2,
+      "name": "",
+      "instructions": 34
+    },
+    {
+      "radius": 1,
+      "height": 0,
+      "movement": 0,
+      "name": "Short",
+      "instructions": 35
+    },
+    {
+      "radius": 1,
+      "height": 0,
+      "movement": 1,
+      "name": "ShortBiped",
+      "instructions": 40
+    },
+    {
+      "radius": 1,
+      "height": 0,
+      "movement": 2,
+      "name": "Short",
+      "instructions": 35
+    },
+    {
+      "radius": 1,
+      "height": 1,
+      "movement": 0,
+      "name": "",
+      "instructions": 37
+    },
+    {
+      "radius": 1,
+      "height": 1,
+      "movement": 1,
+      "name": "Biped",
+      "instructions": 42
+    },
+    {
+      "radius": 1,
+      "height": 1,
+      "movement": 2,
+      "name": "",
+      "instructions": 37
+    },
+    {
+      "radius": 1,
+      "height": 2,
+      "movement": 0,
+      "name": "Tall",
+      "instructions": 38
+    },
+    {
+      "radius": 1,
+      "height": 2,
+      "movement": 1,
+      "name": "TallBiped",
+      "instructions": 43
+    },
+    {
+      "radius": 1,
+      "height": 2,
+      "movement": 2,
+      "name": "Tall",
+      "instructions": 38
+    },
+    {
+      "radius": 1,
+      "height": 3,
+      "movement": 0,
+      "name": "",
+      "instructions": 34
+    },
+    {
+      "radius": 1,
+      "height": 3,
+      "movement": 1,
+      "name": "Biped",
+      "instructions": 39
+    },
+    {
+      "radius": 1,
+      "height": 3,
+      "movement": 2,
+      "name": "",
+      "instructions": 34
+    },
+    {
+      "radius": 1,
+      "height": 12,
+      "movement": 0,
+      "name": "",
+      "instructions": 34
+    },
+    {
+      "radius": 1,
+      "height": 12,
+      "movement": 1,
+      "name": "Biped",
+      "instructions": 39
+    },
+    {
+      "radius": 1,
+      "height": 12,
+      "movement": 2,
+      "name": "",
+      "instructions": 34
+    },
+    {
+      "radius": 2,
+      "height": -1,
+      "movement": 0,
+      "name": "Wide",
+      "instructions": 38
+    },
+    {
+      "radius": 2,
+      "height": -1,
+      "movement": 1,
+      "name": "WideBiped",
+      "instructions": 43
+    },
+    {
+      "radius": 2,
+      "height": -1,
+      "movement": 2,
+      "name": "Wide",
+      "instructions": 38
+    },
+    {
+      "radius": 2,
+      "height": 0,
+      "movement": 0,
+      "name": "ShortWide",
+      "instructions": 39
+    },
+    {
+      "radius": 2,
+      "height": 0,
+      "movement": 1,
+      "name": "ShortWideBiped",
+      "instructions": 44
+    },
+    {
+      "radius": 2,
+      "height": 0,
+      "movement": 2,
+      "name": "ShortWide",
+      "instructions": 39
+    },
+    {
+      "radius": 2,
+      "height": 1,
+      "movement": 0,
+      "name": "Wide",
+      "instructions": 41
+    },
+    {
+      "radius": 2,
+      "height": 1,
+      "movement": 1,
+      "name": "WideBiped",
+      "instructions": 46
+    },
+    {
+      "radius": 2,
+      "height": 1,
+      "movement": 2,
+      "name": "Wide",
+      "instructions": 41
+    },
+    {
+      "radius": 2,
+      "height": 2,
+      "movement": 0,
+      "name": "TallWide",
+      "instructions": 42
+    },
+    {
+      "radius": 2,
+      "height": 2,
+      "movement": 1,
+      "name": "TallWideBiped",
+      "instructions": 47
+    },
+    {
+      "radius": 2,
+      "height": 2,
+      "movement": 2,
+      "name": "TallWide",
+      "instructions": 42
+    },
+    {
+      "radius": 2,
+      "height": 3,
+      "movement": 0,
+      "name": "Wide",
+      "instructions": 38
+    },
+    {
+      "radius": 2,
+      "height": 3,
+      "movement": 1,
+      "name": "WideBiped",
+      "instructions": 43
+    },
+    {
+      "radius": 2,
+      "height": 3,
+      "movement": 2,
+      "name": "Wide",
+      "instructions": 38
+    },
+    {
+      "radius": 2,
+      "height": 12,
+      "movement": 0,
+      "name": "Wide",
+      "instructions": 38
+    },
+    {
+      "radius": 2,
+      "height": 12,
+      "movement": 1,
+      "name": "WideBiped",
+      "instructions": 43
+    },
+    {
+      "radius": 2,
+      "height": 12,
+      "movement": 2,
+      "name": "Wide",
+      "instructions": 38
+    },
+    {
+      "radius": 3,
+      "height": -1,
+      "movement": 0,
+      "name": "",
+      "instructions": 34
+    },
+    {
+      "radius": 3,
+      "height": -1,
+      "movement": 1,
+      "name": "Biped",
+      "instructions": 39
+    },
+    {
+      "radius": 3,
+      "height": -1,
+      "movement": 2,
+      "name": "",
+      "instructions": 34
+    },
+    {
+      "radius": 3,
+      "height": 0,
+      "movement": 0,
+      "name": "Short",
+      "instructions": 35
+    },
+    {
+      "radius": 3,
+      "height": 0,
+      "movement": 1,
+      "name": "ShortBiped",
+      "instructions": 40
+    },
+    {
+      "radius": 3,
+      "height": 0,
+      "movement": 2,
+      "name": "Short",
+      "instructions": 35
+    },
+    {
+      "radius": 3,
+      "height": 1,
+      "movement": 0,
+      "name": "",
+      "instructions": 37
+    },
+    {
+      "radius": 3,
+      "height": 1,
+      "movement": 1,
+      "name": "Biped",
+      "instructions": 42
+    },
+    {
+      "radius": 3,
+      "height": 1,
+      "movement": 2,
+      "name": "",
+      "instructions": 37
+    },
+    {
+      "radius": 3,
+      "height": 2,
+      "movement": 0,
+      "name": "Tall",
+      "instructions": 38
+    },
+    {
+      "radius": 3,
+      "height": 2,
+      "movement": 1,
+      "name": "TallBiped",
+      "instructions": 43
+    },
+    {
+      "radius": 3,
+      "height": 2,
+      "movement": 2,
+      "name": "Tall",
+      "instructions": 38
+    },
+    {
+      "radius": 3,
+      "height": 3,
+      "movement": 0,
+      "name": "",
+      "instructions": 34
+    },
+    {
+      "radius": 3,
+      "height": 3,
+      "movement": 1,
+      "name": "Biped",
+      "instructions": 39
+    },
+    {
+      "radius": 3,
+      "height": 3,
+      "movement": 2,
+      "name": "",
+      "instructions": 34
+    },
+    {
+      "radius": 3,
+      "height": 12,
+      "movement": 0,
+      "name": "",
+      "instructions": 34
+    },
+    {
+      "radius": 3,
+      "height": 12,
+      "movement": 1,
+      "name": "Biped",
+      "instructions": 39
+    },
+    {
+      "radius": 3,
+      "height": 12,
+      "movement": 2,
+      "name": "",
+      "instructions": 34
+    },
+    {
+      "radius": 12,
+      "height": -1,
+      "movement": 0,
+      "name": "",
+      "instructions": 34
+    },
+    {
+      "radius": 12,
+      "height": -1,
+      "movement": 1,
+      "name": "Biped",
+      "instructions": 39
+    },
+    {
+      "radius": 12,
+      "height": -1,
+      "movement": 2,
+      "name": "",
+      "instructions": 34
+    },
+    {
+      "radius": 12,
+      "height": 0,
+      "movement": 0,
+      "name": "Short",
+      "instructions": 35
+    },
+    {
+      "radius": 12,
+      "height": 0,
+      "movement": 1,
+      "name": "ShortBiped",
+      "instructions": 40
+    },
+    {
+      "radius": 12,
+      "height": 0,
+      "movement": 2,
+      "name": "Short",
+      "instructions": 35
+    },
+    {
+      "radius": 12,
+      "height": 1,
+      "movement": 0,
+      "name": "",
+      "instructions": 37
+    },
+    {
+      "radius": 12,
+      "height": 1,
+      "movement": 1,
+      "name": "Biped",
+      "instructions": 42
+    },
+    {
+      "radius": 12,
+      "height": 1,
+      "movement": 2,
+      "name": "",
+      "instructions": 37
+    },
+    {
+      "radius": 12,
+      "height": 2,
+      "movement": 0,
+      "name": "Tall",
+      "instructions": 38
+    },
+    {
+      "radius": 12,
+      "height": 2,
+      "movement": 1,
+      "name": "TallBiped",
+      "instructions": 43
+    },
+    {
+      "radius": 12,
+      "height": 2,
+      "movement": 2,
+      "name": "Tall",
+      "instructions": 38
+    },
+    {
+      "radius": 12,
+      "height": 3,
+      "movement": 0,
+      "name": "",
+      "instructions": 34
+    },
+    {
+      "radius": 12,
+      "height": 3,
+      "movement": 1,
+      "name": "Biped",
+      "instructions": 39
+    },
+    {
+      "radius": 12,
+      "height": 3,
+      "movement": 2,
+      "name": "",
+      "instructions": 34
+    },
+    {
+      "radius": 12,
+      "height": 12,
+      "movement": 0,
+      "name": "",
+      "instructions": 34
+    },
+    {
+      "radius": 12,
+      "height": 12,
+      "movement": 1,
+      "name": "Biped",
+      "instructions": 39
+    },
+    {
+      "radius": 12,
+      "height": 12,
+      "movement": 2,
+      "name": "",
+      "instructions": 34
+    }
+  ],
+  "definitions": [
+    {
+      "name": "ShortThinBiped",
+      "trace": [
+        [
+          "node",
+          "entities",
+          "Entity",
+          "ShortThinBiped"
+        ],
+        [
+          "value",
+          "entity",
+          "Class",
+          "JPSBaseAIEntity"
+        ],
+        [
+          "value",
+          "entity",
+          "ActionClass",
+          "JPSBaseAIAction"
+        ],
+        [
+          "value",
+          "entity",
+          "Brain",
+          "ShortThinBiped"
+        ],
+        [
+          "brain",
+          "brains",
+          "JPSBaseAIBrain",
+          "ShortThinBiped"
+        ],
+        [
+          "value",
+          "brain",
+          "Service",
+          "ShortThinBipedPathFinder"
+        ],
+        [
+          "value",
+          "brain",
+          "Agent",
+          "GotoAgent"
+        ],
+        [
+          "value",
+          "brain",
+          "Agent",
+          "WanderAgent"
+        ],
+        [
+          "value",
+          "brain",
+          "Agent",
+          "FleeAgent"
+        ]
+      ],
+      "instructions": 64
+    },
+    {
+      "name": "ThinBiped",
+      "trace": [
+        [
+          "node",
+          "entities",
+          "Entity",
+          "ThinBiped"
+        ],
+        [
+          "value",
+          "entity",
+          "Class",
+          "JPSBaseAIEntity"
+        ],
+        [
+          "value",
+          "entity",
+          "ActionClass",
+          "JPSBaseAIAction"
+        ],
+        [
+          "value",
+          "entity",
+          "Brain",
+          "ThinBiped"
+        ],
+        [
+          "brain",
+          "brains",
+          "JPSBaseAIBrain",
+          "ThinBiped"
+        ],
+        [
+          "value",
+          "brain",
+          "Service",
+          "ThinBipedPathFinder"
+        ],
+        [
+          "value",
+          "brain",
+          "Agent",
+          "GotoAgent"
+        ],
+        [
+          "value",
+          "brain",
+          "Agent",
+          "WanderAgent"
+        ],
+        [
+          "value",
+          "brain",
+          "Agent",
+          "FleeAgent"
+        ]
+      ],
+      "instructions": 64
+    },
+    {
+      "name": "TallThinBiped",
+      "trace": [
+        [
+          "node",
+          "entities",
+          "Entity",
+          "TallThinBiped"
+        ],
+        [
+          "value",
+          "entity",
+          "Class",
+          "JPSBaseAIEntity"
+        ],
+        [
+          "value",
+          "entity",
+          "ActionClass",
+          "JPSBaseAIAction"
+        ],
+        [
+          "value",
+          "entity",
+          "Brain",
+          "TallThinBiped"
+        ],
+        [
+          "brain",
+          "brains",
+          "JPSBaseAIBrain",
+          "TallThinBiped"
+        ],
+        [
+          "value",
+          "brain",
+          "Service",
+          "TallThinBipedPathFinder"
+        ],
+        [
+          "value",
+          "brain",
+          "Agent",
+          "GotoAgent"
+        ],
+        [
+          "value",
+          "brain",
+          "Agent",
+          "WanderAgent"
+        ],
+        [
+          "value",
+          "brain",
+          "Agent",
+          "FleeAgent"
+        ]
+      ],
+      "instructions": 64
+    },
+    {
+      "name": "ShortBiped",
+      "trace": [
+        [
+          "node",
+          "entities",
+          "Entity",
+          "ShortBiped"
+        ],
+        [
+          "value",
+          "entity",
+          "Class",
+          "JPSBaseAIEntity"
+        ],
+        [
+          "value",
+          "entity",
+          "ActionClass",
+          "JPSBaseAIAction"
+        ],
+        [
+          "value",
+          "entity",
+          "Brain",
+          "ShortBiped"
+        ],
+        [
+          "brain",
+          "brains",
+          "JPSBaseAIBrain",
+          "ShortBiped"
+        ],
+        [
+          "value",
+          "brain",
+          "Service",
+          "ShortBipedPathFinder"
+        ],
+        [
+          "value",
+          "brain",
+          "Agent",
+          "GotoAgent"
+        ],
+        [
+          "value",
+          "brain",
+          "Agent",
+          "WanderAgent"
+        ],
+        [
+          "value",
+          "brain",
+          "Agent",
+          "FleeAgent"
+        ]
+      ],
+      "instructions": 64
+    },
+    {
+      "name": "Biped",
+      "trace": [
+        [
+          "node",
+          "entities",
+          "Entity",
+          "Biped"
+        ],
+        [
+          "value",
+          "entity",
+          "Class",
+          "JPSBaseAIEntity"
+        ],
+        [
+          "value",
+          "entity",
+          "ActionClass",
+          "JPSBaseAIAction"
+        ],
+        [
+          "value",
+          "entity",
+          "Brain",
+          "Biped"
+        ],
+        [
+          "brain",
+          "brains",
+          "JPSBaseAIBrain",
+          "Biped"
+        ],
+        [
+          "value",
+          "brain",
+          "Service",
+          "BipedPathFinder"
+        ],
+        [
+          "value",
+          "brain",
+          "Agent",
+          "GotoAgent"
+        ],
+        [
+          "value",
+          "brain",
+          "Agent",
+          "WanderAgent"
+        ],
+        [
+          "value",
+          "brain",
+          "Agent",
+          "FleeAgent"
+        ]
+      ],
+      "instructions": 64
+    },
+    {
+      "name": "TallBiped",
+      "trace": [
+        [
+          "node",
+          "entities",
+          "Entity",
+          "TallBiped"
+        ],
+        [
+          "value",
+          "entity",
+          "Class",
+          "JPSBaseAIEntity"
+        ],
+        [
+          "value",
+          "entity",
+          "ActionClass",
+          "JPSBaseAIAction"
+        ],
+        [
+          "value",
+          "entity",
+          "Brain",
+          "TallBiped"
+        ],
+        [
+          "brain",
+          "brains",
+          "JPSBaseAIBrain",
+          "TallBiped"
+        ],
+        [
+          "value",
+          "brain",
+          "Service",
+          "TallBipedPathFinder"
+        ],
+        [
+          "value",
+          "brain",
+          "Agent",
+          "GotoAgent"
+        ],
+        [
+          "value",
+          "brain",
+          "Agent",
+          "WanderAgent"
+        ],
+        [
+          "value",
+          "brain",
+          "Agent",
+          "FleeAgent"
+        ]
+      ],
+      "instructions": 64
+    },
+    {
+      "name": "ShortWideBiped",
+      "trace": [
+        [
+          "node",
+          "entities",
+          "Entity",
+          "ShortWideBiped"
+        ],
+        [
+          "value",
+          "entity",
+          "Class",
+          "JPSBaseAIEntity"
+        ],
+        [
+          "value",
+          "entity",
+          "ActionClass",
+          "JPSBaseAIAction"
+        ],
+        [
+          "value",
+          "entity",
+          "Brain",
+          "ShortWideBiped"
+        ],
+        [
+          "brain",
+          "brains",
+          "JPSBaseAIBrain",
+          "ShortWideBiped"
+        ],
+        [
+          "value",
+          "brain",
+          "Service",
+          "ShortWideBipedPathFinder"
+        ],
+        [
+          "value",
+          "brain",
+          "Agent",
+          "GotoAgent"
+        ],
+        [
+          "value",
+          "brain",
+          "Agent",
+          "WanderAgent"
+        ],
+        [
+          "value",
+          "brain",
+          "Agent",
+          "FleeAgent"
+        ]
+      ],
+      "instructions": 64
+    },
+    {
+      "name": "WideBiped",
+      "trace": [
+        [
+          "node",
+          "entities",
+          "Entity",
+          "WideBiped"
+        ],
+        [
+          "value",
+          "entity",
+          "Class",
+          "JPSBaseAIEntity"
+        ],
+        [
+          "value",
+          "entity",
+          "ActionClass",
+          "JPSBaseAIAction"
+        ],
+        [
+          "value",
+          "entity",
+          "Brain",
+          "WideBiped"
+        ],
+        [
+          "brain",
+          "brains",
+          "JPSBaseAIBrain",
+          "WideBiped"
+        ],
+        [
+          "value",
+          "brain",
+          "Service",
+          "WideBipedPathFinder"
+        ],
+        [
+          "value",
+          "brain",
+          "Agent",
+          "GotoAgent"
+        ],
+        [
+          "value",
+          "brain",
+          "Agent",
+          "WanderAgent"
+        ],
+        [
+          "value",
+          "brain",
+          "Agent",
+          "FleeAgent"
+        ]
+      ],
+      "instructions": 64
+    },
+    {
+      "name": "TallWideBiped",
+      "trace": [
+        [
+          "node",
+          "entities",
+          "Entity",
+          "TallWideBiped"
+        ],
+        [
+          "value",
+          "entity",
+          "Class",
+          "JPSBaseAIEntity"
+        ],
+        [
+          "value",
+          "entity",
+          "ActionClass",
+          "JPSBaseAIAction"
+        ],
+        [
+          "value",
+          "entity",
+          "Brain",
+          "TallWideBiped"
+        ],
+        [
+          "brain",
+          "brains",
+          "JPSBaseAIBrain",
+          "TallWideBiped"
+        ],
+        [
+          "value",
+          "brain",
+          "Service",
+          "TallWideBipedPathFinder"
+        ],
+        [
+          "value",
+          "brain",
+          "Agent",
+          "GotoAgent"
+        ],
+        [
+          "value",
+          "brain",
+          "Agent",
+          "WanderAgent"
+        ],
+        [
+          "value",
+          "brain",
+          "Agent",
+          "FleeAgent"
+        ]
+      ],
+      "instructions": 64
+    }
+  ]
+}

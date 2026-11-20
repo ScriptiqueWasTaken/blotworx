@@ -1,0 +1,174 @@
+{
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "frequency": 1000,
+  "cases": [
+    {
+      "name": "before",
+      "now": 239999,
+      "last": 0,
+      "pending": false,
+      "force": false,
+      "frontend": 0,
+      "disabled": false,
+      "after_pending": 1,
+      "after_frontend": 0,
+      "after_last": 0,
+      "after_status": 0,
+      "instructions": 47,
+      "calls": [
+        "0x25f970"
+      ],
+      "return": 4998004
+    },
+    {
+      "name": "boundary",
+      "now": 240000,
+      "last": 0,
+      "pending": false,
+      "force": false,
+      "frontend": 0,
+      "disabled": false,
+      "after_pending": 0,
+      "after_frontend": 6,
+      "after_last": 240000,
+      "after_status": 2,
+      "instructions": 67,
+      "calls": [
+        "0x25f970",
+        "0x261394",
+        "0x261404"
+      ],
+      "return": 4194304
+    },
+    {
+      "name": "low_word_before",
+      "now": 4294967535000,
+      "last": 0,
+      "pending": false,
+      "force": false,
+      "frontend": 0,
+      "disabled": false,
+      "after_pending": 1,
+      "after_frontend": 0,
+      "after_last": 0,
+      "after_status": 0,
+      "instructions": 47,
+      "calls": [
+        "0x25f970"
+      ],
+      "return": 4998004
+    },
+    {
+      "name": "low_word_boundary",
+      "now": 4294967536000,
+      "last": 0,
+      "pending": false,
+      "force": false,
+      "frontend": 0,
+      "disabled": false,
+      "after_pending": 0,
+      "after_frontend": 6,
+      "after_last": 4294967536000,
+      "after_status": 2,
+      "instructions": 67,
+      "calls": [
+        "0x25f970",
+        "0x261394",
+        "0x261404"
+      ],
+      "return": 4194304
+    },
+    {
+      "name": "negative_wrap",
+      "now": 18446744073709551515,
+      "last": 0,
+      "pending": false,
+      "force": false,
+      "frontend": 0,
+      "disabled": false,
+      "after_pending": 1,
+      "after_frontend": 0,
+      "after_last": 0,
+      "after_status": 0,
+      "instructions": 47,
+      "calls": [
+        "0x25f970"
+      ],
+      "return": 4998004
+    },
+    {
+      "name": "force_pending",
+      "now": 1,
+      "last": 0,
+      "pending": true,
+      "force": true,
+      "frontend": 0,
+      "disabled": false,
+      "after_pending": 0,
+      "after_frontend": 6,
+      "after_last": 1,
+      "after_status": 2,
+      "instructions": 65,
+      "calls": [
+        "0x261394",
+        "0x261404"
+      ],
+      "return": 4194304
+    },
+    {
+      "name": "force_empty",
+      "now": 1,
+      "last": 0,
+      "pending": false,
+      "force": true,
+      "frontend": 0,
+      "disabled": false,
+      "after_pending": 0,
+      "after_frontend": 0,
+      "after_last": 0,
+      "after_status": 0,
+      "instructions": 34,
+      "calls": [],
+      "return": 4997944
+    },
+    {
+      "name": "force_busy",
+      "now": 1,
+      "last": 0,
+      "pending": true,
+      "force": true,
+      "frontend": 6,
+      "disabled": false,
+      "after_pending": 1,
+      "after_frontend": 6,
+      "after_last": 0,
+      "after_status": 0,
+      "instructions": 37,
+      "calls": [],
+      "return": 4997944
+    },
+    {
+      "name": "disabled",
+      "now": 300000,
+      "last": 0,
+      "pending": true,
+      "force": false,
+      "frontend": 0,
+      "disabled": true,
+      "after_pending": 1,
+      "after_frontend": 0,
+      "after_last": 0,
+      "after_status": 0,
+      "instructions": 24,
+      "calls": [],
+      "return": 4997871
+    }
+  ],
+  "slot_copy": {
+    "sha256": "47267954a37e48944a3494774d8be6cb5579a60d9c0a20e8b516d94eeae624ac",
+    "instructions": 507,
+    "calls": [],
+    "return": 1
+  },
+  "scope": "Original admission and slot-copy instructions; intercepted platform calls; not Wii I/O timing/frontend parity"
+}

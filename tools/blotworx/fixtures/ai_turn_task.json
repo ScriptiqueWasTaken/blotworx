@@ -1,0 +1,2836 @@
+{
+  "scope": "EM1 turning task execution. Entity/controller queries and DOL math supplied.\nRuns the native task and angle utility instructions; no native NPC motion trace.\nThe supplied libm trig results do not independently validate Wii math routines.\n",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "cases": [
+    {
+      "input": {
+        "target": "point",
+        "point": [
+          1.0,
+          9.0,
+          4.0,
+          0.0
+        ],
+        "op": "activate",
+        "agent": false,
+        "basic": false
+      },
+      "trace": [
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          false
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 83
+    },
+    {
+      "input": {
+        "target": "point",
+        "point": [
+          1.0,
+          9.0,
+          4.0,
+          0.0
+        ],
+        "op": "activate",
+        "agent": false,
+        "basic": true
+      },
+      "trace": [
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          true
+        ],
+        [
+          "direction",
+          [
+            0,
+            0,
+            1065353216
+          ]
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 97
+    },
+    {
+      "input": {
+        "target": "point",
+        "point": [
+          1.0,
+          9.0,
+          4.0,
+          0.0
+        ],
+        "op": "activate",
+        "agent": true,
+        "basic": false
+      },
+      "trace": [
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          0
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 85
+    },
+    {
+      "input": {
+        "target": "point",
+        "point": [
+          1.0,
+          9.0,
+          4.0,
+          0.0
+        ],
+        "op": "activate",
+        "agent": true,
+        "basic": true
+      },
+      "trace": [
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          0
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 85
+    },
+    {
+      "input": {
+        "target": "point",
+        "point": [
+          1.0,
+          9.0,
+          4.0,
+          0.0
+        ],
+        "op": "update",
+        "agent": false,
+        "basic": false
+      },
+      "trace": [
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          false
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 1,
+      "result": 1,
+      "instructions": 143
+    },
+    {
+      "input": {
+        "target": "point",
+        "point": [
+          1.0,
+          9.0,
+          4.0,
+          0.0
+        ],
+        "op": "update",
+        "agent": false,
+        "basic": true
+      },
+      "trace": [
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          true
+        ],
+        [
+          "direction",
+          [
+            0,
+            0,
+            1065353216
+          ]
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 1,
+      "result": 1,
+      "instructions": 157
+    },
+    {
+      "input": {
+        "target": "point",
+        "point": [
+          1.0,
+          9.0,
+          4.0,
+          0.0
+        ],
+        "op": "update",
+        "agent": true,
+        "basic": false
+      },
+      "trace": [
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          0
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 1,
+      "result": 1,
+      "instructions": 145
+    },
+    {
+      "input": {
+        "target": "point",
+        "point": [
+          1.0,
+          9.0,
+          4.0,
+          0.0
+        ],
+        "op": "update",
+        "agent": true,
+        "basic": true
+      },
+      "trace": [
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          0
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 1,
+      "result": 1,
+      "instructions": 145
+    },
+    {
+      "input": {
+        "target": "point",
+        "point": [
+          2.0,
+          2.0,
+          3.0,
+          0.0
+        ],
+        "op": "activate",
+        "agent": false,
+        "basic": false
+      },
+      "trace": [
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          false
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 83
+    },
+    {
+      "input": {
+        "target": "point",
+        "point": [
+          2.0,
+          2.0,
+          3.0,
+          0.0
+        ],
+        "op": "activate",
+        "agent": false,
+        "basic": true
+      },
+      "trace": [
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          true
+        ],
+        [
+          "direction",
+          [
+            1065353216,
+            0,
+            3007036718
+          ]
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 97
+    },
+    {
+      "input": {
+        "target": "point",
+        "point": [
+          2.0,
+          2.0,
+          3.0,
+          0.0
+        ],
+        "op": "activate",
+        "agent": true,
+        "basic": false
+      },
+      "trace": [
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          1119092736
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 85
+    },
+    {
+      "input": {
+        "target": "point",
+        "point": [
+          2.0,
+          2.0,
+          3.0,
+          0.0
+        ],
+        "op": "activate",
+        "agent": true,
+        "basic": true
+      },
+      "trace": [
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          1119092736
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 85
+    },
+    {
+      "input": {
+        "target": "point",
+        "point": [
+          2.0,
+          2.0,
+          3.0,
+          0.0
+        ],
+        "op": "update",
+        "agent": false,
+        "basic": false
+      },
+      "trace": [
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          false
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 0,
+      "result": 0,
+      "instructions": 142
+    },
+    {
+      "input": {
+        "target": "point",
+        "point": [
+          2.0,
+          2.0,
+          3.0,
+          0.0
+        ],
+        "op": "update",
+        "agent": false,
+        "basic": true
+      },
+      "trace": [
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          true
+        ],
+        [
+          "direction",
+          [
+            1065353216,
+            0,
+            3007036718
+          ]
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 0,
+      "result": 0,
+      "instructions": 156
+    },
+    {
+      "input": {
+        "target": "point",
+        "point": [
+          2.0,
+          2.0,
+          3.0,
+          0.0
+        ],
+        "op": "update",
+        "agent": true,
+        "basic": false
+      },
+      "trace": [
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          1119092736
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 0,
+      "result": 0,
+      "instructions": 144
+    },
+    {
+      "input": {
+        "target": "point",
+        "point": [
+          2.0,
+          2.0,
+          3.0,
+          0.0
+        ],
+        "op": "update",
+        "agent": true,
+        "basic": true
+      },
+      "trace": [
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          1119092736
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 0,
+      "result": 0,
+      "instructions": 144
+    },
+    {
+      "input": {
+        "target": "point",
+        "point": [
+          -1.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "op": "activate",
+        "agent": false,
+        "basic": false
+      },
+      "trace": [
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          false
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 83
+    },
+    {
+      "input": {
+        "target": "point",
+        "point": [
+          -1.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "op": "activate",
+        "agent": false,
+        "basic": true
+      },
+      "trace": [
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          true
+        ],
+        [
+          "direction",
+          [
+            3207922931,
+            0,
+            3207922931
+          ]
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 97
+    },
+    {
+      "input": {
+        "target": "point",
+        "point": [
+          -1.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "op": "activate",
+        "agent": true,
+        "basic": false
+      },
+      "trace": [
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          3272015872
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 85
+    },
+    {
+      "input": {
+        "target": "point",
+        "point": [
+          -1.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "op": "activate",
+        "agent": true,
+        "basic": true
+      },
+      "trace": [
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          3272015872
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 85
+    },
+    {
+      "input": {
+        "target": "point",
+        "point": [
+          -1.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "op": "update",
+        "agent": false,
+        "basic": false
+      },
+      "trace": [
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          false
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 0,
+      "result": 0,
+      "instructions": 140
+    },
+    {
+      "input": {
+        "target": "point",
+        "point": [
+          -1.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "op": "update",
+        "agent": false,
+        "basic": true
+      },
+      "trace": [
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          true
+        ],
+        [
+          "direction",
+          [
+            3207922931,
+            0,
+            3207922931
+          ]
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 0,
+      "result": 0,
+      "instructions": 154
+    },
+    {
+      "input": {
+        "target": "point",
+        "point": [
+          -1.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "op": "update",
+        "agent": true,
+        "basic": false
+      },
+      "trace": [
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          3272015872
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 0,
+      "result": 0,
+      "instructions": 142
+    },
+    {
+      "input": {
+        "target": "point",
+        "point": [
+          -1.0,
+          2.0,
+          1.0,
+          0.0
+        ],
+        "op": "update",
+        "agent": true,
+        "basic": true
+      },
+      "trace": [
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          3272015872
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 0,
+      "result": 0,
+      "instructions": 142
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 0,
+        "op": "activate",
+        "agent": false,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          false
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 53
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 0,
+        "op": "activate",
+        "agent": false,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          true
+        ],
+        [
+          "direction",
+          [
+            0,
+            0,
+            1065353216
+          ]
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 67
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 0,
+        "op": "activate",
+        "agent": true,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          0
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 55
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 0,
+        "op": "activate",
+        "agent": true,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          0
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 55
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 0,
+        "op": "update",
+        "agent": false,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          false
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 1,
+      "result": 1,
+      "instructions": 113
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 0,
+        "op": "update",
+        "agent": false,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          true
+        ],
+        [
+          "direction",
+          [
+            0,
+            0,
+            1065353216
+          ]
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 1,
+      "result": 1,
+      "instructions": 127
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 0,
+        "op": "update",
+        "agent": true,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          0
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 1,
+      "result": 1,
+      "instructions": 115
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 0,
+        "op": "update",
+        "agent": true,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          0
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 1,
+      "result": 1,
+      "instructions": 115
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1034147594,
+        "op": "activate",
+        "agent": false,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          false
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 53
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1034147594,
+        "op": "activate",
+        "agent": false,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          true
+        ],
+        [
+          "direction",
+          [
+            1034136144,
+            0,
+            1065299558
+          ]
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 67
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1034147594,
+        "op": "activate",
+        "agent": true,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          1083354460
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 55
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1034147594,
+        "op": "activate",
+        "agent": true,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          1083354460
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 55
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1034147594,
+        "op": "update",
+        "agent": false,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          false
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 1,
+      "result": 1,
+      "instructions": 115
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1034147594,
+        "op": "update",
+        "agent": false,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          true
+        ],
+        [
+          "direction",
+          [
+            1034136144,
+            0,
+            1065299558
+          ]
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 1,
+      "result": 1,
+      "instructions": 129
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1034147594,
+        "op": "update",
+        "agent": true,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          1083354460
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 1,
+      "result": 1,
+      "instructions": 117
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1034147594,
+        "op": "update",
+        "agent": true,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          1083354460
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 1,
+      "result": 1,
+      "instructions": 117
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1034147728,
+        "op": "activate",
+        "agent": false,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          false
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 53
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1034147728,
+        "op": "activate",
+        "agent": false,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          true
+        ],
+        [
+          "direction",
+          [
+            1034136278,
+            0,
+            1065299556
+          ]
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 67
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1034147728,
+        "op": "activate",
+        "agent": true,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          1083354580
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 55
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1034147728,
+        "op": "activate",
+        "agent": true,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          1083354580
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 55
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1034147728,
+        "op": "update",
+        "agent": false,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          false
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 0,
+      "result": 0,
+      "instructions": 112
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1034147728,
+        "op": "update",
+        "agent": false,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          true
+        ],
+        [
+          "direction",
+          [
+            1034136278,
+            0,
+            1065299556
+          ]
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 0,
+      "result": 0,
+      "instructions": 126
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1034147728,
+        "op": "update",
+        "agent": true,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          1083354580
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 0,
+      "result": 0,
+      "instructions": 114
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1034147728,
+        "op": "update",
+        "agent": true,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          1083354580
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 0,
+      "result": 0,
+      "instructions": 114
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 3181631242,
+        "op": "activate",
+        "agent": false,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          false
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 53
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 3181631242,
+        "op": "activate",
+        "agent": false,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          true
+        ],
+        [
+          "direction",
+          [
+            3181619792,
+            0,
+            1065299558
+          ]
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 67
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 3181631242,
+        "op": "activate",
+        "agent": true,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          3230838108
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 55
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 3181631242,
+        "op": "activate",
+        "agent": true,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          3230838108
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 55
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 3181631242,
+        "op": "update",
+        "agent": false,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          false
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 1,
+      "result": 1,
+      "instructions": 113
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 3181631242,
+        "op": "update",
+        "agent": false,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          true
+        ],
+        [
+          "direction",
+          [
+            3181619792,
+            0,
+            1065299558
+          ]
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 1,
+      "result": 1,
+      "instructions": 127
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 3181631242,
+        "op": "update",
+        "agent": true,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          3230838108
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 1,
+      "result": 1,
+      "instructions": 115
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 3181631242,
+        "op": "update",
+        "agent": true,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          3230838108
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 1,
+      "result": 1,
+      "instructions": 115
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1078530011,
+        "op": "activate",
+        "agent": false,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          false
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 53
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1078530011,
+        "op": "activate",
+        "agent": false,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          true
+        ],
+        [
+          "direction",
+          [
+            3015425326,
+            0,
+            3212836864
+          ]
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 67
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1078530011,
+        "op": "activate",
+        "agent": true,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          1127481344
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 55
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1078530011,
+        "op": "activate",
+        "agent": true,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          1127481344
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 55
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1078530011,
+        "op": "update",
+        "agent": false,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          false
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 0,
+      "result": 0,
+      "instructions": 110
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1078530011,
+        "op": "update",
+        "agent": false,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          true
+        ],
+        [
+          "direction",
+          [
+            3015425326,
+            0,
+            3212836864
+          ]
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 0,
+      "result": 0,
+      "instructions": 124
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1078530011,
+        "op": "update",
+        "agent": true,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          1127481344
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 0,
+      "result": 0,
+      "instructions": 112
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1078530011,
+        "op": "update",
+        "agent": true,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          1127481344
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 0,
+      "result": 0,
+      "instructions": 112
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 3226013659,
+        "op": "activate",
+        "agent": false,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          false
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 53
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 3226013659,
+        "op": "activate",
+        "agent": false,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          true
+        ],
+        [
+          "direction",
+          [
+            867941678,
+            0,
+            3212836864
+          ]
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 67
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 3226013659,
+        "op": "activate",
+        "agent": true,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          3274964992
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 55
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 3226013659,
+        "op": "activate",
+        "agent": true,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          3274964992
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 55
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 3226013659,
+        "op": "update",
+        "agent": false,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          false
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 0,
+      "result": 0,
+      "instructions": 112
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 3226013659,
+        "op": "update",
+        "agent": false,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          true
+        ],
+        [
+          "direction",
+          [
+            867941678,
+            0,
+            3212836864
+          ]
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 0,
+      "result": 0,
+      "instructions": 126
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 3226013659,
+        "op": "update",
+        "agent": true,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          3274964992
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 0,
+      "result": 0,
+      "instructions": 114
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 3226013659,
+        "op": "update",
+        "agent": true,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          3274964992
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 0,
+      "result": 0,
+      "instructions": 114
+    },
+    {
+      "input": {
+        "target": "entity",
+        "found": false,
+        "op": "activate",
+        "agent": false,
+        "basic": false
+      },
+      "trace": [
+        [
+          "resolve",
+          42
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 47
+    },
+    {
+      "input": {
+        "target": "entity",
+        "found": false,
+        "op": "activate",
+        "agent": false,
+        "basic": true
+      },
+      "trace": [
+        [
+          "resolve",
+          42
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 47
+    },
+    {
+      "input": {
+        "target": "entity",
+        "found": false,
+        "op": "activate",
+        "agent": true,
+        "basic": false
+      },
+      "trace": [
+        [
+          "resolve",
+          42
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 47
+    },
+    {
+      "input": {
+        "target": "entity",
+        "found": false,
+        "op": "activate",
+        "agent": true,
+        "basic": true
+      },
+      "trace": [
+        [
+          "resolve",
+          42
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 47
+    },
+    {
+      "input": {
+        "target": "entity",
+        "found": false,
+        "op": "update",
+        "agent": false,
+        "basic": false
+      },
+      "trace": [
+        [
+          "resolve",
+          42
+        ]
+      ],
+      "kind": 2,
+      "result": 1,
+      "instructions": 67
+    },
+    {
+      "input": {
+        "target": "entity",
+        "found": false,
+        "op": "update",
+        "agent": false,
+        "basic": true
+      },
+      "trace": [
+        [
+          "resolve",
+          42
+        ]
+      ],
+      "kind": 2,
+      "result": 1,
+      "instructions": 67
+    },
+    {
+      "input": {
+        "target": "entity",
+        "found": false,
+        "op": "update",
+        "agent": true,
+        "basic": false
+      },
+      "trace": [
+        [
+          "resolve",
+          42
+        ]
+      ],
+      "kind": 2,
+      "result": 1,
+      "instructions": 67
+    },
+    {
+      "input": {
+        "target": "entity",
+        "found": false,
+        "op": "update",
+        "agent": true,
+        "basic": true
+      },
+      "trace": [
+        [
+          "resolve",
+          42
+        ]
+      ],
+      "kind": 2,
+      "result": 1,
+      "instructions": 67
+    },
+    {
+      "input": {
+        "target": "entity",
+        "found": true,
+        "op": "activate",
+        "agent": false,
+        "basic": false
+      },
+      "trace": [
+        [
+          "resolve",
+          42
+        ],
+        [
+          "position",
+          "target"
+        ],
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          false
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 107
+    },
+    {
+      "input": {
+        "target": "entity",
+        "found": true,
+        "op": "activate",
+        "agent": false,
+        "basic": true
+      },
+      "trace": [
+        [
+          "resolve",
+          42
+        ],
+        [
+          "position",
+          "target"
+        ],
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          true
+        ],
+        [
+          "direction",
+          [
+            1065353216,
+            0,
+            3007036718
+          ]
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 121
+    },
+    {
+      "input": {
+        "target": "entity",
+        "found": true,
+        "op": "activate",
+        "agent": true,
+        "basic": false
+      },
+      "trace": [
+        [
+          "resolve",
+          42
+        ],
+        [
+          "position",
+          "target"
+        ],
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          1119092736
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 109
+    },
+    {
+      "input": {
+        "target": "entity",
+        "found": true,
+        "op": "activate",
+        "agent": true,
+        "basic": true
+      },
+      "trace": [
+        [
+          "resolve",
+          42
+        ],
+        [
+          "position",
+          "target"
+        ],
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          1119092736
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 109
+    },
+    {
+      "input": {
+        "target": "entity",
+        "found": true,
+        "op": "update",
+        "agent": false,
+        "basic": false
+      },
+      "trace": [
+        [
+          "resolve",
+          42
+        ],
+        [
+          "position",
+          "target"
+        ],
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          false
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 0,
+      "result": 0,
+      "instructions": 166
+    },
+    {
+      "input": {
+        "target": "entity",
+        "found": true,
+        "op": "update",
+        "agent": false,
+        "basic": true
+      },
+      "trace": [
+        [
+          "resolve",
+          42
+        ],
+        [
+          "position",
+          "target"
+        ],
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          true
+        ],
+        [
+          "direction",
+          [
+            1065353216,
+            0,
+            3007036718
+          ]
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 0,
+      "result": 0,
+      "instructions": 180
+    },
+    {
+      "input": {
+        "target": "entity",
+        "found": true,
+        "op": "update",
+        "agent": true,
+        "basic": false
+      },
+      "trace": [
+        [
+          "resolve",
+          42
+        ],
+        [
+          "position",
+          "target"
+        ],
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          1119092736
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 0,
+      "result": 0,
+      "instructions": 168
+    },
+    {
+      "input": {
+        "target": "entity",
+        "found": true,
+        "op": "update",
+        "agent": true,
+        "basic": true
+      },
+      "trace": [
+        [
+          "resolve",
+          42
+        ],
+        [
+          "position",
+          "target"
+        ],
+        [
+          "position",
+          "owner"
+        ],
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          1119092736
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 0,
+      "result": 0,
+      "instructions": 168
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 0,
+        "op": "stop",
+        "agent": false,
+        "basic": false
+      },
+      "trace": [
+        [
+          "basic",
+          false
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 0,
+        "op": "stop",
+        "agent": false,
+        "basic": true
+      },
+      "trace": [
+        [
+          "basic",
+          true
+        ],
+        [
+          "stop"
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 15
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 0,
+        "op": "stop",
+        "agent": true,
+        "basic": false
+      },
+      "trace": [
+        [
+          "basic",
+          false
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 0,
+        "op": "stop",
+        "agent": true,
+        "basic": true
+      },
+      "trace": [
+        [
+          "basic",
+          true
+        ],
+        [
+          "stop"
+        ]
+      ],
+      "kind": 0,
+      "result": null,
+      "instructions": 15
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1078530011,
+        "facing": [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        "op": "update",
+        "agent": false,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          false
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 1,
+      "result": 1,
+      "instructions": 113
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1078530011,
+        "facing": [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        "op": "update",
+        "agent": false,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          true
+        ],
+        [
+          "direction",
+          [
+            3015425326,
+            0,
+            3212836864
+          ]
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 1,
+      "result": 1,
+      "instructions": 127
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1078530011,
+        "facing": [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        "op": "update",
+        "agent": true,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          1127481344
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 1,
+      "result": 1,
+      "instructions": 115
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 1078530011,
+        "facing": [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        "op": "update",
+        "agent": true,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          1127481344
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 1,
+      "result": 1,
+      "instructions": 115
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 3226013659,
+        "facing": [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        "op": "update",
+        "agent": false,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          false
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 1,
+      "result": 1,
+      "instructions": 115
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 3226013659,
+        "facing": [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        "op": "update",
+        "agent": false,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          false
+        ],
+        [
+          "basic",
+          true
+        ],
+        [
+          "direction",
+          [
+            867941678,
+            0,
+            3212836864
+          ]
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 1,
+      "result": 1,
+      "instructions": 129
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 3226013659,
+        "facing": [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        "op": "update",
+        "agent": true,
+        "basic": false
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          3274964992
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 1,
+      "result": 1,
+      "instructions": 117
+    },
+    {
+      "input": {
+        "target": "angle",
+        "angle": 3226013659,
+        "facing": [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        "op": "update",
+        "agent": true,
+        "basic": true
+      },
+      "trace": [
+        [
+          "agent",
+          true
+        ],
+        [
+          "heading",
+          3274964992
+        ],
+        [
+          "facing"
+        ]
+      ],
+      "kind": 1,
+      "result": 1,
+      "instructions": 117
+    }
+  ]
+}

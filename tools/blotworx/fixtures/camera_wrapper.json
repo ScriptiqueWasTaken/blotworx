@@ -1,0 +1,1893 @@
+{
+  "scope": "Original wrapper clock/copy lifecycle and pitch scalar arithmetic.\n\nChild update, derived correction and promotion are supplied in lifecycle cases.\nPitch cases supply the original atan2 result; they execute angular wrapping,\ninterpolation and clamping, not atan2 or final quaternion/matrix operations.\nRoot cases execute the original square-root refinement. FPSCR/NaN payloads\nand active gameplay-controller scheduling remain outside this reference.\n",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "dol_sha256": "994779fa2e276983efdb50f02c406568f285a82558cb5d54bbdf74651a98a920",
+  "weight": [
+    {
+      "duration": -2.0,
+      "elapsed": 0.0,
+      "delta": 0.0,
+      "elapsed_bits": 3225419776,
+      "weight_bits": 1065353216,
+      "instructions": 9
+    },
+    {
+      "duration": -2.0,
+      "elapsed": 0.0,
+      "delta": 0.25,
+      "elapsed_bits": 3225419776,
+      "weight_bits": 1065353216,
+      "instructions": 9
+    },
+    {
+      "duration": -2.0,
+      "elapsed": 0.0,
+      "delta": 2.0,
+      "elapsed_bits": 3225419776,
+      "weight_bits": 1065353216,
+      "instructions": 9
+    },
+    {
+      "duration": -2.0,
+      "elapsed": 0.25,
+      "delta": 0.0,
+      "elapsed_bits": 3225419776,
+      "weight_bits": 1065353216,
+      "instructions": 9
+    },
+    {
+      "duration": -2.0,
+      "elapsed": 0.25,
+      "delta": 0.25,
+      "elapsed_bits": 3225419776,
+      "weight_bits": 1065353216,
+      "instructions": 9
+    },
+    {
+      "duration": -2.0,
+      "elapsed": 0.25,
+      "delta": 2.0,
+      "elapsed_bits": 3225419776,
+      "weight_bits": 1065353216,
+      "instructions": 9
+    },
+    {
+      "duration": -2.0,
+      "elapsed": 2.0,
+      "delta": 0.0,
+      "elapsed_bits": 3225419776,
+      "weight_bits": 1065353216,
+      "instructions": 9
+    },
+    {
+      "duration": -2.0,
+      "elapsed": 2.0,
+      "delta": 0.25,
+      "elapsed_bits": 3225419776,
+      "weight_bits": 1065353216,
+      "instructions": 9
+    },
+    {
+      "duration": -2.0,
+      "elapsed": 2.0,
+      "delta": 2.0,
+      "elapsed_bits": 3225419776,
+      "weight_bits": 1065353216,
+      "instructions": 9
+    },
+    {
+      "duration": -1.0,
+      "elapsed": 0.0,
+      "delta": 0.0,
+      "elapsed_bits": 3221225472,
+      "weight_bits": 1065353216,
+      "instructions": 10
+    },
+    {
+      "duration": -1.0,
+      "elapsed": 0.0,
+      "delta": 0.25,
+      "elapsed_bits": 3221225472,
+      "weight_bits": 1065353216,
+      "instructions": 10
+    },
+    {
+      "duration": -1.0,
+      "elapsed": 0.0,
+      "delta": 2.0,
+      "elapsed_bits": 3221225472,
+      "weight_bits": 1065353216,
+      "instructions": 10
+    },
+    {
+      "duration": -1.0,
+      "elapsed": 0.25,
+      "delta": 0.0,
+      "elapsed_bits": 3221225472,
+      "weight_bits": 1065353216,
+      "instructions": 10
+    },
+    {
+      "duration": -1.0,
+      "elapsed": 0.25,
+      "delta": 0.25,
+      "elapsed_bits": 3221225472,
+      "weight_bits": 1065353216,
+      "instructions": 10
+    },
+    {
+      "duration": -1.0,
+      "elapsed": 0.25,
+      "delta": 2.0,
+      "elapsed_bits": 3221225472,
+      "weight_bits": 1065353216,
+      "instructions": 10
+    },
+    {
+      "duration": -1.0,
+      "elapsed": 2.0,
+      "delta": 0.0,
+      "elapsed_bits": 3221225472,
+      "weight_bits": 1065353216,
+      "instructions": 10
+    },
+    {
+      "duration": -1.0,
+      "elapsed": 2.0,
+      "delta": 0.25,
+      "elapsed_bits": 3221225472,
+      "weight_bits": 1065353216,
+      "instructions": 10
+    },
+    {
+      "duration": -1.0,
+      "elapsed": 2.0,
+      "delta": 2.0,
+      "elapsed_bits": 3221225472,
+      "weight_bits": 1065353216,
+      "instructions": 10
+    },
+    {
+      "duration": -0.5,
+      "elapsed": 0.0,
+      "delta": 0.0,
+      "elapsed_bits": 3217031168,
+      "weight_bits": 1056964608,
+      "instructions": 10
+    },
+    {
+      "duration": -0.5,
+      "elapsed": 0.0,
+      "delta": 0.25,
+      "elapsed_bits": 3217031168,
+      "weight_bits": 1056964608,
+      "instructions": 10
+    },
+    {
+      "duration": -0.5,
+      "elapsed": 0.0,
+      "delta": 2.0,
+      "elapsed_bits": 3217031168,
+      "weight_bits": 1056964608,
+      "instructions": 10
+    },
+    {
+      "duration": -0.5,
+      "elapsed": 0.25,
+      "delta": 0.0,
+      "elapsed_bits": 3217031168,
+      "weight_bits": 1056964608,
+      "instructions": 10
+    },
+    {
+      "duration": -0.5,
+      "elapsed": 0.25,
+      "delta": 0.25,
+      "elapsed_bits": 3217031168,
+      "weight_bits": 1056964608,
+      "instructions": 10
+    },
+    {
+      "duration": -0.5,
+      "elapsed": 0.25,
+      "delta": 2.0,
+      "elapsed_bits": 3217031168,
+      "weight_bits": 1056964608,
+      "instructions": 10
+    },
+    {
+      "duration": -0.5,
+      "elapsed": 2.0,
+      "delta": 0.0,
+      "elapsed_bits": 3217031168,
+      "weight_bits": 1056964608,
+      "instructions": 10
+    },
+    {
+      "duration": -0.5,
+      "elapsed": 2.0,
+      "delta": 0.25,
+      "elapsed_bits": 3217031168,
+      "weight_bits": 1056964608,
+      "instructions": 10
+    },
+    {
+      "duration": -0.5,
+      "elapsed": 2.0,
+      "delta": 2.0,
+      "elapsed_bits": 3217031168,
+      "weight_bits": 1056964608,
+      "instructions": 10
+    },
+    {
+      "duration": -0.0,
+      "elapsed": 0.0,
+      "delta": 0.0,
+      "elapsed_bits": 0,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": -0.0,
+      "elapsed": 0.0,
+      "delta": 0.25,
+      "elapsed_bits": 1048576000,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": -0.0,
+      "elapsed": 0.0,
+      "delta": 2.0,
+      "elapsed_bits": 1073741824,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": -0.0,
+      "elapsed": 0.25,
+      "delta": 0.0,
+      "elapsed_bits": 1048576000,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": -0.0,
+      "elapsed": 0.25,
+      "delta": 0.25,
+      "elapsed_bits": 1056964608,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": -0.0,
+      "elapsed": 0.25,
+      "delta": 2.0,
+      "elapsed_bits": 1074790400,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": -0.0,
+      "elapsed": 2.0,
+      "delta": 0.0,
+      "elapsed_bits": 1073741824,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": -0.0,
+      "elapsed": 2.0,
+      "delta": 0.25,
+      "elapsed_bits": 1074790400,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": -0.0,
+      "elapsed": 2.0,
+      "delta": 2.0,
+      "elapsed_bits": 1082130432,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": 0.0,
+      "elapsed": 0.0,
+      "delta": 0.0,
+      "elapsed_bits": 0,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": 0.0,
+      "elapsed": 0.0,
+      "delta": 0.25,
+      "elapsed_bits": 1048576000,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": 0.0,
+      "elapsed": 0.0,
+      "delta": 2.0,
+      "elapsed_bits": 1073741824,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": 0.0,
+      "elapsed": 0.25,
+      "delta": 0.0,
+      "elapsed_bits": 1048576000,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": 0.0,
+      "elapsed": 0.25,
+      "delta": 0.25,
+      "elapsed_bits": 1056964608,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": 0.0,
+      "elapsed": 0.25,
+      "delta": 2.0,
+      "elapsed_bits": 1074790400,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": 0.0,
+      "elapsed": 2.0,
+      "delta": 0.0,
+      "elapsed_bits": 1073741824,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": 0.0,
+      "elapsed": 2.0,
+      "delta": 0.25,
+      "elapsed_bits": 1074790400,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": 0.0,
+      "elapsed": 2.0,
+      "delta": 2.0,
+      "elapsed_bits": 1082130432,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": 0.5,
+      "elapsed": 0.0,
+      "delta": 0.0,
+      "elapsed_bits": 0,
+      "weight_bits": 0,
+      "instructions": 9
+    },
+    {
+      "duration": 0.5,
+      "elapsed": 0.0,
+      "delta": 0.25,
+      "elapsed_bits": 1048576000,
+      "weight_bits": 1056964608,
+      "instructions": 9
+    },
+    {
+      "duration": 0.5,
+      "elapsed": 0.0,
+      "delta": 2.0,
+      "elapsed_bits": 1073741824,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": 0.5,
+      "elapsed": 0.25,
+      "delta": 0.0,
+      "elapsed_bits": 1048576000,
+      "weight_bits": 1056964608,
+      "instructions": 9
+    },
+    {
+      "duration": 0.5,
+      "elapsed": 0.25,
+      "delta": 0.25,
+      "elapsed_bits": 1056964608,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": 0.5,
+      "elapsed": 0.25,
+      "delta": 2.0,
+      "elapsed_bits": 1074790400,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": 0.5,
+      "elapsed": 2.0,
+      "delta": 0.0,
+      "elapsed_bits": 1073741824,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": 0.5,
+      "elapsed": 2.0,
+      "delta": 0.25,
+      "elapsed_bits": 1074790400,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": 0.5,
+      "elapsed": 2.0,
+      "delta": 2.0,
+      "elapsed_bits": 1082130432,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": 1.0,
+      "elapsed": 0.0,
+      "delta": 0.0,
+      "elapsed_bits": 0,
+      "weight_bits": 0,
+      "instructions": 9
+    },
+    {
+      "duration": 1.0,
+      "elapsed": 0.0,
+      "delta": 0.25,
+      "elapsed_bits": 1048576000,
+      "weight_bits": 1048576000,
+      "instructions": 9
+    },
+    {
+      "duration": 1.0,
+      "elapsed": 0.0,
+      "delta": 2.0,
+      "elapsed_bits": 1073741824,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": 1.0,
+      "elapsed": 0.25,
+      "delta": 0.0,
+      "elapsed_bits": 1048576000,
+      "weight_bits": 1048576000,
+      "instructions": 9
+    },
+    {
+      "duration": 1.0,
+      "elapsed": 0.25,
+      "delta": 0.25,
+      "elapsed_bits": 1056964608,
+      "weight_bits": 1056964608,
+      "instructions": 9
+    },
+    {
+      "duration": 1.0,
+      "elapsed": 0.25,
+      "delta": 2.0,
+      "elapsed_bits": 1074790400,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": 1.0,
+      "elapsed": 2.0,
+      "delta": 0.0,
+      "elapsed_bits": 1073741824,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": 1.0,
+      "elapsed": 2.0,
+      "delta": 0.25,
+      "elapsed_bits": 1074790400,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    },
+    {
+      "duration": 1.0,
+      "elapsed": 2.0,
+      "delta": 2.0,
+      "elapsed_bits": 1082130432,
+      "weight_bits": 1065353216,
+      "instructions": 8
+    }
+  ],
+  "lifecycle": [
+    {
+      "refresh": false,
+      "calls": [
+        "child",
+        "derive",
+        "promote"
+      ],
+      "seen_transform": [
+        1073741824,
+        1073741824,
+        1073741824,
+        1073741824,
+        1073741824,
+        1073741824,
+        1073741824,
+        1073741824,
+        1073741824,
+        1073741824,
+        1073741824,
+        1073741824,
+        1073741824,
+        1073741824,
+        1073741824,
+        1073741824
+      ],
+      "cache_transform": [
+        1091567616,
+        1091567616,
+        1091567616,
+        1091567616,
+        1091567616,
+        1091567616,
+        1091567616,
+        1091567616,
+        1091567616,
+        1091567616,
+        1091567616,
+        1091567616,
+        1091567616,
+        1091567616,
+        1091567616,
+        1091567616
+      ],
+      "output_focus": [
+        1099431936,
+        1099431936,
+        1099431936,
+        1099431936
+      ],
+      "child": 11,
+      "instructions": 60
+    },
+    {
+      "refresh": true,
+      "calls": [
+        "child",
+        "derive",
+        "promote"
+      ],
+      "seen_transform": [
+        1077936128,
+        1077936128,
+        1077936128,
+        1077936128,
+        1077936128,
+        1077936128,
+        1077936128,
+        1077936128,
+        1077936128,
+        1077936128,
+        1077936128,
+        1077936128,
+        1077936128,
+        1077936128,
+        1077936128,
+        1077936128
+      ],
+      "cache_transform": [
+        1091567616,
+        1091567616,
+        1091567616,
+        1091567616,
+        1091567616,
+        1091567616,
+        1091567616,
+        1091567616,
+        1091567616,
+        1091567616,
+        1091567616,
+        1091567616,
+        1091567616,
+        1091567616,
+        1091567616,
+        1091567616
+      ],
+      "output_focus": [
+        1099431936,
+        1099431936,
+        1099431936,
+        1099431936
+      ],
+      "child": 11,
+      "instructions": 94
+    }
+  ],
+  "pitch": [
+    {
+      "observed": -1.399999976158142,
+      "placement": -0.4000000059604645,
+      "look": -0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1038482832,
+      "instructions": 52
+    },
+    {
+      "observed": -1.399999976158142,
+      "placement": -0.4000000059604645,
+      "look": 0.0,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1038482832,
+      "instructions": 52
+    },
+    {
+      "observed": -1.399999976158142,
+      "placement": -0.4000000059604645,
+      "look": 0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1038482832,
+      "instructions": 52
+    },
+    {
+      "observed": -1.399999976158142,
+      "placement": 0.20000000298023224,
+      "look": -0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1038482832,
+      "instructions": 52
+    },
+    {
+      "observed": -1.399999976158142,
+      "placement": 0.20000000298023224,
+      "look": 0.0,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1038482832,
+      "instructions": 52
+    },
+    {
+      "observed": -1.399999976158142,
+      "placement": 0.20000000298023224,
+      "look": 0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1038482832,
+      "instructions": 52
+    },
+    {
+      "observed": -1.399999976158142,
+      "placement": 0.699999988079071,
+      "look": -0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1038482832,
+      "instructions": 52
+    },
+    {
+      "observed": -1.399999976158142,
+      "placement": 0.699999988079071,
+      "look": 0.0,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1038482832,
+      "instructions": 52
+    },
+    {
+      "observed": -1.399999976158142,
+      "placement": 0.699999988079071,
+      "look": 0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1038482832,
+      "instructions": 52
+    },
+    {
+      "observed": -0.699999988079071,
+      "placement": -0.4000000059604645,
+      "look": -0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1062204133,
+      "instructions": 55
+    },
+    {
+      "observed": -0.699999988079071,
+      "placement": -0.4000000059604645,
+      "look": 0.0,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1062204133,
+      "instructions": 55
+    },
+    {
+      "observed": -0.699999988079071,
+      "placement": -0.4000000059604645,
+      "look": 0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1062204133,
+      "instructions": 55
+    },
+    {
+      "observed": -0.699999988079071,
+      "placement": 0.20000000298023224,
+      "look": -0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1062204133,
+      "instructions": 55
+    },
+    {
+      "observed": -0.699999988079071,
+      "placement": 0.20000000298023224,
+      "look": 0.0,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1062204133,
+      "instructions": 55
+    },
+    {
+      "observed": -0.699999988079071,
+      "placement": 0.20000000298023224,
+      "look": 0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1062204133,
+      "instructions": 55
+    },
+    {
+      "observed": -0.699999988079071,
+      "placement": 0.699999988079071,
+      "look": -0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1062204133,
+      "instructions": 55
+    },
+    {
+      "observed": -0.699999988079071,
+      "placement": 0.699999988079071,
+      "look": 0.0,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1062204133,
+      "instructions": 55
+    },
+    {
+      "observed": -0.699999988079071,
+      "placement": 0.699999988079071,
+      "look": 0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1062204133,
+      "instructions": 55
+    },
+    {
+      "observed": -0.20000000298023224,
+      "placement": -0.4000000059604645,
+      "look": -0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 3208355228,
+      "instructions": 57
+    },
+    {
+      "observed": -0.20000000298023224,
+      "placement": -0.4000000059604645,
+      "look": 0.0,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 3197251007,
+      "instructions": 57
+    },
+    {
+      "observed": -0.20000000298023224,
+      "placement": -0.4000000059604645,
+      "look": 0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1042661237,
+      "instructions": 57
+    },
+    {
+      "observed": -0.20000000298023224,
+      "placement": 0.20000000298023224,
+      "look": -0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1044841769,
+      "instructions": 55
+    },
+    {
+      "observed": -0.20000000298023224,
+      "placement": 0.20000000298023224,
+      "look": 0.0,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1056029560,
+      "instructions": 55
+    },
+    {
+      "observed": -0.20000000298023224,
+      "placement": 0.20000000298023224,
+      "look": 0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1061157422,
+      "instructions": 55
+    },
+    {
+      "observed": -0.20000000298023224,
+      "placement": 0.699999988079071,
+      "look": -0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1058535315,
+      "instructions": 55
+    },
+    {
+      "observed": -0.20000000298023224,
+      "placement": 0.699999988079071,
+      "look": 0.0,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1061531246,
+      "instructions": 55
+    },
+    {
+      "observed": -0.20000000298023224,
+      "placement": 0.699999988079071,
+      "look": 0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1064527177,
+      "instructions": 55
+    },
+    {
+      "observed": 0.0,
+      "placement": -0.4000000059604645,
+      "look": -0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 3205551314,
+      "instructions": 57
+    },
+    {
+      "observed": 0.0,
+      "placement": -0.4000000059604645,
+      "look": 0.0,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 3190758755,
+      "instructions": 57
+    },
+    {
+      "observed": 0.0,
+      "placement": -0.4000000059604645,
+      "look": 0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1046812803,
+      "instructions": 57
+    },
+    {
+      "observed": 0.0,
+      "placement": 0.20000000298023224,
+      "look": -0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 3176684564,
+      "instructions": 55
+    },
+    {
+      "observed": 0.0,
+      "placement": 0.20000000298023224,
+      "look": 0.0,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1051463919,
+      "instructions": 55
+    },
+    {
+      "observed": 0.0,
+      "placement": 0.20000000298023224,
+      "look": 0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1060738736,
+      "instructions": 55
+    },
+    {
+      "observed": 0.0,
+      "placement": 0.699999988079071,
+      "look": -0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1057067788,
+      "instructions": 55
+    },
+    {
+      "observed": 0.0,
+      "placement": 0.699999988079071,
+      "look": 0.0,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1061262092,
+      "instructions": 55
+    },
+    {
+      "observed": 0.0,
+      "placement": 0.699999988079071,
+      "look": 0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1065404806,
+      "instructions": 55
+    },
+    {
+      "observed": 0.20000000298023224,
+      "placement": -0.4000000059604645,
+      "look": -0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 3201046544,
+      "instructions": 57
+    },
+    {
+      "observed": 0.20000000298023224,
+      "placement": -0.4000000059604645,
+      "look": 0.0,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 3177676060,
+      "instructions": 57
+    },
+    {
+      "observed": 0.20000000298023224,
+      "placement": -0.4000000059604645,
+      "look": 0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1049770184,
+      "instructions": 57
+    },
+    {
+      "observed": 0.20000000298023224,
+      "placement": 0.20000000298023224,
+      "look": -0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 3197737370,
+      "instructions": 55
+    },
+    {
+      "observed": 0.20000000298023224,
+      "placement": 0.20000000298023224,
+      "look": 0.0,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1045220557,
+      "instructions": 55
+    },
+    {
+      "observed": 0.20000000298023224,
+      "placement": 0.20000000298023224,
+      "look": 0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1060320051,
+      "instructions": 55
+    },
+    {
+      "observed": 0.20000000298023224,
+      "placement": 0.699999988079071,
+      "look": -0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1054235914,
+      "instructions": 55
+    },
+    {
+      "observed": 0.20000000298023224,
+      "placement": 0.699999988079071,
+      "look": 0.0,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1060992938,
+      "instructions": 55
+    },
+    {
+      "observed": 0.20000000298023224,
+      "placement": 0.699999988079071,
+      "look": 0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1065869415,
+      "instructions": 55
+    },
+    {
+      "observed": 0.800000011920929,
+      "placement": -0.4000000059604645,
+      "look": -0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1037202104,
+      "instructions": 57
+    },
+    {
+      "observed": 0.800000011920929,
+      "placement": -0.4000000059604645,
+      "look": 0.0,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1049816454,
+      "instructions": 57
+    },
+    {
+      "observed": 0.800000011920929,
+      "placement": -0.4000000059604645,
+      "look": 0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1055997534,
+      "instructions": 57
+    },
+    {
+      "observed": 0.800000011920929,
+      "placement": 0.20000000298023224,
+      "look": -0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1042258476,
+      "instructions": 57
+    },
+    {
+      "observed": 0.800000011920929,
+      "placement": 0.20000000298023224,
+      "look": 0.0,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1054451122,
+      "instructions": 57
+    },
+    {
+      "observed": 0.800000011920929,
+      "placement": 0.20000000298023224,
+      "look": 0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1060224808,
+      "instructions": 57
+    },
+    {
+      "observed": 0.800000011920929,
+      "placement": 0.699999988079071,
+      "look": -0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1048943840,
+      "instructions": 57
+    },
+    {
+      "observed": 0.800000011920929,
+      "placement": 0.699999988079071,
+      "look": 0.0,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1060294256,
+      "instructions": 57
+    },
+    {
+      "observed": 0.800000011920929,
+      "placement": 0.699999988079071,
+      "look": 0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1066493752,
+      "instructions": 57
+    },
+    {
+      "observed": 1.5,
+      "placement": -0.4000000059604645,
+      "look": -0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1060113691,
+      "instructions": 57
+    },
+    {
+      "observed": 1.5,
+      "placement": -0.4000000059604645,
+      "look": 0.0,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1060113691,
+      "instructions": 57
+    },
+    {
+      "observed": 1.5,
+      "placement": -0.4000000059604645,
+      "look": 0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1060113692,
+      "instructions": 57
+    },
+    {
+      "observed": 1.5,
+      "placement": 0.20000000298023224,
+      "look": -0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1060113691,
+      "instructions": 57
+    },
+    {
+      "observed": 1.5,
+      "placement": 0.20000000298023224,
+      "look": 0.0,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1060113691,
+      "instructions": 57
+    },
+    {
+      "observed": 1.5,
+      "placement": 0.20000000298023224,
+      "look": 0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1060113692,
+      "instructions": 57
+    },
+    {
+      "observed": 1.5,
+      "placement": 0.699999988079071,
+      "look": -0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1060113691,
+      "instructions": 57
+    },
+    {
+      "observed": 1.5,
+      "placement": 0.699999988079071,
+      "look": 0.0,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1060113691,
+      "instructions": 57
+    },
+    {
+      "observed": 1.5,
+      "placement": 0.699999988079071,
+      "look": 0.5,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": false,
+      "bits": 1060113692,
+      "instructions": 57
+    },
+    {
+      "observed": -0.699999988079071,
+      "placement": -0.699999988079071,
+      "look": 0.0,
+      "limits": [
+        -0.699999988079071,
+        1.5,
+        -0.8123000264167786,
+        1.5123000144958496
+      ],
+      "is_nan": true,
+      "bits": null,
+      "instructions": 55
+    }
+  ],
+  "roots": [
+    {
+      "vector": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "bits": 0,
+      "instructions": 19
+    },
+    {
+      "vector": [
+        1.0,
+        2.0,
+        3.0,
+        4.0
+      ],
+      "bits": 1078616770,
+      "instructions": 19
+    },
+    {
+      "vector": [
+        -5.0,
+        0.1,
+        2.0,
+        0.0
+      ],
+      "bits": 1085035333,
+      "instructions": 19
+    },
+    {
+      "vector": [
+        1e-08,
+        0.0,
+        1e-08,
+        1.0
+      ],
+      "bits": 846394822,
+      "instructions": 19
+    },
+    {
+      "vector": [
+        4096.0,
+        -64.0,
+        0.125,
+        0.0
+      ],
+      "bits": 1166016511,
+      "instructions": 19
+    }
+  ],
+  "degrees": [
+    {
+      "placement": -180.0,
+      "look": -180.0,
+      "bits": [
+        3226013659,
+        3226013659
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": -180.0,
+      "look": -20.0,
+      "bits": [
+        3226013659,
+        3199383747
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": -180.0,
+      "look": 0.0,
+      "bits": [
+        3226013659,
+        0
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": -180.0,
+      "look": 18.0,
+      "bits": [
+        3226013659,
+        1050728828
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": -180.0,
+      "look": 90.0,
+      "bits": [
+        3226013659,
+        1070141403
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": -180.0,
+      "look": 360.0,
+      "bits": [
+        3226013659,
+        1086918619
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": -20.0,
+      "look": -180.0,
+      "bits": [
+        3199383747,
+        3226013659
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": -20.0,
+      "look": -20.0,
+      "bits": [
+        3199383747,
+        3199383747
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": -20.0,
+      "look": 0.0,
+      "bits": [
+        3199383747,
+        0
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": -20.0,
+      "look": 18.0,
+      "bits": [
+        3199383747,
+        1050728828
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": -20.0,
+      "look": 90.0,
+      "bits": [
+        3199383747,
+        1070141403
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": -20.0,
+      "look": 360.0,
+      "bits": [
+        3199383747,
+        1086918619
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": 0.0,
+      "look": -180.0,
+      "bits": [
+        0,
+        3226013659
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": 0.0,
+      "look": -20.0,
+      "bits": [
+        0,
+        3199383747
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": 0.0,
+      "look": 0.0,
+      "bits": [
+        0,
+        0
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": 0.0,
+      "look": 18.0,
+      "bits": [
+        0,
+        1050728828
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": 0.0,
+      "look": 90.0,
+      "bits": [
+        0,
+        1070141403
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": 0.0,
+      "look": 360.0,
+      "bits": [
+        0,
+        1086918619
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": 18.0,
+      "look": -180.0,
+      "bits": [
+        1050728828,
+        3226013659
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": 18.0,
+      "look": -20.0,
+      "bits": [
+        1050728828,
+        3199383747
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": 18.0,
+      "look": 0.0,
+      "bits": [
+        1050728828,
+        0
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": 18.0,
+      "look": 18.0,
+      "bits": [
+        1050728828,
+        1050728828
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": 18.0,
+      "look": 90.0,
+      "bits": [
+        1050728828,
+        1070141403
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": 18.0,
+      "look": 360.0,
+      "bits": [
+        1050728828,
+        1086918619
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": 90.0,
+      "look": -180.0,
+      "bits": [
+        1070141403,
+        3226013659
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": 90.0,
+      "look": -20.0,
+      "bits": [
+        1070141403,
+        3199383747
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": 90.0,
+      "look": 0.0,
+      "bits": [
+        1070141403,
+        0
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": 90.0,
+      "look": 18.0,
+      "bits": [
+        1070141403,
+        1050728828
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": 90.0,
+      "look": 90.0,
+      "bits": [
+        1070141403,
+        1070141403
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": 90.0,
+      "look": 360.0,
+      "bits": [
+        1070141403,
+        1086918619
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": 360.0,
+      "look": -180.0,
+      "bits": [
+        1086918619,
+        3226013659
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": 360.0,
+      "look": -20.0,
+      "bits": [
+        1086918619,
+        3199383747
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": 360.0,
+      "look": 0.0,
+      "bits": [
+        1086918619,
+        0
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": 360.0,
+      "look": 18.0,
+      "bits": [
+        1086918619,
+        1050728828
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": 360.0,
+      "look": 90.0,
+      "bits": [
+        1086918619,
+        1070141403
+      ],
+      "instructions": 15
+    },
+    {
+      "placement": 360.0,
+      "look": 360.0,
+      "bits": [
+        1086918619,
+        1086918619
+      ],
+      "instructions": 15
+    }
+  ]
+}

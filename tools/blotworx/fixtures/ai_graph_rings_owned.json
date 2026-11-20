@@ -1,0 +1,85 @@
+{
+  "scope": "Owned GV graph reconstruction against read-only live node hashes. No game bytes stored in fixture.",
+  "scenario": "Levels/GV_ZoneA_Start.level",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "dol_sha256": "994779fa2e276983efdb50f02c406568f285a82558cb5d54bbdf74651a98a920",
+  "helpers": {
+    "0x481df0": "4e800020",
+    "0x481df4": "4e800020",
+    "0x481df8": "4e800020",
+    "0x481dfc": "4e800020",
+    "0x481e00": "4e800020",
+    "0x481e04": "4e800020",
+    "0x481e08": "4e800020",
+    "0x481e0c": "4e800020"
+  },
+  "stride": 36,
+  "attributes": [
+    [
+      0,
+      2,
+      0
+    ],
+    [
+      8,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0
+    ]
+  ],
+  "records": [
+    {
+      "id": 1001,
+      "path": "sectors/gv_main_gremlinvillage_ai_ai_path_database_01/sector_1001.prelnk.obj",
+      "header": 2463504048,
+      "external": 2463516260,
+      "external_count": 26,
+      "point_count": 365,
+      "source_sha256": "477df3a9bf29051e6a0e45d7e8206505354838825fb13420e7a0b7539947c9d4",
+      "live_points_sha256": "7cac4dabcb87bbddf5b7cb03f8463212b26e278ba66a042ac9984d25921105fb"
+    },
+    {
+      "id": 1002,
+      "path": "sectors/gv_main_gremlinvillage_ai_ai_path_database_01/sector_1002.prelnk.obj",
+      "header": 2463153392,
+      "external": 2463163912,
+      "external_count": 54,
+      "point_count": 346,
+      "source_sha256": "7ab6b60c7f6e61c3ad7a6aea3d9be3ab236e4dca57b89053b5a1aad2efc2100e",
+      "live_points_sha256": "93751e754cf710eb47b9d6540333b5abdd294fd023f5837b82357be88943aa43"
+    }
+  ],
+  "runs": [
+    {
+      "order": [
+        1001,
+        1002
+      ],
+      "hashes": {
+        "1001": "7cac4dabcb87bbddf5b7cb03f8463212b26e278ba66a042ac9984d25921105fb",
+        "1002": "93751e754cf710eb47b9d6540333b5abdd294fd023f5837b82357be88943aa43"
+      },
+      "instructions": 148003
+    },
+    {
+      "order": [
+        1002,
+        1001
+      ],
+      "hashes": {
+        "1001": "7cac4dabcb87bbddf5b7cb03f8463212b26e278ba66a042ac9984d25921105fb",
+        "1002": "93751e754cf710eb47b9d6540333b5abdd294fd023f5837b82357be88943aa43"
+      },
+      "instructions": 148420
+    }
+  ]
+}

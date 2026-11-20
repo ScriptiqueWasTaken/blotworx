@@ -1,0 +1,272 @@
+{
+  "capture_sha256": "663f1d28f653dc5c13cf0a8e60aa28ac47edf731a0f8377f63abd1b128b1acc2",
+  "asset_sha256": "950b36b54bd70b36ed008d93c9d1193de139aabeb22a24ecaae3151563412c1d",
+  "scope": "Compiler output only: source expressions and captured runtime RPN. Does not establish evaluator rounding, transition scheduling, or coverage of all operators.",
+  "variables": [
+    "VAR_Scaled_Walk_Speed",
+    "VAR_Scaled_Run_Speed",
+    "VAR_Normalized_Forward_Speed",
+    "VAR_Throw_Blend",
+    "VAR_ThinnerJump_Blend",
+    "VAR_Land_Type",
+    "VAR_Y_Velocity",
+    "VAR_Forward_Velocity",
+    "VAR_Turn_Blend_Left",
+    "VAR_Turn_Blend_Right",
+    "VAR_Run_Turn_Angle",
+    "VAR_Run_Turn_Angle_Neg",
+    "VAR_SuperSaturated_Blend",
+    "VAR_Hit_Blend",
+    "VAR_Character_Health",
+    "VAR_LedgeJump_Direction",
+    "VAR_PlayStyle",
+    "VAR_Sketch_Stroke_Length",
+    "VAR_Hit_Direction",
+    "InternalVar_CombatIdleTimeLeft",
+    "VAR_FidgetAPercentage",
+    "VAR_FidgetBPercentage",
+    "VAR_FidgetCPercentage",
+    "InternalVar_NonCombatFidgetAPercentage",
+    "InternalVar_NonCombatFidgetBPercentage",
+    "InternalVar_NonCombatFidgetCPercentage",
+    "InternalVar_NonCombatTimeBeforeFidget",
+    "InternalVar_CombatTimeBeforeFidget",
+    "VAR_RandomNumber",
+    "VAR_MaxCombatIdleTime",
+    "VAR_MinCombatIdleTime",
+    "VAR_MaxTimeBeforeFidget",
+    "VAR_MinTimeBeforeFidget",
+    "VAR_Yaw_To_Target",
+    "VAR_Neg_Yaw_To_Target",
+    "VAR_PlayStyleTransition",
+    "InternalVar_InCombatIdle",
+    "VAR_SupportedState",
+    "internalVar_Scaled_TipToeSpeed",
+    "VAR_Throw_Direction",
+    "InternalVar_Blast_Direction_State",
+    "VAR_Throw_Quadrant",
+    "VAR_Wall_Direction",
+    "VAR_PercentageScrapper",
+    "VAR_Slide_Facing",
+    "VAR_Slide_Slope",
+    "VAR_Direction_Against_Wall",
+    "VAR_StrafingState",
+    "VAR_Dot_Of_Aim_Angle",
+    "VAR_MotionState",
+    "VAR_Aim_Left_Right",
+    "VAR_Forward_Input_Velocity",
+    "VAR_In_Conversation",
+    "VAR_Cutscene"
+  ],
+  "programs": {
+    "2:89680": {
+      "source": "VAR_Land_Type == 2",
+      "tokens": [
+        {
+          "data": 5.0,
+          "data_bits": 1084227584,
+          "type": 3,
+          "operator": 0
+        },
+        {
+          "data": 2.0,
+          "data_bits": 1073741824,
+          "type": 2,
+          "operator": 0
+        },
+        {
+          "data": 0.0,
+          "data_bits": 0,
+          "type": 1,
+          "operator": 20
+        }
+      ]
+    },
+    "2:1184": {
+      "source": "InternalVar_InCombatIdle != 1",
+      "tokens": [
+        {
+          "data": 36.0,
+          "data_bits": 1108344832,
+          "type": 3,
+          "operator": 0
+        },
+        {
+          "data": 1.0,
+          "data_bits": 1065353216,
+          "type": 2,
+          "operator": 0
+        },
+        {
+          "data": 0.0,
+          "data_bits": 0,
+          "type": 1,
+          "operator": 21
+        }
+      ]
+    },
+    "2:1488": {
+      "source": "InternalVar_InCombatIdle == 1",
+      "tokens": [
+        {
+          "data": 36.0,
+          "data_bits": 1108344832,
+          "type": 3,
+          "operator": 0
+        },
+        {
+          "data": 1.0,
+          "data_bits": 1065353216,
+          "type": 2,
+          "operator": 0
+        },
+        {
+          "data": 0.0,
+          "data_bits": 0,
+          "type": 1,
+          "operator": 20
+        }
+      ]
+    },
+    "2:6128": {
+      "source": "VAR_RandomNumber >= 0.8",
+      "tokens": [
+        {
+          "data": 28.0,
+          "data_bits": 1105199104,
+          "type": 3,
+          "operator": 0
+        },
+        {
+          "data": 0.800000011920929,
+          "data_bits": 1061997773,
+          "type": 2,
+          "operator": 0
+        },
+        {
+          "data": 0.0,
+          "data_bits": 0,
+          "type": 1,
+          "operator": 25
+        }
+      ]
+    },
+    "2:5920": {
+      "source": "(VAR_RandomNumber > 0.66667) && (VAR_RandomNumber < 0.8)",
+      "tokens": [
+        {
+          "data": 28.0,
+          "data_bits": 1105199104,
+          "type": 3,
+          "operator": 0
+        },
+        {
+          "data": 0.666670024394989,
+          "data_bits": 1059760867,
+          "type": 2,
+          "operator": 0
+        },
+        {
+          "data": 0.0,
+          "data_bits": 0,
+          "type": 1,
+          "operator": 23
+        },
+        {
+          "data": 28.0,
+          "data_bits": 1105199104,
+          "type": 3,
+          "operator": 0
+        },
+        {
+          "data": 0.800000011920929,
+          "data_bits": 1061997773,
+          "type": 2,
+          "operator": 0
+        },
+        {
+          "data": 0.0,
+          "data_bits": 0,
+          "type": 1,
+          "operator": 22
+        },
+        {
+          "data": 0.0,
+          "data_bits": 0,
+          "type": 1,
+          "operator": 19
+        }
+      ]
+    },
+    "2:5680": {
+      "source": "(VAR_RandomNumber >= 0.3333) && (VAR_RandomNumber < 0.6666667)",
+      "tokens": [
+        {
+          "data": 28.0,
+          "data_bits": 1105199104,
+          "type": 3,
+          "operator": 0
+        },
+        {
+          "data": 0.33329999446868896,
+          "data_bits": 1051371084,
+          "type": 2,
+          "operator": 0
+        },
+        {
+          "data": 0.0,
+          "data_bits": 0,
+          "type": 1,
+          "operator": 25
+        },
+        {
+          "data": 28.0,
+          "data_bits": 1105199104,
+          "type": 3,
+          "operator": 0
+        },
+        {
+          "data": 0.6666666865348816,
+          "data_bits": 1059760811,
+          "type": 2,
+          "operator": 0
+        },
+        {
+          "data": 0.0,
+          "data_bits": 0,
+          "type": 1,
+          "operator": 22
+        },
+        {
+          "data": 0.0,
+          "data_bits": 0,
+          "type": 1,
+          "operator": 19
+        }
+      ]
+    },
+    "2:5440": {
+      "source": "VAR_RandomNumber < 0.3333",
+      "tokens": [
+        {
+          "data": 28.0,
+          "data_bits": 1105199104,
+          "type": 3,
+          "operator": 0
+        },
+        {
+          "data": 0.33329999446868896,
+          "data_bits": 1051371084,
+          "type": 2,
+          "operator": 0
+        },
+        {
+          "data": 0.0,
+          "data_bits": 0,
+          "type": 1,
+          "operator": 22
+        }
+      ]
+    }
+  }
+}

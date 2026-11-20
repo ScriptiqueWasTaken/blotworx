@@ -1,0 +1,1110 @@
+{
+  "scope": "Execute EM1 ScriptedMove receiver; entity lookup/position are supplied boundaries.\nDoes not validate behavior selection, nested task construction or NPC movement.\nThe optional player-target query is not exercised by these non-player fixtures.\n",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "cases": [
+    {
+      "initial_pending": false,
+      "action": 0,
+      "reference": null,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": null,
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 0,
+      "radius": 1056964608,
+      "destination": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "returned": true,
+      "instructions": 39
+    },
+    {
+      "initial_pending": false,
+      "action": 0,
+      "reference": 42,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": [
+        1084227584,
+        1086324736,
+        1088421888,
+        0
+      ],
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 0,
+      "radius": 1056964608,
+      "destination": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "returned": true,
+      "instructions": 39
+    },
+    {
+      "initial_pending": false,
+      "action": 0,
+      "reference": 43,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": null,
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 0,
+      "radius": 1056964608,
+      "destination": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "returned": true,
+      "instructions": 39
+    },
+    {
+      "initial_pending": false,
+      "action": 1,
+      "reference": null,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": null,
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 1,
+      "radius": 1067030938,
+      "destination": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "returned": true,
+      "instructions": 46
+    },
+    {
+      "initial_pending": false,
+      "action": 1,
+      "reference": 42,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": [
+        1084227584,
+        1086324736,
+        1088421888,
+        0
+      ],
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 1,
+      "radius": 1067030938,
+      "destination": [
+        1084227584,
+        1086324736,
+        1088421888,
+        0
+      ],
+      "returned": true,
+      "instructions": 59
+    },
+    {
+      "initial_pending": false,
+      "action": 1,
+      "reference": 43,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": null,
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 1,
+      "radius": 1067030938,
+      "destination": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "returned": true,
+      "instructions": 46
+    },
+    {
+      "initial_pending": false,
+      "action": 2,
+      "reference": null,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": null,
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 2,
+      "radius": 1056964608,
+      "destination": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "returned": true,
+      "instructions": 36
+    },
+    {
+      "initial_pending": false,
+      "action": 2,
+      "reference": 42,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": [
+        1084227584,
+        1086324736,
+        1088421888,
+        0
+      ],
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 2,
+      "radius": 1056964608,
+      "destination": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "returned": true,
+      "instructions": 36
+    },
+    {
+      "initial_pending": false,
+      "action": 2,
+      "reference": 43,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": null,
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 2,
+      "radius": 1056964608,
+      "destination": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "returned": true,
+      "instructions": 36
+    },
+    {
+      "initial_pending": false,
+      "action": 3,
+      "reference": null,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": null,
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 3,
+      "radius": 1067030938,
+      "destination": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "returned": true,
+      "instructions": 46
+    },
+    {
+      "initial_pending": false,
+      "action": 3,
+      "reference": 42,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": [
+        1084227584,
+        1086324736,
+        1088421888,
+        0
+      ],
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 3,
+      "radius": 1067030938,
+      "destination": [
+        1084227584,
+        1086324736,
+        1088421888,
+        0
+      ],
+      "returned": true,
+      "instructions": 59
+    },
+    {
+      "initial_pending": false,
+      "action": 3,
+      "reference": 43,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": null,
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 3,
+      "radius": 1067030938,
+      "destination": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "returned": true,
+      "instructions": 46
+    },
+    {
+      "initial_pending": false,
+      "action": 11,
+      "reference": null,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": null,
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": false,
+      "stored_action": 7,
+      "radius": 1073741824,
+      "destination": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "returned": false,
+      "instructions": 27
+    },
+    {
+      "initial_pending": false,
+      "action": 11,
+      "reference": 42,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": [
+        1084227584,
+        1086324736,
+        1088421888,
+        0
+      ],
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": false,
+      "stored_action": 7,
+      "radius": 1073741824,
+      "destination": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "returned": false,
+      "instructions": 27
+    },
+    {
+      "initial_pending": false,
+      "action": 11,
+      "reference": 43,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": null,
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": false,
+      "stored_action": 7,
+      "radius": 1073741824,
+      "destination": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "returned": false,
+      "instructions": 27
+    },
+    {
+      "initial_pending": false,
+      "action": 12,
+      "reference": null,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": null,
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": false,
+      "stored_action": 7,
+      "radius": 1073741824,
+      "destination": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "returned": false,
+      "instructions": 27
+    },
+    {
+      "initial_pending": false,
+      "action": 12,
+      "reference": 42,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": [
+        1084227584,
+        1086324736,
+        1088421888,
+        0
+      ],
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": false,
+      "stored_action": 7,
+      "radius": 1073741824,
+      "destination": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "returned": false,
+      "instructions": 27
+    },
+    {
+      "initial_pending": false,
+      "action": 12,
+      "reference": 43,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": null,
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": false,
+      "stored_action": 7,
+      "radius": 1073741824,
+      "destination": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "returned": false,
+      "instructions": 27
+    },
+    {
+      "initial_pending": true,
+      "action": 0,
+      "reference": null,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": null,
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 0,
+      "radius": 1056964608,
+      "destination": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "returned": true,
+      "instructions": 39
+    },
+    {
+      "initial_pending": true,
+      "action": 0,
+      "reference": 42,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": [
+        1084227584,
+        1086324736,
+        1088421888,
+        0
+      ],
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 0,
+      "radius": 1056964608,
+      "destination": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "returned": true,
+      "instructions": 39
+    },
+    {
+      "initial_pending": true,
+      "action": 0,
+      "reference": 43,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": null,
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 0,
+      "radius": 1056964608,
+      "destination": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "returned": true,
+      "instructions": 39
+    },
+    {
+      "initial_pending": true,
+      "action": 1,
+      "reference": null,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": null,
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 1,
+      "radius": 1067030938,
+      "destination": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "returned": true,
+      "instructions": 46
+    },
+    {
+      "initial_pending": true,
+      "action": 1,
+      "reference": 42,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": [
+        1084227584,
+        1086324736,
+        1088421888,
+        0
+      ],
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 1,
+      "radius": 1067030938,
+      "destination": [
+        1084227584,
+        1086324736,
+        1088421888,
+        0
+      ],
+      "returned": true,
+      "instructions": 59
+    },
+    {
+      "initial_pending": true,
+      "action": 1,
+      "reference": 43,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": null,
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 1,
+      "radius": 1067030938,
+      "destination": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "returned": true,
+      "instructions": 46
+    },
+    {
+      "initial_pending": true,
+      "action": 2,
+      "reference": null,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": null,
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 2,
+      "radius": 1056964608,
+      "destination": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "returned": true,
+      "instructions": 36
+    },
+    {
+      "initial_pending": true,
+      "action": 2,
+      "reference": 42,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": [
+        1084227584,
+        1086324736,
+        1088421888,
+        0
+      ],
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 2,
+      "radius": 1056964608,
+      "destination": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "returned": true,
+      "instructions": 36
+    },
+    {
+      "initial_pending": true,
+      "action": 2,
+      "reference": 43,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": null,
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 2,
+      "radius": 1056964608,
+      "destination": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "returned": true,
+      "instructions": 36
+    },
+    {
+      "initial_pending": true,
+      "action": 3,
+      "reference": null,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": null,
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 3,
+      "radius": 1067030938,
+      "destination": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "returned": true,
+      "instructions": 46
+    },
+    {
+      "initial_pending": true,
+      "action": 3,
+      "reference": 42,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": [
+        1084227584,
+        1086324736,
+        1088421888,
+        0
+      ],
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 3,
+      "radius": 1067030938,
+      "destination": [
+        1084227584,
+        1086324736,
+        1088421888,
+        0
+      ],
+      "returned": true,
+      "instructions": 59
+    },
+    {
+      "initial_pending": true,
+      "action": 3,
+      "reference": 43,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": null,
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 3,
+      "radius": 1067030938,
+      "destination": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "returned": true,
+      "instructions": 46
+    },
+    {
+      "initial_pending": true,
+      "action": 11,
+      "reference": null,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": null,
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 7,
+      "radius": 1073741824,
+      "destination": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "returned": true,
+      "instructions": 27
+    },
+    {
+      "initial_pending": true,
+      "action": 11,
+      "reference": 42,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": [
+        1084227584,
+        1086324736,
+        1088421888,
+        0
+      ],
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 7,
+      "radius": 1073741824,
+      "destination": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "returned": true,
+      "instructions": 27
+    },
+    {
+      "initial_pending": true,
+      "action": 11,
+      "reference": 43,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": null,
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 7,
+      "radius": 1073741824,
+      "destination": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "returned": true,
+      "instructions": 27
+    },
+    {
+      "initial_pending": true,
+      "action": 12,
+      "reference": null,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": null,
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 7,
+      "radius": 1073741824,
+      "destination": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "returned": true,
+      "instructions": 27
+    },
+    {
+      "initial_pending": true,
+      "action": 12,
+      "reference": 42,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": [
+        1084227584,
+        1086324736,
+        1088421888,
+        0
+      ],
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 7,
+      "radius": 1073741824,
+      "destination": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "returned": true,
+      "instructions": 27
+    },
+    {
+      "initial_pending": true,
+      "action": 12,
+      "reference": 43,
+      "vector": [
+        2147483648,
+        1073741824,
+        1077936128,
+        1082130432
+      ],
+      "resolved_position": null,
+      "before": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "pending": true,
+      "stored_action": 7,
+      "radius": 1073741824,
+      "destination": [
+        1093664768,
+        1094713344,
+        1095761920,
+        1096810496
+      ],
+      "returned": true,
+      "instructions": 27
+    }
+  ]
+}

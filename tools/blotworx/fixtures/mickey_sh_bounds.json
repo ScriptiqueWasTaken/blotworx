@@ -1,0 +1,23 @@
+{
+  "scenario": "Original GV Zone A opening, SH getter entry; no input injected",
+  "capture": "REL 0x24c7f0 entry, three Mickey calls; paused debugger reads",
+  "dol_sha256": "994779fa2e276983efdb50f02c406568f285a82558cb5d54bbdf74651a98a920",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "samples": [
+    {
+      "model_bound": "0000000040a0806dbfacfc2a40cef91f",
+      "world_transform": "bf24d1d7000000003f43e247000000003f80000200000000bf43e24700000000bf24d1d7c1336fd53c123d9840ad072b3dcccccd",
+      "world_bound": "c13517653f02afb640afcff43f259419"
+    },
+    {
+      "model_bound": "0000000040a0806dbfacfc2a40cef91f",
+      "world_transform": "bf24d1d7000000003f43e247000000003f80000200000000bf43e24700000000bf24d1d7c1336fd53cf73ccb40ad072b3dcccccd",
+      "world_bound": "c13517653f0820a640afcff43f259419"
+    },
+    {
+      "model_bound": "0000000040a0806dbfacfc2a40cef91f",
+      "world_transform": "bf24d1d7000000003f43e247000000003f80000200000000bf43e24700000000bf24d1d7c1336fd53cfb8d1840ad072b3dcccccd",
+      "world_bound": "c13517653f08432940afcff43f259419"
+    }
+  ]
+}

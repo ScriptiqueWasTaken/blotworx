@@ -1,0 +1,931 @@
+{
+  "scope": "Execute the retail NiTransformController Update managed-controller gate.\nOnly flags with manager ownership are admitted. No controller/target service\nis supplied: the original function must return without a call or local write.\nThis validates preserved state, not sequence evaluation or original pixels.\n",
+  "dol_sha256": "994779fa2e276983efdb50f02c406568f285a82558cb5d54bbdf74651a98a920",
+  "entry": "0x8042115c",
+  "cases": [
+    {
+      "flags": 32,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 33,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 34,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 35,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 36,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 37,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 38,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 39,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 40,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 41,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 42,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 43,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 44,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 45,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 46,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 47,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 48,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 49,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 50,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 51,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 52,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 53,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 54,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 55,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 56,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 57,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 58,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 59,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 60,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 61,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 62,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 63,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 96,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 97,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 98,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 99,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 100,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 101,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 102,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 103,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 104,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 105,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 106,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 107,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 108,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 109,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 110,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 111,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 112,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 113,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 114,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 115,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 116,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 117,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 118,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 119,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 120,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 121,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 122,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 123,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 124,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 125,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 126,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 127,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 160,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 161,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 162,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 163,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 164,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 165,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 166,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 167,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 168,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 169,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 170,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 171,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 172,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 173,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 174,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 175,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 176,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 177,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 178,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 179,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 180,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 181,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 182,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 183,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 184,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 185,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 186,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 187,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 188,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 189,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 190,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 191,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 224,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 225,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 226,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 227,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 228,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 229,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 230,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 231,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 232,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 233,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 234,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 235,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 236,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 237,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 238,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 239,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 240,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 241,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 242,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 243,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 244,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 245,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 246,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 247,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 248,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 249,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 250,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 251,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 252,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 253,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 254,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 255,
+      "time": 2.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 108,
+      "time": -1.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 108,
+      "time": 0.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 108,
+      "time": 1.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    },
+    {
+      "flags": 108,
+      "time": 20.0,
+      "controller_unchanged": true,
+      "target_unchanged": true,
+      "instructions": 17
+    }
+  ]
+}

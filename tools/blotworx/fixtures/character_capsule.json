@@ -1,0 +1,168 @@
+{
+  "scope": "Original37a80c..838 and37a844 scalar arithmetic; profiles supplied, paired stores/constructor/runtime not executed",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "dol_sha256": "994779fa2e276983efdb50f02c406568f285a82558cb5d54bbdf74651a98a920",
+  "samples": [
+    {
+      "radius": 0.5,
+      "height": 1.5,
+      "low_bits": 1057803469,
+      "high_bits": 1064514356,
+      "instructions": 13
+    },
+    {
+      "radius": 0.5,
+      "height": 2.5,
+      "low_bits": 1057803469,
+      "high_bits": 1073322394,
+      "instructions": 13
+    },
+    {
+      "radius": 0.5,
+      "height": 3.5,
+      "low_bits": 1057803469,
+      "high_bits": 1077726413,
+      "instructions": 13
+    },
+    {
+      "radius": 0.5,
+      "height": 1.2000000476837158,
+      "low_bits": 1057803469,
+      "high_bits": 1059481191,
+      "instructions": 13
+    },
+    {
+      "radius": 1.0,
+      "height": 1.5,
+      "low_bits": 1065772646,
+      "high_bits": 1055286884,
+      "instructions": 13
+    },
+    {
+      "radius": 1.0,
+      "height": 2.5,
+      "low_bits": 1065772646,
+      "high_bits": 1069128089,
+      "instructions": 13
+    },
+    {
+      "radius": 1.0,
+      "height": 3.5,
+      "low_bits": 1065772646,
+      "high_bits": 1075629260,
+      "instructions": 13
+    },
+    {
+      "radius": 1.0,
+      "height": 1.2000000476837158,
+      "low_bits": 1065772646,
+      "high_bits": 1041865112,
+      "instructions": 13
+    },
+    {
+      "radius": 1.5,
+      "height": 1.5,
+      "low_bits": 1069966950,
+      "high_bits": 3175927008,
+      "instructions": 13
+    },
+    {
+      "radius": 1.5,
+      "height": 2.5,
+      "low_bits": 1069966950,
+      "high_bits": 1064514354,
+      "instructions": 13
+    },
+    {
+      "radius": 1.5,
+      "height": 3.5,
+      "low_bits": 1069966950,
+      "high_bits": 1073322393,
+      "instructions": 13
+    },
+    {
+      "radius": 1.5,
+      "height": 1.2000000476837158,
+      "low_bits": 1069966950,
+      "high_bits": 3199415092,
+      "instructions": 13
+    },
+    {
+      "radius": 0.4375,
+      "height": 1.5,
+      "low_bits": 1056545178,
+      "high_bits": 1065458074,
+      "instructions": 13
+    },
+    {
+      "radius": 0.4375,
+      "height": 2.5,
+      "low_bits": 1056545178,
+      "high_bits": 1073794253,
+      "instructions": 13
+    },
+    {
+      "radius": 0.4375,
+      "height": 3.5,
+      "low_bits": 1056545178,
+      "high_bits": 1077988557,
+      "instructions": 13
+    },
+    {
+      "radius": 0.4375,
+      "height": 1.2000000476837158,
+      "low_bits": 1056545178,
+      "high_bits": 1060529768,
+      "instructions": 13
+    },
+    {
+      "radius": 0.38999998569488525,
+      "height": 1.5,
+      "low_bits": 1054951342,
+      "high_bits": 1065856532,
+      "instructions": 13
+    },
+    {
+      "radius": 0.38999998569488525,
+      "height": 2.5,
+      "low_bits": 1054951342,
+      "high_bits": 1073993482,
+      "instructions": 13
+    },
+    {
+      "radius": 0.38999998569488525,
+      "height": 3.5,
+      "low_bits": 1054951342,
+      "high_bits": 1078187787,
+      "instructions": 13
+    },
+    {
+      "radius": 0.38999998569488525,
+      "height": 1.2000000476837158,
+      "low_bits": 1054951342,
+      "high_bits": 1061326686,
+      "instructions": 13
+    },
+    {
+      "radius": 0.10000000894069672,
+      "height": 0.20000000298023224,
+      "low_bits": 1041865114,
+      "high_bits": 1028443338,
+      "instructions": 13
+    },
+    {
+      "radius": 0.009999999776482582,
+      "height": 0.019999999552965164,
+      "low_bits": 1031127696,
+      "high_bits": 3173242634,
+      "instructions": 13
+    },
+    {
+      "radius": 0.5,
+      "height": 1.100000023841858,
+      "low_bits": 1057803469,
+      "high_bits": 1057803469,
+      "instructions": 13
+    }
+  ]
+}

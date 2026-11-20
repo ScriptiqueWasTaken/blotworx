@@ -1,0 +1,85 @@
+{
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "frequency": 1000,
+  "start_ticks": 10000000,
+  "cases": [
+    {
+      "initial": 0,
+      "active": false,
+      "delta_ticks": 10000,
+      "result": 0,
+      "returned": 0,
+      "timer_ticks": 10010000,
+      "virtual_calls": [
+        1358748
+      ],
+      "instructions": 22
+    },
+    {
+      "initial": 17,
+      "active": true,
+      "delta_ticks": 1250,
+      "result": 18,
+      "returned": 18,
+      "timer_ticks": 10001250,
+      "virtual_calls": [
+        1358892,
+        1358748
+      ],
+      "instructions": 32
+    },
+    {
+      "initial": 7,
+      "active": true,
+      "delta_ticks": 999,
+      "result": 7,
+      "returned": 7,
+      "timer_ticks": 10000999,
+      "virtual_calls": [
+        1358892,
+        1358748
+      ],
+      "instructions": 32
+    },
+    {
+      "initial": 2147483647,
+      "active": true,
+      "delta_ticks": 1000,
+      "result": -2147483648,
+      "returned": -2147483648,
+      "timer_ticks": 10001000,
+      "virtual_calls": [
+        1358892,
+        1358748
+      ],
+      "instructions": 32
+    },
+    {
+      "initial": -17,
+      "active": true,
+      "delta_ticks": -2750,
+      "result": -19,
+      "returned": -19,
+      "timer_ticks": 9997250,
+      "virtual_calls": [
+        1358892,
+        1358748
+      ],
+      "instructions": 32
+    },
+    {
+      "initial": 12,
+      "active": true,
+      "delta_ticks": -1,
+      "result": 12,
+      "returned": 12,
+      "timer_ticks": 9999999,
+      "virtual_calls": [
+        1358892,
+        1358748
+      ],
+      "instructions": 32
+    }
+  ],
+  "scope": "Original getter caller only; intercepted virtual elapsed/reset helpers; not gameplay/frame scheduling"
+}

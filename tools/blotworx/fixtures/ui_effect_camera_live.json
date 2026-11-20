@@ -1,0 +1,134 @@
+{
+  "renderer_target": [
+    640,
+    480
+  ],
+  "pixel": [
+    48,
+    134
+  ],
+  "camera_local_bits": [
+    1065353216,
+    0,
+    0,
+    0,
+    1065353216,
+    0,
+    0,
+    0,
+    1065353216,
+    0,
+    0,
+    0,
+    1065353216
+  ],
+  "camera_world_bits": [
+    1065353216,
+    0,
+    0,
+    0,
+    1065353216,
+    0,
+    0,
+    0,
+    1065353216,
+    0,
+    0,
+    0,
+    1065353216
+  ],
+  "frustum_bits": [
+    3210409775,
+    1062926127,
+    1056331285,
+    3203814933,
+    1048576000,
+    1137180672
+  ],
+  "viewport_bits": [
+    0,
+    1065353216,
+    1065353216,
+    0
+  ],
+  "orthographic": "01",
+  "ray_origin_bits": [
+    1060773608,
+    1046059221,
+    0
+  ],
+  "ray_direction_bits": [
+    0,
+    0,
+    1065353215
+  ],
+  "model_local_bits": [
+    1065353216,
+    0,
+    0,
+    0,
+    1065353216,
+    0,
+    0,
+    0,
+    1065353216,
+    1060773608,
+    1046059221,
+    1065353215,
+    1036831949
+  ],
+  "messages": [
+    {
+      "command": "SPAWN_EFFECT",
+      "arguments": "7 119.29660023447 64.6 1 HUDEffect000"
+    },
+    {
+      "command": "SPAWN_EFFECT",
+      "arguments": "8 109.35521688159 57.35 1 HUDEffect000"
+    },
+    {
+      "command": "SPAWN_EFFECT",
+      "arguments": "9 53.083235638921 61.6 1 HUDEffect002"
+    },
+    {
+      "command": "SPAWN_EFFECT",
+      "arguments": "10 109.35521688159 57.35 1 HUDEffect001"
+    },
+    {
+      "command": "SPAWN_EFFECT",
+      "arguments": "11 119.29660023447 64.6 1 HUDEffect001"
+    },
+    {
+      "command": "DESPAWN_EFFECT",
+      "arguments": "7"
+    },
+    {
+      "command": "DESPAWN_EFFECT",
+      "arguments": "8"
+    },
+    {
+      "command": "DESPAWN_EFFECT",
+      "arguments": "9"
+    },
+    {
+      "command": "DESPAWN_EFFECT",
+      "arguments": "10"
+    },
+    {
+      "command": "DESPAWN_EFFECT",
+      "arguments": "11"
+    },
+    {
+      "command": "DESPAWN_EFFECT",
+      "arguments": "5"
+    },
+    {
+      "command": "SPAWN_EFFECT",
+      "arguments": "5 48.769050410317 134 1 HudEffect007"
+    }
+  ],
+  "dol_sha256": "994779fa2e276983efdb50f02c406568f285a82558cb5d54bbdf74651a98a920",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "emulator_sha256": "f19467a6bcd1a192865e3631eec7eaf1595609fe2732cc8116301f13a66f83dc",
+  "scope": "One live original SEME4Q HUD placement at the real renderer unprojection and completed model transform. Final HUD camera lens is captured after propagation; platform/lens propagation and rendering are not accepted by this fixture."
+}

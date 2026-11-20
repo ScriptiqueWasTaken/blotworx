@@ -1,0 +1,587 @@
+{
+  "scope": "Execute EM1 REL2ee294 and its ordered payload-list helper.\nRTTI, string access and array access are explicit host boundaries.\nNamed/unnamed string queries are covered; numeric facing and spatial output\nremain separate. The native name comparison's ASCII folding is supplied.\n",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "cases": [
+    {
+      "nodes": {
+        "root": {
+          "type": "list",
+          "children": []
+        },
+        "nested": {
+          "type": "list",
+          "children": [
+            "i",
+            "a"
+          ]
+        },
+        "i": {
+          "type": "int"
+        },
+        "named": {
+          "type": "named"
+        },
+        "a": {
+          "type": "string",
+          "value": "first"
+        },
+        "b": {
+          "type": "string",
+          "value": "second"
+        },
+        "null_string": {
+          "type": "string",
+          "value": null
+        },
+        "empty": {
+          "type": "string",
+          "value": ""
+        }
+      },
+      "root": "root",
+      "query": null,
+      "native": {
+        "found": false,
+        "selected": null,
+        "value": null
+      },
+      "native_audio": {
+        "found": false,
+        "selected": null,
+        "value": null
+      }
+    },
+    {
+      "nodes": {
+        "root": {
+          "type": "list",
+          "children": [
+            "i"
+          ]
+        },
+        "nested": {
+          "type": "list",
+          "children": [
+            "i",
+            "a"
+          ]
+        },
+        "i": {
+          "type": "int"
+        },
+        "named": {
+          "type": "named"
+        },
+        "a": {
+          "type": "string",
+          "value": "first"
+        },
+        "b": {
+          "type": "string",
+          "value": "second"
+        },
+        "null_string": {
+          "type": "string",
+          "value": null
+        },
+        "empty": {
+          "type": "string",
+          "value": ""
+        }
+      },
+      "root": "root",
+      "query": null,
+      "native": {
+        "found": false,
+        "selected": null,
+        "value": null
+      },
+      "native_audio": {
+        "found": false,
+        "selected": null,
+        "value": null
+      }
+    },
+    {
+      "nodes": {
+        "root": {
+          "type": "list",
+          "children": [
+            "named",
+            "a",
+            "b"
+          ]
+        },
+        "nested": {
+          "type": "list",
+          "children": [
+            "i",
+            "a"
+          ]
+        },
+        "i": {
+          "type": "int"
+        },
+        "named": {
+          "type": "named"
+        },
+        "a": {
+          "type": "string",
+          "value": "first"
+        },
+        "b": {
+          "type": "string",
+          "value": "second"
+        },
+        "null_string": {
+          "type": "string",
+          "value": null
+        },
+        "empty": {
+          "type": "string",
+          "value": ""
+        }
+      },
+      "root": "root",
+      "query": null,
+      "native": {
+        "found": true,
+        "selected": "a",
+        "value": "first"
+      },
+      "native_audio": {
+        "found": true,
+        "selected": null,
+        "value": null
+      }
+    },
+    {
+      "nodes": {
+        "root": {
+          "type": "list",
+          "children": [
+            "null_string",
+            "a"
+          ]
+        },
+        "nested": {
+          "type": "list",
+          "children": [
+            "i",
+            "a"
+          ]
+        },
+        "i": {
+          "type": "int"
+        },
+        "named": {
+          "type": "named"
+        },
+        "a": {
+          "type": "string",
+          "value": "first"
+        },
+        "b": {
+          "type": "string",
+          "value": "second"
+        },
+        "null_string": {
+          "type": "string",
+          "value": null
+        },
+        "empty": {
+          "type": "string",
+          "value": ""
+        }
+      },
+      "root": "root",
+      "query": null,
+      "native": {
+        "found": true,
+        "selected": null,
+        "value": null
+      },
+      "native_audio": {
+        "found": true,
+        "selected": null,
+        "value": null
+      }
+    },
+    {
+      "nodes": {
+        "root": {
+          "type": "list",
+          "children": [
+            null,
+            "nested",
+            "b"
+          ]
+        },
+        "nested": {
+          "type": "list",
+          "children": [
+            "i",
+            "a"
+          ]
+        },
+        "i": {
+          "type": "int"
+        },
+        "named": {
+          "type": "named"
+        },
+        "a": {
+          "type": "string",
+          "value": "first"
+        },
+        "b": {
+          "type": "string",
+          "value": "second"
+        },
+        "null_string": {
+          "type": "string",
+          "value": null
+        },
+        "empty": {
+          "type": "string",
+          "value": ""
+        }
+      },
+      "root": "root",
+      "query": null,
+      "native": {
+        "found": true,
+        "selected": "a",
+        "value": "first"
+      },
+      "native_audio": {
+        "found": true,
+        "selected": "a",
+        "value": "first"
+      }
+    },
+    {
+      "nodes": {
+        "root": {
+          "type": "list",
+          "children": [
+            "empty",
+            "a"
+          ]
+        },
+        "nested": {
+          "type": "list",
+          "children": [
+            "i",
+            "a"
+          ]
+        },
+        "i": {
+          "type": "int"
+        },
+        "named": {
+          "type": "named"
+        },
+        "a": {
+          "type": "string",
+          "value": "first"
+        },
+        "b": {
+          "type": "string",
+          "value": "second"
+        },
+        "null_string": {
+          "type": "string",
+          "value": null
+        },
+        "empty": {
+          "type": "string",
+          "value": ""
+        }
+      },
+      "root": "root",
+      "query": null,
+      "native": {
+        "found": true,
+        "selected": "empty",
+        "value": ""
+      },
+      "native_audio": {
+        "found": true,
+        "selected": "empty",
+        "value": ""
+      }
+    },
+    {
+      "nodes": {
+        "root": {
+          "type": "list",
+          "children": [
+            "b",
+            "a"
+          ]
+        },
+        "nested": {
+          "type": "list",
+          "children": [
+            "i",
+            "a"
+          ]
+        },
+        "i": {
+          "type": "int"
+        },
+        "named": {
+          "type": "named"
+        },
+        "a": {
+          "type": "string",
+          "value": "first"
+        },
+        "b": {
+          "type": "string",
+          "value": "second"
+        },
+        "null_string": {
+          "type": "string",
+          "value": null
+        },
+        "empty": {
+          "type": "string",
+          "value": ""
+        }
+      },
+      "root": "root",
+      "query": null,
+      "native": {
+        "found": true,
+        "selected": "b",
+        "value": "second"
+      },
+      "native_audio": {
+        "found": true,
+        "selected": "b",
+        "value": "second"
+      }
+    },
+    {
+      "nodes": {
+        "root": {
+          "type": "list",
+          "children": [
+            "named"
+          ]
+        },
+        "named": {
+          "type": "named",
+          "name": "SoundFX",
+          "value": "Play_sfx_test"
+        },
+        "other": {
+          "type": "named",
+          "name": "Other",
+          "value": "unrelated"
+        },
+        "a": {
+          "type": "string",
+          "value": "unnamed fallback"
+        }
+      },
+      "root": "root",
+      "query": "SoundFX",
+      "native": {
+        "found": true,
+        "selected": "named",
+        "value": "Play_sfx_test"
+      },
+      "native_audio": {
+        "found": true,
+        "selected": "named",
+        "value": "Play_sfx_test"
+      }
+    },
+    {
+      "nodes": {
+        "root": {
+          "type": "list",
+          "children": [
+            "named"
+          ]
+        },
+        "named": {
+          "type": "named",
+          "name": "SoundFX",
+          "value": "Play_sfx_test"
+        },
+        "other": {
+          "type": "named",
+          "name": "Other",
+          "value": "unrelated"
+        },
+        "a": {
+          "type": "string",
+          "value": "unnamed fallback"
+        }
+      },
+      "root": "root",
+      "query": "soundfx",
+      "native": {
+        "found": true,
+        "selected": "named",
+        "value": "Play_sfx_test"
+      },
+      "native_audio": {
+        "found": true,
+        "selected": "named",
+        "value": "Play_sfx_test"
+      }
+    },
+    {
+      "nodes": {
+        "root": {
+          "type": "list",
+          "children": [
+            "other",
+            "named"
+          ]
+        },
+        "named": {
+          "type": "named",
+          "name": "SoundFX",
+          "value": "Play_sfx_test"
+        },
+        "other": {
+          "type": "named",
+          "name": "Other",
+          "value": "unrelated"
+        },
+        "a": {
+          "type": "string",
+          "value": "unnamed fallback"
+        }
+      },
+      "root": "root",
+      "query": "SoundFX",
+      "native": {
+        "found": true,
+        "selected": null,
+        "value": null
+      },
+      "native_audio": {
+        "found": true,
+        "selected": null,
+        "value": null
+      }
+    },
+    {
+      "nodes": {
+        "root": {
+          "type": "list",
+          "children": [
+            "a"
+          ]
+        },
+        "named": {
+          "type": "named",
+          "name": "SoundFX",
+          "value": "Play_sfx_test"
+        },
+        "other": {
+          "type": "named",
+          "name": "Other",
+          "value": "unrelated"
+        },
+        "a": {
+          "type": "string",
+          "value": "unnamed fallback"
+        }
+      },
+      "root": "root",
+      "query": "SoundFX",
+      "native": {
+        "found": false,
+        "selected": null,
+        "value": null
+      },
+      "native_audio": {
+        "found": true,
+        "selected": "a",
+        "value": "unnamed fallback"
+      }
+    },
+    {
+      "nodes": {
+        "root": {
+          "type": "list",
+          "children": [
+            "named",
+            "a"
+          ]
+        },
+        "named": {
+          "type": "named",
+          "name": "SoundFX",
+          "value": null
+        },
+        "other": {
+          "type": "named",
+          "name": "Other",
+          "value": "unrelated"
+        },
+        "a": {
+          "type": "string",
+          "value": "unnamed fallback"
+        }
+      },
+      "root": "root",
+      "query": "SoundFX",
+      "native": {
+        "found": true,
+        "selected": null,
+        "value": null
+      },
+      "native_audio": {
+        "found": true,
+        "selected": null,
+        "value": null
+      }
+    },
+    {
+      "nodes": {
+        "root": {
+          "type": "list",
+          "children": [
+            "a",
+            "named"
+          ]
+        },
+        "named": {
+          "type": "named",
+          "name": "SoundFX",
+          "value": "Play_sfx_test"
+        },
+        "other": {
+          "type": "named",
+          "name": "Other",
+          "value": "unrelated"
+        },
+        "a": {
+          "type": "string",
+          "value": "unnamed fallback"
+        }
+      },
+      "root": "root",
+      "query": "SoundFX",
+      "native": {
+        "found": true,
+        "selected": "named",
+        "value": "Play_sfx_test"
+      },
+      "native_audio": {
+        "found": true,
+        "selected": "named",
+        "value": "Play_sfx_test"
+      }
+    }
+  ]
+}

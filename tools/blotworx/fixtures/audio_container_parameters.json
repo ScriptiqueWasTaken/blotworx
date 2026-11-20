@@ -1,0 +1,55 @@
+{
+  "scope": "Retail container common-parameter admission, not container playback.\n\nExecutes each derived initial-reader prefix through its call to8033bb70.\nABI register-save services are supplied. Also reads RTTI-backed primary vtables\nto verify that the common positioning/advanced slots use80336bb0/80336f10.\nContainer selection, children, weights, switches, layers and mixing are outside\nthis reference. HIRC kind labels follow the version46 bank object classes.\n",
+  "dol_sha256": "994779fa2e276983efdb50f02c406568f285a82558cb5d54bbdf74651a98a920",
+  "cases": [
+    {
+      "kind": 5,
+      "klass": "CAkRanSeqCntr",
+      "entry": "0x8032a880",
+      "common_call": "0x8032a8c8",
+      "table": "0x806bee08",
+      "descriptor": "0x806fc8e0",
+      "skip_identity_bytes": 4,
+      "position_loader": "0x80336bb0",
+      "advanced_loader": "0x80336f10",
+      "instructions": 18
+    },
+    {
+      "kind": 6,
+      "klass": "CAkSwitchCntr",
+      "entry": "0x8032ea10",
+      "common_call": "0x8032ea40",
+      "table": "0x806bf000",
+      "descriptor": "0x806fc8e8",
+      "skip_identity_bytes": 4,
+      "position_loader": "0x80336bb0",
+      "advanced_loader": "0x80336f10",
+      "instructions": 12
+    },
+    {
+      "kind": 7,
+      "klass": "CAkActorMixer",
+      "entry": "0x8031f760",
+      "common_call": "0x8031f794",
+      "table": "0x806be0f8",
+      "descriptor": "0x806fc850",
+      "skip_identity_bytes": 4,
+      "position_loader": "0x80336bb0",
+      "advanced_loader": "0x80336f10",
+      "instructions": 13
+    },
+    {
+      "kind": 9,
+      "klass": "CAkLayerCntr",
+      "entry": "0x80328510",
+      "common_call": "0x80328540",
+      "table": "0x806bea28",
+      "descriptor": "0x806fc8a0",
+      "skip_identity_bytes": 4,
+      "position_loader": "0x80336bb0",
+      "advanced_loader": "0x80336f10",
+      "instructions": 12
+    }
+  ],
+  "instructions": 55
+}

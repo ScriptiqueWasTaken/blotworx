@@ -1,0 +1,40 @@
+{
+  "capture_sha256": "a227e5151f8e6cb44f0a280073d61bee172100b333b968633e1ebb4913f855f1",
+  "graph_sha256": "950b36b54bd70b36ed008d93c9d1193de139aabeb22a24ecaae3151563412c1d",
+  "seconds": 18.094605599995703,
+  "nodes": [
+    {
+      "object": "2:6480",
+      "parent": 2
+    },
+    {
+      "object": "2:6240",
+      "parent": 2
+    },
+    {
+      "object": "2:6176",
+      "parent": 3
+    },
+    {
+      "object": "2:3296",
+      "parent": 4
+    },
+    {
+      "object": "2:2816",
+      "parent": 5
+    },
+    {
+      "object": "2:2576",
+      "parent": 6
+    },
+    {
+      "object": "2:1728",
+      "parent": 7
+    },
+    {
+      "object": "2:240",
+      "parent": null
+    }
+  ],
+  "limitations": "Sampled idle topology only; activation order, clip events and pose output not captured."
+}

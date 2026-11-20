@@ -1,0 +1,4900 @@
+{
+  "cases": [
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 20
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 0,
+          "status": 0
+        }
+      },
+      "expected": {
+        "result": 1,
+        "token": 1,
+        "output": {
+          "allocation": 100,
+          "offset": 0
+        },
+        "trace": [
+          20
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 124
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 20
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 0,
+          "status": 1
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          20
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 122
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 20
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 0,
+          "status": 5
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          20
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 122
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 20
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 0,
+          "status": 4294967295
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          20
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 122
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 65556
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 0,
+          "status": 0
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          65556
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 120
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 65556
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 0,
+          "status": 1
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          65556
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 120
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 65556
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 0,
+          "status": 5
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          65556
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 120
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 65556
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 0,
+          "status": 4294967295
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          65556
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 120
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 4294901780
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 0,
+          "status": 0
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          4294901780
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 120
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 4294901780
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 0,
+          "status": 1
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          4294901780
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 120
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 4294901780
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 0,
+          "status": 5
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          4294901780
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 120
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 4294901780
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 0,
+          "status": 4294967295
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          4294901780
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 120
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 20
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 1,
+          "status": 0
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          20
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 120
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 20
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 1,
+          "status": 1
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          20
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 120
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 20
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 1,
+          "status": 5
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          20
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 120
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 20
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 1,
+          "status": 4294967295
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          20
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 120
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 65556
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 1,
+          "status": 0
+        }
+      },
+      "expected": {
+        "result": 1,
+        "token": 1,
+        "output": {
+          "allocation": 100,
+          "offset": 0
+        },
+        "trace": [
+          65556
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 124
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 65556
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 1,
+          "status": 1
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          65556
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 122
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 65556
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 1,
+          "status": 5
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          65556
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 122
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 65556
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 1,
+          "status": 4294967295
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          65556
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 122
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 4294901780
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 1,
+          "status": 0
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          4294901780
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 120
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 4294901780
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 1,
+          "status": 1
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          4294901780
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 120
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 4294901780
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 1,
+          "status": 5
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          4294901780
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 120
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 4294901780
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 1,
+          "status": 4294967295
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          4294901780
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 120
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 20
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 65535,
+          "status": 0
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          20
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 120
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 20
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 65535,
+          "status": 1
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          20
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 120
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 20
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 65535,
+          "status": 5
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          20
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 120
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 20
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 65535,
+          "status": 4294967295
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          20
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 120
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 65556
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 65535,
+          "status": 0
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          65556
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 120
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 65556
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 65535,
+          "status": 1
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          65556
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 120
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 65556
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 65535,
+          "status": 5
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          65556
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 120
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 65556
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 65535,
+          "status": 4294967295
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          65556
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 120
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 4294901780
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 65535,
+          "status": 0
+        }
+      },
+      "expected": {
+        "result": 1,
+        "token": 1,
+        "output": {
+          "allocation": 100,
+          "offset": 0
+        },
+        "trace": [
+          4294901780
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 124
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 4294901780
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 65535,
+          "status": 1
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          4294901780
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 122
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 4294901780
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 65535,
+          "status": 5
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          4294901780
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 122
+    },
+    {
+      "input": {
+        "op": "direct",
+        "source": {
+          "sectors": [
+            {
+              "active": 1,
+              "id": 10,
+              "data": {
+                "allocation": 100,
+                "offset": 0
+              },
+              "request": 4294901780
+            },
+            {
+              "active": 1,
+              "id": 11,
+              "data": {
+                "allocation": 100,
+                "offset": 8
+              },
+              "request": 21
+            },
+            {
+              "active": 1,
+              "id": 12,
+              "data": {
+                "allocation": 100,
+                "offset": 16
+              },
+              "request": 22
+            },
+            {
+              "active": 1,
+              "id": 13,
+              "data": {
+                "allocation": 100,
+                "offset": 24
+              },
+              "request": 23
+            }
+          ],
+          "packed": {
+            "allocation": 100,
+            "offset": 2
+          },
+          "size": 30
+        },
+        "id": 10,
+        "pending": 999,
+        "handle": 1,
+        "request_table": {
+          "slot": 20,
+          "generation": 65535,
+          "status": 4294967295
+        }
+      },
+      "expected": {
+        "result": 4294967295,
+        "token": 0,
+        "output": {
+          "allocation": 200,
+          "offset": 7
+        },
+        "trace": [
+          4294901780
+        ],
+        "destination": [
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238,
+          238
+        ]
+      },
+      "instructions": 122
+    }
+  ]
+}

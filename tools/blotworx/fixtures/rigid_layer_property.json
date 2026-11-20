@@ -1,0 +1,442 @@
+{
+  "scope": "Execute retail37eb30 scalar-property change admission, research only.\n\nPool read/publication and virtual3b4 rebuild are supplied boundaries. This does\nnot execute Havok world refresh or establish solver/agent parity.\n",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "cases": [
+    {
+      "old": 4,
+      "new": 7,
+      "flags": 0,
+      "result": {
+        "stored": 7,
+        "rebuild": true,
+        "trace": [
+          [
+            "read",
+            4
+          ],
+          [
+            "publish",
+            7
+          ],
+          [
+            "rebuild",
+            7
+          ]
+        ],
+        "instructions": 35
+      }
+    },
+    {
+      "old": 4,
+      "new": 4,
+      "flags": 0,
+      "result": {
+        "stored": 4,
+        "rebuild": false,
+        "trace": [
+          [
+            "read",
+            4
+          ],
+          [
+            "publish",
+            4
+          ]
+        ],
+        "instructions": 30
+      }
+    },
+    {
+      "old": -1,
+      "new": 0,
+      "flags": 0,
+      "result": {
+        "stored": 0,
+        "rebuild": true,
+        "trace": [
+          [
+            "read",
+            4294967295
+          ],
+          [
+            "publish",
+            0
+          ],
+          [
+            "rebuild",
+            0
+          ]
+        ],
+        "instructions": 35
+      }
+    },
+    {
+      "old": 2147483647,
+      "new": -2147483648,
+      "flags": 0,
+      "result": {
+        "stored": 2147483648,
+        "rebuild": true,
+        "trace": [
+          [
+            "read",
+            2147483647
+          ],
+          [
+            "publish",
+            2147483648
+          ],
+          [
+            "rebuild",
+            2147483648
+          ]
+        ],
+        "instructions": 35
+      }
+    },
+    {
+      "old": 4,
+      "new": 7,
+      "flags": 1,
+      "result": {
+        "stored": 7,
+        "rebuild": true,
+        "trace": [
+          [
+            "read",
+            4
+          ],
+          [
+            "publish",
+            7
+          ],
+          [
+            "rebuild",
+            7
+          ]
+        ],
+        "instructions": 35
+      }
+    },
+    {
+      "old": 4,
+      "new": 4,
+      "flags": 1,
+      "result": {
+        "stored": 4,
+        "rebuild": false,
+        "trace": [
+          [
+            "read",
+            4
+          ],
+          [
+            "publish",
+            4
+          ]
+        ],
+        "instructions": 30
+      }
+    },
+    {
+      "old": -1,
+      "new": 0,
+      "flags": 1,
+      "result": {
+        "stored": 0,
+        "rebuild": true,
+        "trace": [
+          [
+            "read",
+            4294967295
+          ],
+          [
+            "publish",
+            0
+          ],
+          [
+            "rebuild",
+            0
+          ]
+        ],
+        "instructions": 35
+      }
+    },
+    {
+      "old": 2147483647,
+      "new": -2147483648,
+      "flags": 1,
+      "result": {
+        "stored": 2147483648,
+        "rebuild": true,
+        "trace": [
+          [
+            "read",
+            2147483647
+          ],
+          [
+            "publish",
+            2147483648
+          ],
+          [
+            "rebuild",
+            2147483648
+          ]
+        ],
+        "instructions": 35
+      }
+    },
+    {
+      "old": 4,
+      "new": 7,
+      "flags": 8,
+      "result": {
+        "stored": 7,
+        "rebuild": false,
+        "trace": [
+          [
+            "read",
+            4
+          ],
+          [
+            "publish",
+            7
+          ]
+        ],
+        "instructions": 27
+      }
+    },
+    {
+      "old": 4,
+      "new": 4,
+      "flags": 8,
+      "result": {
+        "stored": 4,
+        "rebuild": false,
+        "trace": [
+          [
+            "read",
+            4
+          ],
+          [
+            "publish",
+            4
+          ]
+        ],
+        "instructions": 27
+      }
+    },
+    {
+      "old": -1,
+      "new": 0,
+      "flags": 8,
+      "result": {
+        "stored": 0,
+        "rebuild": false,
+        "trace": [
+          [
+            "read",
+            4294967295
+          ],
+          [
+            "publish",
+            0
+          ]
+        ],
+        "instructions": 27
+      }
+    },
+    {
+      "old": 2147483647,
+      "new": -2147483648,
+      "flags": 8,
+      "result": {
+        "stored": 2147483648,
+        "rebuild": false,
+        "trace": [
+          [
+            "read",
+            2147483647
+          ],
+          [
+            "publish",
+            2147483648
+          ]
+        ],
+        "instructions": 27
+      }
+    },
+    {
+      "old": 4,
+      "new": 7,
+      "flags": 128,
+      "result": {
+        "stored": 7,
+        "rebuild": true,
+        "trace": [
+          [
+            "read",
+            4
+          ],
+          [
+            "publish",
+            7
+          ],
+          [
+            "rebuild",
+            7
+          ]
+        ],
+        "instructions": 35
+      }
+    },
+    {
+      "old": 4,
+      "new": 4,
+      "flags": 128,
+      "result": {
+        "stored": 4,
+        "rebuild": false,
+        "trace": [
+          [
+            "read",
+            4
+          ],
+          [
+            "publish",
+            4
+          ]
+        ],
+        "instructions": 30
+      }
+    },
+    {
+      "old": -1,
+      "new": 0,
+      "flags": 128,
+      "result": {
+        "stored": 0,
+        "rebuild": true,
+        "trace": [
+          [
+            "read",
+            4294967295
+          ],
+          [
+            "publish",
+            0
+          ],
+          [
+            "rebuild",
+            0
+          ]
+        ],
+        "instructions": 35
+      }
+    },
+    {
+      "old": 2147483647,
+      "new": -2147483648,
+      "flags": 128,
+      "result": {
+        "stored": 2147483648,
+        "rebuild": true,
+        "trace": [
+          [
+            "read",
+            2147483647
+          ],
+          [
+            "publish",
+            2147483648
+          ],
+          [
+            "rebuild",
+            2147483648
+          ]
+        ],
+        "instructions": 35
+      }
+    },
+    {
+      "old": 4,
+      "new": 7,
+      "flags": 255,
+      "result": {
+        "stored": 7,
+        "rebuild": false,
+        "trace": [
+          [
+            "read",
+            4
+          ],
+          [
+            "publish",
+            7
+          ]
+        ],
+        "instructions": 27
+      }
+    },
+    {
+      "old": 4,
+      "new": 4,
+      "flags": 255,
+      "result": {
+        "stored": 4,
+        "rebuild": false,
+        "trace": [
+          [
+            "read",
+            4
+          ],
+          [
+            "publish",
+            4
+          ]
+        ],
+        "instructions": 27
+      }
+    },
+    {
+      "old": -1,
+      "new": 0,
+      "flags": 255,
+      "result": {
+        "stored": 0,
+        "rebuild": false,
+        "trace": [
+          [
+            "read",
+            4294967295
+          ],
+          [
+            "publish",
+            0
+          ]
+        ],
+        "instructions": 27
+      }
+    },
+    {
+      "old": 2147483647,
+      "new": -2147483648,
+      "flags": 255,
+      "result": {
+        "stored": 2147483648,
+        "rebuild": false,
+        "trace": [
+          [
+            "read",
+            2147483647
+          ],
+          [
+            "publish",
+            2147483648
+          ]
+        ],
+        "instructions": 27
+      }
+    }
+  ]
+}

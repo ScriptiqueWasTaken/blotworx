@@ -1,0 +1,414 @@
+{
+  "scope": "Execute retail LPF control8038a320, including clamping, table interpolation,\nenable/history and AX update flags. DSP recurrence is separately supported by\nDolphin's AXVoice.h LowPassFilter; native SRC and complete mixer are not covered.\n",
+  "dol_sha256": "994779fa2e276983efdb50f02c406568f285a82558cb5d54bbdf74651a98a920",
+  "table": [
+    0,
+    0,
+    14,
+    799,
+    2787,
+    5977,
+    10367,
+    16783,
+    21778,
+    25991,
+    28416,
+    30355,
+    31726,
+    32244,
+    32570,
+    32668,
+    32734,
+    32754,
+    32760,
+    32764,
+    32765,
+    32765
+  ],
+  "cases": [
+    {
+      "input_bits": 3240099840,
+      "old_bits": 0,
+      "stored_bits": 0,
+      "ax": [
+        0,
+        0,
+        111,
+        222
+      ],
+      "flags": 524416
+    },
+    {
+      "input_bits": 3240099840,
+      "old_bits": 1100480512,
+      "stored_bits": 0,
+      "ax": [
+        0,
+        0,
+        111,
+        222
+      ],
+      "flags": 524416
+    },
+    {
+      "input_bits": 0,
+      "old_bits": 0,
+      "stored_bits": 0,
+      "ax": [
+        0,
+        0,
+        111,
+        222
+      ],
+      "flags": 524416
+    },
+    {
+      "input_bits": 0,
+      "old_bits": 1100480512,
+      "stored_bits": 0,
+      "ax": [
+        0,
+        0,
+        111,
+        222
+      ],
+      "flags": 524416
+    },
+    {
+      "input_bits": 981668463,
+      "old_bits": 0,
+      "stored_bits": 981668463,
+      "ax": [
+        1,
+        1234,
+        32768,
+        0
+      ],
+      "flags": 524416
+    },
+    {
+      "input_bits": 981668463,
+      "old_bits": 1100480512,
+      "stored_bits": 981668463,
+      "ax": [
+        1,
+        1234,
+        32768,
+        0
+      ],
+      "flags": 1048704
+    },
+    {
+      "input_bits": 1056964608,
+      "old_bits": 0,
+      "stored_bits": 1056964608,
+      "ax": [
+        1,
+        1234,
+        32768,
+        0
+      ],
+      "flags": 524416
+    },
+    {
+      "input_bits": 1056964608,
+      "old_bits": 1100480512,
+      "stored_bits": 1056964608,
+      "ax": [
+        1,
+        1234,
+        32768,
+        0
+      ],
+      "flags": 1048704
+    },
+    {
+      "input_bits": 1065353216,
+      "old_bits": 0,
+      "stored_bits": 1065353216,
+      "ax": [
+        1,
+        1234,
+        32768,
+        0
+      ],
+      "flags": 524416
+    },
+    {
+      "input_bits": 1065353216,
+      "old_bits": 1100480512,
+      "stored_bits": 1065353216,
+      "ax": [
+        1,
+        1234,
+        32768,
+        0
+      ],
+      "flags": 1048704
+    },
+    {
+      "input_bits": 1084225487,
+      "old_bits": 0,
+      "stored_bits": 1084225487,
+      "ax": [
+        1,
+        1234,
+        32768,
+        0
+      ],
+      "flags": 524416
+    },
+    {
+      "input_bits": 1084225487,
+      "old_bits": 1100480512,
+      "stored_bits": 1084225487,
+      "ax": [
+        1,
+        1234,
+        32768,
+        0
+      ],
+      "flags": 1048704
+    },
+    {
+      "input_bits": 1084227584,
+      "old_bits": 0,
+      "stored_bits": 1084227584,
+      "ax": [
+        1,
+        1234,
+        32768,
+        0
+      ],
+      "flags": 524416
+    },
+    {
+      "input_bits": 1084227584,
+      "old_bits": 1100480512,
+      "stored_bits": 1084227584,
+      "ax": [
+        1,
+        1234,
+        32768,
+        0
+      ],
+      "flags": 1048704
+    },
+    {
+      "input_bits": 1100480512,
+      "old_bits": 0,
+      "stored_bits": 1100480512,
+      "ax": [
+        1,
+        1234,
+        30379,
+        2389
+      ],
+      "flags": 524416
+    },
+    {
+      "input_bits": 1100480512,
+      "old_bits": 1100480512,
+      "stored_bits": 1100480512,
+      "ax": [
+        1,
+        1234,
+        30379,
+        2389
+      ],
+      "flags": 1048704
+    },
+    {
+      "input_bits": 1103626240,
+      "old_bits": 0,
+      "stored_bits": 1103626240,
+      "ax": [
+        1,
+        1234,
+        26791,
+        5977
+      ],
+      "flags": 524416
+    },
+    {
+      "input_bits": 1103626240,
+      "old_bits": 1100480512,
+      "stored_bits": 1103626240,
+      "ax": [
+        1,
+        1234,
+        26791,
+        5977
+      ],
+      "flags": 1048704
+    },
+    {
+      "input_bits": 1107820544,
+      "old_bits": 0,
+      "stored_bits": 1107820544,
+      "ax": [
+        1,
+        1234,
+        17269,
+        15499
+      ],
+      "flags": 524416
+    },
+    {
+      "input_bits": 1107820544,
+      "old_bits": 1100480512,
+      "stored_bits": 1107820544,
+      "ax": [
+        1,
+        1234,
+        17269,
+        15499
+      ],
+      "flags": 1048704
+    },
+    {
+      "input_bits": 1108082688,
+      "old_bits": 0,
+      "stored_bits": 1108082688,
+      "ax": [
+        1,
+        1234,
+        15985,
+        16783
+      ],
+      "flags": 524416
+    },
+    {
+      "input_bits": 1108082688,
+      "old_bits": 1100480512,
+      "stored_bits": 1108082688,
+      "ax": [
+        1,
+        1234,
+        15985,
+        16783
+      ],
+      "flags": 1048704
+    },
+    {
+      "input_bits": 1112014848,
+      "old_bits": 0,
+      "stored_bits": 1112014848,
+      "ax": [
+        1,
+        1234,
+        4352,
+        28416
+      ],
+      "flags": 524416
+    },
+    {
+      "input_bits": 1112014848,
+      "old_bits": 1100480512,
+      "stored_bits": 1112014848,
+      "ax": [
+        1,
+        1234,
+        4352,
+        28416
+      ],
+      "flags": 1048704
+    },
+    {
+      "input_bits": 1117126656,
+      "old_bits": 0,
+      "stored_bits": 1117126656,
+      "ax": [
+        1,
+        1234,
+        100,
+        32668
+      ],
+      "flags": 524416
+    },
+    {
+      "input_bits": 1117126656,
+      "old_bits": 1100480512,
+      "stored_bits": 1117126656,
+      "ax": [
+        1,
+        1234,
+        100,
+        32668
+      ],
+      "flags": 1048704
+    },
+    {
+      "input_bits": 1120402145,
+      "old_bits": 0,
+      "stored_bits": 1120402145,
+      "ax": [
+        1,
+        1234,
+        4,
+        32764
+      ],
+      "flags": 524416
+    },
+    {
+      "input_bits": 1120402145,
+      "old_bits": 1100480512,
+      "stored_bits": 1120402145,
+      "ax": [
+        1,
+        1234,
+        4,
+        32764
+      ],
+      "flags": 1048704
+    },
+    {
+      "input_bits": 1120403456,
+      "old_bits": 0,
+      "stored_bits": 1120403456,
+      "ax": [
+        1,
+        1234,
+        3,
+        32765
+      ],
+      "flags": 524416
+    },
+    {
+      "input_bits": 1120403456,
+      "old_bits": 1100480512,
+      "stored_bits": 1120403456,
+      "ax": [
+        1,
+        1234,
+        3,
+        32765
+      ],
+      "flags": 1048704
+    },
+    {
+      "input_bits": 1123024896,
+      "old_bits": 0,
+      "stored_bits": 1120403456,
+      "ax": [
+        1,
+        1234,
+        3,
+        32765
+      ],
+      "flags": 524416
+    },
+    {
+      "input_bits": 1123024896,
+      "old_bits": 1100480512,
+      "stored_bits": 1120403456,
+      "ax": [
+        1,
+        1234,
+        3,
+        32765
+      ],
+      "flags": 1048704
+    }
+  ]
+}

@@ -1,0 +1,472 @@
+{
+  "capture_sha256": "e8deab850cc027be421365bb8f36e74fdec5ee93e95493eb1e1c8f395c41d49f",
+  "asset_sha256": "950b36b54bd70b36ed008d93c9d1193de139aabeb22a24ecaae3151563412c1d",
+  "scope": "Compiled expression tokens and resolved assignment indices. Does not prove native graph scheduling or evaluator parity.",
+  "variables": [
+    "VAR_Scaled_Walk_Speed",
+    "VAR_Scaled_Run_Speed",
+    "VAR_Normalized_Forward_Speed",
+    "VAR_Throw_Blend",
+    "VAR_ThinnerJump_Blend",
+    "VAR_Land_Type",
+    "VAR_Y_Velocity",
+    "VAR_Forward_Velocity",
+    "VAR_Turn_Blend_Left",
+    "VAR_Turn_Blend_Right",
+    "VAR_Run_Turn_Angle",
+    "VAR_Run_Turn_Angle_Neg",
+    "VAR_SuperSaturated_Blend",
+    "VAR_Hit_Blend",
+    "VAR_Character_Health",
+    "VAR_LedgeJump_Direction",
+    "VAR_PlayStyle",
+    "VAR_Sketch_Stroke_Length",
+    "VAR_Hit_Direction",
+    "InternalVar_CombatIdleTimeLeft",
+    "VAR_FidgetAPercentage",
+    "VAR_FidgetBPercentage",
+    "VAR_FidgetCPercentage",
+    "InternalVar_NonCombatFidgetAPercentage",
+    "InternalVar_NonCombatFidgetBPercentage",
+    "InternalVar_NonCombatFidgetCPercentage",
+    "InternalVar_NonCombatTimeBeforeFidget",
+    "InternalVar_CombatTimeBeforeFidget",
+    "VAR_RandomNumber",
+    "VAR_MaxCombatIdleTime",
+    "VAR_MinCombatIdleTime",
+    "VAR_MaxTimeBeforeFidget",
+    "VAR_MinTimeBeforeFidget",
+    "VAR_Yaw_To_Target",
+    "VAR_Neg_Yaw_To_Target",
+    "VAR_PlayStyleTransition",
+    "InternalVar_InCombatIdle",
+    "VAR_SupportedState",
+    "internalVar_Scaled_TipToeSpeed",
+    "VAR_Throw_Direction",
+    "InternalVar_Blast_Direction_State",
+    "VAR_Throw_Quadrant",
+    "VAR_Wall_Direction",
+    "VAR_PercentageScrapper",
+    "VAR_Slide_Facing",
+    "VAR_Slide_Slope",
+    "VAR_Direction_Against_Wall",
+    "VAR_StrafingState",
+    "VAR_Dot_Of_Aim_Angle",
+    "VAR_MotionState",
+    "VAR_Aim_Left_Right",
+    "VAR_Forward_Input_Velocity",
+    "VAR_In_Conversation",
+    "VAR_Cutscene"
+  ],
+  "events": [
+    "EVENT_Start_Walking_On_Ground",
+    "EVENT_Stop_Walking_On_Ground",
+    "EVENT_Start_Jump",
+    "EVENT_Start_InAir",
+    "EVENT_Start_Land",
+    "EVENT_Stop_Land",
+    "EVENT_Start_Running_On_Ground",
+    "EVENT_DoubleJump_Done_Hover",
+    "EVENT_DoubleJump_Land",
+    "EVENT_Start_DoubleJump",
+    "EVENT_Start_DoubleJumpInAir",
+    "EVENT_Start_Throw_Hold",
+    "EVENT_Start_Throw",
+    "EVENT_Start_Windup",
+    "EVENT_Stop_Throw",
+    "EVENT_Disable_TurnOnThrow",
+    "EVENT_Disable_TurnOffThrow",
+    "EVENT_DoubleJump_Throw",
+    "EVENT_Start_Run_Skid",
+    "EVENT_Stop_Run_Skid",
+    "EVENT_Stop_Running_On_Ground",
+    "EVENT_Start_Stomping",
+    "EVENT_Start_Damaged_Leap",
+    "EVENT_Start_Fall",
+    "EVENT_Stop_Jump_Start",
+    "EVENT_Damaged_Leap_Land",
+    "EVENT_Start_Sit_Stun",
+    "EVENT_Stop_Sit_Stun",
+    "EVENT_Sit_Stun_Getup",
+    "EVENT_Start_Ledge_Grab",
+    "EVENT_Start_Ledge_Grab_Loop",
+    "EVENT_Start_Mantle",
+    "EVENT_Stop_Mantle",
+    "EVENT_Stop_Pancake_Land",
+    "EVENT_Start_HardLand",
+    "EVENT_Start_Land_Walk",
+    "EVENT_Start_Land_Run",
+    "EVENT_Change_Idle",
+    "EVENT_FX_Step",
+    "EVENT_Stop_BigBall_Throw",
+    "EVENT_Throw_Release",
+    "EVENT_Start_ThinnerShockwave",
+    "EVENT_ThinnerShockwave_Activate",
+    "EVENT_Stop_ThinnerShockwave",
+    "EVENT_ThinnerShockwave_ParticleEmit",
+    "EVENT_Start_Revive",
+    "EVENT_Stop_Revive",
+    "EVENT_Start_Death_Mickey",
+    "EVENT_Stop_Death_Mickey",
+    "EVENT_Start_Death_Fall_Rescue",
+    "EVENT_Stop_Death_Fall_Rescue",
+    "EVENT_Stop_Hit",
+    "EVENT_Start_BigBall_Throw",
+    "EVENT_Start_Trying_Ledge_Grab",
+    "EVENT_Done_Ledge_Grab_Reach",
+    "EVENT_Stop_Death_Mickey_Drown",
+    "EVENT_Start_Death_Mickey_Drown",
+    "EVENT_Throw_Release_R",
+    "EVENT_Throw_Release_L",
+    "EVENT_Spawn_Sketch",
+    "EVENT_SpinAttack_ParticleEmit",
+    "EVENT_Stop_SpinAttack",
+    "EVENT_SpinAttack_Activate",
+    "EVENT_Start_SpinAttack",
+    "EVENT_Start_Knockback_FallDown",
+    "EVENT_Stop_Knockback_InAir",
+    "EVENT_Start_Knockback_GetUp",
+    "EVENT_Start_SpinAttack_Air",
+    "EVENT_Stop_Death_Mickey_Knockback",
+    "EVENT_Start_Death_Mickey_Knockback",
+    "EVENT_Stop_ThinnerJump",
+    "EVENT_Start_ThinnerJump",
+    "EVENT_Stop_Sketch",
+    "EVENT_Start_Sketch",
+    "EVENT_Set_Ears_Static",
+    "EVENT_Set_Ears_Dynamic",
+    "EVENT_Emitter_Start",
+    "EVENT_Emitter_Stop",
+    "EVENT_Start_Slide",
+    "EVENT_Start_Slash",
+    "EVENT_Stop_Slash",
+    "EVENT_Stop_Slide",
+    "EVENT_Slash_Hit",
+    "EVENT_Start_Ledge_Jump",
+    "EVENT_Ledge_Jumping",
+    "EVENT_Start_Brush",
+    "EVENT_Stop_Brush",
+    "EVENT_Stop_Ledge_Jump",
+    "EVENT_Start_Hop",
+    "EVENT_Stop_Hop_Start",
+    "EVENT_Stop_Ground_Hop",
+    "EVENT_Stop_Hop",
+    "EVENT_Start_Carried",
+    "EVENT_Finished_Sequence",
+    "Sketch_Done_Windup",
+    "EVENT_Sketch_Stroke",
+    "Sketch_Done_Resolve",
+    "Sketch_Done_Stroke",
+    "Next_Anim",
+    "EVENT_Sketch_Windup_Done",
+    "EVENT_Sketch_Completed",
+    "EVENT_Audio_Start",
+    "EVENT_Start_Idle_Fidget",
+    "InternalEvent_IdleFidgetEnd",
+    "EVENT_Stop_Combat_Idle",
+    "InternalEvent_NonCombatIdleFidget",
+    "EVENT_IdleFidgetA",
+    "EVENT_IdleFidgetC",
+    "EVENT_Start_Brush_Shuffle_Right",
+    "EVENT_Stop_Shuffle",
+    "EVENT_Start_Brush_Shuffle_Left",
+    "EVENT_Start_Playstyle_Transition",
+    "EVENT_Stop_Playstyle_Transition",
+    "InternalEvent_Stop_Revive",
+    "InternalEvent_Stop_Death",
+    "Play_sfx_mickey_stretch",
+    "EVENT_Start_Second_Jump",
+    "EVENT_Blast_Fire",
+    "EVENT_Stop_Blast",
+    "EVENT_Start_Blast",
+    "EVENT_Start_CarriedByBalloon",
+    "EVENT_Stop_CarriedByBalloon",
+    "FootRight",
+    "FootLeft",
+    "FootRight2",
+    "InternalEvent_StartWalkState",
+    "InternalEvent_StartRunState",
+    "InternalEvent_StartSneakState",
+    "InternalEvent_BeginTransWindow",
+    "InternalEvent_EndTransWindow",
+    "EVENT_Stop_Open_Chest",
+    "EVENT_Special_9",
+    "EVENT_Start_Sliding",
+    "EVENT_Stop_Sliding",
+    "EVENT_Start_180_Turn",
+    "EVENT_Stop_180_Turn",
+    "EVENT_Start_Wall_Walk",
+    "EVENT_Stop_Wall_Walk",
+    "EVENT_Start_Strafe",
+    "EVENT_Stop_Strafe",
+    "InternalEvent_Stop_Jump",
+    "InternalEvent_DoneJumpUp",
+    "EVENT_Start_Talk",
+    "EVENT_Stop_Talk",
+    "InternalEvent_Stop_Mantle",
+    "EVENT_Special_8",
+    "InternalEvent_Stop_AcquireItem",
+    "InternalEvent_Stop_Knockback",
+    "EVENT_Special_0",
+    "EVENT_Special_1",
+    "InternalEvent_DoneWindup",
+    "EVENT_Emitter_Push",
+    "EVENT_Pop_Effects",
+    "EVENT_Special_2",
+    "InternalEvent_InitiateWindowBegin",
+    "InternalEvent_InitiateWindowEnd",
+    "EVENT_Sketch_Cancelled",
+    "InternalEvent_Stop_Slide_Transition",
+    "EVENT_Start_Slide_Transition",
+    "EVENT_Special_5",
+    "EVENT_Start_Cutscene",
+    "InternalEvent_NextAnim",
+    "EVENT_Run_Lua"
+  ],
+  "modifiers": {
+    "2:6240": {
+      "source": [
+        {
+          "expression": "InternalVar_InCombatIdle = 1",
+          "assignmentVariableIndex": 36,
+          "assignmentEventIndex": -1,
+          "eventMode": 0
+        }
+      ],
+      "compiled": {
+        "num_expressions": 1,
+        "starts": [
+          0
+        ],
+        "tokens": [
+          {
+            "data": 1.0,
+            "data_bits": 1065353216,
+            "type": 2,
+            "operator": 0
+          }
+        ]
+      },
+      "assignments": [
+        {
+          "variable": 36,
+          "event": -1,
+          "mode": 0
+        }
+      ]
+    },
+    "2:42032": {
+      "source": [
+        {
+          "expression": "InternalEvent_StartRunState if (VAR_Normalized_Forward_Speed >= 0.6)",
+          "assignmentVariableIndex": -1,
+          "assignmentEventIndex": -1,
+          "eventMode": 1
+        },
+        {
+          "expression": "InternalEvent_StartSneakState if (VAR_Normalized_Forward_Speed <= 0.28)",
+          "assignmentVariableIndex": -1,
+          "assignmentEventIndex": -1,
+          "eventMode": 1
+        }
+      ],
+      "compiled": {
+        "num_expressions": 2,
+        "starts": [
+          0,
+          3
+        ],
+        "tokens": [
+          {
+            "data": 2.0,
+            "data_bits": 1073741824,
+            "type": 3,
+            "operator": 0
+          },
+          {
+            "data": 0.6000000238418579,
+            "data_bits": 1058642330,
+            "type": 2,
+            "operator": 0
+          },
+          {
+            "data": 0.0,
+            "data_bits": 0,
+            "type": 1,
+            "operator": 25
+          },
+          {
+            "data": 2.0,
+            "data_bits": 1073741824,
+            "type": 3,
+            "operator": 0
+          },
+          {
+            "data": 0.2800000011920929,
+            "data_bits": 1049582633,
+            "type": 2,
+            "operator": 0
+          },
+          {
+            "data": 0.0,
+            "data_bits": 0,
+            "type": 1,
+            "operator": 24
+          }
+        ]
+      },
+      "assignments": [
+        {
+          "variable": -1,
+          "event": 126,
+          "mode": 1
+        },
+        {
+          "variable": -1,
+          "event": 127,
+          "mode": 1
+        }
+      ]
+    },
+    "2:40048": {
+      "source": [
+        {
+          "expression": "InternalEvent_StartWalkState if ( (VAR_Normalized_Forward_Speed < 0.6) && (VAR_Normalized_Forward_Speed > 0.28) )",
+          "assignmentVariableIndex": -1,
+          "assignmentEventIndex": -1,
+          "eventMode": 1
+        },
+        {
+          "expression": "InternalEvent_StartSneakState if (VAR_Normalized_Forward_Speed <= 0.28)",
+          "assignmentVariableIndex": -1,
+          "assignmentEventIndex": -1,
+          "eventMode": 1
+        }
+      ],
+      "compiled": {
+        "num_expressions": 2,
+        "starts": [
+          0,
+          7
+        ],
+        "tokens": [
+          {
+            "data": 2.0,
+            "data_bits": 1073741824,
+            "type": 3,
+            "operator": 0
+          },
+          {
+            "data": 0.6000000238418579,
+            "data_bits": 1058642330,
+            "type": 2,
+            "operator": 0
+          },
+          {
+            "data": 0.0,
+            "data_bits": 0,
+            "type": 1,
+            "operator": 22
+          },
+          {
+            "data": 2.0,
+            "data_bits": 1073741824,
+            "type": 3,
+            "operator": 0
+          },
+          {
+            "data": 0.2800000011920929,
+            "data_bits": 1049582633,
+            "type": 2,
+            "operator": 0
+          },
+          {
+            "data": 0.0,
+            "data_bits": 0,
+            "type": 1,
+            "operator": 23
+          },
+          {
+            "data": 0.0,
+            "data_bits": 0,
+            "type": 1,
+            "operator": 19
+          },
+          {
+            "data": 2.0,
+            "data_bits": 1073741824,
+            "type": 3,
+            "operator": 0
+          },
+          {
+            "data": 0.2800000011920929,
+            "data_bits": 1049582633,
+            "type": 2,
+            "operator": 0
+          },
+          {
+            "data": 0.0,
+            "data_bits": 0,
+            "type": 1,
+            "operator": 24
+          }
+        ]
+      },
+      "assignments": [
+        {
+          "variable": -1,
+          "event": 125,
+          "mode": 1
+        },
+        {
+          "variable": -1,
+          "event": 127,
+          "mode": 1
+        }
+      ]
+    },
+    "2:38784": {
+      "source": [
+        {
+          "expression": "internalVar_Scaled_TipToeSpeed = VAR_Scaled_Run_Speed * 10",
+          "assignmentVariableIndex": -1,
+          "assignmentEventIndex": -1,
+          "eventMode": 0
+        }
+      ],
+      "compiled": {
+        "num_expressions": 1,
+        "starts": [
+          0
+        ],
+        "tokens": [
+          {
+            "data": 1.0,
+            "data_bits": 1065353216,
+            "type": 3,
+            "operator": 0
+          },
+          {
+            "data": 10.0,
+            "data_bits": 1092616192,
+            "type": 2,
+            "operator": 0
+          },
+          {
+            "data": 0.0,
+            "data_bits": 0,
+            "type": 1,
+            "operator": 14
+          }
+        ]
+      },
+      "assignments": [
+        {
+          "variable": 38,
+          "event": -1,
+          "mode": 0
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,6206 @@
+{
+  "scope": "Bounded original base-camera input, blend-clock and FOV integration.\n\nInput prefixes supply the scalar property getter result; no config getter,\ngenerator, output-copy, constraint, phantom or world scheduling is executed.\nClock/FOV leaves execute their original arithmetic. Finite fixtures only.\n",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "motion": [
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": false,
+      "delta": 0.0,
+      "speed": 0.0,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        2147483648
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": false,
+      "delta": 0.0,
+      "speed": 2.5,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        2147483648
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": false,
+      "delta": 0.0,
+      "speed": 9.75,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        2147483648
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": false,
+      "delta": 0.03333333507180214,
+      "speed": 0.0,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        1008981771,
+        3166643596
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": false,
+      "delta": 0.03333333507180214,
+      "speed": 2.5,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        1008981771,
+        3166643596
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": false,
+      "delta": 0.03333333507180214,
+      "speed": 9.75,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        1008981771,
+        3166643596
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": false,
+      "delta": 0.25,
+      "speed": 0.0,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        1033476506,
+        3191026483
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": false,
+      "delta": 0.25,
+      "speed": 2.5,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        1033476506,
+        3191026483
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": false,
+      "delta": 0.25,
+      "speed": 9.75,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        1033476506,
+        3191026483
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": true,
+      "delta": 0.0,
+      "speed": 0.0,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": true,
+      "delta": 0.0,
+      "speed": 2.5,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": true,
+      "delta": 0.0,
+      "speed": 9.75,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": true,
+      "delta": 0.03333333507180214,
+      "speed": 0.0,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        1008981771,
+        1019159948
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": true,
+      "delta": 0.03333333507180214,
+      "speed": 2.5,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        1008981771,
+        1019159948
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": true,
+      "delta": 0.03333333507180214,
+      "speed": 9.75,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        1008981771,
+        1019159948
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": true,
+      "delta": 0.25,
+      "speed": 0.0,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        1033476506,
+        1043542835
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": true,
+      "delta": 0.25,
+      "speed": 2.5,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        1033476506,
+        1043542835
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": true,
+      "delta": 0.25,
+      "speed": 9.75,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        1033476506,
+        1043542835
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": false,
+      "delta": 0.0,
+      "speed": 0.0,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        2147483648,
+        0
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": false,
+      "delta": 0.0,
+      "speed": 2.5,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        2147483648,
+        0
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": false,
+      "delta": 0.0,
+      "speed": 9.75,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        2147483648,
+        0
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": false,
+      "delta": 0.03333333507180214,
+      "speed": 0.0,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        3179841673,
+        1026206379
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": false,
+      "delta": 0.03333333507180214,
+      "speed": 2.5,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        3179841673,
+        1026206379
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": false,
+      "delta": 0.03333333507180214,
+      "speed": 9.75,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        3179841673,
+        1026206379
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": false,
+      "delta": 0.25,
+      "speed": 0.0,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        3204448256,
+        1050673152
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": false,
+      "delta": 0.25,
+      "speed": 2.5,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        3204448256,
+        1050673152
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": false,
+      "delta": 0.25,
+      "speed": 9.75,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        3204448256,
+        1050673152
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": true,
+      "delta": 0.0,
+      "speed": 0.0,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        2147483648,
+        2147483648
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": true,
+      "delta": 0.0,
+      "speed": 2.5,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        2147483648,
+        2147483648
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": true,
+      "delta": 0.0,
+      "speed": 9.75,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        2147483648,
+        2147483648
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": true,
+      "delta": 0.03333333507180214,
+      "speed": 0.0,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        3179841673,
+        3173690027
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": true,
+      "delta": 0.03333333507180214,
+      "speed": 2.5,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        3179841673,
+        3173690027
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": true,
+      "delta": 0.03333333507180214,
+      "speed": 9.75,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        3179841673,
+        3173690027
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": true,
+      "delta": 0.25,
+      "speed": 0.0,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        3204448256,
+        3198156800
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": true,
+      "delta": 0.25,
+      "speed": 2.5,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        3204448256,
+        3198156800
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.0,
+        0.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": true,
+      "delta": 0.25,
+      "speed": 9.75,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        3204448256,
+        3198156800
+      ],
+      "instructions": 62
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": false,
+      "delta": 0.0,
+      "speed": 0.0,
+      "motion": [
+        2147483648,
+        0,
+        2147483648,
+        0
+      ],
+      "rotation": [
+        0,
+        2147483648
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": false,
+      "delta": 0.0,
+      "speed": 2.5,
+      "motion": [
+        2147483648,
+        0,
+        2147483648,
+        0
+      ],
+      "rotation": [
+        0,
+        2147483648
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": false,
+      "delta": 0.0,
+      "speed": 9.75,
+      "motion": [
+        2147483648,
+        0,
+        2147483648,
+        0
+      ],
+      "rotation": [
+        0,
+        2147483648
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": false,
+      "delta": 0.03333333507180214,
+      "speed": 0.0,
+      "motion": [
+        2147483648,
+        0,
+        2147483648,
+        0
+      ],
+      "rotation": [
+        1008981771,
+        3166643596
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": false,
+      "delta": 0.03333333507180214,
+      "speed": 2.5,
+      "motion": [
+        3173690027,
+        0,
+        3165301419,
+        0
+      ],
+      "rotation": [
+        1008981771,
+        3166643596
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": false,
+      "delta": 0.03333333507180214,
+      "speed": 9.75,
+      "motion": [
+        3190187623,
+        0,
+        3181799015,
+        0
+      ],
+      "rotation": [
+        1008981771,
+        3166643596
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": false,
+      "delta": 0.25,
+      "speed": 0.0,
+      "motion": [
+        2147483648,
+        0,
+        2147483648,
+        0
+      ],
+      "rotation": [
+        1033476506,
+        3191026483
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": false,
+      "delta": 0.25,
+      "speed": 2.5,
+      "motion": [
+        3198156800,
+        0,
+        3189768192,
+        0
+      ],
+      "rotation": [
+        1033476506,
+        3191026483
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": false,
+      "delta": 0.25,
+      "speed": 9.75,
+      "motion": [
+        3214671872,
+        0,
+        3206283264,
+        0
+      ],
+      "rotation": [
+        1033476506,
+        3191026483
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": true,
+      "delta": 0.0,
+      "speed": 0.0,
+      "motion": [
+        2147483648,
+        0,
+        2147483648,
+        0
+      ],
+      "rotation": [
+        0,
+        0
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": true,
+      "delta": 0.0,
+      "speed": 2.5,
+      "motion": [
+        2147483648,
+        0,
+        2147483648,
+        0
+      ],
+      "rotation": [
+        0,
+        0
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": true,
+      "delta": 0.0,
+      "speed": 9.75,
+      "motion": [
+        2147483648,
+        0,
+        2147483648,
+        0
+      ],
+      "rotation": [
+        0,
+        0
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": true,
+      "delta": 0.03333333507180214,
+      "speed": 0.0,
+      "motion": [
+        2147483648,
+        0,
+        2147483648,
+        0
+      ],
+      "rotation": [
+        1008981771,
+        1019159948
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": true,
+      "delta": 0.03333333507180214,
+      "speed": 2.5,
+      "motion": [
+        3173690027,
+        0,
+        3165301419,
+        0
+      ],
+      "rotation": [
+        1008981771,
+        1019159948
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": true,
+      "delta": 0.03333333507180214,
+      "speed": 9.75,
+      "motion": [
+        3190187623,
+        0,
+        3181799015,
+        0
+      ],
+      "rotation": [
+        1008981771,
+        1019159948
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": true,
+      "delta": 0.25,
+      "speed": 0.0,
+      "motion": [
+        2147483648,
+        0,
+        2147483648,
+        0
+      ],
+      "rotation": [
+        1033476506,
+        1043542835
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": true,
+      "delta": 0.25,
+      "speed": 2.5,
+      "motion": [
+        3198156800,
+        0,
+        3189768192,
+        0
+      ],
+      "rotation": [
+        1033476506,
+        1043542835
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": true,
+      "delta": 0.25,
+      "speed": 9.75,
+      "motion": [
+        3214671872,
+        0,
+        3206283264,
+        0
+      ],
+      "rotation": [
+        1033476506,
+        1043542835
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": false,
+      "delta": 0.0,
+      "speed": 0.0,
+      "motion": [
+        2147483648,
+        0,
+        2147483648,
+        0
+      ],
+      "rotation": [
+        2147483648,
+        0
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": false,
+      "delta": 0.0,
+      "speed": 2.5,
+      "motion": [
+        2147483648,
+        0,
+        2147483648,
+        0
+      ],
+      "rotation": [
+        2147483648,
+        0
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": false,
+      "delta": 0.0,
+      "speed": 9.75,
+      "motion": [
+        2147483648,
+        0,
+        2147483648,
+        0
+      ],
+      "rotation": [
+        2147483648,
+        0
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": false,
+      "delta": 0.03333333507180214,
+      "speed": 0.0,
+      "motion": [
+        2147483648,
+        0,
+        2147483648,
+        0
+      ],
+      "rotation": [
+        3179841673,
+        1026206379
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": false,
+      "delta": 0.03333333507180214,
+      "speed": 2.5,
+      "motion": [
+        3173690027,
+        0,
+        3165301419,
+        0
+      ],
+      "rotation": [
+        3179841673,
+        1026206379
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": false,
+      "delta": 0.03333333507180214,
+      "speed": 9.75,
+      "motion": [
+        3190187623,
+        0,
+        3181799015,
+        0
+      ],
+      "rotation": [
+        3179841673,
+        1026206379
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": false,
+      "delta": 0.25,
+      "speed": 0.0,
+      "motion": [
+        2147483648,
+        0,
+        2147483648,
+        0
+      ],
+      "rotation": [
+        3204448256,
+        1050673152
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": false,
+      "delta": 0.25,
+      "speed": 2.5,
+      "motion": [
+        3198156800,
+        0,
+        3189768192,
+        0
+      ],
+      "rotation": [
+        3204448256,
+        1050673152
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": false,
+      "delta": 0.25,
+      "speed": 9.75,
+      "motion": [
+        3214671872,
+        0,
+        3206283264,
+        0
+      ],
+      "rotation": [
+        3204448256,
+        1050673152
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": true,
+      "delta": 0.0,
+      "speed": 0.0,
+      "motion": [
+        2147483648,
+        0,
+        2147483648,
+        0
+      ],
+      "rotation": [
+        2147483648,
+        2147483648
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": true,
+      "delta": 0.0,
+      "speed": 2.5,
+      "motion": [
+        2147483648,
+        0,
+        2147483648,
+        0
+      ],
+      "rotation": [
+        2147483648,
+        2147483648
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": true,
+      "delta": 0.0,
+      "speed": 9.75,
+      "motion": [
+        2147483648,
+        0,
+        2147483648,
+        0
+      ],
+      "rotation": [
+        2147483648,
+        2147483648
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": true,
+      "delta": 0.03333333507180214,
+      "speed": 0.0,
+      "motion": [
+        2147483648,
+        0,
+        2147483648,
+        0
+      ],
+      "rotation": [
+        3179841673,
+        3173690027
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": true,
+      "delta": 0.03333333507180214,
+      "speed": 2.5,
+      "motion": [
+        3173690027,
+        0,
+        3165301419,
+        0
+      ],
+      "rotation": [
+        3179841673,
+        3173690027
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": true,
+      "delta": 0.03333333507180214,
+      "speed": 9.75,
+      "motion": [
+        3190187623,
+        0,
+        3181799015,
+        0
+      ],
+      "rotation": [
+        3179841673,
+        3173690027
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": true,
+      "delta": 0.25,
+      "speed": 0.0,
+      "motion": [
+        2147483648,
+        0,
+        2147483648,
+        0
+      ],
+      "rotation": [
+        3204448256,
+        3198156800
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": true,
+      "delta": 0.25,
+      "speed": 2.5,
+      "motion": [
+        3198156800,
+        0,
+        3189768192,
+        0
+      ],
+      "rotation": [
+        3204448256,
+        3198156800
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        0.5,
+        -0.25
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": true,
+      "delta": 0.25,
+      "speed": 9.75,
+      "motion": [
+        3214671872,
+        0,
+        3206283264,
+        0
+      ],
+      "rotation": [
+        3204448256,
+        3198156800
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": false,
+      "delta": 0.0,
+      "speed": 0.0,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        2147483648
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": false,
+      "delta": 0.0,
+      "speed": 2.5,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        2147483648
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": false,
+      "delta": 0.0,
+      "speed": 9.75,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        2147483648
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": false,
+      "delta": 0.03333333507180214,
+      "speed": 0.0,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        1008981771,
+        3166643596
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": false,
+      "delta": 0.03333333507180214,
+      "speed": 2.5,
+      "motion": [
+        1034594987,
+        0,
+        1034594987,
+        0
+      ],
+      "rotation": [
+        1008981771,
+        3166643596
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": false,
+      "delta": 0.03333333507180214,
+      "speed": 9.75,
+      "motion": [
+        1051092583,
+        0,
+        1051092583,
+        0
+      ],
+      "rotation": [
+        1008981771,
+        3166643596
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": false,
+      "delta": 0.25,
+      "speed": 0.0,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        1033476506,
+        3191026483
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": false,
+      "delta": 0.25,
+      "speed": 2.5,
+      "motion": [
+        1059061760,
+        0,
+        1059061760,
+        0
+      ],
+      "rotation": [
+        1033476506,
+        3191026483
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": false,
+      "delta": 0.25,
+      "speed": 9.75,
+      "motion": [
+        1075576832,
+        0,
+        1075576832,
+        0
+      ],
+      "rotation": [
+        1033476506,
+        3191026483
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": true,
+      "delta": 0.0,
+      "speed": 0.0,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": true,
+      "delta": 0.0,
+      "speed": 2.5,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": true,
+      "delta": 0.0,
+      "speed": 9.75,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": true,
+      "delta": 0.03333333507180214,
+      "speed": 0.0,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        1008981771,
+        1019159948
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": true,
+      "delta": 0.03333333507180214,
+      "speed": 2.5,
+      "motion": [
+        1034594987,
+        0,
+        1034594987,
+        0
+      ],
+      "rotation": [
+        1008981771,
+        1019159948
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": true,
+      "delta": 0.03333333507180214,
+      "speed": 9.75,
+      "motion": [
+        1051092583,
+        0,
+        1051092583,
+        0
+      ],
+      "rotation": [
+        1008981771,
+        1019159948
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": true,
+      "delta": 0.25,
+      "speed": 0.0,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        1033476506,
+        1043542835
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": true,
+      "delta": 0.25,
+      "speed": 2.5,
+      "motion": [
+        1059061760,
+        0,
+        1059061760,
+        0
+      ],
+      "rotation": [
+        1033476506,
+        1043542835
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": false,
+      "invert": true,
+      "delta": 0.25,
+      "speed": 9.75,
+      "motion": [
+        1075576832,
+        0,
+        1075576832,
+        0
+      ],
+      "rotation": [
+        1033476506,
+        1043542835
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": false,
+      "delta": 0.0,
+      "speed": 0.0,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        2147483648,
+        0
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": false,
+      "delta": 0.0,
+      "speed": 2.5,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        2147483648,
+        0
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": false,
+      "delta": 0.0,
+      "speed": 9.75,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        2147483648,
+        0
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": false,
+      "delta": 0.03333333507180214,
+      "speed": 0.0,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        3179841673,
+        1026206379
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": false,
+      "delta": 0.03333333507180214,
+      "speed": 2.5,
+      "motion": [
+        1034594987,
+        0,
+        1034594987,
+        0
+      ],
+      "rotation": [
+        3179841673,
+        1026206379
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": false,
+      "delta": 0.03333333507180214,
+      "speed": 9.75,
+      "motion": [
+        1051092583,
+        0,
+        1051092583,
+        0
+      ],
+      "rotation": [
+        3179841673,
+        1026206379
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": false,
+      "delta": 0.25,
+      "speed": 0.0,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        3204448256,
+        1050673152
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": false,
+      "delta": 0.25,
+      "speed": 2.5,
+      "motion": [
+        1059061760,
+        0,
+        1059061760,
+        0
+      ],
+      "rotation": [
+        3204448256,
+        1050673152
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": false,
+      "delta": 0.25,
+      "speed": 9.75,
+      "motion": [
+        1075576832,
+        0,
+        1075576832,
+        0
+      ],
+      "rotation": [
+        3204448256,
+        1050673152
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": true,
+      "delta": 0.0,
+      "speed": 0.0,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        2147483648,
+        2147483648
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": true,
+      "delta": 0.0,
+      "speed": 2.5,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        2147483648,
+        2147483648
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": true,
+      "delta": 0.0,
+      "speed": 9.75,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        2147483648,
+        2147483648
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": true,
+      "delta": 0.03333333507180214,
+      "speed": 0.0,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        3179841673,
+        3173690027
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": true,
+      "delta": 0.03333333507180214,
+      "speed": 2.5,
+      "motion": [
+        1034594987,
+        0,
+        1034594987,
+        0
+      ],
+      "rotation": [
+        3179841673,
+        3173690027
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": true,
+      "delta": 0.03333333507180214,
+      "speed": 9.75,
+      "motion": [
+        1051092583,
+        0,
+        1051092583,
+        0
+      ],
+      "rotation": [
+        3179841673,
+        3173690027
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": true,
+      "delta": 0.25,
+      "speed": 0.0,
+      "motion": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        3204448256,
+        3198156800
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": true,
+      "delta": 0.25,
+      "speed": 2.5,
+      "motion": [
+        1059061760,
+        0,
+        1059061760,
+        0
+      ],
+      "rotation": [
+        3204448256,
+        3198156800
+      ],
+      "instructions": 75
+    },
+    {
+      "movement": [
+        -1.0,
+        1.0
+      ],
+      "orientation": [
+        0.3,
+        -0.7
+      ],
+      "pointer": [
+        -2.0,
+        1.25
+      ],
+      "enabled": true,
+      "invert": true,
+      "delta": 0.25,
+      "speed": 9.75,
+      "motion": [
+        1075576832,
+        0,
+        1075576832,
+        0
+      ],
+      "rotation": [
+        3204448256,
+        3198156800
+      ],
+      "instructions": 75
+    }
+  ],
+  "fov": [
+    {
+      "values": [
+        45.0,
+        45.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        1110704128,
+        3212836864,
+        0,
+        0
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.0,
+        -1.0,
+        0.0,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        1110704128,
+        3212836864,
+        0,
+        1050253722
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.0,
+        -1.0,
+        0.0,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        1110704128,
+        3212836864,
+        0,
+        3212836864
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.0,
+        -1.0,
+        0.2,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        1110704128,
+        3212836864,
+        1045220557,
+        0
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.0,
+        -1.0,
+        0.2,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        1110704128,
+        3212836864,
+        1045220557,
+        1050253722
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.0,
+        -1.0,
+        0.2,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        1110704128,
+        3212836864,
+        1045220557,
+        3212836864
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        1110704128,
+        0,
+        0,
+        0
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.0,
+        0.0,
+        0.0,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        1110704128,
+        0,
+        0,
+        1050253722
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.0,
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        1110704128,
+        0,
+        0,
+        3212836864
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.0,
+        0.0,
+        0.2,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        1110704128,
+        0,
+        1045220557,
+        0
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.0,
+        0.0,
+        0.2,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        1110704128,
+        0,
+        1045220557,
+        1050253722
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.0,
+        0.0,
+        0.2,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        1110704128,
+        0,
+        1045220557,
+        3212836864
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.0,
+        0.1,
+        0.0,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        1110704128,
+        0,
+        0,
+        0
+      ],
+      "instructions": 30
+    },
+    {
+      "values": [
+        45.0,
+        45.0,
+        0.1,
+        0.0,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        1110704128,
+        0,
+        0,
+        0
+      ],
+      "instructions": 30
+    },
+    {
+      "values": [
+        45.0,
+        45.0,
+        0.1,
+        0.0,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        1110704128,
+        0,
+        0,
+        0
+      ],
+      "instructions": 30
+    },
+    {
+      "values": [
+        45.0,
+        45.0,
+        0.1,
+        0.2,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        1110704128,
+        0,
+        0,
+        0
+      ],
+      "instructions": 30
+    },
+    {
+      "values": [
+        45.0,
+        45.0,
+        0.1,
+        0.2,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        1110704128,
+        0,
+        0,
+        0
+      ],
+      "instructions": 30
+    },
+    {
+      "values": [
+        45.0,
+        45.0,
+        0.1,
+        0.2,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        1110704128,
+        0,
+        0,
+        0
+      ],
+      "instructions": 30
+    },
+    {
+      "values": [
+        45.0,
+        45.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        1110704128,
+        0,
+        0,
+        0
+      ],
+      "instructions": 30
+    },
+    {
+      "values": [
+        45.0,
+        45.0,
+        1.0,
+        0.0,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        1110704128,
+        0,
+        0,
+        0
+      ],
+      "instructions": 30
+    },
+    {
+      "values": [
+        45.0,
+        45.0,
+        1.0,
+        0.0,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        1110704128,
+        0,
+        0,
+        0
+      ],
+      "instructions": 30
+    },
+    {
+      "values": [
+        45.0,
+        45.0,
+        1.0,
+        0.2,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        1110704128,
+        0,
+        0,
+        0
+      ],
+      "instructions": 30
+    },
+    {
+      "values": [
+        45.0,
+        45.0,
+        1.0,
+        0.2,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        1110704128,
+        0,
+        0,
+        0
+      ],
+      "instructions": 30
+    },
+    {
+      "values": [
+        45.0,
+        45.0,
+        1.0,
+        0.2,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        1110704128,
+        0,
+        0,
+        0
+      ],
+      "instructions": 30
+    },
+    {
+      "values": [
+        45.0,
+        45.0000114440918,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        1110704131,
+        3212836864,
+        0,
+        0
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.0000114440918,
+        -1.0,
+        0.0,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        1110704131,
+        3212836864,
+        0,
+        1050253722
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.0000114440918,
+        -1.0,
+        0.0,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        1110704131,
+        3212836864,
+        0,
+        3212836864
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.0000114440918,
+        -1.0,
+        0.2,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        1110704131,
+        3212836864,
+        1045220557,
+        0
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.0000114440918,
+        -1.0,
+        0.2,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        1110704131,
+        3212836864,
+        1045220557,
+        1050253722
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.0000114440918,
+        -1.0,
+        0.2,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        1110704131,
+        3212836864,
+        1045220557,
+        3212836864
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.0000114440918,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        1110704131,
+        0,
+        0,
+        0
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.0000114440918,
+        0.0,
+        0.0,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        1110704131,
+        0,
+        0,
+        1050253722
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.0000114440918,
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        1110704131,
+        0,
+        0,
+        3212836864
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.0000114440918,
+        0.0,
+        0.2,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        1110704131,
+        0,
+        1045220557,
+        0
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.0000114440918,
+        0.0,
+        0.2,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        1110704131,
+        0,
+        1045220557,
+        1050253722
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.0000114440918,
+        0.0,
+        0.2,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        1110704131,
+        0,
+        1045220557,
+        3212836864
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.0000114440918,
+        0.1,
+        0.0,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        1110704131,
+        0,
+        0,
+        0
+      ],
+      "instructions": 30
+    },
+    {
+      "values": [
+        45.0,
+        45.0000114440918,
+        0.1,
+        0.0,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        1110704131,
+        0,
+        0,
+        0
+      ],
+      "instructions": 30
+    },
+    {
+      "values": [
+        45.0,
+        45.0000114440918,
+        0.1,
+        0.0,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        1110704131,
+        0,
+        0,
+        0
+      ],
+      "instructions": 30
+    },
+    {
+      "values": [
+        45.0,
+        45.0000114440918,
+        0.1,
+        0.2,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        1110704131,
+        0,
+        0,
+        0
+      ],
+      "instructions": 30
+    },
+    {
+      "values": [
+        45.0,
+        45.0000114440918,
+        0.1,
+        0.2,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        1110704131,
+        0,
+        0,
+        0
+      ],
+      "instructions": 30
+    },
+    {
+      "values": [
+        45.0,
+        45.0000114440918,
+        0.1,
+        0.2,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        1110704131,
+        0,
+        0,
+        0
+      ],
+      "instructions": 30
+    },
+    {
+      "values": [
+        45.0,
+        45.0000114440918,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        1110704131,
+        0,
+        0,
+        0
+      ],
+      "instructions": 30
+    },
+    {
+      "values": [
+        45.0,
+        45.0000114440918,
+        1.0,
+        0.0,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        1110704131,
+        0,
+        0,
+        0
+      ],
+      "instructions": 30
+    },
+    {
+      "values": [
+        45.0,
+        45.0000114440918,
+        1.0,
+        0.0,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        1110704131,
+        0,
+        0,
+        0
+      ],
+      "instructions": 30
+    },
+    {
+      "values": [
+        45.0,
+        45.0000114440918,
+        1.0,
+        0.2,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        1110704131,
+        0,
+        0,
+        0
+      ],
+      "instructions": 30
+    },
+    {
+      "values": [
+        45.0,
+        45.0000114440918,
+        1.0,
+        0.2,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        1110704131,
+        0,
+        0,
+        0
+      ],
+      "instructions": 30
+    },
+    {
+      "values": [
+        45.0,
+        45.0000114440918,
+        1.0,
+        0.2,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        1110704131,
+        0,
+        0,
+        0
+      ],
+      "instructions": 30
+    },
+    {
+      "values": [
+        45.0,
+        45.005001068115234,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        1110705439,
+        3212836864,
+        0,
+        0
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.005001068115234,
+        -1.0,
+        0.0,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        1110705439,
+        3212836864,
+        0,
+        1050253722
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.005001068115234,
+        -1.0,
+        0.0,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        1110705439,
+        3212836864,
+        0,
+        3212836864
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.005001068115234,
+        -1.0,
+        0.2,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        1110705439,
+        3212836864,
+        1045220557,
+        0
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.005001068115234,
+        -1.0,
+        0.2,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        1110705439,
+        3212836864,
+        1045220557,
+        1050253722
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.005001068115234,
+        -1.0,
+        0.2,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        1110705439,
+        3212836864,
+        1045220557,
+        3212836864
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.005001068115234,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        1110705439,
+        0,
+        0,
+        0
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.005001068115234,
+        0.0,
+        0.0,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        1110705439,
+        0,
+        0,
+        1050253722
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.005001068115234,
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        1110705439,
+        0,
+        0,
+        3212836864
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.005001068115234,
+        0.0,
+        0.2,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        1110705439,
+        0,
+        1045220557,
+        0
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.005001068115234,
+        0.0,
+        0.2,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        1110705439,
+        0,
+        1045220557,
+        1050253722
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.005001068115234,
+        0.0,
+        0.2,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        1110705439,
+        0,
+        1045220557,
+        3212836864
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        45.005001068115234,
+        0.1,
+        0.0,
+        0.0
+      ],
+      "bits": [
+        1110704259,
+        1110705439,
+        0,
+        0,
+        0
+      ],
+      "instructions": 35
+    },
+    {
+      "values": [
+        45.0,
+        45.005001068115234,
+        0.1,
+        0.0,
+        0.3
+      ],
+      "bits": [
+        1110782902,
+        1110705439,
+        0,
+        0,
+        0
+      ],
+      "instructions": 35
+    },
+    {
+      "values": [
+        45.0,
+        45.005001068115234,
+        0.1,
+        0.0,
+        -1.0
+      ],
+      "bits": [
+        1110442115,
+        1110705439,
+        0,
+        0,
+        0
+      ],
+      "instructions": 35
+    },
+    {
+      "values": [
+        45.0,
+        45.005001068115234,
+        0.1,
+        0.2,
+        0.0
+      ],
+      "bits": [
+        1110704259,
+        1110705439,
+        0,
+        0,
+        0
+      ],
+      "instructions": 35
+    },
+    {
+      "values": [
+        45.0,
+        45.005001068115234,
+        0.1,
+        0.2,
+        0.3
+      ],
+      "bits": [
+        1110767174,
+        1110705439,
+        0,
+        0,
+        0
+      ],
+      "instructions": 35
+    },
+    {
+      "values": [
+        45.0,
+        45.005001068115234,
+        0.1,
+        0.2,
+        -1.0
+      ],
+      "bits": [
+        1110494544,
+        1110705439,
+        0,
+        0,
+        0
+      ],
+      "instructions": 35
+    },
+    {
+      "values": [
+        45.0,
+        45.005001068115234,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "bits": [
+        1110705439,
+        1110705439,
+        0,
+        0,
+        0
+      ],
+      "instructions": 35
+    },
+    {
+      "values": [
+        45.0,
+        45.005001068115234,
+        1.0,
+        0.0,
+        0.3
+      ],
+      "bits": [
+        1110784082,
+        1110705439,
+        0,
+        0,
+        0
+      ],
+      "instructions": 35
+    },
+    {
+      "values": [
+        45.0,
+        45.005001068115234,
+        1.0,
+        0.0,
+        -1.0
+      ],
+      "bits": [
+        1110443295,
+        1110705439,
+        0,
+        0,
+        0
+      ],
+      "instructions": 35
+    },
+    {
+      "values": [
+        45.0,
+        45.005001068115234,
+        1.0,
+        0.2,
+        0.0
+      ],
+      "bits": [
+        1110705439,
+        1110705439,
+        0,
+        0,
+        0
+      ],
+      "instructions": 35
+    },
+    {
+      "values": [
+        45.0,
+        45.005001068115234,
+        1.0,
+        0.2,
+        0.3
+      ],
+      "bits": [
+        1110768354,
+        1110705439,
+        0,
+        0,
+        0
+      ],
+      "instructions": 35
+    },
+    {
+      "values": [
+        45.0,
+        45.005001068115234,
+        1.0,
+        0.2,
+        -1.0
+      ],
+      "bits": [
+        1110495724,
+        1110705439,
+        0,
+        0,
+        0
+      ],
+      "instructions": 35
+    },
+    {
+      "values": [
+        45.0,
+        70.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        1116471296,
+        3212836864,
+        0,
+        0
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        70.0,
+        -1.0,
+        0.0,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        1116471296,
+        3212836864,
+        0,
+        1050253722
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        70.0,
+        -1.0,
+        0.0,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        1116471296,
+        3212836864,
+        0,
+        3212836864
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        70.0,
+        -1.0,
+        0.2,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        1116471296,
+        3212836864,
+        1045220557,
+        0
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        70.0,
+        -1.0,
+        0.2,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        1116471296,
+        3212836864,
+        1045220557,
+        1050253722
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        70.0,
+        -1.0,
+        0.2,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        1116471296,
+        3212836864,
+        1045220557,
+        3212836864
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        70.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        1116471296,
+        0,
+        0,
+        0
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        70.0,
+        0.0,
+        0.0,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        1116471296,
+        0,
+        0,
+        1050253722
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        70.0,
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        1116471296,
+        0,
+        0,
+        3212836864
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        70.0,
+        0.0,
+        0.2,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        1116471296,
+        0,
+        1045220557,
+        0
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        70.0,
+        0.0,
+        0.2,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        1116471296,
+        0,
+        1045220557,
+        1050253722
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        70.0,
+        0.0,
+        0.2,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        1116471296,
+        0,
+        1045220557,
+        3212836864
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        70.0,
+        0.1,
+        0.0,
+        0.0
+      ],
+      "bits": [
+        1111359488,
+        1116471296,
+        1036831949,
+        0,
+        1075838976
+      ],
+      "instructions": 28
+    },
+    {
+      "values": [
+        45.0,
+        70.0,
+        0.1,
+        0.0,
+        0.3
+      ],
+      "bits": [
+        1111438131,
+        1116471296,
+        1036831949,
+        0,
+        1077097267
+      ],
+      "instructions": 28
+    },
+    {
+      "values": [
+        45.0,
+        70.0,
+        0.1,
+        0.0,
+        -1.0
+      ],
+      "bits": [
+        1111097344,
+        1116471296,
+        1036831949,
+        0,
+        1069547520
+      ],
+      "instructions": 28
+    },
+    {
+      "values": [
+        45.0,
+        70.0,
+        0.1,
+        0.2,
+        0.0
+      ],
+      "bits": [
+        1111359488,
+        1116471296,
+        1036831949,
+        1045220557,
+        1075838976
+      ],
+      "instructions": 28
+    },
+    {
+      "values": [
+        45.0,
+        70.0,
+        0.1,
+        0.2,
+        0.3
+      ],
+      "bits": [
+        1111422403,
+        1116471296,
+        1036831949,
+        1045220557,
+        1076845609
+      ],
+      "instructions": 28
+    },
+    {
+      "values": [
+        45.0,
+        70.0,
+        0.1,
+        0.2,
+        -1.0
+      ],
+      "bits": [
+        1111149773,
+        1116471296,
+        1036831949,
+        1045220557,
+        1071225242
+      ],
+      "instructions": 28
+    },
+    {
+      "values": [
+        45.0,
+        70.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "bits": [
+        1116471296,
+        1116471296,
+        1065353216,
+        0,
+        1103626240
+      ],
+      "instructions": 28
+    },
+    {
+      "values": [
+        45.0,
+        70.0,
+        1.0,
+        0.0,
+        0.3
+      ],
+      "bits": [
+        1116510618,
+        1116471296,
+        1065353216,
+        0,
+        1103783526
+      ],
+      "instructions": 28
+    },
+    {
+      "values": [
+        45.0,
+        70.0,
+        1.0,
+        0.0,
+        -1.0
+      ],
+      "bits": [
+        1116340224,
+        1116471296,
+        1065353216,
+        0,
+        1103101952
+      ],
+      "instructions": 28
+    },
+    {
+      "values": [
+        45.0,
+        70.0,
+        1.0,
+        0.2,
+        0.0
+      ],
+      "bits": [
+        1116471296,
+        1116471296,
+        1065353216,
+        1045220557,
+        1103626240
+      ],
+      "instructions": 28
+    },
+    {
+      "values": [
+        45.0,
+        70.0,
+        1.0,
+        0.2,
+        0.3
+      ],
+      "bits": [
+        1116502753,
+        1116471296,
+        1065353216,
+        1045220557,
+        1103752069
+      ],
+      "instructions": 28
+    },
+    {
+      "values": [
+        45.0,
+        70.0,
+        1.0,
+        0.2,
+        -1.0
+      ],
+      "bits": [
+        1116366438,
+        1116471296,
+        1065353216,
+        1045220557,
+        1103206810
+      ],
+      "instructions": 28
+    },
+    {
+      "values": [
+        45.0,
+        -20.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        3248488448,
+        3212836864,
+        0,
+        0
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        -20.0,
+        -1.0,
+        0.0,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        3248488448,
+        3212836864,
+        0,
+        1050253722
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        -20.0,
+        -1.0,
+        0.0,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        3248488448,
+        3212836864,
+        0,
+        3212836864
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        -20.0,
+        -1.0,
+        0.2,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        3248488448,
+        3212836864,
+        1045220557,
+        0
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        -20.0,
+        -1.0,
+        0.2,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        3248488448,
+        3212836864,
+        1045220557,
+        1050253722
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        -20.0,
+        -1.0,
+        0.2,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        3248488448,
+        3212836864,
+        1045220557,
+        3212836864
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        -20.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        3248488448,
+        0,
+        0,
+        0
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        -20.0,
+        0.0,
+        0.0,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        3248488448,
+        0,
+        0,
+        1050253722
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        -20.0,
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        3248488448,
+        0,
+        0,
+        3212836864
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        -20.0,
+        0.0,
+        0.2,
+        0.0
+      ],
+      "bits": [
+        1110704128,
+        3248488448,
+        0,
+        1045220557,
+        0
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        -20.0,
+        0.0,
+        0.2,
+        0.3
+      ],
+      "bits": [
+        1110704128,
+        3248488448,
+        0,
+        1045220557,
+        1050253722
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        -20.0,
+        0.0,
+        0.2,
+        -1.0
+      ],
+      "bits": [
+        1110704128,
+        3248488448,
+        0,
+        1045220557,
+        3212836864
+      ],
+      "instructions": 4
+    },
+    {
+      "values": [
+        45.0,
+        -20.0,
+        0.1,
+        0.0,
+        0.0
+      ],
+      "bits": [
+        1109000192,
+        3248488448,
+        1036831949,
+        0,
+        3234856960
+      ],
+      "instructions": 28
+    },
+    {
+      "values": [
+        45.0,
+        -20.0,
+        0.1,
+        0.0,
+        0.3
+      ],
+      "bits": [
+        1109078835,
+        3248488448,
+        1036831949,
+        0,
+        3234227814
+      ],
+      "instructions": 28
+    },
+    {
+      "values": [
+        45.0,
+        -20.0,
+        0.1,
+        0.0,
+        -1.0
+      ],
+      "bits": [
+        1108738048,
+        3248488448,
+        1036831949,
+        0,
+        3236954112
+      ],
+      "instructions": 28
+    },
+    {
+      "values": [
+        45.0,
+        -20.0,
+        0.1,
+        0.2,
+        0.0
+      ],
+      "bits": [
+        1109000192,
+        3248488448,
+        1036831949,
+        1045220557,
+        3234856960
+      ],
+      "instructions": 28
+    },
+    {
+      "values": [
+        45.0,
+        -20.0,
+        0.1,
+        0.2,
+        0.3
+      ],
+      "bits": [
+        1109063107,
+        3248488448,
+        1036831949,
+        1045220557,
+        3234353643
+      ],
+      "instructions": 28
+    },
+    {
+      "values": [
+        45.0,
+        -20.0,
+        0.1,
+        0.2,
+        -1.0
+      ],
+      "bits": [
+        1108790477,
+        3248488448,
+        1036831949,
+        1045220557,
+        3236534682
+      ],
+      "instructions": 28
+    },
+    {
+      "values": [
+        45.0,
+        -20.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "bits": [
+        3248488448,
+        3248488448,
+        1065353216,
+        0,
+        3263299584
+      ],
+      "instructions": 28
+    },
+    {
+      "values": [
+        45.0,
+        -20.0,
+        1.0,
+        0.0,
+        0.3
+      ],
+      "bits": [
+        3248331160,
+        3248488448,
+        1065353216,
+        0,
+        3263260262
+      ],
+      "instructions": 28
+    },
+    {
+      "values": [
+        45.0,
+        -20.0,
+        1.0,
+        0.0,
+        -1.0
+      ],
+      "bits": [
+        3249012736,
+        3248488448,
+        1065353216,
+        0,
+        3263430656
+      ],
+      "instructions": 28
+    },
+    {
+      "values": [
+        45.0,
+        -20.0,
+        1.0,
+        0.2,
+        0.0
+      ],
+      "bits": [
+        3248488448,
+        3248488448,
+        1065353216,
+        1045220557,
+        3263299584
+      ],
+      "instructions": 28
+    },
+    {
+      "values": [
+        45.0,
+        -20.0,
+        1.0,
+        0.2,
+        0.3
+      ],
+      "bits": [
+        3248362616,
+        3248488448,
+        1065353216,
+        1045220557,
+        3263268126
+      ],
+      "instructions": 28
+    },
+    {
+      "values": [
+        45.0,
+        -20.0,
+        1.0,
+        0.2,
+        -1.0
+      ],
+      "bits": [
+        3248907880,
+        3248488448,
+        1065353216,
+        1045220557,
+        3263404442
+      ],
+      "instructions": 28
+    }
+  ],
+  "clock": [
+    {
+      "values": [
+        0.125,
+        -1.0,
+        -0.25
+      ],
+      "previous": 7,
+      "delta": 0.0,
+      "bits": [
+        1040187392,
+        3212836864,
+        3196059648
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        -1.0,
+        -0.25
+      ],
+      "previous": 7,
+      "delta": 0.03333333507180214,
+      "bits": [
+        1040187392,
+        3212836864,
+        3196059648
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        -1.0,
+        -0.25
+      ],
+      "previous": 7,
+      "delta": 0.25,
+      "bits": [
+        1040187392,
+        3212836864,
+        3196059648
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        -1.0,
+        -0.25
+      ],
+      "previous": 7,
+      "delta": 2.0,
+      "bits": [
+        1040187392,
+        3212836864,
+        3196059648
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        -1.0,
+        0.0
+      ],
+      "previous": 7,
+      "delta": 0.0,
+      "bits": [
+        1040187392,
+        3212836864,
+        0
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        -1.0,
+        0.0
+      ],
+      "previous": 7,
+      "delta": 0.03333333507180214,
+      "bits": [
+        1040187392,
+        3212836864,
+        0
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        -1.0,
+        0.0
+      ],
+      "previous": 7,
+      "delta": 0.25,
+      "bits": [
+        1040187392,
+        3212836864,
+        0
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        -1.0,
+        0.0
+      ],
+      "previous": 7,
+      "delta": 2.0,
+      "bits": [
+        1040187392,
+        3212836864,
+        0
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        -1.0,
+        0.25
+      ],
+      "previous": 7,
+      "delta": 0.0,
+      "bits": [
+        1040187392,
+        3212836864,
+        1048576000
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        -1.0,
+        0.25
+      ],
+      "previous": 7,
+      "delta": 0.03333333507180214,
+      "bits": [
+        1040187392,
+        3212836864,
+        1048576000
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        -1.0,
+        0.25
+      ],
+      "previous": 7,
+      "delta": 0.25,
+      "bits": [
+        1040187392,
+        3212836864,
+        1048576000
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        -1.0,
+        0.25
+      ],
+      "previous": 7,
+      "delta": 2.0,
+      "bits": [
+        1040187392,
+        3212836864,
+        1048576000
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        -1.0,
+        1.0
+      ],
+      "previous": 7,
+      "delta": 0.0,
+      "bits": [
+        1040187392,
+        3212836864,
+        1065353216
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        -1.0,
+        1.0
+      ],
+      "previous": 7,
+      "delta": 0.03333333507180214,
+      "bits": [
+        1040187392,
+        3212836864,
+        1065353216
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        -1.0,
+        1.0
+      ],
+      "previous": 7,
+      "delta": 0.25,
+      "bits": [
+        1040187392,
+        3212836864,
+        1065353216
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        -1.0,
+        1.0
+      ],
+      "previous": 7,
+      "delta": 2.0,
+      "bits": [
+        1040187392,
+        3212836864,
+        1065353216
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        0.0,
+        -0.25
+      ],
+      "previous": 7,
+      "delta": 0.0,
+      "bits": [
+        1040187392,
+        0,
+        3196059648
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        0.0,
+        -0.25
+      ],
+      "previous": 7,
+      "delta": 0.03333333507180214,
+      "bits": [
+        1040187392,
+        0,
+        3196059648
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        0.0,
+        -0.25
+      ],
+      "previous": 7,
+      "delta": 0.25,
+      "bits": [
+        1040187392,
+        0,
+        3196059648
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        0.0,
+        -0.25
+      ],
+      "previous": 7,
+      "delta": 2.0,
+      "bits": [
+        1040187392,
+        0,
+        3196059648
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        0.0,
+        0.0
+      ],
+      "previous": 7,
+      "delta": 0.0,
+      "bits": [
+        1040187392,
+        0,
+        0
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        0.0,
+        0.0
+      ],
+      "previous": 7,
+      "delta": 0.03333333507180214,
+      "bits": [
+        1040187392,
+        0,
+        0
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        0.0,
+        0.0
+      ],
+      "previous": 7,
+      "delta": 0.25,
+      "bits": [
+        1040187392,
+        0,
+        0
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        0.0,
+        0.0
+      ],
+      "previous": 7,
+      "delta": 2.0,
+      "bits": [
+        1040187392,
+        0,
+        0
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        0.0,
+        0.25
+      ],
+      "previous": 7,
+      "delta": 0.0,
+      "bits": [
+        1040187392,
+        0,
+        1048576000
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        0.0,
+        0.25
+      ],
+      "previous": 7,
+      "delta": 0.03333333507180214,
+      "bits": [
+        1040187392,
+        0,
+        1048576000
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        0.0,
+        0.25
+      ],
+      "previous": 7,
+      "delta": 0.25,
+      "bits": [
+        1040187392,
+        0,
+        1048576000
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        0.0,
+        0.25
+      ],
+      "previous": 7,
+      "delta": 2.0,
+      "bits": [
+        1040187392,
+        0,
+        1048576000
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        0.0,
+        1.0
+      ],
+      "previous": 7,
+      "delta": 0.0,
+      "bits": [
+        1040187392,
+        0,
+        1065353216
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        0.0,
+        1.0
+      ],
+      "previous": 7,
+      "delta": 0.03333333507180214,
+      "bits": [
+        1040187392,
+        0,
+        1065353216
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        0.0,
+        1.0
+      ],
+      "previous": 7,
+      "delta": 0.25,
+      "bits": [
+        1040187392,
+        0,
+        1065353216
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        0.0,
+        1.0
+      ],
+      "previous": 7,
+      "delta": 2.0,
+      "bits": [
+        1040187392,
+        0,
+        1065353216
+      ],
+      "previous_bits": 7,
+      "instructions": 6
+    },
+    {
+      "values": [
+        0.125,
+        0.5,
+        -0.25
+      ],
+      "previous": 7,
+      "delta": 0.0,
+      "bits": [
+        3204448256,
+        1056964608,
+        3196059648
+      ],
+      "previous_bits": 7,
+      "instructions": 27
+    },
+    {
+      "values": [
+        0.125,
+        0.5,
+        -0.25
+      ],
+      "previous": 7,
+      "delta": 0.03333333507180214,
+      "bits": [
+        3199471015,
+        1056964608,
+        3191082407
+      ],
+      "previous_bits": 7,
+      "instructions": 27
+    },
+    {
+      "values": [
+        0.125,
+        0.5,
+        -0.25
+      ],
+      "previous": 7,
+      "delta": 0.25,
+      "bits": [
+        1058852044,
+        1056964608,
+        1050463436
+      ],
+      "previous_bits": 7,
+      "instructions": 27
+    },
+    {
+      "values": [
+        0.125,
+        0.5,
+        -0.25
+      ],
+      "previous": 7,
+      "delta": 2.0,
+      "bits": [
+        1065353216,
+        3212836864,
+        1082549862
+      ],
+      "previous_bits": 4294967295,
+      "instructions": 32
+    },
+    {
+      "values": [
+        0.125,
+        0.5,
+        0.0
+      ],
+      "previous": 7,
+      "delta": 0.0,
+      "bits": [
+        0,
+        1056964608,
+        0
+      ],
+      "previous_bits": 7,
+      "instructions": 27
+    },
+    {
+      "values": [
+        0.125,
+        0.5,
+        0.0
+      ],
+      "previous": 7,
+      "delta": 0.03333333507180214,
+      "bits": [
+        1036831950,
+        1056964608,
+        1028443342
+      ],
+      "previous_bits": 7,
+      "instructions": 27
+    },
+    {
+      "values": [
+        0.125,
+        0.5,
+        0.0
+      ],
+      "previous": 7,
+      "delta": 0.25,
+      "bits": [
+        1061158912,
+        1056964608,
+        1052770304
+      ],
+      "previous_bits": 7,
+      "instructions": 27
+    },
+    {
+      "values": [
+        0.125,
+        0.5,
+        0.0
+      ],
+      "previous": 7,
+      "delta": 2.0,
+      "bits": [
+        1065353216,
+        3212836864,
+        1077936128
+      ],
+      "previous_bits": 4294967295,
+      "instructions": 32
+    },
+    {
+      "values": [
+        0.125,
+        0.5,
+        0.25
+      ],
+      "previous": 7,
+      "delta": 0.0,
+      "bits": [
+        1056964608,
+        1056964608,
+        1048576000
+      ],
+      "previous_bits": 7,
+      "instructions": 27
+    },
+    {
+      "values": [
+        0.125,
+        0.5,
+        0.25
+      ],
+      "previous": 7,
+      "delta": 0.03333333507180214,
+      "bits": [
+        1057831431,
+        1056964608,
+        1049442823
+      ],
+      "previous_bits": 7,
+      "instructions": 27
+    },
+    {
+      "values": [
+        0.125,
+        0.5,
+        0.25
+      ],
+      "previous": 7,
+      "delta": 0.25,
+      "bits": [
+        1063465779,
+        1056964608,
+        1055077171
+      ],
+      "previous_bits": 7,
+      "instructions": 27
+    },
+    {
+      "values": [
+        0.125,
+        0.5,
+        0.25
+      ],
+      "previous": 7,
+      "delta": 2.0,
+      "bits": [
+        1065353216,
+        3212836864,
+        1072064102
+      ],
+      "previous_bits": 4294967295,
+      "instructions": 32
+    },
+    {
+      "values": [
+        0.125,
+        0.5,
+        1.0
+      ],
+      "previous": 7,
+      "delta": 0.0,
+      "bits": [
+        1065353216,
+        3212836864,
+        1065353216
+      ],
+      "previous_bits": 4294967295,
+      "instructions": 32
+    },
+    {
+      "values": [
+        0.125,
+        0.5,
+        1.0
+      ],
+      "previous": 7,
+      "delta": 0.03333333507180214,
+      "bits": [
+        1065353216,
+        3212836864,
+        1064570279
+      ],
+      "previous_bits": 4294967295,
+      "instructions": 32
+    },
+    {
+      "values": [
+        0.125,
+        0.5,
+        1.0
+      ],
+      "previous": 7,
+      "delta": 0.25,
+      "bits": [
+        1065353216,
+        3212836864,
+        1059481190
+      ],
+      "previous_bits": 4294967295,
+      "instructions": 32
+    },
+    {
+      "values": [
+        0.125,
+        0.5,
+        1.0
+      ],
+      "previous": 7,
+      "delta": 2.0,
+      "bits": [
+        3227936360,
+        1056964608,
+        3219547752
+      ],
+      "previous_bits": 7,
+      "instructions": 27
+    },
+    {
+      "values": [
+        0.125,
+        1.0,
+        -0.25
+      ],
+      "previous": 7,
+      "delta": 0.0,
+      "bits": [
+        3196059648,
+        1065353216,
+        3196059648
+      ],
+      "previous_bits": 7,
+      "instructions": 27
+    },
+    {
+      "values": [
+        0.125,
+        1.0,
+        -0.25
+      ],
+      "previous": 7,
+      "delta": 0.03333333507180214,
+      "bits": [
+        3191893306,
+        1065353216,
+        3191893306
+      ],
+      "previous_bits": 7,
+      "instructions": 27
+    },
+    {
+      "values": [
+        0.125,
+        1.0,
+        -0.25
+      ],
+      "previous": 7,
+      "delta": 0.25,
+      "bits": [
+        1046269132,
+        1065353216,
+        1046269132
+      ],
+      "previous_bits": 7,
+      "instructions": 27
+    },
+    {
+      "values": [
+        0.125,
+        1.0,
+        -0.25
+      ],
+      "previous": 7,
+      "delta": 2.0,
+      "bits": [
+        1065353216,
+        3212836864,
+        1079928422
+      ],
+      "previous_bits": 4294967295,
+      "instructions": 32
+    },
+    {
+      "values": [
+        0.125,
+        1.0,
+        0.0
+      ],
+      "previous": 7,
+      "delta": 0.0,
+      "bits": [
+        0,
+        1065353216,
+        0
+      ],
+      "previous_bits": 7,
+      "instructions": 27
+    },
+    {
+      "values": [
+        0.125,
+        1.0,
+        0.0
+      ],
+      "previous": 7,
+      "delta": 0.03333333507180214,
+      "bits": [
+        1028443342,
+        1065353216,
+        1028443342
+      ],
+      "previous_bits": 7,
+      "instructions": 27
+    },
+    {
+      "values": [
+        0.125,
+        1.0,
+        0.0
+      ],
+      "previous": 7,
+      "delta": 0.25,
+      "bits": [
+        1052770304,
+        1065353216,
+        1052770304
+      ],
+      "previous_bits": 7,
+      "instructions": 27
+    },
+    {
+      "values": [
+        0.125,
+        1.0,
+        0.0
+      ],
+      "previous": 7,
+      "delta": 2.0,
+      "bits": [
+        1065353216,
+        3212836864,
+        1077936128
+      ],
+      "previous_bits": 4294967295,
+      "instructions": 32
+    },
+    {
+      "values": [
+        0.125,
+        1.0,
+        0.25
+      ],
+      "previous": 7,
+      "delta": 0.0,
+      "bits": [
+        1048576000,
+        1065353216,
+        1048576000
+      ],
+      "previous_bits": 7,
+      "instructions": 27
+    },
+    {
+      "values": [
+        0.125,
+        1.0,
+        0.25
+      ],
+      "previous": 7,
+      "delta": 0.03333333507180214,
+      "bits": [
+        1049848272,
+        1065353216,
+        1049848272
+      ],
+      "previous_bits": 7,
+      "instructions": 27
+    },
+    {
+      "values": [
+        0.125,
+        1.0,
+        0.25
+      ],
+      "previous": 7,
+      "delta": 0.25,
+      "bits": [
+        1057541325,
+        1065353216,
+        1057541325
+      ],
+      "previous_bits": 7,
+      "instructions": 27
+    },
+    {
+      "values": [
+        0.125,
+        1.0,
+        0.25
+      ],
+      "previous": 7,
+      "delta": 2.0,
+      "bits": [
+        1065353216,
+        3212836864,
+        1075943834
+      ],
+      "previous_bits": 4294967295,
+      "instructions": 32
+    },
+    {
+      "values": [
+        0.125,
+        1.0,
+        1.0
+      ],
+      "previous": 7,
+      "delta": 0.0,
+      "bits": [
+        1065353216,
+        3212836864,
+        1065353216
+      ],
+      "previous_bits": 4294967295,
+      "instructions": 32
+    },
+    {
+      "values": [
+        0.125,
+        1.0,
+        1.0
+      ],
+      "previous": 7,
+      "delta": 0.03333333507180214,
+      "bits": [
+        1065353216,
+        3212836864,
+        1065367197
+      ],
+      "previous_bits": 4294967295,
+      "instructions": 32
+    },
+    {
+      "values": [
+        0.125,
+        1.0,
+        1.0
+      ],
+      "previous": 7,
+      "delta": 0.25,
+      "bits": [
+        1065353216,
+        3212836864,
+        1065458074
+      ],
+      "previous_bits": 4294967295,
+      "instructions": 32
+    },
+    {
+      "values": [
+        0.125,
+        1.0,
+        1.0
+      ],
+      "previous": 7,
+      "delta": 2.0,
+      "bits": [
+        1065353216,
+        3212836864,
+        1066192076
+      ],
+      "previous_bits": 4294967295,
+      "instructions": 32
+    }
+  ]
+}

@@ -1,0 +1,181 @@
+{
+  "source_sha256": "80fdf5ea01fdde0e0e640bb0bade4b8af6c90686ed78f51473870b734b8056cb",
+  "address": "ba2500",
+  "code_sha256": "6f3d9f8a64a5d80d986586d945f79e85bfa83c90347efc34ec5765896be78d92",
+  "cases": [
+    {
+      "input": {
+        "counter": 0,
+        "present": false,
+        "status": 1,
+        "words": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "output": {
+        "return": 0,
+        "counter": 0,
+        "calls": [
+          "acquire"
+        ],
+        "registered": null,
+        "queued": null
+      }
+    },
+    {
+      "input": {
+        "counter": 0,
+        "present": true,
+        "status": 2,
+        "words": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "output": {
+        "return": 0,
+        "counter": 1,
+        "calls": [
+          "acquire",
+          "register",
+          "release"
+        ],
+        "registered": {
+          "playing_id": 1,
+          "words": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "queued": null
+      }
+    },
+    {
+      "input": {
+        "counter": 0,
+        "present": true,
+        "status": 1,
+        "words": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "output": {
+        "return": 1,
+        "counter": 1,
+        "calls": [
+          "acquire",
+          "register",
+          "enqueue"
+        ],
+        "registered": {
+          "playing_id": 1,
+          "words": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "queued": {
+          "playing_id": 1,
+          "words": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "input": {
+        "counter": 4294967295,
+        "present": true,
+        "status": 1,
+        "words": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "output": {
+        "return": 0,
+        "counter": 0,
+        "calls": [
+          "acquire",
+          "register",
+          "enqueue"
+        ],
+        "registered": {
+          "playing_id": 0,
+          "words": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "queued": {
+          "playing_id": 0,
+          "words": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "input": {
+        "counter": 8,
+        "present": true,
+        "status": 1,
+        "words": [
+          305419896,
+          2,
+          3,
+          4
+        ]
+      },
+      "output": {
+        "return": 9,
+        "counter": 9,
+        "calls": [
+          "acquire",
+          "register",
+          "enqueue"
+        ],
+        "registered": {
+          "playing_id": 9,
+          "words": [
+            305419896,
+            2,
+            3,
+            4
+          ]
+        },
+        "queued": {
+          "playing_id": 9,
+          "words": [
+            305419896,
+            2,
+            3,
+            4
+          ]
+        }
+      }
+    }
+  ]
+}

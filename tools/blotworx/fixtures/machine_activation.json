@@ -1,0 +1,116 @@
+{
+  "dol_sha256": "994779fa2e276983efdb50f02c406568f285a82558cb5d54bbdf74651a98a920",
+  "graph_sha256": "950b36b54bd70b36ed008d93c9d1193de139aabeb22a24ecaae3151563412c1d",
+  "capture_sha256": "cd4924eaef5cd7c743e54f19302433185b95fc0ee0bfcf9ce4046d563d8572a4",
+  "limitations": "Startup scalar state snapshots only; notification ordering and pose generation not captured.",
+  "unmatched_names": [
+    "oswaldBehavior",
+    "Behavior15"
+  ],
+  "samples": [
+    {
+      "name": "MickeyBehaviorGraph",
+      "bound_start": 0,
+      "mode": 0,
+      "sync_index": -1,
+      "sync_value": null,
+      "before": {
+        "current": 0,
+        "previous": 0,
+        "time": 0.0,
+        "active": false,
+        "next_start_index": -1,
+        "reset": false,
+        "echo_next_update": false
+      },
+      "after": {
+        "current": 0,
+        "previous": 0,
+        "time": 0.0,
+        "active": true,
+        "next_start_index": -1,
+        "reset": true,
+        "echo_next_update": false
+      },
+      "object": "2:240"
+    },
+    {
+      "name": "IdleTopGraph",
+      "bound_start": 0,
+      "mode": 0,
+      "sync_index": -1,
+      "sync_value": null,
+      "before": {
+        "current": 0,
+        "previous": 0,
+        "time": 0.0,
+        "active": false,
+        "next_start_index": -1,
+        "reset": false,
+        "echo_next_update": false
+      },
+      "after": {
+        "current": 0,
+        "previous": 0,
+        "time": 0.0,
+        "active": true,
+        "next_start_index": -1,
+        "reset": true,
+        "echo_next_update": false
+      },
+      "object": "2:1728"
+    },
+    {
+      "name": "IdleWithStrafeGraph",
+      "bound_start": 0,
+      "mode": 2,
+      "sync_index": 47,
+      "sync_value": 0,
+      "before": {
+        "current": 0,
+        "previous": 0,
+        "time": 0.0,
+        "active": false,
+        "next_start_index": -1,
+        "reset": false,
+        "echo_next_update": false
+      },
+      "after": {
+        "current": 0,
+        "previous": 0,
+        "time": 0.0,
+        "active": true,
+        "next_start_index": -1,
+        "reset": true,
+        "echo_next_update": false
+      },
+      "object": "2:2816"
+    },
+    {
+      "name": "IdleGraph",
+      "bound_start": 0,
+      "mode": 0,
+      "sync_index": -1,
+      "sync_value": null,
+      "before": {
+        "current": 0,
+        "previous": 0,
+        "time": 0.0,
+        "active": false,
+        "next_start_index": -1,
+        "reset": false,
+        "echo_next_update": false
+      },
+      "after": {
+        "current": 0,
+        "previous": 0,
+        "time": 0.0,
+        "active": true,
+        "next_start_index": -1,
+        "reset": true,
+        "echo_next_update": false
+      },
+      "object": "2:3296"
+    }
+  ]
+}

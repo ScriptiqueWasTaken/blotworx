@@ -1,0 +1,7923 @@
+{
+  "scope": "Original pathfinder1956e0 and goto1c1f50 binding instructions.\nWorld/owner service lookup and allocation are supplied boundaries.\nTraversal lookup47c850, inline writes, radius squaring and action initialization\nexecute; no pathfinding executes.\n",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "dol_sha256": "994779fa2e276983efdb50f02c406568f285a82558cb5d54bbdf74651a98a920",
+  "cases": [
+    {
+      "input": {
+        "op": "base",
+        "world": false,
+        "owner": false,
+        "service": false,
+        "id": 0,
+        "switch_world": false
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": false,
+        "owner": false,
+        "service": false,
+        "id": 0,
+        "switch_world": true
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": false,
+        "owner": false,
+        "service": false,
+        "id": 7,
+        "switch_world": false
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": false,
+        "owner": false,
+        "service": false,
+        "id": 7,
+        "switch_world": true
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": false,
+        "owner": false,
+        "service": false,
+        "id": 4294967295,
+        "switch_world": false
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": false,
+        "owner": false,
+        "service": false,
+        "id": 4294967295,
+        "switch_world": true
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": false,
+        "owner": false,
+        "service": true,
+        "id": 0,
+        "switch_world": false
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": false,
+        "owner": false,
+        "service": true,
+        "id": 0,
+        "switch_world": true
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": false,
+        "owner": false,
+        "service": true,
+        "id": 7,
+        "switch_world": false
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": false,
+        "owner": false,
+        "service": true,
+        "id": 7,
+        "switch_world": true
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": false,
+        "owner": false,
+        "service": true,
+        "id": 4294967295,
+        "switch_world": false
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": false,
+        "owner": false,
+        "service": true,
+        "id": 4294967295,
+        "switch_world": true
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": false,
+        "owner": true,
+        "service": false,
+        "id": 0,
+        "switch_world": false
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": false,
+        "owner": true,
+        "service": false,
+        "id": 0,
+        "switch_world": true
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": false,
+        "owner": true,
+        "service": false,
+        "id": 7,
+        "switch_world": false
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": false,
+        "owner": true,
+        "service": false,
+        "id": 7,
+        "switch_world": true
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": false,
+        "owner": true,
+        "service": false,
+        "id": 4294967295,
+        "switch_world": false
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": false,
+        "owner": true,
+        "service": false,
+        "id": 4294967295,
+        "switch_world": true
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": false,
+        "owner": true,
+        "service": true,
+        "id": 0,
+        "switch_world": false
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": false,
+        "owner": true,
+        "service": true,
+        "id": 0,
+        "switch_world": true
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": false,
+        "owner": true,
+        "service": true,
+        "id": 7,
+        "switch_world": false
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": false,
+        "owner": true,
+        "service": true,
+        "id": 7,
+        "switch_world": true
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": false,
+        "owner": true,
+        "service": true,
+        "id": 4294967295,
+        "switch_world": false
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": false,
+        "owner": true,
+        "service": true,
+        "id": 4294967295,
+        "switch_world": true
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": true,
+        "owner": false,
+        "service": false,
+        "id": 0,
+        "switch_world": false
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 27
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": true,
+        "owner": false,
+        "service": false,
+        "id": 0,
+        "switch_world": true
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 27
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": true,
+        "owner": false,
+        "service": false,
+        "id": 7,
+        "switch_world": false
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 27
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": true,
+        "owner": false,
+        "service": false,
+        "id": 7,
+        "switch_world": true
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 27
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": true,
+        "owner": false,
+        "service": false,
+        "id": 4294967295,
+        "switch_world": false
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 27
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": true,
+        "owner": false,
+        "service": false,
+        "id": 4294967295,
+        "switch_world": true
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 27
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": true,
+        "owner": false,
+        "service": true,
+        "id": 0,
+        "switch_world": false
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 27
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": true,
+        "owner": false,
+        "service": true,
+        "id": 0,
+        "switch_world": true
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 27
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": true,
+        "owner": false,
+        "service": true,
+        "id": 7,
+        "switch_world": false
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 27
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": true,
+        "owner": false,
+        "service": true,
+        "id": 7,
+        "switch_world": true
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 27
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": true,
+        "owner": false,
+        "service": true,
+        "id": 4294967295,
+        "switch_world": false
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 27
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": true,
+        "owner": false,
+        "service": true,
+        "id": 4294967295,
+        "switch_world": true
+      },
+      "trace": [
+        [
+          "world"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 27
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": true,
+        "owner": true,
+        "service": false,
+        "id": 0,
+        "switch_world": false
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ]
+      ],
+      "traversal_id": 0,
+      "world_service": 11,
+      "owner_service": null,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": true,
+      "instructions": 486
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": true,
+        "owner": true,
+        "service": false,
+        "id": 0,
+        "switch_world": true
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          10,
+          "GotoTraversal"
+        ]
+      ],
+      "traversal_id": 0,
+      "world_service": 10,
+      "owner_service": null,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": true,
+      "instructions": 486
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": true,
+        "owner": true,
+        "service": false,
+        "id": 7,
+        "switch_world": false
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 11,
+      "owner_service": null,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": true,
+      "instructions": 794
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": true,
+        "owner": true,
+        "service": false,
+        "id": 7,
+        "switch_world": true
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          10,
+          "GotoTraversal"
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 10,
+      "owner_service": null,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": true,
+      "instructions": 794
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": true,
+        "owner": true,
+        "service": false,
+        "id": 4294967295,
+        "switch_world": false
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": null,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 418
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": true,
+        "owner": true,
+        "service": false,
+        "id": 4294967295,
+        "switch_world": true
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          10,
+          "GotoTraversal"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 10,
+      "owner_service": null,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 418
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": true,
+        "owner": true,
+        "service": true,
+        "id": 0,
+        "switch_world": false
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ]
+      ],
+      "traversal_id": 0,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": true,
+      "instructions": 486
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": true,
+        "owner": true,
+        "service": true,
+        "id": 0,
+        "switch_world": true
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          10,
+          "GotoTraversal"
+        ]
+      ],
+      "traversal_id": 0,
+      "world_service": 10,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": true,
+      "instructions": 486
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": true,
+        "owner": true,
+        "service": true,
+        "id": 7,
+        "switch_world": false
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": true,
+      "instructions": 794
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": true,
+        "owner": true,
+        "service": true,
+        "id": 7,
+        "switch_world": true
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          10,
+          "GotoTraversal"
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 10,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": true,
+      "instructions": 794
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": true,
+        "owner": true,
+        "service": true,
+        "id": 4294967295,
+        "switch_world": false
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 418
+    },
+    {
+      "input": {
+        "op": "base",
+        "world": true,
+        "owner": true,
+        "service": true,
+        "id": 4294967295,
+        "switch_world": true
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          10,
+          "GotoTraversal"
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 10,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1091567616,
+      "action": null,
+      "result": false,
+      "instructions": 418
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 7,
+        "action": false,
+        "hook": false,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 72
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 7,
+        "action": false,
+        "hook": false,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 72
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 7,
+        "action": false,
+        "hook": false,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 72
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 7,
+        "action": false,
+        "hook": false,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 72
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 7,
+        "action": false,
+        "hook": true,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 77
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 7,
+        "action": false,
+        "hook": true,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 77
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 7,
+        "action": false,
+        "hook": true,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 77
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 7,
+        "action": false,
+        "hook": true,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 77
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 7,
+        "action": true,
+        "hook": false,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 94
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 7,
+        "action": true,
+        "hook": false,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 94
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 7,
+        "action": true,
+        "hook": false,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 94
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 7,
+        "action": true,
+        "hook": false,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 94
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 7,
+        "action": true,
+        "hook": true,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 99
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 7,
+        "action": true,
+        "hook": true,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 99
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 7,
+        "action": true,
+        "hook": true,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 99
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 7,
+        "action": true,
+        "hook": true,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 99
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 4294967295,
+        "action": false,
+        "hook": false,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 72
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 4294967295,
+        "action": false,
+        "hook": false,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 72
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 4294967295,
+        "action": false,
+        "hook": false,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 72
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 4294967295,
+        "action": false,
+        "hook": false,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 72
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 4294967295,
+        "action": false,
+        "hook": true,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 77
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 4294967295,
+        "action": false,
+        "hook": true,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 77
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 4294967295,
+        "action": false,
+        "hook": true,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 77
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 4294967295,
+        "action": false,
+        "hook": true,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 77
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 4294967295,
+        "action": true,
+        "hook": false,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 94
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 4294967295,
+        "action": true,
+        "hook": false,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 94
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 4294967295,
+        "action": true,
+        "hook": false,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 94
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 4294967295,
+        "action": true,
+        "hook": false,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 94
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 4294967295,
+        "action": true,
+        "hook": true,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 99
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 4294967295,
+        "action": true,
+        "hook": true,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 99
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 4294967295,
+        "action": true,
+        "hook": true,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 99
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": false,
+        "id": 4294967295,
+        "action": true,
+        "hook": true,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 99
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 7,
+        "action": false,
+        "hook": false,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 72
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 7,
+        "action": false,
+        "hook": false,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 72
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 7,
+        "action": false,
+        "hook": false,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 72
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 7,
+        "action": false,
+        "hook": false,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 72
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 7,
+        "action": false,
+        "hook": true,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 77
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 7,
+        "action": false,
+        "hook": true,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 77
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 7,
+        "action": false,
+        "hook": true,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 77
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 7,
+        "action": false,
+        "hook": true,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 77
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 7,
+        "action": true,
+        "hook": false,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 94
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 7,
+        "action": true,
+        "hook": false,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 94
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 7,
+        "action": true,
+        "hook": false,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 94
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 7,
+        "action": true,
+        "hook": false,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 94
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 7,
+        "action": true,
+        "hook": true,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 99
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 7,
+        "action": true,
+        "hook": true,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 99
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 7,
+        "action": true,
+        "hook": true,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 99
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 7,
+        "action": true,
+        "hook": true,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 99
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 4294967295,
+        "action": false,
+        "hook": false,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 72
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 4294967295,
+        "action": false,
+        "hook": false,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 72
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 4294967295,
+        "action": false,
+        "hook": false,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 72
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 4294967295,
+        "action": false,
+        "hook": false,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 72
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 4294967295,
+        "action": false,
+        "hook": true,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 77
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 4294967295,
+        "action": false,
+        "hook": true,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 77
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 4294967295,
+        "action": false,
+        "hook": true,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 77
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 4294967295,
+        "action": false,
+        "hook": true,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 77
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 4294967295,
+        "action": true,
+        "hook": false,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 94
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 4294967295,
+        "action": true,
+        "hook": false,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 94
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 4294967295,
+        "action": true,
+        "hook": false,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 94
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 4294967295,
+        "action": true,
+        "hook": false,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 94
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 4294967295,
+        "action": true,
+        "hook": true,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 99
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 4294967295,
+        "action": true,
+        "hook": true,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 99
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 4294967295,
+        "action": true,
+        "hook": true,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 99
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": false,
+        "owner": true,
+        "id": 4294967295,
+        "action": true,
+        "hook": true,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": null,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 99
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 7,
+        "action": false,
+        "hook": false,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 74
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 7,
+        "action": false,
+        "hook": false,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 74
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 7,
+        "action": false,
+        "hook": false,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 74
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 7,
+        "action": false,
+        "hook": false,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 74
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 7,
+        "action": false,
+        "hook": true,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 79
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 7,
+        "action": false,
+        "hook": true,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 79
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 7,
+        "action": false,
+        "hook": true,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 79
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 7,
+        "action": false,
+        "hook": true,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 79
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 7,
+        "action": true,
+        "hook": false,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 96
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 7,
+        "action": true,
+        "hook": false,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 96
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 7,
+        "action": true,
+        "hook": false,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 96
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 7,
+        "action": true,
+        "hook": false,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 96
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 7,
+        "action": true,
+        "hook": true,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 101
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 7,
+        "action": true,
+        "hook": true,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 101
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 7,
+        "action": true,
+        "hook": true,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 101
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 7,
+        "action": true,
+        "hook": true,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 101
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 4294967295,
+        "action": false,
+        "hook": false,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 74
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 4294967295,
+        "action": false,
+        "hook": false,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 74
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 4294967295,
+        "action": false,
+        "hook": false,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 74
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 4294967295,
+        "action": false,
+        "hook": false,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 74
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 4294967295,
+        "action": false,
+        "hook": true,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 79
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 4294967295,
+        "action": false,
+        "hook": true,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 79
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 4294967295,
+        "action": false,
+        "hook": true,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 79
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 4294967295,
+        "action": false,
+        "hook": true,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 79
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 4294967295,
+        "action": true,
+        "hook": false,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 96
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 4294967295,
+        "action": true,
+        "hook": false,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 96
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 4294967295,
+        "action": true,
+        "hook": false,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 96
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 4294967295,
+        "action": true,
+        "hook": false,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 96
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 4294967295,
+        "action": true,
+        "hook": true,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 101
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 4294967295,
+        "action": true,
+        "hook": true,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 101
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 4294967295,
+        "action": true,
+        "hook": true,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 101
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": false,
+        "id": 4294967295,
+        "action": true,
+        "hook": true,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 99,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 101
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 7,
+        "action": false,
+        "hook": false,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "buffer_size",
+          21
+        ],
+        [
+          "allocate",
+          32
+        ],
+        [
+          "store_buffer_size",
+          88,
+          32
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": false,
+      "squared_limit": 0,
+      "action": null,
+      "result": false,
+      "instructions": 862
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 7,
+        "action": false,
+        "hook": false,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "buffer_size",
+          21
+        ],
+        [
+          "allocate",
+          32
+        ],
+        [
+          "store_buffer_size",
+          88,
+          32
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": false,
+      "squared_limit": 1048576000,
+      "action": null,
+      "result": false,
+      "instructions": 862
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 7,
+        "action": false,
+        "hook": false,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "buffer_size",
+          21
+        ],
+        [
+          "allocate",
+          32
+        ],
+        [
+          "store_buffer_size",
+          88,
+          32
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": false,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 862
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 7,
+        "action": false,
+        "hook": false,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "buffer_size",
+          21
+        ],
+        [
+          "allocate",
+          32
+        ],
+        [
+          "store_buffer_size",
+          88,
+          32
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": false,
+      "squared_limit": 2143363909,
+      "action": null,
+      "result": false,
+      "instructions": 862
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 7,
+        "action": false,
+        "hook": true,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "buffer_size",
+          21
+        ],
+        [
+          "allocate",
+          32
+        ],
+        [
+          "allocation_hook",
+          88,
+          32,
+          123
+        ],
+        [
+          "store_buffer_size",
+          88,
+          32
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": false,
+      "squared_limit": 0,
+      "action": null,
+      "result": false,
+      "instructions": 872
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 7,
+        "action": false,
+        "hook": true,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "buffer_size",
+          21
+        ],
+        [
+          "allocate",
+          32
+        ],
+        [
+          "allocation_hook",
+          88,
+          32,
+          123
+        ],
+        [
+          "store_buffer_size",
+          88,
+          32
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": false,
+      "squared_limit": 1048576000,
+      "action": null,
+      "result": false,
+      "instructions": 872
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 7,
+        "action": false,
+        "hook": true,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "buffer_size",
+          21
+        ],
+        [
+          "allocate",
+          32
+        ],
+        [
+          "allocation_hook",
+          88,
+          32,
+          123
+        ],
+        [
+          "store_buffer_size",
+          88,
+          32
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": false,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 872
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 7,
+        "action": false,
+        "hook": true,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "buffer_size",
+          21
+        ],
+        [
+          "allocate",
+          32
+        ],
+        [
+          "allocation_hook",
+          88,
+          32,
+          123
+        ],
+        [
+          "store_buffer_size",
+          88,
+          32
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": false,
+      "squared_limit": 2143363909,
+      "action": null,
+      "result": false,
+      "instructions": 872
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 7,
+        "action": true,
+        "hook": false,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "buffer_size",
+          21
+        ],
+        [
+          "allocate",
+          32
+        ],
+        [
+          "store_buffer_size",
+          88,
+          32
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": false,
+      "squared_limit": 0,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": true,
+      "instructions": 884
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 7,
+        "action": true,
+        "hook": false,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "buffer_size",
+          21
+        ],
+        [
+          "allocate",
+          32
+        ],
+        [
+          "store_buffer_size",
+          88,
+          32
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": false,
+      "squared_limit": 1048576000,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": true,
+      "instructions": 884
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 7,
+        "action": true,
+        "hook": false,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "buffer_size",
+          21
+        ],
+        [
+          "allocate",
+          32
+        ],
+        [
+          "store_buffer_size",
+          88,
+          32
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": false,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": true,
+      "instructions": 884
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 7,
+        "action": true,
+        "hook": false,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "buffer_size",
+          21
+        ],
+        [
+          "allocate",
+          32
+        ],
+        [
+          "store_buffer_size",
+          88,
+          32
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": false,
+      "squared_limit": 2143363909,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": true,
+      "instructions": 884
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 7,
+        "action": true,
+        "hook": true,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "buffer_size",
+          21
+        ],
+        [
+          "allocate",
+          32
+        ],
+        [
+          "allocation_hook",
+          88,
+          32,
+          123
+        ],
+        [
+          "store_buffer_size",
+          88,
+          32
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": false,
+      "squared_limit": 0,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": true,
+      "instructions": 894
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 7,
+        "action": true,
+        "hook": true,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "buffer_size",
+          21
+        ],
+        [
+          "allocate",
+          32
+        ],
+        [
+          "allocation_hook",
+          88,
+          32,
+          123
+        ],
+        [
+          "store_buffer_size",
+          88,
+          32
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": false,
+      "squared_limit": 1048576000,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": true,
+      "instructions": 894
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 7,
+        "action": true,
+        "hook": true,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "buffer_size",
+          21
+        ],
+        [
+          "allocate",
+          32
+        ],
+        [
+          "allocation_hook",
+          88,
+          32,
+          123
+        ],
+        [
+          "store_buffer_size",
+          88,
+          32
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": false,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": true,
+      "instructions": 894
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 7,
+        "action": true,
+        "hook": true,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "buffer_size",
+          21
+        ],
+        [
+          "allocate",
+          32
+        ],
+        [
+          "allocation_hook",
+          88,
+          32,
+          123
+        ],
+        [
+          "store_buffer_size",
+          88,
+          32
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": false,
+      "squared_limit": 2143363909,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": true,
+      "instructions": 894
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 4294967295,
+        "action": false,
+        "hook": false,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 0,
+      "action": null,
+      "result": false,
+      "instructions": 465
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 4294967295,
+        "action": false,
+        "hook": false,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1048576000,
+      "action": null,
+      "result": false,
+      "instructions": 465
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 4294967295,
+        "action": false,
+        "hook": false,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 465
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 4294967295,
+        "action": false,
+        "hook": false,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 2143363909,
+      "action": null,
+      "result": false,
+      "instructions": 465
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 4294967295,
+        "action": false,
+        "hook": true,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 0,
+      "action": null,
+      "result": false,
+      "instructions": 470
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 4294967295,
+        "action": false,
+        "hook": true,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1048576000,
+      "action": null,
+      "result": false,
+      "instructions": 470
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 4294967295,
+        "action": false,
+        "hook": true,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": null,
+      "result": false,
+      "instructions": 470
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 4294967295,
+        "action": false,
+        "hook": true,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          null,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 2143363909,
+      "action": null,
+      "result": false,
+      "instructions": 470
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 4294967295,
+        "action": true,
+        "hook": false,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 0,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 487
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 4294967295,
+        "action": true,
+        "hook": false,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1048576000,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 487
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 4294967295,
+        "action": true,
+        "hook": false,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 487
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 4294967295,
+        "action": true,
+        "hook": false,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 2143363909,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 487
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 4294967295,
+        "action": true,
+        "hook": true,
+        "radius": 0
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 0,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 492
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 4294967295,
+        "action": true,
+        "hook": true,
+        "radius": 1056964608
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1048576000,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 492
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 4294967295,
+        "action": true,
+        "hook": true,
+        "radius": 3221225472
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 492
+    },
+    {
+      "input": {
+        "op": "goto",
+        "world": true,
+        "owner": true,
+        "id": 4294967295,
+        "action": true,
+        "hook": true,
+        "radius": 2143363909
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 77,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": true,
+      "squared_limit": 2143363909,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": false,
+      "instructions": 492
+    },
+    {
+      "input": {
+        "op": "goto",
+        "size": 24,
+        "switch_service": false,
+        "hook": false
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "buffer_size",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "store_buffer_size",
+          88,
+          24
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": false,
+      "squared_limit": 1048576000,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": true,
+      "instructions": 884
+    },
+    {
+      "input": {
+        "op": "goto",
+        "size": 24,
+        "switch_service": false,
+        "hook": true
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "buffer_size",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          88,
+          24,
+          123
+        ],
+        [
+          "store_buffer_size",
+          88,
+          24
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": false,
+      "squared_limit": 1048576000,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": true,
+      "instructions": 894
+    },
+    {
+      "input": {
+        "op": "goto",
+        "size": 24,
+        "switch_service": true,
+        "hook": false
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "buffer_size",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "store_buffer_size",
+          88,
+          24
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": false,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": true,
+      "instructions": 884
+    },
+    {
+      "input": {
+        "op": "goto",
+        "size": 24,
+        "switch_service": true,
+        "hook": true
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "buffer_size",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          88,
+          24,
+          123
+        ],
+        [
+          "store_buffer_size",
+          88,
+          24
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": false,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": true,
+      "instructions": 894
+    },
+    {
+      "input": {
+        "op": "goto",
+        "size": 64,
+        "switch_service": false,
+        "hook": false
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "buffer_size",
+          21
+        ],
+        [
+          "allocate",
+          64
+        ],
+        [
+          "store_buffer_size",
+          88,
+          64
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": false,
+      "squared_limit": 1048576000,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": true,
+      "instructions": 884
+    },
+    {
+      "input": {
+        "op": "goto",
+        "size": 64,
+        "switch_service": false,
+        "hook": true
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "buffer_size",
+          21
+        ],
+        [
+          "allocate",
+          64
+        ],
+        [
+          "allocation_hook",
+          88,
+          64,
+          123
+        ],
+        [
+          "store_buffer_size",
+          88,
+          64
+        ],
+        [
+          "radius",
+          21
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 11,
+      "owner_service": 21,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": false,
+      "squared_limit": 1048576000,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": true,
+      "instructions": 894
+    },
+    {
+      "input": {
+        "op": "goto",
+        "size": 64,
+        "switch_service": true,
+        "hook": false
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "buffer_size",
+          21
+        ],
+        [
+          "allocate",
+          64
+        ],
+        [
+          "store_buffer_size",
+          88,
+          64
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": false,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": true,
+      "instructions": 884
+    },
+    {
+      "input": {
+        "op": "goto",
+        "size": 64,
+        "switch_service": true,
+        "hook": true
+      },
+      "trace": [
+        [
+          "world"
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "owner_field",
+          7
+        ],
+        [
+          "traversal",
+          11,
+          "GotoTraversal"
+        ],
+        [
+          "buffer_size",
+          21
+        ],
+        [
+          "allocate",
+          64
+        ],
+        [
+          "allocation_hook",
+          88,
+          64,
+          123
+        ],
+        [
+          "store_buffer_size",
+          88,
+          64
+        ],
+        [
+          "radius",
+          20
+        ],
+        [
+          "allocate",
+          24
+        ],
+        [
+          "allocation_hook",
+          89,
+          24,
+          123
+        ]
+      ],
+      "traversal_id": 7,
+      "world_service": 11,
+      "owner_service": 20,
+      "owner_field_40": 305419896,
+      "buffer": 88,
+      "flag_8a4": false,
+      "squared_limit": 1082130432,
+      "action": {
+        "allocation": 89,
+        "references": 0,
+        "vector": [
+          0,
+          0,
+          0
+        ],
+        "scalar": 0
+      },
+      "result": true,
+      "instructions": 894
+    }
+  ]
+}

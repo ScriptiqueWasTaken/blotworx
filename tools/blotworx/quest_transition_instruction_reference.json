@@ -1,0 +1,400 @@
+{
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "routines": [
+    "REL244d68",
+    "REL244f64",
+    "REL24506c"
+  ],
+  "notification_callback": "REL244de4 intercepted and recorded; UI execution not validated",
+  "cases": [
+    {
+      "mode": "silent",
+      "quest": -1,
+      "state": 20,
+      "initial_current": 65535,
+      "result": null,
+      "slots": [
+        [
+          65535,
+          128
+        ],
+        [
+          65535,
+          0
+        ],
+        [
+          65535,
+          0
+        ]
+      ],
+      "notifications": [],
+      "steps": 17
+    },
+    {
+      "mode": "silent",
+      "quest": 3,
+      "state": 20,
+      "initial_current": 65535,
+      "result": null,
+      "slots": [
+        [
+          65535,
+          128
+        ],
+        [
+          65535,
+          0
+        ],
+        [
+          65535,
+          0
+        ]
+      ],
+      "notifications": [],
+      "steps": 20
+    },
+    {
+      "mode": "silent",
+      "quest": 1,
+      "state": 20,
+      "initial_current": 65535,
+      "result": null,
+      "slots": [
+        [
+          65535,
+          128
+        ],
+        [
+          65535,
+          1
+        ],
+        [
+          65535,
+          0
+        ]
+      ],
+      "notifications": [],
+      "steps": 29
+    },
+    {
+      "mode": "silent",
+      "quest": 0,
+      "state": 20,
+      "initial_current": 65535,
+      "result": null,
+      "slots": [
+        [
+          20,
+          1
+        ],
+        [
+          65535,
+          0
+        ],
+        [
+          65535,
+          0
+        ]
+      ],
+      "notifications": [],
+      "steps": 43
+    },
+    {
+      "mode": "silent",
+      "quest": 0,
+      "state": 999,
+      "initial_current": 20,
+      "result": null,
+      "slots": [
+        [
+          20,
+          1
+        ],
+        [
+          65535,
+          0
+        ],
+        [
+          65535,
+          0
+        ]
+      ],
+      "notifications": [],
+      "steps": 50
+    },
+    {
+      "mode": "silent",
+      "quest": 0,
+      "state": 20,
+      "initial_current": 20,
+      "result": null,
+      "slots": [
+        [
+          20,
+          1
+        ],
+        [
+          65535,
+          0
+        ],
+        [
+          65535,
+          0
+        ]
+      ],
+      "notifications": [],
+      "steps": 43
+    },
+    {
+      "mode": "silent",
+      "quest": 0,
+      "state": 10,
+      "initial_current": 20,
+      "result": null,
+      "slots": [
+        [
+          10,
+          1
+        ],
+        [
+          65535,
+          0
+        ],
+        [
+          65535,
+          0
+        ]
+      ],
+      "notifications": [],
+      "steps": 36
+    },
+    {
+      "mode": "silent",
+      "quest": 2,
+      "state": 0,
+      "initial_current": 65535,
+      "result": null,
+      "slots": [
+        [
+          65535,
+          128
+        ],
+        [
+          65535,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "notifications": [],
+      "steps": 36
+    },
+    {
+      "mode": "notifying",
+      "quest": -1,
+      "state": 20,
+      "initial_current": 65535,
+      "result": 0,
+      "slots": [
+        [
+          65535,
+          128
+        ],
+        [
+          65535,
+          0
+        ],
+        [
+          65535,
+          0
+        ]
+      ],
+      "notifications": [],
+      "steps": 22
+    },
+    {
+      "mode": "notifying",
+      "quest": 3,
+      "state": 20,
+      "initial_current": 65535,
+      "result": 0,
+      "slots": [
+        [
+          65535,
+          128
+        ],
+        [
+          65535,
+          0
+        ],
+        [
+          65535,
+          0
+        ]
+      ],
+      "notifications": [],
+      "steps": 25
+    },
+    {
+      "mode": "notifying",
+      "quest": 1,
+      "state": 20,
+      "initial_current": 65535,
+      "result": 0,
+      "slots": [
+        [
+          65535,
+          128
+        ],
+        [
+          65535,
+          0
+        ],
+        [
+          65535,
+          0
+        ]
+      ],
+      "notifications": [],
+      "steps": 32
+    },
+    {
+      "mode": "notifying",
+      "quest": 0,
+      "state": 20,
+      "initial_current": 65535,
+      "result": 1,
+      "slots": [
+        [
+          20,
+          128
+        ],
+        [
+          65535,
+          0
+        ],
+        [
+          65535,
+          0
+        ]
+      ],
+      "notifications": [
+        {
+          "quest": 0,
+          "state": 20,
+          "listener": 9437184,
+          "event_flag": 1
+        }
+      ],
+      "steps": 56
+    },
+    {
+      "mode": "notifying",
+      "quest": 0,
+      "state": 999,
+      "initial_current": 20,
+      "result": 0,
+      "slots": [
+        [
+          20,
+          128
+        ],
+        [
+          65535,
+          0
+        ],
+        [
+          65535,
+          0
+        ]
+      ],
+      "notifications": [],
+      "steps": 53
+    },
+    {
+      "mode": "notifying",
+      "quest": 0,
+      "state": 20,
+      "initial_current": 20,
+      "result": 0,
+      "slots": [
+        [
+          20,
+          128
+        ],
+        [
+          65535,
+          0
+        ],
+        [
+          65535,
+          0
+        ]
+      ],
+      "notifications": [],
+      "steps": 47
+    },
+    {
+      "mode": "notifying",
+      "quest": 0,
+      "state": 10,
+      "initial_current": 20,
+      "result": 1,
+      "slots": [
+        [
+          10,
+          128
+        ],
+        [
+          65535,
+          0
+        ],
+        [
+          65535,
+          0
+        ]
+      ],
+      "notifications": [
+        {
+          "quest": 0,
+          "state": 10,
+          "listener": 9437184,
+          "event_flag": 1
+        }
+      ],
+      "steps": 49
+    },
+    {
+      "mode": "notifying",
+      "quest": 2,
+      "state": 0,
+      "initial_current": 65535,
+      "result": 1,
+      "slots": [
+        [
+          65535,
+          128
+        ],
+        [
+          65535,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "notifications": [
+        {
+          "quest": 2,
+          "state": 0,
+          "listener": 9437184,
+          "event_flag": 1
+        }
+      ],
+      "steps": 49
+    }
+  ]
+}

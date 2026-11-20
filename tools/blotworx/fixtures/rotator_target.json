@@ -1,0 +1,768 @@
+{
+  "scope": "Execute EM1's position-target delta instructions3b3770..3b3828.\n\nThe reflected target getter is supplied. These cases do not execute the Lua VM,\nspeed approach, limit handling, matrix application or complete component update.\n",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "degree_bits": 1016003125,
+  "wrappers": {
+    "start": "264cf4",
+    "stop": "264e4c",
+    "instant": "264f70"
+  },
+  "cases": [
+    {
+      "angle_bits": 0,
+      "target_bits": 0,
+      "speed_bits": 1048971922,
+      "dt_bits": 1023969417,
+      "delta_bits": 0,
+      "reversed": false,
+      "instructions": 32
+    },
+    {
+      "angle_bits": 0,
+      "target_bits": 0,
+      "speed_bits": 1048971922,
+      "dt_bits": 1048576000,
+      "delta_bits": 0,
+      "reversed": false,
+      "instructions": 32
+    },
+    {
+      "angle_bits": 0,
+      "target_bits": 0,
+      "speed_bits": 1070141403,
+      "dt_bits": 1023969417,
+      "delta_bits": 0,
+      "reversed": false,
+      "instructions": 32
+    },
+    {
+      "angle_bits": 0,
+      "target_bits": 0,
+      "speed_bits": 1070141403,
+      "dt_bits": 1048576000,
+      "delta_bits": 0,
+      "reversed": false,
+      "instructions": 32
+    },
+    {
+      "angle_bits": 0,
+      "target_bits": 0,
+      "speed_bits": 1095307227,
+      "dt_bits": 1023969417,
+      "delta_bits": 0,
+      "reversed": false,
+      "instructions": 32
+    },
+    {
+      "angle_bits": 0,
+      "target_bits": 0,
+      "speed_bits": 1095307227,
+      "dt_bits": 1048576000,
+      "delta_bits": 0,
+      "reversed": false,
+      "instructions": 32
+    },
+    {
+      "angle_bits": 0,
+      "target_bits": 1070141403,
+      "speed_bits": 1048971922,
+      "dt_bits": 1023969417,
+      "delta_bits": 1007614518,
+      "reversed": false,
+      "instructions": 37
+    },
+    {
+      "angle_bits": 0,
+      "target_bits": 1070141403,
+      "speed_bits": 1048971922,
+      "dt_bits": 1048576000,
+      "delta_bits": 1032194706,
+      "reversed": false,
+      "instructions": 37
+    },
+    {
+      "angle_bits": 0,
+      "target_bits": 1070141403,
+      "speed_bits": 1070141403,
+      "dt_bits": 1023969417,
+      "delta_bits": 1029076817,
+      "reversed": false,
+      "instructions": 37
+    },
+    {
+      "angle_bits": 0,
+      "target_bits": 1070141403,
+      "speed_bits": 1070141403,
+      "dt_bits": 1048576000,
+      "delta_bits": 1053364187,
+      "reversed": false,
+      "instructions": 37
+    },
+    {
+      "angle_bits": 0,
+      "target_bits": 1070141403,
+      "speed_bits": 1095307227,
+      "dt_bits": 1023969417,
+      "delta_bits": 1054242641,
+      "reversed": false,
+      "instructions": 37
+    },
+    {
+      "angle_bits": 0,
+      "target_bits": 1070141403,
+      "speed_bits": 1095307227,
+      "dt_bits": 1048576000,
+      "delta_bits": 1070141403,
+      "reversed": false,
+      "instructions": 36
+    },
+    {
+      "angle_bits": 1070141403,
+      "target_bits": 0,
+      "speed_bits": 1048971922,
+      "dt_bits": 1023969417,
+      "delta_bits": 3155098166,
+      "reversed": true,
+      "instructions": 38
+    },
+    {
+      "angle_bits": 1070141403,
+      "target_bits": 0,
+      "speed_bits": 1048971922,
+      "dt_bits": 1048576000,
+      "delta_bits": 3179678354,
+      "reversed": true,
+      "instructions": 38
+    },
+    {
+      "angle_bits": 1070141403,
+      "target_bits": 0,
+      "speed_bits": 1070141403,
+      "dt_bits": 1023969417,
+      "delta_bits": 3176560465,
+      "reversed": true,
+      "instructions": 38
+    },
+    {
+      "angle_bits": 1070141403,
+      "target_bits": 0,
+      "speed_bits": 1070141403,
+      "dt_bits": 1048576000,
+      "delta_bits": 3200847835,
+      "reversed": true,
+      "instructions": 38
+    },
+    {
+      "angle_bits": 1070141403,
+      "target_bits": 0,
+      "speed_bits": 1095307227,
+      "dt_bits": 1023969417,
+      "delta_bits": 3201726289,
+      "reversed": true,
+      "instructions": 38
+    },
+    {
+      "angle_bits": 1070141403,
+      "target_bits": 0,
+      "speed_bits": 1095307227,
+      "dt_bits": 1048576000,
+      "delta_bits": 3217625051,
+      "reversed": true,
+      "instructions": 37
+    },
+    {
+      "angle_bits": 1086552596,
+      "target_bits": 1043511490,
+      "speed_bits": 1048971922,
+      "dt_bits": 1023969417,
+      "delta_bits": 1007614518,
+      "reversed": false,
+      "instructions": 40
+    },
+    {
+      "angle_bits": 1086552596,
+      "target_bits": 1043511490,
+      "speed_bits": 1048971922,
+      "dt_bits": 1048576000,
+      "delta_bits": 1032194706,
+      "reversed": false,
+      "instructions": 40
+    },
+    {
+      "angle_bits": 1086552596,
+      "target_bits": 1043511490,
+      "speed_bits": 1070141403,
+      "dt_bits": 1023969417,
+      "delta_bits": 1029076817,
+      "reversed": false,
+      "instructions": 40
+    },
+    {
+      "angle_bits": 1086552596,
+      "target_bits": 1043511490,
+      "speed_bits": 1070141403,
+      "dt_bits": 1048576000,
+      "delta_bits": 1051900112,
+      "reversed": false,
+      "instructions": 39
+    },
+    {
+      "angle_bits": 1086552596,
+      "target_bits": 1043511490,
+      "speed_bits": 1095307227,
+      "dt_bits": 1023969417,
+      "delta_bits": 1051900112,
+      "reversed": false,
+      "instructions": 39
+    },
+    {
+      "angle_bits": 1086552596,
+      "target_bits": 1043511490,
+      "speed_bits": 1095307227,
+      "dt_bits": 1048576000,
+      "delta_bits": 1051900112,
+      "reversed": false,
+      "instructions": 39
+    },
+    {
+      "angle_bits": 1043511490,
+      "target_bits": 1086552596,
+      "speed_bits": 1048971922,
+      "dt_bits": 1023969417,
+      "delta_bits": 3155098166,
+      "reversed": true,
+      "instructions": 41
+    },
+    {
+      "angle_bits": 1043511490,
+      "target_bits": 1086552596,
+      "speed_bits": 1048971922,
+      "dt_bits": 1048576000,
+      "delta_bits": 3179678354,
+      "reversed": true,
+      "instructions": 41
+    },
+    {
+      "angle_bits": 1043511490,
+      "target_bits": 1086552596,
+      "speed_bits": 1070141403,
+      "dt_bits": 1023969417,
+      "delta_bits": 3176560465,
+      "reversed": true,
+      "instructions": 41
+    },
+    {
+      "angle_bits": 1043511490,
+      "target_bits": 1086552596,
+      "speed_bits": 1070141403,
+      "dt_bits": 1048576000,
+      "delta_bits": 3199383760,
+      "reversed": true,
+      "instructions": 40
+    },
+    {
+      "angle_bits": 1043511490,
+      "target_bits": 1086552596,
+      "speed_bits": 1095307227,
+      "dt_bits": 1023969417,
+      "delta_bits": 3199383760,
+      "reversed": true,
+      "instructions": 40
+    },
+    {
+      "angle_bits": 1043511490,
+      "target_bits": 1086552596,
+      "speed_bits": 1095307227,
+      "dt_bits": 1048576000,
+      "delta_bits": 3199383760,
+      "reversed": true,
+      "instructions": 40
+    },
+    {
+      "angle_bits": 0,
+      "target_bits": 1078530011,
+      "speed_bits": 1048971922,
+      "dt_bits": 1023969417,
+      "delta_bits": 1007614518,
+      "reversed": false,
+      "instructions": 37
+    },
+    {
+      "angle_bits": 0,
+      "target_bits": 1078530011,
+      "speed_bits": 1048971922,
+      "dt_bits": 1048576000,
+      "delta_bits": 1032194706,
+      "reversed": false,
+      "instructions": 37
+    },
+    {
+      "angle_bits": 0,
+      "target_bits": 1078530011,
+      "speed_bits": 1070141403,
+      "dt_bits": 1023969417,
+      "delta_bits": 1029076817,
+      "reversed": false,
+      "instructions": 37
+    },
+    {
+      "angle_bits": 0,
+      "target_bits": 1078530011,
+      "speed_bits": 1070141403,
+      "dt_bits": 1048576000,
+      "delta_bits": 1053364187,
+      "reversed": false,
+      "instructions": 37
+    },
+    {
+      "angle_bits": 0,
+      "target_bits": 1078530011,
+      "speed_bits": 1095307227,
+      "dt_bits": 1023969417,
+      "delta_bits": 1054242641,
+      "reversed": false,
+      "instructions": 37
+    },
+    {
+      "angle_bits": 0,
+      "target_bits": 1078530011,
+      "speed_bits": 1095307227,
+      "dt_bits": 1048576000,
+      "delta_bits": 1078530011,
+      "reversed": false,
+      "instructions": 36
+    },
+    {
+      "angle_bits": 0,
+      "target_bits": 3226013659,
+      "speed_bits": 1048971922,
+      "dt_bits": 1023969417,
+      "delta_bits": 3155098166,
+      "reversed": true,
+      "instructions": 38
+    },
+    {
+      "angle_bits": 0,
+      "target_bits": 3226013659,
+      "speed_bits": 1048971922,
+      "dt_bits": 1048576000,
+      "delta_bits": 3179678354,
+      "reversed": true,
+      "instructions": 38
+    },
+    {
+      "angle_bits": 0,
+      "target_bits": 3226013659,
+      "speed_bits": 1070141403,
+      "dt_bits": 1023969417,
+      "delta_bits": 3176560465,
+      "reversed": true,
+      "instructions": 38
+    },
+    {
+      "angle_bits": 0,
+      "target_bits": 3226013659,
+      "speed_bits": 1070141403,
+      "dt_bits": 1048576000,
+      "delta_bits": 3200847835,
+      "reversed": true,
+      "instructions": 38
+    },
+    {
+      "angle_bits": 0,
+      "target_bits": 3226013659,
+      "speed_bits": 1095307227,
+      "dt_bits": 1023969417,
+      "delta_bits": 3201726289,
+      "reversed": true,
+      "instructions": 38
+    },
+    {
+      "angle_bits": 0,
+      "target_bits": 3226013659,
+      "speed_bits": 1095307227,
+      "dt_bits": 1048576000,
+      "delta_bits": 3226013659,
+      "reversed": true,
+      "instructions": 37
+    },
+    {
+      "angle_bits": 1086914958,
+      "target_bits": 988070792,
+      "speed_bits": 1048971922,
+      "dt_bits": 1023969417,
+      "delta_bits": 996460544,
+      "reversed": false,
+      "instructions": 39
+    },
+    {
+      "angle_bits": 1086914958,
+      "target_bits": 988070792,
+      "speed_bits": 1048971922,
+      "dt_bits": 1048576000,
+      "delta_bits": 996460544,
+      "reversed": false,
+      "instructions": 39
+    },
+    {
+      "angle_bits": 1086914958,
+      "target_bits": 988070792,
+      "speed_bits": 1070141403,
+      "dt_bits": 1023969417,
+      "delta_bits": 996460544,
+      "reversed": false,
+      "instructions": 39
+    },
+    {
+      "angle_bits": 1086914958,
+      "target_bits": 988070792,
+      "speed_bits": 1070141403,
+      "dt_bits": 1048576000,
+      "delta_bits": 996460544,
+      "reversed": false,
+      "instructions": 39
+    },
+    {
+      "angle_bits": 1086914958,
+      "target_bits": 988070792,
+      "speed_bits": 1095307227,
+      "dt_bits": 1023969417,
+      "delta_bits": 996460544,
+      "reversed": false,
+      "instructions": 39
+    },
+    {
+      "angle_bits": 1086914958,
+      "target_bits": 988070792,
+      "speed_bits": 1095307227,
+      "dt_bits": 1048576000,
+      "delta_bits": 996460544,
+      "reversed": false,
+      "instructions": 39
+    },
+    {
+      "angle_bits": 3234398606,
+      "target_bits": 3135554440,
+      "speed_bits": 1048971922,
+      "dt_bits": 1023969417,
+      "delta_bits": 3143944192,
+      "reversed": true,
+      "instructions": 40
+    },
+    {
+      "angle_bits": 3234398606,
+      "target_bits": 3135554440,
+      "speed_bits": 1048971922,
+      "dt_bits": 1048576000,
+      "delta_bits": 3143944192,
+      "reversed": true,
+      "instructions": 40
+    },
+    {
+      "angle_bits": 3234398606,
+      "target_bits": 3135554440,
+      "speed_bits": 1070141403,
+      "dt_bits": 1023969417,
+      "delta_bits": 3143944192,
+      "reversed": true,
+      "instructions": 40
+    },
+    {
+      "angle_bits": 3234398606,
+      "target_bits": 3135554440,
+      "speed_bits": 1070141403,
+      "dt_bits": 1048576000,
+      "delta_bits": 3143944192,
+      "reversed": true,
+      "instructions": 40
+    },
+    {
+      "angle_bits": 3234398606,
+      "target_bits": 3135554440,
+      "speed_bits": 1095307227,
+      "dt_bits": 1023969417,
+      "delta_bits": 3143944192,
+      "reversed": true,
+      "instructions": 40
+    },
+    {
+      "angle_bits": 3234398606,
+      "target_bits": 3135554440,
+      "speed_bits": 1095307227,
+      "dt_bits": 1048576000,
+      "delta_bits": 3143944192,
+      "reversed": true,
+      "instructions": 40
+    },
+    {
+      "angle_bits": 1095307227,
+      "target_bits": 3217625051,
+      "speed_bits": 1048971922,
+      "dt_bits": 1023969417,
+      "delta_bits": 3155098166,
+      "reversed": true,
+      "instructions": 44
+    },
+    {
+      "angle_bits": 1095307227,
+      "target_bits": 3217625051,
+      "speed_bits": 1048971922,
+      "dt_bits": 1048576000,
+      "delta_bits": 3179678354,
+      "reversed": true,
+      "instructions": 44
+    },
+    {
+      "angle_bits": 1095307227,
+      "target_bits": 3217625051,
+      "speed_bits": 1070141403,
+      "dt_bits": 1023969417,
+      "delta_bits": 3176560465,
+      "reversed": true,
+      "instructions": 44
+    },
+    {
+      "angle_bits": 1095307227,
+      "target_bits": 3217625051,
+      "speed_bits": 1070141403,
+      "dt_bits": 1048576000,
+      "delta_bits": 3200847835,
+      "reversed": true,
+      "instructions": 44
+    },
+    {
+      "angle_bits": 1095307227,
+      "target_bits": 3217625051,
+      "speed_bits": 1095307227,
+      "dt_bits": 1023969417,
+      "delta_bits": 3201726289,
+      "reversed": true,
+      "instructions": 44
+    },
+    {
+      "angle_bits": 1095307227,
+      "target_bits": 3217625051,
+      "speed_bits": 1095307227,
+      "dt_bits": 1048576000,
+      "delta_bits": 3217625048,
+      "reversed": true,
+      "instructions": 43
+    },
+    {
+      "angle_bits": 3242790875,
+      "target_bits": 1070141403,
+      "speed_bits": 1048971922,
+      "dt_bits": 1023969417,
+      "delta_bits": 1007614518,
+      "reversed": false,
+      "instructions": 43
+    },
+    {
+      "angle_bits": 3242790875,
+      "target_bits": 1070141403,
+      "speed_bits": 1048971922,
+      "dt_bits": 1048576000,
+      "delta_bits": 1032194706,
+      "reversed": false,
+      "instructions": 43
+    },
+    {
+      "angle_bits": 3242790875,
+      "target_bits": 1070141403,
+      "speed_bits": 1070141403,
+      "dt_bits": 1023969417,
+      "delta_bits": 1029076817,
+      "reversed": false,
+      "instructions": 43
+    },
+    {
+      "angle_bits": 3242790875,
+      "target_bits": 1070141403,
+      "speed_bits": 1070141403,
+      "dt_bits": 1048576000,
+      "delta_bits": 1053364187,
+      "reversed": false,
+      "instructions": 43
+    },
+    {
+      "angle_bits": 3242790875,
+      "target_bits": 1070141403,
+      "speed_bits": 1095307227,
+      "dt_bits": 1023969417,
+      "delta_bits": 1054242641,
+      "reversed": false,
+      "instructions": 43
+    },
+    {
+      "angle_bits": 3242790875,
+      "target_bits": 1070141403,
+      "speed_bits": 1095307227,
+      "dt_bits": 1048576000,
+      "delta_bits": 1070141400,
+      "reversed": false,
+      "instructions": 42
+    },
+    {
+      "angle_bits": 1065749138,
+      "target_bits": 1065749138,
+      "speed_bits": 1048971922,
+      "dt_bits": 1023969417,
+      "delta_bits": 0,
+      "reversed": false,
+      "instructions": 32
+    },
+    {
+      "angle_bits": 1065749138,
+      "target_bits": 1065749138,
+      "speed_bits": 1048971922,
+      "dt_bits": 1048576000,
+      "delta_bits": 0,
+      "reversed": false,
+      "instructions": 32
+    },
+    {
+      "angle_bits": 1065749138,
+      "target_bits": 1065749138,
+      "speed_bits": 1070141403,
+      "dt_bits": 1023969417,
+      "delta_bits": 0,
+      "reversed": false,
+      "instructions": 32
+    },
+    {
+      "angle_bits": 1065749138,
+      "target_bits": 1065749138,
+      "speed_bits": 1070141403,
+      "dt_bits": 1048576000,
+      "delta_bits": 0,
+      "reversed": false,
+      "instructions": 32
+    },
+    {
+      "angle_bits": 1065749138,
+      "target_bits": 1065749138,
+      "speed_bits": 1095307227,
+      "dt_bits": 1023969417,
+      "delta_bits": 0,
+      "reversed": false,
+      "instructions": 32
+    },
+    {
+      "angle_bits": 1065749138,
+      "target_bits": 1065749138,
+      "speed_bits": 1095307227,
+      "dt_bits": 1048576000,
+      "delta_bits": 0,
+      "reversed": false,
+      "instructions": 32
+    },
+    {
+      "angle_bits": 3213232786,
+      "target_bits": 3213232786,
+      "speed_bits": 1048971922,
+      "dt_bits": 1023969417,
+      "delta_bits": 0,
+      "reversed": false,
+      "instructions": 32
+    },
+    {
+      "angle_bits": 3213232786,
+      "target_bits": 3213232786,
+      "speed_bits": 1048971922,
+      "dt_bits": 1048576000,
+      "delta_bits": 0,
+      "reversed": false,
+      "instructions": 32
+    },
+    {
+      "angle_bits": 3213232786,
+      "target_bits": 3213232786,
+      "speed_bits": 1070141403,
+      "dt_bits": 1023969417,
+      "delta_bits": 0,
+      "reversed": false,
+      "instructions": 32
+    },
+    {
+      "angle_bits": 3213232786,
+      "target_bits": 3213232786,
+      "speed_bits": 1070141403,
+      "dt_bits": 1048576000,
+      "delta_bits": 0,
+      "reversed": false,
+      "instructions": 32
+    },
+    {
+      "angle_bits": 3213232786,
+      "target_bits": 3213232786,
+      "speed_bits": 1095307227,
+      "dt_bits": 1023969417,
+      "delta_bits": 0,
+      "reversed": false,
+      "instructions": 32
+    },
+    {
+      "angle_bits": 3213232786,
+      "target_bits": 3213232786,
+      "speed_bits": 1095307227,
+      "dt_bits": 1048576000,
+      "delta_bits": 0,
+      "reversed": false,
+      "instructions": 32
+    },
+    {
+      "angle_bits": 1061752795,
+      "target_bits": 3222719460,
+      "speed_bits": 1048971922,
+      "dt_bits": 1023969417,
+      "delta_bits": 3155098166,
+      "reversed": true,
+      "instructions": 38
+    },
+    {
+      "angle_bits": 1061752795,
+      "target_bits": 3222719460,
+      "speed_bits": 1048971922,
+      "dt_bits": 1048576000,
+      "delta_bits": 3179678354,
+      "reversed": true,
+      "instructions": 38
+    },
+    {
+      "angle_bits": 1061752795,
+      "target_bits": 3222719460,
+      "speed_bits": 1070141403,
+      "dt_bits": 1023969417,
+      "delta_bits": 3176560465,
+      "reversed": true,
+      "instructions": 38
+    },
+    {
+      "angle_bits": 1061752795,
+      "target_bits": 3222719460,
+      "speed_bits": 1070141403,
+      "dt_bits": 1048576000,
+      "delta_bits": 3200847835,
+      "reversed": true,
+      "instructions": 38
+    },
+    {
+      "angle_bits": 1061752795,
+      "target_bits": 3222719460,
+      "speed_bits": 1095307227,
+      "dt_bits": 1023969417,
+      "delta_bits": 3201726289,
+      "reversed": true,
+      "instructions": 38
+    },
+    {
+      "angle_bits": 1061752795,
+      "target_bits": 3222719460,
+      "speed_bits": 1095307227,
+      "dt_bits": 1048576000,
+      "delta_bits": 3226013659,
+      "reversed": true,
+      "instructions": 37
+    }
+  ]
+}

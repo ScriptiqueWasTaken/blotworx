@@ -1,0 +1,846 @@
+{
+  "components": {
+    "AIBrainComponent": {
+      "descriptor": "0x26c8c",
+      "name": "AI Brain Component",
+      "name_intern_call": "0x2dcbf0",
+      "name_string": "0x4c761d",
+      "type_intern_call": "0x2dcbc4",
+      "type_string": "0x4c760c"
+    },
+    "AIHintComponent": {
+      "descriptor": "0x26d88",
+      "name": "AIHint",
+      "name_intern_call": "0x2e0b88",
+      "name_string": "0x4c7979",
+      "type_intern_call": "0x2e0bb4",
+      "type_string": "0x4c7980"
+    },
+    "AIPathDatabaseComponent": {
+      "descriptor": "0x26e58",
+      "name": "AI Path Database Component",
+      "name_intern_call": "0x2e2698",
+      "name_string": "0x4c7a83",
+      "type_intern_call": "0x2e26c4",
+      "type_string": "0x4c7a9e"
+    },
+    "AmmoRechargeComponent": {
+      "descriptor": "0x26edc",
+      "name": "Ammo Recharge",
+      "name_intern_call": "0x2e30f4",
+      "name_string": "0x4c7b6d",
+      "type_intern_call": "0x2e3120",
+      "type_string": "0x4c7b7b"
+    },
+    "AnimationComponent": {
+      "descriptor": "0x26fbc",
+      "name": "Animation",
+      "name_intern_call": "0x2e6af8",
+      "name_string": "0x4cad18",
+      "type_intern_call": "0x2e6aec",
+      "type_string": "0x4cad05"
+    },
+    "AnimationComponentGB": {
+      "descriptor": "0x278ac",
+      "name": "Animation Component GB",
+      "name_intern_call": "0x2f400c",
+      "name_string": "0x4cb68a",
+      "type_intern_call": "0x2f4038",
+      "type_string": "0x4cb6a1"
+    },
+    "AnimationSyncComponent": {
+      "descriptor": "0x27958",
+      "name": "AnimationSyncComponent",
+      "name_intern_call": "0x2f8d2c",
+      "name_string": "0x4cb8a5",
+      "type_intern_call": "0x2f8d58",
+      "type_string": "0x4cb8a5"
+    },
+    "ArsenalComponent": {
+      "descriptor": "0x27994",
+      "name": "Arsenal",
+      "name_intern_call": "0x2f9628",
+      "name_string": "0x4cb8c2",
+      "type_intern_call": "0x2f9654",
+      "type_string": "0x4cb8ca"
+    },
+    "AttractRepelComponent": {
+      "descriptor": "0x279e0",
+      "name": "AttractRepel",
+      "name_intern_call": "0x2fba3c",
+      "name_string": "0x4cb9cd",
+      "type_intern_call": "0x2fba10",
+      "type_string": "0x4cb9b7"
+    },
+    "AudioControllerComponent": {
+      "descriptor": "0x27a80",
+      "name": "AudioController",
+      "name_intern_call": "0x2fd600",
+      "name_string": "0x4cbafe",
+      "type_intern_call": "0x2fd62c",
+      "type_string": "0x4cbb0e"
+    },
+    "BasicAIControllerComponent": {
+      "descriptor": "0x27b00",
+      "name": "Basic AI Controller",
+      "name_intern_call": "0x2ff1f0",
+      "name_string": "0x4cbc68",
+      "type_intern_call": "0x2ff21c",
+      "type_string": "0x4cbc7c"
+    },
+    "BasicMotionControllerComponent": {
+      "descriptor": "0x27c2c",
+      "name": "Basic Motion Controller",
+      "name_intern_call": "0x301a08",
+      "name_string": "0x4cbe5f",
+      "type_intern_call": "0x301a34",
+      "type_string": "0x4cbe77"
+    },
+    "BasicPlayerControllerComponent": {
+      "descriptor": "0x27d78",
+      "name": "Basic Player Controller",
+      "name_intern_call": "0x30ce70",
+      "name_string": "0x4cc596",
+      "type_intern_call": "0x30ce9c",
+      "type_string": "0x4cc5ae"
+    },
+    "BeamComponent": {
+      "descriptor": "0x27e40",
+      "name": "Beam Component",
+      "name_intern_call": "0x30e5b4",
+      "name_string": "0x4cc68d",
+      "type_intern_call": "0x30e5e0",
+      "type_string": "0x4cc69c"
+    },
+    "BoneScalerComponent": {
+      "descriptor": "0x484",
+      "name": "Bone Scaler Component",
+      "name_intern_call": "0x69380",
+      "name_string": "0x4b238c",
+      "type_intern_call": "0x693ac",
+      "type_string": "0x4b23a2"
+    },
+    "CameraControlPointComponent": {
+      "descriptor": "0x27ec0",
+      "name": "CameraControlPoint",
+      "name_intern_call": "0x3100a4",
+      "name_string": "0x4cc787",
+      "type_intern_call": "0x3100d0",
+      "type_string": "0x4cc79a"
+    },
+    "CameraOverrideComponent": {
+      "descriptor": "0x4c4",
+      "name": "Camera Override Component",
+      "name_intern_call": "0x6ae24",
+      "name_string": "0x4b2413",
+      "type_intern_call": "0x6ae50",
+      "type_string": "0x4b242d"
+    },
+    "ChildComponent": {
+      "descriptor": "0x27f04",
+      "name": "Child",
+      "name_intern_call": "0x311214",
+      "name_string": "0x4cc845",
+      "type_intern_call": "0x311240",
+      "type_string": "0x4cc84b"
+    },
+    "ConversationComponent": {
+      "descriptor": "0x27f74",
+      "name": "Conversation",
+      "name_intern_call": "0x31348c",
+      "name_string": "0x4cc91d",
+      "type_intern_call": "0x3134b8",
+      "type_string": "0x4cc92a"
+    },
+    "Cursor3DComponent": {
+      "descriptor": "0x74c",
+      "name": "3D Cursor Component",
+      "name_intern_call": "0x71600",
+      "name_string": "0x4b2a8a",
+      "type_intern_call": "0x7162c",
+      "type_string": "0x4b2a9e"
+    },
+    "DeathRewardComponent": {
+      "descriptor": "0x80c",
+      "name": "Death Reward Component",
+      "name_intern_call": "0x74a60",
+      "name_string": "0x4b2cbf",
+      "type_intern_call": "0x74a8c",
+      "type_string": "0x4b2cd6"
+    },
+    "DecalComponent": {
+      "descriptor": "0x27fec",
+      "name": "Decal Component",
+      "name_intern_call": "0x316078",
+      "name_string": "0x4ccc0e",
+      "type_intern_call": "0x3160a4",
+      "type_string": "0x4ccc1e"
+    },
+    "DynamicallyLitComponent": {
+      "descriptor": "0x2803c",
+      "name": "Dynamically Lit Component",
+      "name_intern_call": "0x316ec8",
+      "name_string": "0x4ccc65",
+      "type_intern_call": "0x316ef4",
+      "type_string": "0x4ccc7f"
+    },
+    "EntityTrackerComponent": {
+      "descriptor": "0x280c8",
+      "name": "Entity Tracker",
+      "name_intern_call": "0x317674",
+      "name_string": "0x4ccce5",
+      "type_intern_call": "0x317648",
+      "type_string": "0x4cccce"
+    },
+    "ExplodeComponent": {
+      "descriptor": "0x2813c",
+      "name": "Explode Component",
+      "name_intern_call": "0x319e10",
+      "name_string": "0x4cce95",
+      "type_intern_call": "0x319e3c",
+      "type_string": "0x4ccea7"
+    },
+    "FXComponent": {
+      "descriptor": "0x28194",
+      "name": "FX",
+      "name_intern_call": "0x31b0b4",
+      "name_string": "0x4ccf94",
+      "type_intern_call": "0x31b0e0",
+      "type_string": "0x4ccf97"
+    },
+    "GameEventsComponent": {
+      "descriptor": "0x28204",
+      "name": "Game Events Component",
+      "name_intern_call": "0x31d43c",
+      "name_string": "0x4cd08f",
+      "type_intern_call": "0x31d468",
+      "type_string": "0x4cd0a5"
+    },
+    "GuardianControllerComponent": {
+      "descriptor": "0x8b8",
+      "name": "Guardian Controller Component",
+      "name_intern_call": "0x78454",
+      "name_string": "0x4b2f9f",
+      "type_intern_call": "0x78428",
+      "type_string": "0x4b2f83"
+    },
+    "GuardianHintComponent": {
+      "descriptor": "0x960",
+      "name": "Guardian Hint Component",
+      "name_intern_call": "0x7f1b8",
+      "name_string": "0x4b35bc",
+      "type_intern_call": "0x7f18c",
+      "type_string": "0x4b35a6"
+    },
+    "GuardianManagerComponent": {
+      "descriptor": "0x9e0",
+      "name": "Guardian Manager Component",
+      "name_intern_call": "0x805f8",
+      "name_string": "0x4b36c7",
+      "type_intern_call": "0x805cc",
+      "type_string": "0x4b36ae"
+    },
+    "HealthComponent": {
+      "descriptor": "0x282a0",
+      "name": "Health Component",
+      "name_intern_call": "0x3216b8",
+      "name_string": "0x4cd2b4",
+      "type_intern_call": "0x32168c",
+      "type_string": "0x4cd2a4"
+    },
+    "InputOutputComponent": {
+      "descriptor": "0x28358",
+      "name": "InputOutput",
+      "name_intern_call": "0x325090",
+      "name_string": "0x4cd59e",
+      "type_intern_call": "0x3250bc",
+      "type_string": "0x4cd5aa"
+    },
+    "InventoryComponent": {
+      "descriptor": "0x2c15c",
+      "name": "Inventory",
+      "name_intern_call": "0x341f98",
+      "name_string": "0x4cda6b",
+      "type_intern_call": "0x341f6c",
+      "type_string": "0x4cda58"
+    },
+    "JPSCameraComponent": {
+      "descriptor": "0x2c318",
+      "name": "JPSCameraComponent",
+      "name_intern_call": "0x34675c",
+      "name_string": "0x4cde16",
+      "type_intern_call": "0x346730",
+      "type_string": "0x4cde16"
+    },
+    "JPSLightBakingComponent": {
+      "descriptor": "0x2c3cc",
+      "name": "JPS Light Baking Component",
+      "name_intern_call": "0x348758",
+      "name_string": "0x4cdf5b",
+      "type_intern_call": "0x348784",
+      "type_string": "0x4cdf76"
+    },
+    "JPSLightComponent": {
+      "descriptor": "0x2c510",
+      "name": "JPS Light",
+      "name_intern_call": "0x349b24",
+      "name_string": "0x4ce0aa",
+      "type_intern_call": "0x349af8",
+      "type_string": "0x4ce098"
+    },
+    "JPSLightReceiverComponent": {
+      "descriptor": "0x2c5e8",
+      "name": "JPS Light Receiver Component",
+      "name_intern_call": "0x34c48c",
+      "name_string": "0x4ce21e",
+      "type_intern_call": "0x34c4b8",
+      "type_string": "0x4ce23b"
+    },
+    "JPSPrefabComponent": {
+      "descriptor": "0x2c654",
+      "name": "JPSPrefab",
+      "name_intern_call": "0x34cb90",
+      "name_string": "0x4ce265",
+      "type_intern_call": "0x34cbbc",
+      "type_string": "0x4ce26f"
+    },
+    "JPSSceneGraphComponent": {
+      "descriptor": "0x2c740",
+      "name": "Scene Graph",
+      "name_intern_call": "0x34ed34",
+      "name_string": "0x4ce3c7",
+      "type_intern_call": "0x34ed08",
+      "type_string": "0x4ce3b0"
+    },
+    "JPSTransformationComponent": {
+      "descriptor": "0x2c830",
+      "name": "JPSTransformation",
+      "name_intern_call": "0x3520b8",
+      "name_string": "0x4ce5a7",
+      "type_intern_call": "0x3520e4",
+      "type_string": "0x4ce5b9"
+    },
+    "LODComponent": {
+      "descriptor": "0x2c8a0",
+      "name": "LOD",
+      "name_intern_call": "0x3578d0",
+      "name_string": "0x4ce85b",
+      "type_intern_call": "0x3578a4",
+      "type_string": "0x4ce84e"
+    },
+    "LifetimeComponent": {
+      "descriptor": "0x2c8f4",
+      "name": "Lifetime",
+      "name_intern_call": "0x358724",
+      "name_string": "0x4ce8ad",
+      "type_intern_call": "0x358750",
+      "type_string": "0x4ce8b6"
+    },
+    "LogicBranchComponent": {
+      "descriptor": "0x2c948",
+      "name": "LogicBranch",
+      "name_intern_call": "0x359740",
+      "name_string": "0x4ce956",
+      "type_intern_call": "0x35976c",
+      "type_string": "0x4ce962"
+    },
+    "LogicBranchListenerComponent": {
+      "descriptor": "0x2c984",
+      "name": "LogicBranchListener",
+      "name_intern_call": "0x35a890",
+      "name_string": "0x4cea40",
+      "type_intern_call": "0x35a8bc",
+      "type_string": "0x4cea54"
+    },
+    "LogicCaseComponent": {
+      "descriptor": "0x2c9bc",
+      "name": "LogicCase",
+      "name_intern_call": "0x35b408",
+      "name_string": "0x4ceaba",
+      "type_intern_call": "0x35b434",
+      "type_string": "0x4ceac4"
+    },
+    "LogicCompareComponent": {
+      "descriptor": "0x2c9f8",
+      "name": "LogicCompare",
+      "name_intern_call": "0x35c56c",
+      "name_string": "0x4ceb5c",
+      "type_intern_call": "0x35c598",
+      "type_string": "0x4ceb69"
+    },
+    "LogicCounterComponent": {
+      "descriptor": "0x2ca40",
+      "name": "LogicCounter",
+      "name_intern_call": "0x35d6cc",
+      "name_string": "0x4cec42",
+      "type_intern_call": "0x35d6f8",
+      "type_string": "0x4cec4f"
+    },
+    "LogicRelayComponent": {
+      "descriptor": "0x2ca84",
+      "name": "LogicRelay",
+      "name_intern_call": "0x35f49c",
+      "name_string": "0x4cedd4",
+      "type_intern_call": "0x35f4c8",
+      "type_string": "0x4ceddf"
+    },
+    "LogicTimerComponent": {
+      "descriptor": "0x2cacc",
+      "name": "LogicTimer",
+      "name_intern_call": "0x3602c4",
+      "name_string": "0x4cee81",
+      "type_intern_call": "0x3602f0",
+      "type_string": "0x4cee8c"
+    },
+    "MickeyPlayerControllerComponent": {
+      "descriptor": "0xa2c",
+      "name": "Mickey Player Controller",
+      "name_intern_call": "0x86ef8",
+      "name_string": "0x4b3ab2",
+      "type_intern_call": "0x86f24",
+      "type_string": "0x4b3acb"
+    },
+    "MickeyPlayerMotionControllerComponent": {
+      "descriptor": "0xb60",
+      "name": "Mickey Player Motion Controller",
+      "name_intern_call": "0x930ac",
+      "name_string": "0x4b446a",
+      "type_intern_call": "0x930d8",
+      "type_string": "0x4b448a"
+    },
+    "MoodComponent": {
+      "descriptor": "0xcbc",
+      "name": "Mood",
+      "name_intern_call": "0x9cefc",
+      "name_string": "0x4b4a36",
+      "type_intern_call": "0x9cf28",
+      "type_string": "0x4b4a3b"
+    },
+    "OutlinableHealthComponent": {
+      "descriptor": "0xdac",
+      "name": "Outlinable Health Component",
+      "name_intern_call": "0xa0288",
+      "name_string": "0x4b4c8a",
+      "type_intern_call": "0xa02b8",
+      "type_string": "0x4b4ca6"
+    },
+    "PaintThinnerCounterComponent": {
+      "descriptor": "0x2cb3c",
+      "name": "Paint Thinner Counter Component",
+      "name_intern_call": "0x362218",
+      "name_string": "0x4cf062",
+      "type_intern_call": "0x362244",
+      "type_string": "0x4cf082"
+    },
+    "ParentComponent": {
+      "descriptor": "0x2cca4",
+      "name": "Parent Component",
+      "name_intern_call": "0x365d64",
+      "name_string": "0x4cf385",
+      "type_intern_call": "0x365d90",
+      "type_string": "0x4cf396"
+    },
+    "ParticleSystemControllerComponent": {
+      "descriptor": "0x2cd0c",
+      "name": "Particle System Controller",
+      "name_intern_call": "0x367f08",
+      "name_string": "0x4cf4e0",
+      "type_intern_call": "0x367f34",
+      "type_string": "0x4cf4fb"
+    },
+    "PathVolumeComponent": {
+      "descriptor": "0x2cdb0",
+      "name": "Path Volume",
+      "name_intern_call": "0x36b520",
+      "name_string": "0x4cf738",
+      "type_intern_call": "0x36b54c",
+      "type_string": "0x4cf744"
+    },
+    "PatrolNodeComponent": {
+      "descriptor": "0x2ce44",
+      "name": "PatrolNode",
+      "name_intern_call": "0x36be4c",
+      "name_string": "0x4cf78e",
+      "type_intern_call": "0x36be78",
+      "type_string": "0x4cf799"
+    },
+    "PhysicsConstraintBallAndSocketComponent": {
+      "descriptor": "0x2ce90",
+      "name": "Physics Constraint Ball And Socket",
+      "name_intern_call": "0x36db20",
+      "name_string": "0x4cf889",
+      "type_intern_call": "0x36db4c",
+      "type_string": "0x4cf8ac"
+    },
+    "PhysicsConstraintComponent": {
+      "descriptor": "0x2cedc",
+      "name": "Physics Constraint",
+      "name_intern_call": "0x36e07c",
+      "name_string": "0x4cf918",
+      "type_intern_call": "0x36e0a8",
+      "type_string": "0x4cf92b"
+    },
+    "PhysicsConstraintHingedComponent": {
+      "descriptor": "0x2cf34",
+      "name": "Physics Constraint Hinged",
+      "name_intern_call": "0x36f3a4",
+      "name_string": "0x4cf9c5",
+      "type_intern_call": "0x36f3d0",
+      "type_string": "0x4cf9df"
+    },
+    "PhysicsForceComponent": {
+      "descriptor": "0x2cf8c",
+      "name": "Physics Force",
+      "name_intern_call": "0x36fc90",
+      "name_string": "0x4cfa59",
+      "type_intern_call": "0x36fcbc",
+      "type_string": "0x4cfa67"
+    },
+    "PhysicsJigsawComponent": {
+      "descriptor": "0x2d008",
+      "name": "Physics - Jigsaw Component",
+      "name_intern_call": "0x372044",
+      "name_string": "0x4cfbbd",
+      "type_intern_call": "0x372070",
+      "type_string": "0x4cfbd8"
+    },
+    "PhysicsPhantomComponent": {
+      "descriptor": "0x2d078",
+      "name": "Physics - Phantom",
+      "name_intern_call": "0x376ee0",
+      "name_string": "0x4cfdc9",
+      "type_intern_call": "0x376f0c",
+      "type_string": "0x4cfddb"
+    },
+    "PhysicsRigidBodyCharacterComponent": {
+      "descriptor": "0x2d0ec",
+      "name": "Physics - Character Rigid Body",
+      "name_intern_call": "0x37887c",
+      "name_string": "0x4cfe9d",
+      "type_intern_call": "0x3788a8",
+      "type_string": "0x4cfebc"
+    },
+    "PhysicsRigidBodyComponent": {
+      "descriptor": "0x2d1a4",
+      "name": "Physics - Rigid Body",
+      "name_intern_call": "0x37b970",
+      "name_string": "0x4d00f2",
+      "type_intern_call": "0x37b99c",
+      "type_string": "0x4d0107"
+    },
+    "PhysicsRigidBodyDynamicComponent": {
+      "descriptor": "0x2d28c",
+      "name": "Physics - Dynamic Rigid Body",
+      "name_intern_call": "0x37fcc0",
+      "name_string": "0x4d028f",
+      "type_intern_call": "0x37fcec",
+      "type_string": "0x4d02ac"
+    },
+    "PhysicsRigidBodyPhantomShapeComponent": {
+      "descriptor": "0x2d32c",
+      "name": "Physics - Phantom Shape Rigid Body",
+      "name_intern_call": "0x3836bc",
+      "name_string": "0x4d054d",
+      "type_intern_call": "0x3836e8",
+      "type_string": "0x4d0570"
+    },
+    "PhysicsRigidBodyStaticComponent": {
+      "descriptor": "0x2d384",
+      "name": "Physics - Static Rigid Body",
+      "name_intern_call": "0x384fac",
+      "name_string": "0x4d05f9",
+      "type_intern_call": "0x384fd8",
+      "type_string": "0x4d0615"
+    },
+    "PhysicsStimulusComponent": {
+      "descriptor": "0x2d3dc",
+      "name": "Physics Stimulus Component",
+      "name_intern_call": "0x386f34",
+      "name_string": "0x4d0749",
+      "type_intern_call": "0x386f60",
+      "type_string": "0x4d0764"
+    },
+    "PlayerPickupComponent": {
+      "descriptor": "0x2d44c",
+      "name": "Pickup Component",
+      "name_intern_call": "0x388770",
+      "name_string": "0x4d0866",
+      "type_intern_call": "0x38879c",
+      "type_string": "0x4d0877"
+    },
+    "PressurePlateComponent": {
+      "descriptor": "0x2d4e4",
+      "name": "Pressure Plate",
+      "name_intern_call": "0x38abfc",
+      "name_string": "0x4d099d",
+      "type_intern_call": "0x38ac28",
+      "type_string": "0x4d09ac"
+    },
+    "ProjectileComponent": {
+      "descriptor": "0x2d590",
+      "name": "Projectile Component",
+      "name_intern_call": "0x38c774",
+      "name_string": "0x4d0ae9",
+      "type_intern_call": "0x38c748",
+      "type_string": "0x4d0ad5"
+    },
+    "PuddleComponent": {
+      "descriptor": "0x312c0",
+      "name": "Puddle Component",
+      "name_intern_call": "0x3aa208",
+      "name_string": "0x4d0e28",
+      "type_intern_call": "0x3aa1dc",
+      "type_string": "0x4d0e18"
+    },
+    "R3MTEffectsComponent": {
+      "descriptor": "0x31370",
+      "name": "R3MT Effects Component",
+      "name_intern_call": "0x3aadc4",
+      "name_string": "0x4d0e9d",
+      "type_intern_call": "0x3aadf0",
+      "type_string": "0x4d0eb4"
+    },
+    "RadialEffectComponent": {
+      "descriptor": "0x31400",
+      "name": "RadialEffect",
+      "name_intern_call": "0x3adbd4",
+      "name_string": "0x4d11ba",
+      "type_intern_call": "0x3adc00",
+      "type_string": "0x4d11c7"
+    },
+    "RenderProxyComponent": {
+      "descriptor": "0x31440",
+      "name": "Render Proxy",
+      "name_intern_call": "0x3af23c",
+      "name_string": "0x4d125b",
+      "type_intern_call": "0x3af268",
+      "type_string": "0x4d1268"
+    },
+    "RenderSceneEffectsComponent": {
+      "descriptor": "0x31558",
+      "name": "RenderSceneEffects",
+      "name_intern_call": "0x3b0054",
+      "name_string": "0x4d1361",
+      "type_intern_call": "0x3b0028",
+      "type_string": "0x4d1345"
+    },
+    "RotatorComponent": {
+      "descriptor": "0x315dc",
+      "name": "Rotator",
+      "name_intern_call": "0x3b1c50",
+      "name_string": "0x4d14f2",
+      "type_intern_call": "0x3b1c7c",
+      "type_string": "0x4d14fa"
+    },
+    "ScriptComponent": {
+      "descriptor": "0x31644",
+      "name": "Script",
+      "name_intern_call": "0x3b3bb8",
+      "name_string": "0x4d15fc",
+      "type_intern_call": "0x3b3be4",
+      "type_string": "0x4d1603"
+    },
+    "SeedPointComponent": {
+      "descriptor": "0x31694",
+      "name": "Seed Point",
+      "name_intern_call": "0x3b42e8",
+      "name_string": "0x4d163f",
+      "type_intern_call": "0x3b4314",
+      "type_string": "0x4d164a"
+    },
+    "ShadowComponent": {
+      "descriptor": "0x316e4",
+      "name": "Shadow",
+      "name_intern_call": "0x3b4a64",
+      "name_string": "0x4d1678",
+      "type_intern_call": "0x3b4a90",
+      "type_string": "0x4d167f"
+    },
+    "ShooterComponent": {
+      "descriptor": "0x3175c",
+      "name": "Shooter",
+      "name_intern_call": "0x3b5fd0",
+      "name_string": "0x4d1773",
+      "type_intern_call": "0x3b5ffc",
+      "type_string": "0x4d177b"
+    },
+    "SkyboxComponent": {
+      "descriptor": "0x317d4",
+      "name": "Skybox Component",
+      "name_intern_call": "0x3b9fa8",
+      "name_string": "0x4d19b4",
+      "type_intern_call": "0x3b9fd4",
+      "type_string": "0x4d19c5"
+    },
+    "SplineFollowerComponent": {
+      "descriptor": "0x31834",
+      "name": "SplineFollower",
+      "name_intern_call": "0x3ba870",
+      "name_string": "0x4d1a02",
+      "type_intern_call": "0x3ba89c",
+      "type_string": "0x4d1a11"
+    },
+    "SplineKnotComponent": {
+      "descriptor": "0x318ec",
+      "name": "SplineKnot",
+      "name_intern_call": "0x3bebe0",
+      "name_string": "0x4d1abf",
+      "type_intern_call": "0x3bec0c",
+      "type_string": "0x4d1bec"
+    },
+    "SplineTrackerComponent": {
+      "descriptor": "0x31954",
+      "name": "Spline Tracker Component",
+      "name_intern_call": "0x3c1e00",
+      "name_string": "0x4d1d86",
+      "type_intern_call": "0x3c1e2c",
+      "type_string": "0x4d1d9f"
+    },
+    "StatusComponent": {
+      "descriptor": "0x319c4",
+      "name": "Status",
+      "name_intern_call": "0x3c5184",
+      "name_string": "0x4d1eb4",
+      "type_intern_call": "0x3c51b0",
+      "type_string": "0x4d1ebb"
+    },
+    "StimulusReflectComponent": {
+      "descriptor": "0x31a44",
+      "name": "Stimulus Reflect",
+      "name_intern_call": "0x3c55bc",
+      "name_string": "0x4d1eee",
+      "type_intern_call": "0x3c5590",
+      "type_string": "0x4d1ed5"
+    },
+    "StimulusSpawnerComponent": {
+      "descriptor": "0xdec",
+      "name": "Stimulus Spawner Component",
+      "name_intern_call": "0xa099c",
+      "name_string": "0x4b4cd1",
+      "type_intern_call": "0xa09cc",
+      "type_string": "0x4b4cec"
+    },
+    "StunRadiusComponent": {
+      "descriptor": "0x31ac0",
+      "name": "StunRadius",
+      "name_intern_call": "0x3c6c5c",
+      "name_string": "0x4d205f",
+      "type_intern_call": "0x3c6c30",
+      "type_string": "0x4d204b"
+    },
+    "TargetableComponent": {
+      "descriptor": "0x31b28",
+      "name": "Targetable",
+      "name_intern_call": "0x3c76b0",
+      "name_string": "0x4d209f",
+      "type_intern_call": "0x3c7684",
+      "type_string": "0x4d208b"
+    },
+    "TeamComponent": {
+      "descriptor": "0x31b98",
+      "name": "Team",
+      "name_intern_call": "0x3c854c",
+      "name_string": "0x4d20e7",
+      "type_intern_call": "0x3c8520",
+      "type_string": "0x4d20d9"
+    },
+    "TemplateSpawnerComponent": {
+      "descriptor": "0x31c3c",
+      "name": "Template Spawner",
+      "name_intern_call": "0x3ca18c",
+      "name_string": "0x4d2288",
+      "type_intern_call": "0x3ca1b8",
+      "type_string": "0x4d2299"
+    },
+    "TrackingComponent": {
+      "descriptor": "0xe54",
+      "name": "TrackingComponent",
+      "name_intern_call": "0xa12ec",
+      "name_string": "0x4b4d2b",
+      "type_intern_call": "0xa12bc",
+      "type_string": "0x4b4d2b"
+    },
+    "TriggerDamageComponent": {
+      "descriptor": "0x31cf0",
+      "name": "Trigger Damage Component",
+      "name_intern_call": "0x3ccc00",
+      "name_string": "0x4d243e",
+      "type_intern_call": "0x3ccc2c",
+      "type_string": "0x4d2457"
+    },
+    "TriggerPlaneComponent": {
+      "descriptor": "0x31d54",
+      "name": "Trigger Plane",
+      "name_intern_call": "0x3ce318",
+      "name_string": "0x4d2522",
+      "type_intern_call": "0x3ce344",
+      "type_string": "0x4d2530"
+    },
+    "TriggerPlaneProxyComponent": {
+      "descriptor": "0x31d90",
+      "name": "Trigger Plane Proxy",
+      "name_intern_call": "0x3cf228",
+      "name_string": "0x4d258b",
+      "type_intern_call": "0x3cf254",
+      "type_string": "0x4d259f"
+    },
+    "TriggerVolumeComponent": {
+      "descriptor": "0x31dfc",
+      "name": "Trigger Volume",
+      "name_intern_call": "0x3cf614",
+      "name_string": "0x4d25d7",
+      "type_intern_call": "0x3cf640",
+      "type_string": "0x4d25e6"
+    },
+    "TriggerVolumeProxyComponent": {
+      "descriptor": "0x31e6c",
+      "name": "Trigger Volume Proxy",
+      "name_intern_call": "0x3d1f38",
+      "name_string": "0x4d26b5",
+      "type_intern_call": "0x3d1f64",
+      "type_string": "0x4d26ca"
+    },
+    "TurretComponent": {
+      "descriptor": "0x31ef0",
+      "name": "Turret",
+      "name_intern_call": "0x3d2240",
+      "name_string": "0x4d2702",
+      "type_intern_call": "0x3d226c",
+      "type_string": "0x4d2709"
+    },
+    "UsableComponent": {
+      "descriptor": "0x31f74",
+      "name": "Usable",
+      "name_intern_call": "0x3d3e34",
+      "name_string": "0x4d280e",
+      "type_intern_call": "0x3d3e60",
+      "type_string": "0x4d2815"
+    },
+    "VendingComponent": {
+      "descriptor": "0x31fe4",
+      "name": "Vending",
+      "name_intern_call": "0x3d508c",
+      "name_string": "0x4d28a5",
+      "type_intern_call": "0x3d5060",
+      "type_string": "0x4d2894"
+    },
+    "VulnerabilityComponent": {
+      "descriptor": "0x320cc",
+      "name": "Vulnerability",
+      "name_intern_call": "0x3d5e0c",
+      "name_string": "0x4d28e0",
+      "type_intern_call": "0x3d5de0",
+      "type_string": "0x4d28c9"
+    },
+    "WeaponComponent": {
+      "descriptor": "0x321ec",
+      "name": "Weapon",
+      "name_intern_call": "0x3d8cf8",
+      "name_string": "0x4d2c0b",
+      "type_intern_call": "0x3d8d24",
+      "type_string": "0x4d2c12"
+    }
+  },
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "scope": "Recover native component constructor names; no scene/editor display-name inference.\n\nTracks relocated constant addresses and intern-string calls in static\nregistration code, including shared-string assignment helper69968.\nDescriptor name/type slots are16 bytes apart; Mood/PatrolNode store name first.\nConstructor/vtable association is separately validated.\n"
+}

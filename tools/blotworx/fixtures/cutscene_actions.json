@@ -1,0 +1,280 @@
+{
+  "scope": "Original cutscene payload/optional-animation instructions, supplied lookup boundaries.\n\nDoes not execute Lua conversion, actual event receivers, or the original engine.\n",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "cases": [
+    {
+      "command": "enter",
+      "entity_found": true,
+      "controller": false,
+      "variant": -1,
+      "trace": [
+        {
+          "op": "action",
+          "kind": 12,
+          "source_word": 5,
+          "header_word": 0,
+          "action": 11,
+          "vector_bits": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "reference_word": 0
+        }
+      ],
+      "instructions": 32
+    },
+    {
+      "command": "enter",
+      "entity_found": true,
+      "controller": false,
+      "variant": -2,
+      "trace": [
+        {
+          "op": "action",
+          "kind": 12,
+          "source_word": 5,
+          "header_word": 0,
+          "action": 11,
+          "vector_bits": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "reference_word": 0
+        },
+        {
+          "op": "controller",
+          "present": false
+        }
+      ],
+      "instructions": 38
+    },
+    {
+      "command": "enter",
+      "entity_found": true,
+      "controller": false,
+      "variant": 0,
+      "trace": [
+        {
+          "op": "action",
+          "kind": 12,
+          "source_word": 5,
+          "header_word": 0,
+          "action": 11,
+          "vector_bits": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "reference_word": 0
+        },
+        {
+          "op": "controller",
+          "present": false
+        }
+      ],
+      "instructions": 38
+    },
+    {
+      "command": "enter",
+      "entity_found": true,
+      "controller": false,
+      "variant": 2,
+      "trace": [
+        {
+          "op": "action",
+          "kind": 12,
+          "source_word": 5,
+          "header_word": 0,
+          "action": 11,
+          "vector_bits": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "reference_word": 0
+        },
+        {
+          "op": "controller",
+          "present": false
+        }
+      ],
+      "instructions": 38
+    },
+    {
+      "command": "enter",
+      "entity_found": true,
+      "controller": true,
+      "variant": -1,
+      "trace": [
+        {
+          "op": "action",
+          "kind": 12,
+          "source_word": 5,
+          "header_word": 0,
+          "action": 11,
+          "vector_bits": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "reference_word": 0
+        }
+      ],
+      "instructions": 32
+    },
+    {
+      "command": "enter",
+      "entity_found": true,
+      "controller": true,
+      "variant": -2,
+      "trace": [
+        {
+          "op": "action",
+          "kind": 12,
+          "source_word": 5,
+          "header_word": 0,
+          "action": 11,
+          "vector_bits": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "reference_word": 0
+        },
+        {
+          "op": "controller",
+          "present": true
+        },
+        {
+          "op": "variable",
+          "id": 24,
+          "bits": 4294967294
+        },
+        {
+          "op": "animation",
+          "id": 144
+        }
+      ],
+      "instructions": 43
+    },
+    {
+      "command": "enter",
+      "entity_found": true,
+      "controller": true,
+      "variant": 0,
+      "trace": [
+        {
+          "op": "action",
+          "kind": 12,
+          "source_word": 5,
+          "header_word": 0,
+          "action": 11,
+          "vector_bits": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "reference_word": 0
+        },
+        {
+          "op": "controller",
+          "present": true
+        },
+        {
+          "op": "variable",
+          "id": 24,
+          "bits": 0
+        },
+        {
+          "op": "animation",
+          "id": 144
+        }
+      ],
+      "instructions": 43
+    },
+    {
+      "command": "enter",
+      "entity_found": true,
+      "controller": true,
+      "variant": 2,
+      "trace": [
+        {
+          "op": "action",
+          "kind": 12,
+          "source_word": 5,
+          "header_word": 0,
+          "action": 11,
+          "vector_bits": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "reference_word": 0
+        },
+        {
+          "op": "controller",
+          "present": true
+        },
+        {
+          "op": "variable",
+          "id": 24,
+          "bits": 2
+        },
+        {
+          "op": "animation",
+          "id": 144
+        }
+      ],
+      "instructions": 43
+    },
+    {
+      "command": "exit",
+      "entity_found": true,
+      "controller": true,
+      "variant": -1,
+      "trace": [
+        {
+          "op": "action",
+          "kind": 12,
+          "source_word": 5,
+          "header_word": 0,
+          "action": 12,
+          "vector_bits": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "reference_word": 0
+        }
+      ],
+      "instructions": 28
+    },
+    {
+      "command": "enter",
+      "entity_found": false,
+      "controller": true,
+      "variant": 2,
+      "trace": [],
+      "instructions": 7
+    },
+    {
+      "command": "exit",
+      "entity_found": false,
+      "controller": true,
+      "variant": -1,
+      "trace": [],
+      "instructions": 7
+    }
+  ]
+}

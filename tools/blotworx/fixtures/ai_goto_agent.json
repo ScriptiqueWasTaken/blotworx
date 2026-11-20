@@ -1,0 +1,2331 @@
+{
+  "scope": "EM1 goto reset and request instructions. Invalid-vector/service memory is\nsupplied; base path requests and path reset are service boundaries, not navigation.\n",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "cases": [
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1065353216,
+          1073741824,
+          1077936128
+        ],
+        "limit": 1096809447,
+        "switch_service": false,
+        "result": 0
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        [
+          "speed_write",
+          100,
+          1067450368
+        ]
+      ],
+      "comparison": 1096810496,
+      "point": [
+        0,
+        0,
+        0
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 100,
+      "speeds": [
+        1067450368,
+        1102053376
+      ],
+      "result": 0,
+      "instructions": 46
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1065353216,
+          1073741824,
+          1077936128
+        ],
+        "limit": 1096809447,
+        "switch_service": false,
+        "result": 7
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        [
+          "speed_write",
+          100,
+          1067450368
+        ]
+      ],
+      "comparison": 1096810496,
+      "point": [
+        0,
+        0,
+        0
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 100,
+      "speeds": [
+        1067450368,
+        1102053376
+      ],
+      "result": 7,
+      "instructions": 46
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1065353216,
+          1073741824,
+          1077936128
+        ],
+        "limit": 1096809447,
+        "switch_service": true,
+        "result": 0
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        [
+          "speed_write",
+          101,
+          1067450368
+        ]
+      ],
+      "comparison": 1096810496,
+      "point": [
+        0,
+        0,
+        0
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 101,
+      "speeds": [
+        1120272384,
+        1067450368
+      ],
+      "result": 0,
+      "instructions": 46
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1065353216,
+          1073741824,
+          1077936128
+        ],
+        "limit": 1096809447,
+        "switch_service": true,
+        "result": 7
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        [
+          "speed_write",
+          101,
+          1067450368
+        ]
+      ],
+      "comparison": 1096810496,
+      "point": [
+        0,
+        0,
+        0
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 101,
+      "speeds": [
+        1120272384,
+        1067450368
+      ],
+      "result": 7,
+      "instructions": 46
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1065353216,
+          1073741824,
+          1077936128
+        ],
+        "limit": 1096810496,
+        "switch_service": false,
+        "result": 0
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            1065353216,
+            1073741824,
+            1077936128
+          ]
+        ],
+        [
+          "speed_write",
+          100,
+          1067450368
+        ]
+      ],
+      "comparison": 1096810496,
+      "point": [
+        1065353216,
+        1073741824,
+        1077936128
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 100,
+      "speeds": [
+        1067450368,
+        1102053376
+      ],
+      "result": 0,
+      "instructions": 43
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1065353216,
+          1073741824,
+          1077936128
+        ],
+        "limit": 1096810496,
+        "switch_service": false,
+        "result": 7
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            1065353216,
+            1073741824,
+            1077936128
+          ]
+        ],
+        [
+          "speed_write",
+          100,
+          1067450368
+        ]
+      ],
+      "comparison": 1096810496,
+      "point": [
+        1065353216,
+        1073741824,
+        1077936128
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 100,
+      "speeds": [
+        1067450368,
+        1102053376
+      ],
+      "result": 7,
+      "instructions": 43
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1065353216,
+          1073741824,
+          1077936128
+        ],
+        "limit": 1096810496,
+        "switch_service": true,
+        "result": 0
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            1065353216,
+            1073741824,
+            1077936128
+          ]
+        ],
+        [
+          "speed_write",
+          101,
+          1067450368
+        ]
+      ],
+      "comparison": 1096810496,
+      "point": [
+        1065353216,
+        1073741824,
+        1077936128
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 101,
+      "speeds": [
+        1120272384,
+        1067450368
+      ],
+      "result": 0,
+      "instructions": 43
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1065353216,
+          1073741824,
+          1077936128
+        ],
+        "limit": 1096810496,
+        "switch_service": true,
+        "result": 7
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            1065353216,
+            1073741824,
+            1077936128
+          ]
+        ],
+        [
+          "speed_write",
+          101,
+          1067450368
+        ]
+      ],
+      "comparison": 1096810496,
+      "point": [
+        1065353216,
+        1073741824,
+        1077936128
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 101,
+      "speeds": [
+        1120272384,
+        1067450368
+      ],
+      "result": 7,
+      "instructions": 43
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1065353216,
+          1073741824,
+          1077936128
+        ],
+        "limit": 1096811545,
+        "switch_service": false,
+        "result": 0
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            1065353216,
+            1073741824,
+            1077936128
+          ]
+        ],
+        [
+          "speed_write",
+          100,
+          1067450368
+        ]
+      ],
+      "comparison": 1096810496,
+      "point": [
+        1065353216,
+        1073741824,
+        1077936128
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 100,
+      "speeds": [
+        1067450368,
+        1102053376
+      ],
+      "result": 0,
+      "instructions": 43
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1065353216,
+          1073741824,
+          1077936128
+        ],
+        "limit": 1096811545,
+        "switch_service": false,
+        "result": 7
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            1065353216,
+            1073741824,
+            1077936128
+          ]
+        ],
+        [
+          "speed_write",
+          100,
+          1067450368
+        ]
+      ],
+      "comparison": 1096810496,
+      "point": [
+        1065353216,
+        1073741824,
+        1077936128
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 100,
+      "speeds": [
+        1067450368,
+        1102053376
+      ],
+      "result": 7,
+      "instructions": 43
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1065353216,
+          1073741824,
+          1077936128
+        ],
+        "limit": 1096811545,
+        "switch_service": true,
+        "result": 0
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            1065353216,
+            1073741824,
+            1077936128
+          ]
+        ],
+        [
+          "speed_write",
+          101,
+          1067450368
+        ]
+      ],
+      "comparison": 1096810496,
+      "point": [
+        1065353216,
+        1073741824,
+        1077936128
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 101,
+      "speeds": [
+        1120272384,
+        1067450368
+      ],
+      "result": 0,
+      "instructions": 43
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1065353216,
+          1073741824,
+          1077936128
+        ],
+        "limit": 1096811545,
+        "switch_service": true,
+        "result": 7
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            1065353216,
+            1073741824,
+            1077936128
+          ]
+        ],
+        [
+          "speed_write",
+          101,
+          1067450368
+        ]
+      ],
+      "comparison": 1096810496,
+      "point": [
+        1065353216,
+        1073741824,
+        1077936128
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 101,
+      "speeds": [
+        1120272384,
+        1067450368
+      ],
+      "result": 7,
+      "instructions": 43
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1065353216,
+          1073741824,
+          1077936128
+        ],
+        "limit": 3212836864,
+        "switch_service": false,
+        "result": 0
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        [
+          "speed_write",
+          100,
+          1067450368
+        ]
+      ],
+      "comparison": 1096810496,
+      "point": [
+        0,
+        0,
+        0
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 100,
+      "speeds": [
+        1067450368,
+        1102053376
+      ],
+      "result": 0,
+      "instructions": 46
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1065353216,
+          1073741824,
+          1077936128
+        ],
+        "limit": 3212836864,
+        "switch_service": false,
+        "result": 7
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        [
+          "speed_write",
+          100,
+          1067450368
+        ]
+      ],
+      "comparison": 1096810496,
+      "point": [
+        0,
+        0,
+        0
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 100,
+      "speeds": [
+        1067450368,
+        1102053376
+      ],
+      "result": 7,
+      "instructions": 46
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1065353216,
+          1073741824,
+          1077936128
+        ],
+        "limit": 3212836864,
+        "switch_service": true,
+        "result": 0
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        [
+          "speed_write",
+          101,
+          1067450368
+        ]
+      ],
+      "comparison": 1096810496,
+      "point": [
+        0,
+        0,
+        0
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 101,
+      "speeds": [
+        1120272384,
+        1067450368
+      ],
+      "result": 0,
+      "instructions": 46
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1065353216,
+          1073741824,
+          1077936128
+        ],
+        "limit": 3212836864,
+        "switch_service": true,
+        "result": 7
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        [
+          "speed_write",
+          101,
+          1067450368
+        ]
+      ],
+      "comparison": 1096810496,
+      "point": [
+        0,
+        0,
+        0
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 101,
+      "speeds": [
+        1120272384,
+        1067450368
+      ],
+      "result": 7,
+      "instructions": 46
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1066192077,
+          1074580685,
+          1079194419
+        ],
+        "limit": 0,
+        "switch_service": false,
+        "result": 0
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        [
+          "speed_write",
+          100,
+          1067450368
+        ]
+      ],
+      "comparison": 1099400479,
+      "point": [
+        0,
+        0,
+        0
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 100,
+      "speeds": [
+        1067450368,
+        1102053376
+      ],
+      "result": 0,
+      "instructions": 46
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1066192077,
+          1074580685,
+          1079194419
+        ],
+        "limit": 0,
+        "switch_service": false,
+        "result": 7
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        [
+          "speed_write",
+          100,
+          1067450368
+        ]
+      ],
+      "comparison": 1099400479,
+      "point": [
+        0,
+        0,
+        0
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 100,
+      "speeds": [
+        1067450368,
+        1102053376
+      ],
+      "result": 7,
+      "instructions": 46
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1066192077,
+          1074580685,
+          1079194419
+        ],
+        "limit": 0,
+        "switch_service": true,
+        "result": 0
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        [
+          "speed_write",
+          101,
+          1067450368
+        ]
+      ],
+      "comparison": 1099400479,
+      "point": [
+        0,
+        0,
+        0
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 101,
+      "speeds": [
+        1120272384,
+        1067450368
+      ],
+      "result": 0,
+      "instructions": 46
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1066192077,
+          1074580685,
+          1079194419
+        ],
+        "limit": 0,
+        "switch_service": true,
+        "result": 7
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        [
+          "speed_write",
+          101,
+          1067450368
+        ]
+      ],
+      "comparison": 1099400479,
+      "point": [
+        0,
+        0,
+        0
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 101,
+      "speeds": [
+        1120272384,
+        1067450368
+      ],
+      "result": 7,
+      "instructions": 46
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1065353216,
+          1073741824,
+          1077936128
+        ],
+        "limit": 2143363909,
+        "switch_service": false,
+        "result": 0
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            1065353216,
+            1073741824,
+            1077936128
+          ]
+        ],
+        [
+          "speed_write",
+          100,
+          1067450368
+        ]
+      ],
+      "comparison": 1096810496,
+      "point": [
+        1065353216,
+        1073741824,
+        1077936128
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 100,
+      "speeds": [
+        1067450368,
+        1102053376
+      ],
+      "result": 0,
+      "instructions": 43
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1065353216,
+          1073741824,
+          1077936128
+        ],
+        "limit": 2143363909,
+        "switch_service": false,
+        "result": 7
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            1065353216,
+            1073741824,
+            1077936128
+          ]
+        ],
+        [
+          "speed_write",
+          100,
+          1067450368
+        ]
+      ],
+      "comparison": 1096810496,
+      "point": [
+        1065353216,
+        1073741824,
+        1077936128
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 100,
+      "speeds": [
+        1067450368,
+        1102053376
+      ],
+      "result": 7,
+      "instructions": 43
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1065353216,
+          1073741824,
+          1077936128
+        ],
+        "limit": 2143363909,
+        "switch_service": true,
+        "result": 0
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            1065353216,
+            1073741824,
+            1077936128
+          ]
+        ],
+        [
+          "speed_write",
+          101,
+          1067450368
+        ]
+      ],
+      "comparison": 1096810496,
+      "point": [
+        1065353216,
+        1073741824,
+        1077936128
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 101,
+      "speeds": [
+        1120272384,
+        1067450368
+      ],
+      "result": 0,
+      "instructions": 43
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1065353216,
+          1073741824,
+          1077936128
+        ],
+        "limit": 2143363909,
+        "switch_service": true,
+        "result": 7
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            1065353216,
+            1073741824,
+            1077936128
+          ]
+        ],
+        [
+          "speed_write",
+          101,
+          1067450368
+        ]
+      ],
+      "comparison": 1096810496,
+      "point": [
+        1065353216,
+        1073741824,
+        1077936128
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 101,
+      "speeds": [
+        1120272384,
+        1067450368
+      ],
+      "result": 7,
+      "instructions": 43
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1066192077,
+          1074580685,
+          1079194419
+        ],
+        "limit": 1099400478,
+        "switch_service": false,
+        "result": 0
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        [
+          "speed_write",
+          100,
+          1067450368
+        ]
+      ],
+      "comparison": 1099400479,
+      "point": [
+        0,
+        0,
+        0
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 100,
+      "speeds": [
+        1067450368,
+        1102053376
+      ],
+      "result": 0,
+      "instructions": 46
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1066192077,
+          1074580685,
+          1079194419
+        ],
+        "limit": 1099400478,
+        "switch_service": false,
+        "result": 7
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        [
+          "speed_write",
+          100,
+          1067450368
+        ]
+      ],
+      "comparison": 1099400479,
+      "point": [
+        0,
+        0,
+        0
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 100,
+      "speeds": [
+        1067450368,
+        1102053376
+      ],
+      "result": 7,
+      "instructions": 46
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1066192077,
+          1074580685,
+          1079194419
+        ],
+        "limit": 1099400478,
+        "switch_service": true,
+        "result": 0
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        [
+          "speed_write",
+          101,
+          1067450368
+        ]
+      ],
+      "comparison": 1099400479,
+      "point": [
+        0,
+        0,
+        0
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 101,
+      "speeds": [
+        1120272384,
+        1067450368
+      ],
+      "result": 0,
+      "instructions": 46
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1066192077,
+          1074580685,
+          1079194419
+        ],
+        "limit": 1099400478,
+        "switch_service": true,
+        "result": 7
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        [
+          "speed_write",
+          101,
+          1067450368
+        ]
+      ],
+      "comparison": 1099400479,
+      "point": [
+        0,
+        0,
+        0
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 101,
+      "speeds": [
+        1120272384,
+        1067450368
+      ],
+      "result": 7,
+      "instructions": 46
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1066192077,
+          1074580685,
+          1079194419
+        ],
+        "limit": 1099400479,
+        "switch_service": false,
+        "result": 0
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            1066192077,
+            1074580685,
+            1079194419
+          ]
+        ],
+        [
+          "speed_write",
+          100,
+          1067450368
+        ]
+      ],
+      "comparison": 1099400479,
+      "point": [
+        1066192077,
+        1074580685,
+        1079194419
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 100,
+      "speeds": [
+        1067450368,
+        1102053376
+      ],
+      "result": 0,
+      "instructions": 43
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1066192077,
+          1074580685,
+          1079194419
+        ],
+        "limit": 1099400479,
+        "switch_service": false,
+        "result": 7
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            1066192077,
+            1074580685,
+            1079194419
+          ]
+        ],
+        [
+          "speed_write",
+          100,
+          1067450368
+        ]
+      ],
+      "comparison": 1099400479,
+      "point": [
+        1066192077,
+        1074580685,
+        1079194419
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 100,
+      "speeds": [
+        1067450368,
+        1102053376
+      ],
+      "result": 7,
+      "instructions": 43
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1066192077,
+          1074580685,
+          1079194419
+        ],
+        "limit": 1099400479,
+        "switch_service": true,
+        "result": 0
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            1066192077,
+            1074580685,
+            1079194419
+          ]
+        ],
+        [
+          "speed_write",
+          101,
+          1067450368
+        ]
+      ],
+      "comparison": 1099400479,
+      "point": [
+        1066192077,
+        1074580685,
+        1079194419
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 101,
+      "speeds": [
+        1120272384,
+        1067450368
+      ],
+      "result": 0,
+      "instructions": 43
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1066192077,
+          1074580685,
+          1079194419
+        ],
+        "limit": 1099400479,
+        "switch_service": true,
+        "result": 7
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            1066192077,
+            1074580685,
+            1079194419
+          ]
+        ],
+        [
+          "speed_write",
+          101,
+          1067450368
+        ]
+      ],
+      "comparison": 1099400479,
+      "point": [
+        1066192077,
+        1074580685,
+        1079194419
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 101,
+      "speeds": [
+        1120272384,
+        1067450368
+      ],
+      "result": 7,
+      "instructions": 43
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1066192077,
+          1074580685,
+          1079194419
+        ],
+        "limit": 1099400480,
+        "switch_service": false,
+        "result": 0
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            1066192077,
+            1074580685,
+            1079194419
+          ]
+        ],
+        [
+          "speed_write",
+          100,
+          1067450368
+        ]
+      ],
+      "comparison": 1099400479,
+      "point": [
+        1066192077,
+        1074580685,
+        1079194419
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 100,
+      "speeds": [
+        1067450368,
+        1102053376
+      ],
+      "result": 0,
+      "instructions": 43
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1066192077,
+          1074580685,
+          1079194419
+        ],
+        "limit": 1099400480,
+        "switch_service": false,
+        "result": 7
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            1066192077,
+            1074580685,
+            1079194419
+          ]
+        ],
+        [
+          "speed_write",
+          100,
+          1067450368
+        ]
+      ],
+      "comparison": 1099400479,
+      "point": [
+        1066192077,
+        1074580685,
+        1079194419
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 100,
+      "speeds": [
+        1067450368,
+        1102053376
+      ],
+      "result": 7,
+      "instructions": 43
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1066192077,
+          1074580685,
+          1079194419
+        ],
+        "limit": 1099400480,
+        "switch_service": true,
+        "result": 0
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            1066192077,
+            1074580685,
+            1079194419
+          ]
+        ],
+        [
+          "speed_write",
+          101,
+          1067450368
+        ]
+      ],
+      "comparison": 1099400479,
+      "point": [
+        1066192077,
+        1074580685,
+        1079194419
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 101,
+      "speeds": [
+        1120272384,
+        1067450368
+      ],
+      "result": 0,
+      "instructions": 43
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1066192077,
+          1074580685,
+          1079194419
+        ],
+        "limit": 1099400480,
+        "switch_service": true,
+        "result": 7
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            1066192077,
+            1074580685,
+            1079194419
+          ]
+        ],
+        [
+          "speed_write",
+          101,
+          1067450368
+        ]
+      ],
+      "comparison": 1099400479,
+      "point": [
+        1066192077,
+        1074580685,
+        1079194419
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 101,
+      "speeds": [
+        1120272384,
+        1067450368
+      ],
+      "result": 7,
+      "instructions": 43
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1065353216,
+          1073741824,
+          1077936128
+        ],
+        "speed": 2147483648,
+        "switch_service": false
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            1065353216,
+            1073741824,
+            1077936128
+          ]
+        ],
+        [
+          "speed_write",
+          100,
+          2147483648
+        ]
+      ],
+      "comparison": 1096810496,
+      "point": [
+        1065353216,
+        1073741824,
+        1077936128
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 100,
+      "speeds": [
+        2147483648,
+        1102053376
+      ],
+      "result": 7,
+      "instructions": 43
+    },
+    {
+      "input": {
+        "op": "request",
+        "point": [
+          1065353216,
+          1073741824,
+          1077936128
+        ],
+        "speed": 2147483648,
+        "switch_service": true
+      },
+      "trace": [
+        [
+          "speed_read",
+          100
+        ],
+        [
+          "limit_read",
+          200
+        ],
+        [
+          "request",
+          [
+            1065353216,
+            1073741824,
+            1077936128
+          ]
+        ],
+        [
+          "speed_write",
+          101,
+          2147483648
+        ]
+      ],
+      "comparison": 1096810496,
+      "point": [
+        1065353216,
+        1073741824,
+        1077936128
+      ],
+      "vector_90": [
+        0,
+        0,
+        0
+      ],
+      "request_state": 9,
+      "field_9c": 6,
+      "reference": 88,
+      "flag_a8": true,
+      "service": 101,
+      "speeds": [
+        1120272384,
+        2147483648
+      ],
+      "result": 7,
+      "instructions": 43
+    },
+    {
+      "input": {
+        "op": "reset",
+        "invalid": [
+          2139095039,
+          2139095039,
+          2139095039
+        ]
+      },
+      "trace": [
+        [
+          "global_vector"
+        ],
+        [
+          "reset",
+          9
+        ]
+      ],
+      "comparison": null,
+      "point": [
+        1065353216,
+        1073741824,
+        1077936128
+      ],
+      "vector_90": [
+        2139095039,
+        2139095039,
+        2139095039
+      ],
+      "request_state": 4294967295,
+      "field_9c": 4294967295,
+      "reference": null,
+      "flag_a8": false,
+      "service": 100,
+      "speeds": [
+        1067450368,
+        1102053376
+      ],
+      "result": null,
+      "instructions": 33
+    },
+    {
+      "input": {
+        "op": "reset",
+        "invalid": [
+          4286578687,
+          4286578687,
+          4286578687
+        ]
+      },
+      "trace": [
+        [
+          "global_vector"
+        ],
+        [
+          "reset",
+          9
+        ]
+      ],
+      "comparison": null,
+      "point": [
+        1065353216,
+        1073741824,
+        1077936128
+      ],
+      "vector_90": [
+        2139095039,
+        2139095039,
+        2139095039
+      ],
+      "request_state": 4294967295,
+      "field_9c": 4294967295,
+      "reference": null,
+      "flag_a8": false,
+      "service": 100,
+      "speeds": [
+        1067450368,
+        1102053376
+      ],
+      "result": null,
+      "instructions": 33
+    },
+    {
+      "input": {
+        "op": "reset",
+        "invalid": [
+          1065353216,
+          1073741824,
+          1077936128
+        ]
+      },
+      "trace": [
+        [
+          "global_vector"
+        ],
+        [
+          "reset",
+          9
+        ]
+      ],
+      "comparison": null,
+      "point": [
+        1065353216,
+        1073741824,
+        1077936128
+      ],
+      "vector_90": [
+        2139095039,
+        2139095039,
+        2139095039
+      ],
+      "request_state": 4294967295,
+      "field_9c": 4294967295,
+      "reference": null,
+      "flag_a8": false,
+      "service": 100,
+      "speeds": [
+        1067450368,
+        1102053376
+      ],
+      "result": null,
+      "instructions": 33
+    }
+  ]
+}

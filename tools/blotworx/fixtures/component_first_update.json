@@ -1,0 +1,59 @@
+{
+  "scope": "Execute EM1 GameEvents first-update dispatch, REL31e628..31e694.\n\nString interning, category delivery and delayed-queue update are supplied call\nboundaries. This proves their ordering and the flag write before dispatch; it\ndoes not establish ordering between different component manager instances.\n",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "cases": [
+    {
+      "initial_flag": 0,
+      "result": {
+        "first_update_flag": 1,
+        "trace": [
+          {
+            "call": "category",
+            "category": 3,
+            "first_update_flag": 1
+          },
+          {
+            "call": "delayed_update"
+          }
+        ],
+        "instructions": 28
+      }
+    },
+    {
+      "initial_flag": 1,
+      "result": {
+        "first_update_flag": 1,
+        "trace": [
+          {
+            "call": "delayed_update"
+          }
+        ],
+        "instructions": 15
+      }
+    },
+    {
+      "initial_flag": 2,
+      "result": {
+        "first_update_flag": 2,
+        "trace": [
+          {
+            "call": "delayed_update"
+          }
+        ],
+        "instructions": 15
+      }
+    },
+    {
+      "initial_flag": 255,
+      "result": {
+        "first_update_flag": 255,
+        "trace": [
+          {
+            "call": "delayed_update"
+          }
+        ],
+        "instructions": 15
+      }
+    }
+  ]
+}

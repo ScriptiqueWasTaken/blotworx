@@ -1,0 +1,1182 @@
+{
+  "scope": "Bounded retail attachment guards and inactive lifecycle, research only.\n\nExecutes original DOL instructions. Stops before physical attachment admission\nat80205c40; handle reference release is supplied, not an emulated Havok engine.\n",
+  "dol_sha256": "994779fa2e276983efdb50f02c406568f285a82558cb5d54bbdf74651a98a920",
+  "cases": [
+    {
+      "command": "try",
+      "a": "none",
+      "b": "none",
+      "kind": 0,
+      "result": {
+        "decision": "MissingAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 0,
+        "attachee": 0,
+        "releases": [],
+        "instructions": 14
+      }
+    },
+    {
+      "command": "try",
+      "a": "none",
+      "b": "invalid",
+      "kind": 0,
+      "result": {
+        "decision": "MissingAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 0,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 14
+      }
+    },
+    {
+      "command": "try",
+      "a": "none",
+      "b": "body",
+      "kind": 0,
+      "result": {
+        "decision": "MissingAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 0,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 14
+      }
+    },
+    {
+      "command": "try",
+      "a": "none",
+      "b": "character",
+      "kind": 0,
+      "result": {
+        "decision": "MissingAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 0,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 14
+      }
+    },
+    {
+      "command": "try",
+      "a": "invalid",
+      "b": "none",
+      "kind": 0,
+      "result": {
+        "decision": "MissingAttachee",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 0,
+        "releases": [],
+        "instructions": 17
+      }
+    },
+    {
+      "command": "try",
+      "a": "invalid",
+      "b": "invalid",
+      "kind": 0,
+      "result": {
+        "decision": "InvalidAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 26
+      }
+    },
+    {
+      "command": "try",
+      "a": "invalid",
+      "b": "body",
+      "kind": 0,
+      "result": {
+        "decision": "InvalidAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 26
+      }
+    },
+    {
+      "command": "try",
+      "a": "invalid",
+      "b": "character",
+      "kind": 0,
+      "result": {
+        "decision": "InvalidAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 26
+      }
+    },
+    {
+      "command": "try",
+      "a": "body",
+      "b": "none",
+      "kind": 0,
+      "result": {
+        "decision": "MissingAttachee",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 0,
+        "releases": [],
+        "instructions": 17
+      }
+    },
+    {
+      "command": "try",
+      "a": "body",
+      "b": "invalid",
+      "kind": 0,
+      "result": {
+        "decision": "InvalidAttachee",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 34
+      }
+    },
+    {
+      "command": "try",
+      "a": "body",
+      "b": "body",
+      "kind": 0,
+      "result": {
+        "decision": "Ready",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 55
+      }
+    },
+    {
+      "command": "try",
+      "a": "body",
+      "b": "character",
+      "kind": 0,
+      "result": {
+        "decision": "Ready",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 58
+      }
+    },
+    {
+      "command": "try",
+      "a": "character",
+      "b": "none",
+      "kind": 0,
+      "result": {
+        "decision": "MissingAttachee",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 0,
+        "releases": [],
+        "instructions": 17
+      }
+    },
+    {
+      "command": "try",
+      "a": "character",
+      "b": "invalid",
+      "kind": 0,
+      "result": {
+        "decision": "InvalidAttachee",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 37
+      }
+    },
+    {
+      "command": "try",
+      "a": "character",
+      "b": "body",
+      "kind": 0,
+      "result": {
+        "decision": "Ready",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 58
+      }
+    },
+    {
+      "command": "try",
+      "a": "character",
+      "b": "character",
+      "kind": 0,
+      "result": {
+        "decision": "Ready",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 61
+      }
+    },
+    {
+      "command": "try",
+      "a": "none",
+      "b": "none",
+      "kind": 1,
+      "result": {
+        "decision": "MissingAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 0,
+        "attachee": 0,
+        "releases": [],
+        "instructions": 14
+      }
+    },
+    {
+      "command": "try",
+      "a": "none",
+      "b": "invalid",
+      "kind": 1,
+      "result": {
+        "decision": "MissingAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 0,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 14
+      }
+    },
+    {
+      "command": "try",
+      "a": "none",
+      "b": "body",
+      "kind": 1,
+      "result": {
+        "decision": "MissingAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 0,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 14
+      }
+    },
+    {
+      "command": "try",
+      "a": "none",
+      "b": "character",
+      "kind": 1,
+      "result": {
+        "decision": "MissingAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 0,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 14
+      }
+    },
+    {
+      "command": "try",
+      "a": "invalid",
+      "b": "none",
+      "kind": 1,
+      "result": {
+        "decision": "MissingAttachee",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 0,
+        "releases": [],
+        "instructions": 17
+      }
+    },
+    {
+      "command": "try",
+      "a": "invalid",
+      "b": "invalid",
+      "kind": 1,
+      "result": {
+        "decision": "InvalidAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 26
+      }
+    },
+    {
+      "command": "try",
+      "a": "invalid",
+      "b": "body",
+      "kind": 1,
+      "result": {
+        "decision": "InvalidAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 26
+      }
+    },
+    {
+      "command": "try",
+      "a": "invalid",
+      "b": "character",
+      "kind": 1,
+      "result": {
+        "decision": "InvalidAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 26
+      }
+    },
+    {
+      "command": "try",
+      "a": "body",
+      "b": "none",
+      "kind": 1,
+      "result": {
+        "decision": "MissingAttachee",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 0,
+        "releases": [],
+        "instructions": 17
+      }
+    },
+    {
+      "command": "try",
+      "a": "body",
+      "b": "invalid",
+      "kind": 1,
+      "result": {
+        "decision": "InvalidAttachee",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 34
+      }
+    },
+    {
+      "command": "try",
+      "a": "body",
+      "b": "body",
+      "kind": 1,
+      "result": {
+        "decision": "Ready",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 58
+      }
+    },
+    {
+      "command": "try",
+      "a": "body",
+      "b": "character",
+      "kind": 1,
+      "result": {
+        "decision": "NeedsBodies",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 59
+      }
+    },
+    {
+      "command": "try",
+      "a": "character",
+      "b": "none",
+      "kind": 1,
+      "result": {
+        "decision": "MissingAttachee",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 0,
+        "releases": [],
+        "instructions": 17
+      }
+    },
+    {
+      "command": "try",
+      "a": "character",
+      "b": "invalid",
+      "kind": 1,
+      "result": {
+        "decision": "InvalidAttachee",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 37
+      }
+    },
+    {
+      "command": "try",
+      "a": "character",
+      "b": "body",
+      "kind": 1,
+      "result": {
+        "decision": "NeedsBodies",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 56
+      }
+    },
+    {
+      "command": "try",
+      "a": "character",
+      "b": "character",
+      "kind": 1,
+      "result": {
+        "decision": "NeedsBodies",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 59
+      }
+    },
+    {
+      "command": "try",
+      "a": "none",
+      "b": "none",
+      "kind": 2,
+      "result": {
+        "decision": "MissingAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 0,
+        "attachee": 0,
+        "releases": [],
+        "instructions": 14
+      }
+    },
+    {
+      "command": "try",
+      "a": "none",
+      "b": "invalid",
+      "kind": 2,
+      "result": {
+        "decision": "MissingAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 0,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 14
+      }
+    },
+    {
+      "command": "try",
+      "a": "none",
+      "b": "body",
+      "kind": 2,
+      "result": {
+        "decision": "MissingAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 0,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 14
+      }
+    },
+    {
+      "command": "try",
+      "a": "none",
+      "b": "character",
+      "kind": 2,
+      "result": {
+        "decision": "MissingAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 0,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 14
+      }
+    },
+    {
+      "command": "try",
+      "a": "invalid",
+      "b": "none",
+      "kind": 2,
+      "result": {
+        "decision": "MissingAttachee",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 0,
+        "releases": [],
+        "instructions": 17
+      }
+    },
+    {
+      "command": "try",
+      "a": "invalid",
+      "b": "invalid",
+      "kind": 2,
+      "result": {
+        "decision": "InvalidAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 26
+      }
+    },
+    {
+      "command": "try",
+      "a": "invalid",
+      "b": "body",
+      "kind": 2,
+      "result": {
+        "decision": "InvalidAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 26
+      }
+    },
+    {
+      "command": "try",
+      "a": "invalid",
+      "b": "character",
+      "kind": 2,
+      "result": {
+        "decision": "InvalidAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 26
+      }
+    },
+    {
+      "command": "try",
+      "a": "body",
+      "b": "none",
+      "kind": 2,
+      "result": {
+        "decision": "MissingAttachee",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 0,
+        "releases": [],
+        "instructions": 17
+      }
+    },
+    {
+      "command": "try",
+      "a": "body",
+      "b": "invalid",
+      "kind": 2,
+      "result": {
+        "decision": "InvalidAttachee",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 34
+      }
+    },
+    {
+      "command": "try",
+      "a": "body",
+      "b": "body",
+      "kind": 2,
+      "result": {
+        "decision": "Ready",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 63
+      }
+    },
+    {
+      "command": "try",
+      "a": "body",
+      "b": "character",
+      "kind": 2,
+      "result": {
+        "decision": "NeedsBodies",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 64
+      }
+    },
+    {
+      "command": "try",
+      "a": "character",
+      "b": "none",
+      "kind": 2,
+      "result": {
+        "decision": "MissingAttachee",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 0,
+        "releases": [],
+        "instructions": 17
+      }
+    },
+    {
+      "command": "try",
+      "a": "character",
+      "b": "invalid",
+      "kind": 2,
+      "result": {
+        "decision": "InvalidAttachee",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 37
+      }
+    },
+    {
+      "command": "try",
+      "a": "character",
+      "b": "body",
+      "kind": 2,
+      "result": {
+        "decision": "NeedsBodies",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 61
+      }
+    },
+    {
+      "command": "try",
+      "a": "character",
+      "b": "character",
+      "kind": 2,
+      "result": {
+        "decision": "NeedsBodies",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 64
+      }
+    },
+    {
+      "command": "try",
+      "a": "none",
+      "b": "none",
+      "kind": 3,
+      "result": {
+        "decision": "MissingAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 0,
+        "attachee": 0,
+        "releases": [],
+        "instructions": 14
+      }
+    },
+    {
+      "command": "try",
+      "a": "none",
+      "b": "invalid",
+      "kind": 3,
+      "result": {
+        "decision": "MissingAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 0,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 14
+      }
+    },
+    {
+      "command": "try",
+      "a": "none",
+      "b": "body",
+      "kind": 3,
+      "result": {
+        "decision": "MissingAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 0,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 14
+      }
+    },
+    {
+      "command": "try",
+      "a": "none",
+      "b": "character",
+      "kind": 3,
+      "result": {
+        "decision": "MissingAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 0,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 14
+      }
+    },
+    {
+      "command": "try",
+      "a": "invalid",
+      "b": "none",
+      "kind": 3,
+      "result": {
+        "decision": "MissingAttachee",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 0,
+        "releases": [],
+        "instructions": 17
+      }
+    },
+    {
+      "command": "try",
+      "a": "invalid",
+      "b": "invalid",
+      "kind": 3,
+      "result": {
+        "decision": "InvalidAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 26
+      }
+    },
+    {
+      "command": "try",
+      "a": "invalid",
+      "b": "body",
+      "kind": 3,
+      "result": {
+        "decision": "InvalidAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 26
+      }
+    },
+    {
+      "command": "try",
+      "a": "invalid",
+      "b": "character",
+      "kind": 3,
+      "result": {
+        "decision": "InvalidAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 26
+      }
+    },
+    {
+      "command": "try",
+      "a": "body",
+      "b": "none",
+      "kind": 3,
+      "result": {
+        "decision": "MissingAttachee",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 0,
+        "releases": [],
+        "instructions": 17
+      }
+    },
+    {
+      "command": "try",
+      "a": "body",
+      "b": "invalid",
+      "kind": 3,
+      "result": {
+        "decision": "InvalidAttachee",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 34
+      }
+    },
+    {
+      "command": "try",
+      "a": "body",
+      "b": "body",
+      "kind": 3,
+      "result": {
+        "decision": "NeedsCharacters",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 68
+      }
+    },
+    {
+      "command": "try",
+      "a": "body",
+      "b": "character",
+      "kind": 3,
+      "result": {
+        "decision": "NeedsCharacters",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 71
+      }
+    },
+    {
+      "command": "try",
+      "a": "character",
+      "b": "none",
+      "kind": 3,
+      "result": {
+        "decision": "MissingAttachee",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 0,
+        "releases": [],
+        "instructions": 17
+      }
+    },
+    {
+      "command": "try",
+      "a": "character",
+      "b": "invalid",
+      "kind": 3,
+      "result": {
+        "decision": "InvalidAttachee",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 37
+      }
+    },
+    {
+      "command": "try",
+      "a": "character",
+      "b": "body",
+      "kind": 3,
+      "result": {
+        "decision": "NeedsCharacters",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 74
+      }
+    },
+    {
+      "command": "try",
+      "a": "character",
+      "b": "character",
+      "kind": 3,
+      "result": {
+        "decision": "Ready",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 1946157056,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 70
+      }
+    },
+    {
+      "command": "activate",
+      "a": "none",
+      "b": "body",
+      "kind": 0,
+      "result": {
+        "decision": "MissingAttacher",
+        "body": 0,
+        "old_motion": 154,
+        "filter": 0,
+        "attachment": 0,
+        "attacher": 0,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 19
+      }
+    },
+    {
+      "command": "modify",
+      "a": "none",
+      "b": "body",
+      "kind": 0,
+      "result": {
+        "decision": "MissingAttacher",
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 0,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 18
+      }
+    },
+    {
+      "command": "modify",
+      "a": "none",
+      "b": "body",
+      "kind": 0,
+      "result": {
+        "decision": null,
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 123,
+        "attacher": 0,
+        "attachee": 1946157312,
+        "releases": [],
+        "instructions": 3
+      }
+    },
+    {
+      "command": "deactivate",
+      "a": "body",
+      "b": "character",
+      "kind": 0,
+      "result": {
+        "decision": null,
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 0,
+        "attachee": 0,
+        "releases": [
+          1946157056,
+          1946157312
+        ],
+        "instructions": 37
+      }
+    },
+    {
+      "command": "deactivate",
+      "a": "none",
+      "b": "none",
+      "kind": 0,
+      "result": {
+        "decision": null,
+        "body": 99,
+        "old_motion": 154,
+        "filter": 305419896,
+        "attachment": 0,
+        "attacher": 0,
+        "attachee": 0,
+        "releases": [],
+        "instructions": 31
+      }
+    }
+  ]
+}

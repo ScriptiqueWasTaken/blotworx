@@ -1,0 +1,265 @@
+{
+  "capture_sha256": "000edd8d85a4b276bfb8606c79d83e2eae48abb66e7dff76012108d572f5bddc",
+  "tolerance": 1e-06,
+  "maximum_ground_speed": 5.0,
+  "scope": "VillageTest asynchronous ground history/attribute/variable observations. Gate boundaries are retained separately; event timing and call-site update ordering remain unverified.",
+  "checked_ungated_snapshots": 333,
+  "held_snapshots": [
+    {
+      "override": 2,
+      "history": {
+        "previous_speed": 3.3333208560943604,
+        "speed": 2.499988317489624
+      },
+      "unchanged": true
+    },
+    {
+      "override": 2,
+      "history": {
+        "previous_speed": 2.499988317489624,
+        "speed": 1.6666547060012817
+      },
+      "unchanged": true
+    },
+    {
+      "override": 2,
+      "history": {
+        "previous_speed": 0.8333210945129395,
+        "speed": 0.0
+      },
+      "unchanged": true
+    },
+    {
+      "override": 2,
+      "history": {
+        "previous_speed": 0.0,
+        "speed": 0.0
+      },
+      "unchanged": true
+    }
+  ],
+  "boundary_snapshots": [
+    {
+      "seconds": 29.996201299945824,
+      "previous_gate": 0,
+      "gate": 2,
+      "history": {
+        "previous_speed": 4.999987602233887,
+        "speed": 4.166654586791992
+      },
+      "words": [
+        1062556973,
+        1062556973,
+        1074091324
+      ],
+      "retained_previous_values": false
+    },
+    {
+      "seconds": 30.250575399957597,
+      "previous_gate": 2,
+      "gate": 0,
+      "history": {
+        "previous_speed": 0.0,
+        "speed": 0.0
+      },
+      "words": [
+        1062556973,
+        1062556973,
+        1074091324
+      ],
+      "retained_previous_values": true
+    }
+  ],
+  "unexplained_snapshots": [],
+  "samples": [
+    {
+      "previous_speed": 0.0,
+      "speed": 0.0,
+      "animated_walk": 0.6299999952316284,
+      "animated_run": 6.429999828338623,
+      "normalized": 0.0,
+      "scaled_run": 0.0,
+      "scaled_walk": 0.0
+    },
+    {
+      "previous_speed": 0.40000003576278687,
+      "speed": 0.37657439708709717,
+      "animated_walk": 1.3219192028045654,
+      "animated_run": 5.707777500152588,
+      "normalized": 0.07531487941741943,
+      "scaled_run": 0.06597565859556198,
+      "scaled_walk": 0.2848694622516632
+    },
+    {
+      "previous_speed": 0.37657439708709717,
+      "speed": 0.5577282905578613,
+      "animated_walk": 2.0,
+      "animated_run": 5.0,
+      "normalized": 0.11154565960168839,
+      "scaled_run": 0.11154565960168839,
+      "scaled_walk": 0.27886414527893066
+    },
+    {
+      "previous_speed": 0.8604613542556763,
+      "speed": 1.2523411512374878,
+      "animated_walk": 2.0,
+      "animated_run": 5.0,
+      "normalized": 0.2504682242870331,
+      "scaled_run": 0.2504682242870331,
+      "scaled_walk": 0.6261705756187439
+    },
+    {
+      "previous_speed": 1.2523411512374878,
+      "speed": 1.6523357629776,
+      "animated_walk": 2.0,
+      "animated_run": 5.0,
+      "normalized": 0.330467164516449,
+      "scaled_run": 0.330467164516449,
+      "scaled_walk": 0.8261678814888
+    },
+    {
+      "previous_speed": 2.0523345470428467,
+      "speed": 2.452333927154541,
+      "animated_walk": 2.0,
+      "animated_run": 5.0,
+      "normalized": 0.49046677350997925,
+      "scaled_run": 0.49046677350997925,
+      "scaled_walk": 1.2261669635772705
+    },
+    {
+      "previous_speed": 2.452333927154541,
+      "speed": 2.8523330688476562,
+      "animated_walk": 2.0,
+      "animated_run": 5.0,
+      "normalized": 0.5704666376113892,
+      "scaled_run": 0.5704666376113892,
+      "scaled_walk": 1.4261665344238281
+    },
+    {
+      "previous_speed": 3.252331256866455,
+      "speed": 3.652329206466675,
+      "animated_walk": 2.0,
+      "animated_run": 5.0,
+      "normalized": 0.730465829372406,
+      "scaled_run": 0.730465829372406,
+      "scaled_walk": 1.8261646032333374
+    },
+    {
+      "previous_speed": 4.0523271560668945,
+      "speed": 4.452324867248535,
+      "animated_walk": 2.0,
+      "animated_run": 5.0,
+      "normalized": 0.8904649615287781,
+      "scaled_run": 0.8904649615287781,
+      "scaled_walk": 2.2261624336242676
+    },
+    {
+      "previous_speed": 4.452324867248535,
+      "speed": 4.852320671081543,
+      "animated_walk": 2.0,
+      "animated_run": 5.0,
+      "normalized": 0.9704641103744507,
+      "scaled_run": 0.9704641103744507,
+      "scaled_walk": 2.4261603355407715
+    },
+    {
+      "previous_speed": 4.999987602233887,
+      "speed": 4.999988079071045,
+      "animated_walk": 2.0,
+      "animated_run": 5.0,
+      "normalized": 0.9900000095367432,
+      "scaled_run": 0.999997615814209,
+      "scaled_walk": 2.4999940395355225
+    },
+    {
+      "previous_speed": 4.999988079071045,
+      "speed": 4.999988555908203,
+      "animated_walk": 2.0,
+      "animated_run": 5.0,
+      "normalized": 0.9900000095367432,
+      "scaled_run": 0.9999977350234985,
+      "scaled_walk": 2.4999942779541016
+    },
+    {
+      "previous_speed": 4.999988555908203,
+      "speed": 4.999988079071045,
+      "animated_walk": 2.0,
+      "animated_run": 5.0,
+      "normalized": 0.9900000095367432,
+      "scaled_run": 0.999997615814209,
+      "scaled_walk": 2.4999940395355225
+    },
+    {
+      "previous_speed": 4.999988079071045,
+      "speed": 4.999987602233887,
+      "animated_walk": 2.0,
+      "animated_run": 5.0,
+      "normalized": 0.9900000095367432,
+      "scaled_run": 0.9999974966049194,
+      "scaled_walk": 2.4999938011169434
+    },
+    {
+      "previous_speed": 4.999987602233887,
+      "speed": 4.999988555908203,
+      "animated_walk": 2.0,
+      "animated_run": 5.0,
+      "normalized": 0.9900000095367432,
+      "scaled_run": 0.9999977350234985,
+      "scaled_walk": 2.4999942779541016
+    },
+    {
+      "previous_speed": 4.999988079071045,
+      "speed": 4.999988079071045,
+      "animated_walk": 2.0,
+      "animated_run": 5.0,
+      "normalized": 0.9900000095367432,
+      "scaled_run": 0.999997615814209,
+      "scaled_walk": 2.4999940395355225
+    },
+    {
+      "previous_speed": 4.999988555908203,
+      "speed": 4.999989032745361,
+      "animated_walk": 2.0,
+      "animated_run": 5.0,
+      "normalized": 0.9900000095367432,
+      "scaled_run": 0.9999977946281433,
+      "scaled_walk": 2.4999945163726807
+    },
+    {
+      "previous_speed": 4.999989032745361,
+      "speed": 4.999988555908203,
+      "animated_walk": 2.0,
+      "animated_run": 5.0,
+      "normalized": 0.9900000095367432,
+      "scaled_run": 0.9999977350234985,
+      "scaled_walk": 2.4999942779541016
+    },
+    {
+      "previous_speed": 4.999989032745361,
+      "speed": 4.999989032745361,
+      "animated_walk": 2.0,
+      "animated_run": 5.0,
+      "normalized": 0.9900000095367432,
+      "scaled_run": 0.9999977946281433,
+      "scaled_walk": 2.4999945163726807
+    },
+    {
+      "previous_speed": 4.999988555908203,
+      "speed": 4.999988555908203,
+      "animated_walk": 2.0,
+      "animated_run": 5.0,
+      "normalized": 0.9900000095367432,
+      "scaled_run": 0.9999977350234985,
+      "scaled_walk": 2.4999942779541016
+    },
+    {
+      "previous_speed": 4.999988555908203,
+      "speed": 4.999987602233887,
+      "animated_walk": 2.0,
+      "animated_run": 5.0,
+      "normalized": 0.9900000095367432,
+      "scaled_run": 0.9999974966049194,
+      "scaled_walk": 2.4999938011169434
+    }
+  ]
+}

@@ -1,0 +1,298 @@
+{
+  "pc_sha256": "80fdf5ea01fdde0e0e640bb0bade4b8af6c90686ed78f51473870b734b8056cb",
+  "functions": {
+    "0x97ab10": "d85656d31ad56023ec1890d5ed65f9373caf961efe47d9570f9716b7cd2b3baa",
+    "0xa3b990": "b04604b3aa86ff06d55d5833715880969354ae3b628c49c2900602a0df3d8201",
+    "0xa3b920": "e4087d61e1526e2d6f8f2e3272e8dc510731af3051baada62e3d6707aa04bbfe"
+  },
+  "scope": "Original PC setter instructions; hash-map storage and status-event sink are explicit hosts, not event-consumer validation",
+  "cases": [
+    {
+      "kind": "slot",
+      "name": "new_[False, False]",
+      "index": 1,
+      "unlocked": true,
+      "channels": [
+        false,
+        false
+      ],
+      "reference": {
+        "flags": [
+          0,
+          0,
+          1,
+          1,
+          0
+        ],
+        "word8": 0
+      }
+    },
+    {
+      "kind": "slot",
+      "name": "new_[True, False]",
+      "index": 1,
+      "unlocked": true,
+      "channels": [
+        true,
+        false
+      ],
+      "reference": {
+        "flags": [
+          1,
+          0,
+          1,
+          1,
+          0
+        ],
+        "word8": 0
+      }
+    },
+    {
+      "kind": "slot",
+      "name": "new_[False, True]",
+      "index": 1,
+      "unlocked": true,
+      "channels": [
+        false,
+        true
+      ],
+      "reference": {
+        "flags": [
+          0,
+          1,
+          1,
+          1,
+          0
+        ],
+        "word8": 0
+      }
+    },
+    {
+      "kind": "slot",
+      "name": "new_[True, True]",
+      "index": 1,
+      "unlocked": true,
+      "channels": [
+        true,
+        true
+      ],
+      "reference": {
+        "flags": [
+          1,
+          1,
+          1,
+          1,
+          0
+        ],
+        "word8": 0
+      }
+    },
+    {
+      "kind": "slot",
+      "name": "existing_False",
+      "index": 0,
+      "unlocked": false,
+      "channels": [
+        true,
+        false
+      ],
+      "initial": {
+        "flags": [
+          1,
+          1,
+          0,
+          1,
+          1
+        ],
+        "word8": 305419896
+      },
+      "reference": {
+        "flags": [
+          0,
+          1,
+          0,
+          1,
+          1
+        ],
+        "word8": 305419896
+      }
+    },
+    {
+      "kind": "container",
+      "name": "status_0_False",
+      "unlocked": false,
+      "status": 0,
+      "reference": {
+        "status": 1,
+        "events": [
+          {
+            "before": 0,
+            "after": 1
+          }
+        ]
+      }
+    },
+    {
+      "kind": "container",
+      "name": "status_1_False",
+      "unlocked": false,
+      "status": 1,
+      "reference": {
+        "status": 1,
+        "events": []
+      }
+    },
+    {
+      "kind": "container",
+      "name": "status_30_False",
+      "unlocked": false,
+      "status": 30,
+      "reference": {
+        "status": 31,
+        "events": [
+          {
+            "before": 30,
+            "after": 31
+          }
+        ]
+      }
+    },
+    {
+      "kind": "container",
+      "name": "status_31_False",
+      "unlocked": false,
+      "status": 31,
+      "reference": {
+        "status": 31,
+        "events": []
+      }
+    },
+    {
+      "kind": "container",
+      "name": "status_4294967295_False",
+      "unlocked": false,
+      "status": 4294967295,
+      "reference": {
+        "status": 4294967295,
+        "events": []
+      }
+    },
+    {
+      "kind": "container",
+      "name": "missing_False",
+      "unlocked": false,
+      "status": 1,
+      "present": false,
+      "reference": {
+        "status": 1,
+        "events": []
+      }
+    },
+    {
+      "kind": "slot",
+      "name": "existing_True",
+      "index": 0,
+      "unlocked": true,
+      "channels": [
+        true,
+        false
+      ],
+      "initial": {
+        "flags": [
+          1,
+          1,
+          0,
+          1,
+          1
+        ],
+        "word8": 305419896
+      },
+      "reference": {
+        "flags": [
+          1,
+          1,
+          0,
+          1,
+          1
+        ],
+        "word8": 305419896
+      }
+    },
+    {
+      "kind": "container",
+      "name": "status_0_True",
+      "unlocked": true,
+      "status": 0,
+      "reference": {
+        "status": 0,
+        "events": []
+      }
+    },
+    {
+      "kind": "container",
+      "name": "status_1_True",
+      "unlocked": true,
+      "status": 1,
+      "reference": {
+        "status": 0,
+        "events": [
+          {
+            "before": 1,
+            "after": 0
+          }
+        ]
+      }
+    },
+    {
+      "kind": "container",
+      "name": "status_30_True",
+      "unlocked": true,
+      "status": 30,
+      "reference": {
+        "status": 30,
+        "events": []
+      }
+    },
+    {
+      "kind": "container",
+      "name": "status_31_True",
+      "unlocked": true,
+      "status": 31,
+      "reference": {
+        "status": 30,
+        "events": [
+          {
+            "before": 31,
+            "after": 30
+          }
+        ]
+      }
+    },
+    {
+      "kind": "container",
+      "name": "status_4294967295_True",
+      "unlocked": true,
+      "status": 4294967295,
+      "reference": {
+        "status": 4294967294,
+        "events": [
+          {
+            "before": 4294967295,
+            "after": 4294967294
+          }
+        ]
+      }
+    },
+    {
+      "kind": "container",
+      "name": "missing_True",
+      "unlocked": true,
+      "status": 1,
+      "present": false,
+      "reference": {
+        "status": 1,
+        "events": []
+      }
+    }
+  ]
+}

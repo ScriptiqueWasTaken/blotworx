@@ -1,0 +1,540 @@
+{
+  "scope": "Execute the retail camera-profile reset leaves, with supplied virtual callback.\n\nChecks flag writes, mode gates and tail-call arguments. Profile lookup, alias\nresolution, transition evaluation, target notifications and Lua are separate.\n",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "cases": [
+    {
+      "kind": "Default",
+      "entry": "0xe4a30",
+      "mode": -1,
+      "initial_enabled": false,
+      "enabled": [
+        false,
+        false,
+        false
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Default",
+      "entry": "0xe4a30",
+      "mode": -1,
+      "initial_enabled": true,
+      "enabled": [
+        false,
+        true,
+        true
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Default",
+      "entry": "0xe4a30",
+      "mode": 0,
+      "initial_enabled": false,
+      "enabled": [
+        false,
+        false,
+        false
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Default",
+      "entry": "0xe4a30",
+      "mode": 0,
+      "initial_enabled": true,
+      "enabled": [
+        false,
+        true,
+        true
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Default",
+      "entry": "0xe4a30",
+      "mode": 1,
+      "initial_enabled": false,
+      "enabled": [
+        false,
+        false,
+        false
+      ],
+      "calls": [
+        {
+          "name_offset": 336,
+          "mode": 1,
+          "duration_bits": 1056964608,
+          "enabled": [
+            false,
+            false,
+            false
+          ]
+        }
+      ],
+      "instructions": 15
+    },
+    {
+      "kind": "Default",
+      "entry": "0xe4a30",
+      "mode": 1,
+      "initial_enabled": true,
+      "enabled": [
+        false,
+        true,
+        true
+      ],
+      "calls": [
+        {
+          "name_offset": 336,
+          "mode": 1,
+          "duration_bits": 1056964608,
+          "enabled": [
+            false,
+            true,
+            true
+          ]
+        }
+      ],
+      "instructions": 15
+    },
+    {
+      "kind": "Default",
+      "entry": "0xe4a30",
+      "mode": 2,
+      "initial_enabled": false,
+      "enabled": [
+        false,
+        false,
+        false
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Default",
+      "entry": "0xe4a30",
+      "mode": 2,
+      "initial_enabled": true,
+      "enabled": [
+        false,
+        true,
+        true
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Default",
+      "entry": "0xe4a30",
+      "mode": 3,
+      "initial_enabled": false,
+      "enabled": [
+        false,
+        false,
+        false
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Default",
+      "entry": "0xe4a30",
+      "mode": 3,
+      "initial_enabled": true,
+      "enabled": [
+        false,
+        true,
+        true
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Default",
+      "entry": "0xe4a30",
+      "mode": 4,
+      "initial_enabled": false,
+      "enabled": [
+        false,
+        false,
+        false
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Default",
+      "entry": "0xe4a30",
+      "mode": 4,
+      "initial_enabled": true,
+      "enabled": [
+        false,
+        true,
+        true
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Combat",
+      "entry": "0xe4c90",
+      "mode": -1,
+      "initial_enabled": false,
+      "enabled": [
+        false,
+        false,
+        false
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Combat",
+      "entry": "0xe4c90",
+      "mode": -1,
+      "initial_enabled": true,
+      "enabled": [
+        true,
+        false,
+        true
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Combat",
+      "entry": "0xe4c90",
+      "mode": 0,
+      "initial_enabled": false,
+      "enabled": [
+        false,
+        false,
+        false
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Combat",
+      "entry": "0xe4c90",
+      "mode": 0,
+      "initial_enabled": true,
+      "enabled": [
+        true,
+        false,
+        true
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Combat",
+      "entry": "0xe4c90",
+      "mode": 1,
+      "initial_enabled": false,
+      "enabled": [
+        false,
+        false,
+        false
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Combat",
+      "entry": "0xe4c90",
+      "mode": 1,
+      "initial_enabled": true,
+      "enabled": [
+        true,
+        false,
+        true
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Combat",
+      "entry": "0xe4c90",
+      "mode": 2,
+      "initial_enabled": false,
+      "enabled": [
+        false,
+        false,
+        false
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Combat",
+      "entry": "0xe4c90",
+      "mode": 2,
+      "initial_enabled": true,
+      "enabled": [
+        true,
+        false,
+        true
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Combat",
+      "entry": "0xe4c90",
+      "mode": 3,
+      "initial_enabled": false,
+      "enabled": [
+        false,
+        false,
+        false
+      ],
+      "calls": [
+        {
+          "name_offset": 344,
+          "mode": 1,
+          "duration_bits": 1056964608,
+          "enabled": [
+            false,
+            false,
+            false
+          ]
+        }
+      ],
+      "instructions": 15
+    },
+    {
+      "kind": "Combat",
+      "entry": "0xe4c90",
+      "mode": 3,
+      "initial_enabled": true,
+      "enabled": [
+        true,
+        false,
+        true
+      ],
+      "calls": [
+        {
+          "name_offset": 344,
+          "mode": 1,
+          "duration_bits": 1056964608,
+          "enabled": [
+            true,
+            false,
+            true
+          ]
+        }
+      ],
+      "instructions": 15
+    },
+    {
+      "kind": "Combat",
+      "entry": "0xe4c90",
+      "mode": 4,
+      "initial_enabled": false,
+      "enabled": [
+        false,
+        false,
+        false
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Combat",
+      "entry": "0xe4c90",
+      "mode": 4,
+      "initial_enabled": true,
+      "enabled": [
+        true,
+        false,
+        true
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Travel",
+      "entry": "0xe4ef0",
+      "mode": -1,
+      "initial_enabled": false,
+      "enabled": [
+        false,
+        false,
+        false
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Travel",
+      "entry": "0xe4ef0",
+      "mode": -1,
+      "initial_enabled": true,
+      "enabled": [
+        true,
+        true,
+        false
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Travel",
+      "entry": "0xe4ef0",
+      "mode": 0,
+      "initial_enabled": false,
+      "enabled": [
+        false,
+        false,
+        false
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Travel",
+      "entry": "0xe4ef0",
+      "mode": 0,
+      "initial_enabled": true,
+      "enabled": [
+        true,
+        true,
+        false
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Travel",
+      "entry": "0xe4ef0",
+      "mode": 1,
+      "initial_enabled": false,
+      "enabled": [
+        false,
+        false,
+        false
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Travel",
+      "entry": "0xe4ef0",
+      "mode": 1,
+      "initial_enabled": true,
+      "enabled": [
+        true,
+        true,
+        false
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Travel",
+      "entry": "0xe4ef0",
+      "mode": 2,
+      "initial_enabled": false,
+      "enabled": [
+        false,
+        false,
+        false
+      ],
+      "calls": [
+        {
+          "name_offset": 340,
+          "mode": 1,
+          "duration_bits": 1056964608,
+          "enabled": [
+            false,
+            false,
+            false
+          ]
+        }
+      ],
+      "instructions": 15
+    },
+    {
+      "kind": "Travel",
+      "entry": "0xe4ef0",
+      "mode": 2,
+      "initial_enabled": true,
+      "enabled": [
+        true,
+        true,
+        false
+      ],
+      "calls": [
+        {
+          "name_offset": 340,
+          "mode": 1,
+          "duration_bits": 1056964608,
+          "enabled": [
+            true,
+            true,
+            false
+          ]
+        }
+      ],
+      "instructions": 15
+    },
+    {
+      "kind": "Travel",
+      "entry": "0xe4ef0",
+      "mode": 3,
+      "initial_enabled": false,
+      "enabled": [
+        false,
+        false,
+        false
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Travel",
+      "entry": "0xe4ef0",
+      "mode": 3,
+      "initial_enabled": true,
+      "enabled": [
+        true,
+        true,
+        false
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Travel",
+      "entry": "0xe4ef0",
+      "mode": 4,
+      "initial_enabled": false,
+      "enabled": [
+        false,
+        false,
+        false
+      ],
+      "calls": [],
+      "instructions": 5
+    },
+    {
+      "kind": "Travel",
+      "entry": "0xe4ef0",
+      "mode": 4,
+      "initial_enabled": true,
+      "enabled": [
+        true,
+        true,
+        false
+      ],
+      "calls": [],
+      "instructions": 5
+    }
+  ]
+}

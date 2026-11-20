@@ -1,0 +1,392 @@
+{
+  "scope": "Original scalar instructions and math calls; hardware estimate table, no runtime camera capture",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "dol_sha256": "994779fa2e276983efdb50f02c406568f285a82558cb5d54bbdf74651a98a920",
+  "conversions": [
+    {
+      "source": 1.2000000476837158,
+      "target": 1.3333333730697632,
+      "fov": 60.0,
+      "bits": 1116143351,
+      "instructions": 192
+    },
+    {
+      "source": 1.2000000476837158,
+      "target": 1.7777777910232544,
+      "fov": 60.0,
+      "bits": 1119825311,
+      "instructions": 192
+    },
+    {
+      "source": 1.2000000476837158,
+      "target": 1.600000023841858,
+      "fov": 70.52880096435547,
+      "bits": 1120491532,
+      "instructions": 192
+    },
+    {
+      "source": 1.2000000476837158,
+      "target": 1.3333333730697632,
+      "fov": 100.0,
+      "bits": 1122589244,
+      "instructions": 258
+    },
+    {
+      "source": 1.2000000476837158,
+      "target": 1.7777777910232544,
+      "fov": 176.0,
+      "bits": 1127481344,
+      "instructions": 138
+    },
+    {
+      "source": 1.2000000476837158,
+      "target": 1.3333333730697632,
+      "fov": 1.0,
+      "bits": 1066285311,
+      "instructions": 153
+    },
+    {
+      "source": 1.2000000476837158,
+      "target": 1.3333333730697632,
+      "fov": -60.0,
+      "bits": 3263626999,
+      "instructions": 192
+    }
+  ],
+  "source_fov": [
+    {
+      "right": 0.0,
+      "bits": 0,
+      "instructions": 57
+    },
+    {
+      "right": 0.25,
+      "bits": 1105699811,
+      "instructions": 86
+    },
+    {
+      "right": 0.5,
+      "bits": 1114636289,
+      "instructions": 125
+    },
+    {
+      "right": 0.5773506164550781,
+      "bits": 1116540610,
+      "instructions": 125
+    },
+    {
+      "right": 0.95,
+      "bits": 1125096505,
+      "instructions": 125
+    },
+    {
+      "right": 0.99,
+      "bits": 1126418401,
+      "instructions": 114
+    },
+    {
+      "right": 1.0,
+      "bits": 1127481344,
+      "instructions": 14
+    },
+    {
+      "right": 1.2,
+      "bits": 1127481344,
+      "instructions": 14
+    },
+    {
+      "right": -0.5773506164550781,
+      "bits": 3264024258,
+      "instructions": 125
+    },
+    {
+      "right": -1.2,
+      "bits": 3274964992,
+      "instructions": 10
+    }
+  ],
+  "asin": [
+    {
+      "input": -1.0,
+      "bits": 3217625051,
+      "instructions": 40
+    },
+    {
+      "input": -0.99,
+      "bits": 3216437732,
+      "instructions": 99
+    },
+    {
+      "input": -0.5773506164550781,
+      "bits": 3206385691,
+      "instructions": 110
+    },
+    {
+      "input": -0.0,
+      "bits": 2147483648,
+      "instructions": 42
+    },
+    {
+      "input": 0.0,
+      "bits": 0,
+      "instructions": 42
+    },
+    {
+      "input": 0.01,
+      "bits": 1008981949,
+      "instructions": 71
+    },
+    {
+      "input": 0.25,
+      "bits": 1048665934,
+      "instructions": 71
+    },
+    {
+      "input": 0.5,
+      "bits": 1057360530,
+      "instructions": 110
+    },
+    {
+      "input": 0.5773506164550781,
+      "bits": 1058902043,
+      "instructions": 110
+    },
+    {
+      "input": 0.95,
+      "bits": 1067477513,
+      "instructions": 110
+    },
+    {
+      "input": 0.99,
+      "bits": 1068954084,
+      "instructions": 99
+    },
+    {
+      "input": 1.0,
+      "bits": 1070141403,
+      "instructions": 40
+    }
+  ],
+  "projections": [
+    {
+      "label": "scalar_case",
+      "renderer_aspect": 1.3333333730697632,
+      "aspect": 1.3333333730697632,
+      "fov": 60.0,
+      "width": 0.0,
+      "orthographic": false,
+      "near": 0.25,
+      "far": 400.0,
+      "bits": [
+        3205380324,
+        1057896676,
+        1054168406,
+        3201652054,
+        1048576000,
+        1137180672
+      ],
+      "instructions": 278
+    },
+    {
+      "label": "scalar_case",
+      "renderer_aspect": 1.7777777910232544,
+      "aspect": 1.7777777910232544,
+      "fov": 60.0,
+      "width": 0.0,
+      "orthographic": false,
+      "near": 0.25,
+      "far": 400.0,
+      "bits": [
+        3208487215,
+        1061003567,
+        1054168405,
+        3201652053,
+        1048576000,
+        1137180672
+      ],
+      "instructions": 344
+    },
+    {
+      "label": "scalar_case",
+      "renderer_aspect": 1.600000023841858,
+      "aspect": 1.600000023841858,
+      "fov": 70.52880096435547,
+      "width": 0.0,
+      "orthographic": false,
+      "near": 0.25,
+      "far": 400.0,
+      "bits": [
+        3208974759,
+        1061491111,
+        1056331281,
+        3203814929,
+        1048576000,
+        1137180672
+      ],
+      "instructions": 344
+    },
+    {
+      "label": "scalar_case",
+      "renderer_aspect": 1.7777777910232544,
+      "aspect": 1.5,
+      "fov": 100.0,
+      "width": 0.0,
+      "orthographic": false,
+      "near": 0.25,
+      "far": 400.0,
+      "bits": [
+        3212836864,
+        1065353216,
+        1059760811,
+        3207244459,
+        1048576000,
+        1137180672
+      ],
+      "instructions": 291
+    },
+    {
+      "label": "scalar_case",
+      "renderer_aspect": 1.7777777910232544,
+      "aspect": 1.7777777910232544,
+      "fov": 176.0,
+      "width": 0.0,
+      "orthographic": false,
+      "near": 0.25,
+      "far": 400.0,
+      "bits": [
+        3212836864,
+        1065353216,
+        1058013184,
+        3205496832,
+        1048576000,
+        1137180672
+      ],
+      "instructions": 282
+    },
+    {
+      "label": "scalar_case",
+      "renderer_aspect": 1.3333333730697632,
+      "aspect": 1.3333333730697632,
+      "fov": 60.0,
+      "width": 5.5,
+      "orthographic": true,
+      "near": 0.25,
+      "far": 400.0,
+      "bits": [
+        3224371200,
+        1076887552,
+        1074003968,
+        3221487616,
+        1048576000,
+        1137180672
+      ],
+      "instructions": 223
+    },
+    {
+      "label": "retail_projector",
+      "renderer_aspect": 1.3333330154418945,
+      "aspect": 1.3333330154418945,
+      "fov": 70.52882385253906,
+      "width": 0.0,
+      "orthographic": false,
+      "near": 0.25,
+      "far": 400.0,
+      "bits": [
+        3206822241,
+        1059338593,
+        1056331285,
+        3203814933,
+        1048576000,
+        1137180672
+      ],
+      "instructions": 278
+    }
+  ],
+  "letterbox": [
+    {
+      "renderer_aspect": 1.3333333730697632,
+      "source_fov": 60.0,
+      "destination_fov": 100.0,
+      "weight": 0.0,
+      "raw_fov_bits": 1114636288,
+      "published_fov_bits": 1118256579,
+      "bits": [
+        3208487216,
+        1061003568,
+        1057896676,
+        3205380324,
+        1048576000,
+        1137180672
+      ],
+      "instructions": 536
+    },
+    {
+      "renderer_aspect": 1.600000023841858,
+      "source_fov": 70.52880096435547,
+      "destination_fov": 100.0,
+      "weight": 0.0,
+      "raw_fov_bits": 1116540607,
+      "published_fov_bits": 1117756798,
+      "bits": [
+        3210409772,
+        1062926124,
+        1057544827,
+        3205028475,
+        1048576000,
+        1137180672
+      ],
+      "instructions": 536
+    },
+    {
+      "renderer_aspect": 1.3333333730697632,
+      "source_fov": 176.0,
+      "destination_fov": 100.0,
+      "weight": 0.0,
+      "raw_fov_bits": 1127219200,
+      "published_fov_bits": 1127481344,
+      "bits": [
+        3212836864,
+        1065353216,
+        1061158912,
+        3208642560,
+        1048576000,
+        1137180672
+      ],
+      "instructions": 421
+    },
+    {
+      "renderer_aspect": 1.5,
+      "source_fov": 40.0,
+      "destination_fov": 100.0,
+      "weight": 0.3700000047683716,
+      "raw_fov_bits": 1115213005,
+      "published_fov_bits": 1117191630,
+      "bits": [
+        3208898153,
+        1061414505,
+        1057135003,
+        3204618651,
+        1048576000,
+        1137180672
+      ],
+      "instructions": 536
+    },
+    {
+      "renderer_aspect": 1.3333333730697632,
+      "source_fov": -60.0,
+      "destination_fov": 100.0,
+      "weight": 0.0,
+      "raw_fov_bits": 3262119936,
+      "published_fov_bits": 3265740227,
+      "bits": [
+        1061003568,
+        3208487216,
+        3205380324,
+        1057896676,
+        1048576000,
+        1137180672
+      ],
+      "instructions": 539
+    }
+  ]
+}

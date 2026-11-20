@@ -1,0 +1,6629 @@
+{
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "registration_helper": "0x277ec0",
+  "scope": "Direct global native-function exports observed at the retail registration helper; excludes constants, metatables, and other registration paths. Registration does not establish behavioral parity.",
+  "functions": [
+    {
+      "name": "AIBB_GetAttraction",
+      "registrations": [
+        {
+          "name": "AIBB_GetAttraction",
+          "call": "0x2dc4f4",
+          "register_function": "0x277ec0",
+          "callback": "0x2d722c"
+        }
+      ]
+    },
+    {
+      "name": "AIBB_GetCanReachMostValuedTarget",
+      "registrations": [
+        {
+          "name": "AIBB_GetCanReachMostValuedTarget",
+          "call": "0x2dc774",
+          "register_function": "0x277ec0",
+          "callback": "0x2d7e44"
+        }
+      ]
+    },
+    {
+      "name": "AIBB_GetCanSeePlayer",
+      "registrations": [
+        {
+          "name": "AIBB_GetCanSeePlayer",
+          "call": "0x2dc634",
+          "register_function": "0x277ec0",
+          "callback": "0x2d783c"
+        }
+      ]
+    },
+    {
+      "name": "AIBB_GetHasChaseStarted",
+      "registrations": [
+        {
+          "name": "AIBB_GetHasChaseStarted",
+          "call": "0x2dc954",
+          "register_function": "0x277ec0",
+          "callback": "0x2d8744"
+        }
+      ]
+    },
+    {
+      "name": "AIBB_GetHasScaredPlayer",
+      "registrations": [
+        {
+          "name": "AIBB_GetHasScaredPlayer",
+          "call": "0x2dc9f4",
+          "register_function": "0x277ec0",
+          "callback": "0x2d8a44"
+        }
+      ]
+    },
+    {
+      "name": "AIBB_GetKamikazeChaseStarted",
+      "registrations": [
+        {
+          "name": "AIBB_GetKamikazeChaseStarted",
+          "call": "0x2dc8b4",
+          "register_function": "0x277ec0",
+          "callback": "0x2d8444"
+        }
+      ]
+    },
+    {
+      "name": "AIBB_GetLastAttackedTime",
+      "registrations": [
+        {
+          "name": "AIBB_GetLastAttackedTime",
+          "call": "0x2dc814",
+          "register_function": "0x277ec0",
+          "callback": "0x2d8144"
+        }
+      ]
+    },
+    {
+      "name": "AIBB_GetMostValuedTarget",
+      "registrations": [
+        {
+          "name": "AIBB_GetMostValuedTarget",
+          "call": "0x2dc6d4",
+          "register_function": "0x277ec0",
+          "callback": "0x2d7b3c"
+        }
+      ]
+    },
+    {
+      "name": "AIBB_GetRecentlyAttacked",
+      "registrations": [
+        {
+          "name": "AIBB_GetRecentlyAttacked",
+          "call": "0x2dc314",
+          "register_function": "0x277ec0",
+          "callback": "0x2d691c"
+        }
+      ]
+    },
+    {
+      "name": "AIBB_GetReevaluateRequired",
+      "registrations": [
+        {
+          "name": "AIBB_GetReevaluateRequired",
+          "call": "0x2dc274",
+          "register_function": "0x277ec0",
+          "callback": "0x2d661c"
+        }
+      ]
+    },
+    {
+      "name": "AIBB_GetRepellent",
+      "registrations": [
+        {
+          "name": "AIBB_GetRepellent",
+          "call": "0x2dc454",
+          "register_function": "0x277ec0",
+          "callback": "0x2d6f24"
+        }
+      ]
+    },
+    {
+      "name": "AIBB_GetStun",
+      "registrations": [
+        {
+          "name": "AIBB_GetStun",
+          "call": "0x2dc594",
+          "register_function": "0x277ec0",
+          "callback": "0x2d7534"
+        }
+      ]
+    },
+    {
+      "name": "AIBB_GetTarget",
+      "registrations": [
+        {
+          "name": "AIBB_GetTarget",
+          "call": "0x2dc1d4",
+          "register_function": "0x277ec0",
+          "callback": "0x2d6314"
+        }
+      ]
+    },
+    {
+      "name": "AIBB_GetTargetHint",
+      "registrations": [
+        {
+          "name": "AIBB_GetTargetHint",
+          "call": "0x2dc3b4",
+          "register_function": "0x277ec0",
+          "callback": "0x2d6c1c"
+        }
+      ]
+    },
+    {
+      "name": "AIBB_SetAttraction",
+      "registrations": [
+        {
+          "name": "AIBB_SetAttraction",
+          "call": "0x2dc544",
+          "register_function": "0x277ec0",
+          "callback": "0x2d73b8"
+        }
+      ]
+    },
+    {
+      "name": "AIBB_SetCanReachMostValuedTarget",
+      "registrations": [
+        {
+          "name": "AIBB_SetCanReachMostValuedTarget",
+          "call": "0x2dc7c4",
+          "register_function": "0x277ec0",
+          "callback": "0x2d7fcc"
+        }
+      ]
+    },
+    {
+      "name": "AIBB_SetCanSeePlayer",
+      "registrations": [
+        {
+          "name": "AIBB_SetCanSeePlayer",
+          "call": "0x2dc684",
+          "register_function": "0x277ec0",
+          "callback": "0x2d79c4"
+        }
+      ]
+    },
+    {
+      "name": "AIBB_SetHasChaseStarted",
+      "registrations": [
+        {
+          "name": "AIBB_SetHasChaseStarted",
+          "call": "0x2dc9a4",
+          "register_function": "0x277ec0",
+          "callback": "0x2d88cc"
+        }
+      ]
+    },
+    {
+      "name": "AIBB_SetHasScaredPlayer",
+      "registrations": [
+        {
+          "name": "AIBB_SetHasScaredPlayer",
+          "call": "0x2dca44",
+          "register_function": "0x277ec0",
+          "callback": "0x2d8bcc"
+        }
+      ]
+    },
+    {
+      "name": "AIBB_SetKamikazeChaseStarted",
+      "registrations": [
+        {
+          "name": "AIBB_SetKamikazeChaseStarted",
+          "call": "0x2dc904",
+          "register_function": "0x277ec0",
+          "callback": "0x2d85cc"
+        }
+      ]
+    },
+    {
+      "name": "AIBB_SetLastAttackedTime",
+      "registrations": [
+        {
+          "name": "AIBB_SetLastAttackedTime",
+          "call": "0x2dc864",
+          "register_function": "0x277ec0",
+          "callback": "0x2d82cc"
+        }
+      ]
+    },
+    {
+      "name": "AIBB_SetMostValuedTarget",
+      "registrations": [
+        {
+          "name": "AIBB_SetMostValuedTarget",
+          "call": "0x2dc724",
+          "register_function": "0x277ec0",
+          "callback": "0x2d7cc8"
+        }
+      ]
+    },
+    {
+      "name": "AIBB_SetRecentlyAttacked",
+      "registrations": [
+        {
+          "name": "AIBB_SetRecentlyAttacked",
+          "call": "0x2dc364",
+          "register_function": "0x277ec0",
+          "callback": "0x2d6aa4"
+        }
+      ]
+    },
+    {
+      "name": "AIBB_SetReevaluateRequired",
+      "registrations": [
+        {
+          "name": "AIBB_SetReevaluateRequired",
+          "call": "0x2dc2c4",
+          "register_function": "0x277ec0",
+          "callback": "0x2d67a4"
+        }
+      ]
+    },
+    {
+      "name": "AIBB_SetRepellent",
+      "registrations": [
+        {
+          "name": "AIBB_SetRepellent",
+          "call": "0x2dc4a4",
+          "register_function": "0x277ec0",
+          "callback": "0x2d70b0"
+        }
+      ]
+    },
+    {
+      "name": "AIBB_SetStun",
+      "registrations": [
+        {
+          "name": "AIBB_SetStun",
+          "call": "0x2dc5e4",
+          "register_function": "0x277ec0",
+          "callback": "0x2d76c0"
+        }
+      ]
+    },
+    {
+      "name": "AIBB_SetTarget",
+      "registrations": [
+        {
+          "name": "AIBB_SetTarget",
+          "call": "0x2dc224",
+          "register_function": "0x277ec0",
+          "callback": "0x2d64a0"
+        }
+      ]
+    },
+    {
+      "name": "AIBB_SetTargetHint",
+      "registrations": [
+        {
+          "name": "AIBB_SetTargetHint",
+          "call": "0x2dc404",
+          "register_function": "0x277ec0",
+          "callback": "0x2d6da8"
+        }
+      ]
+    },
+    {
+      "name": "AIBGetTetherLoc",
+      "registrations": [
+        {
+          "name": "AIBGetTetherLoc",
+          "call": "0x185d44",
+          "register_function": "0x277ec0",
+          "callback": "0x1845dc"
+        }
+      ]
+    },
+    {
+      "name": "AIBSetTetherLoc",
+      "registrations": [
+        {
+          "name": "AIBSetTetherLoc",
+          "call": "0x185cf4",
+          "register_function": "0x277ec0",
+          "callback": "0x184728"
+        }
+      ]
+    },
+    {
+      "name": "AIBehaviorExitEvent_BehaviorName",
+      "registrations": [
+        {
+          "name": "AIBehaviorExitEvent_BehaviorName",
+          "call": "0x2da85c",
+          "register_function": "0x277ec0",
+          "callback": "0x2d620c"
+        }
+      ]
+    },
+    {
+      "name": "AIController_SetDisabled",
+      "registrations": [
+        {
+          "name": "AIController_SetDisabled",
+          "call": "0x3017b4",
+          "register_function": "0x277ec0",
+          "callback": "0x300e00"
+        }
+      ]
+    },
+    {
+      "name": "AIHintEnable",
+      "registrations": [
+        {
+          "name": "AIHintEnable",
+          "call": "0x2e23a8",
+          "register_function": "0x277ec0",
+          "callback": "0x2e17e4"
+        }
+      ]
+    },
+    {
+      "name": "AIHintGetClosest",
+      "registrations": [
+        {
+          "name": "AIHintGetClosest",
+          "call": "0x2e23f8",
+          "register_function": "0x277ec0",
+          "callback": "0x2e1ab0"
+        }
+      ]
+    },
+    {
+      "name": "AIHintGetEntityOfInterest",
+      "registrations": [
+        {
+          "name": "AIHintGetEntityOfInterest",
+          "call": "0x2e2498",
+          "register_function": "0x277ec0",
+          "callback": "0x2e1be0"
+        }
+      ]
+    },
+    {
+      "name": "AIHintIsType",
+      "registrations": [
+        {
+          "name": "AIHintIsType",
+          "call": "0x2e2448",
+          "register_function": "0x277ec0",
+          "callback": "0x2e192c"
+        }
+      ]
+    },
+    {
+      "name": "AIHintUsed",
+      "registrations": [
+        {
+          "name": "AIHintUsed",
+          "call": "0x2e24e8",
+          "register_function": "0x277ec0",
+          "callback": "0x2e1d40"
+        }
+      ]
+    },
+    {
+      "name": "AI_ClearTarget",
+      "registrations": [
+        {
+          "name": "AI_ClearTarget",
+          "call": "0x2d93f8",
+          "register_function": "0x277ec0",
+          "callback": "0x2d47e0"
+        }
+      ]
+    },
+    {
+      "name": "AI_GetBehaviorAttribute_Float",
+      "registrations": [
+        {
+          "name": "AI_GetBehaviorAttribute_Float",
+          "call": "0x2dca94",
+          "register_function": "0x277ec0",
+          "callback": "0x2d8d44"
+        }
+      ]
+    },
+    {
+      "name": "AI_GetBehaviorAttribute_Int",
+      "registrations": [
+        {
+          "name": "AI_GetBehaviorAttribute_Int",
+          "call": "0x2dcb34",
+          "register_function": "0x277ec0",
+          "callback": "0x2d917c"
+        }
+      ]
+    },
+    {
+      "name": "AI_GetBehaviorAttribute_String",
+      "registrations": [
+        {
+          "name": "AI_GetBehaviorAttribute_String",
+          "call": "0x2dcae4",
+          "register_function": "0x277ec0",
+          "callback": "0x2d8f60"
+        }
+      ]
+    },
+    {
+      "name": "AI_SetDisabled",
+      "registrations": [
+        {
+          "name": "AI_SetDisabled",
+          "call": "0x185ca4",
+          "register_function": "0x277ec0",
+          "callback": "0x184874"
+        }
+      ]
+    },
+    {
+      "name": "AI_SetLookAtRadius",
+      "registrations": [
+        {
+          "name": "AI_SetLookAtRadius",
+          "call": "0x301804",
+          "register_function": "0x277ec0",
+          "callback": "0x300f70"
+        }
+      ]
+    },
+    {
+      "name": "AI_SetPermanentTarget",
+      "registrations": [
+        {
+          "name": "AI_SetPermanentTarget",
+          "call": "0x2d9448",
+          "register_function": "0x277ec0",
+          "callback": "0x2d4934"
+        }
+      ]
+    },
+    {
+      "name": "AI_SetSeeThroughDynamic",
+      "registrations": [
+        {
+          "name": "AI_SetSeeThroughDynamic",
+          "call": "0x2d9498",
+          "register_function": "0x277ec0",
+          "callback": "0x2d4ae4"
+        }
+      ]
+    },
+    {
+      "name": "ActivateAnvilSketch",
+      "registrations": [
+        {
+          "name": "ActivateAnvilSketch",
+          "call": "0x3c1d0",
+          "register_function": "0x277ec0",
+          "callback": "0x3bd7c"
+        }
+      ]
+    },
+    {
+      "name": "ActivateBloom",
+      "registrations": [
+        {
+          "name": "ActivateBloom",
+          "call": "0x3b0e14",
+          "register_function": "0x277ec0",
+          "callback": "0x3afebc"
+        }
+      ]
+    },
+    {
+      "name": "ActivateFog",
+      "registrations": [
+        {
+          "name": "ActivateFog",
+          "call": "0x3b0dc4",
+          "register_function": "0x277ec0",
+          "callback": "0x3afdc4"
+        }
+      ]
+    },
+    {
+      "name": "ActivateForces",
+      "registrations": [
+        {
+          "name": "ActivateForces",
+          "call": "0x371aa0",
+          "register_function": "0x277ec0",
+          "callback": "0x3714c0"
+        }
+      ]
+    },
+    {
+      "name": "ActivatePaintBrush",
+      "registrations": [
+        {
+          "name": "ActivatePaintBrush",
+          "call": "0x92058",
+          "register_function": "0x277ec0",
+          "callback": "0x90dfc"
+        }
+      ]
+    },
+    {
+      "name": "ActivateScene",
+      "registrations": [
+        {
+          "name": "ActivateScene",
+          "call": "0x3aa08",
+          "register_function": "0x277ec0",
+          "callback": "0x30490"
+        }
+      ]
+    },
+    {
+      "name": "ActivateTVSketch",
+      "registrations": [
+        {
+          "name": "ActivateTVSketch",
+          "call": "0x3c130",
+          "register_function": "0x277ec0",
+          "callback": "0x3bcb4"
+        }
+      ]
+    },
+    {
+      "name": "ActivateWatchSketch",
+      "registrations": [
+        {
+          "name": "ActivateWatchSketch",
+          "call": "0x3bff0",
+          "register_function": "0x277ec0",
+          "callback": "0x3b210"
+        }
+      ]
+    },
+    {
+      "name": "AddAffectedEntity",
+      "registrations": [
+        {
+          "name": "AddAffectedEntity",
+          "call": "0x371b40",
+          "register_function": "0x277ec0",
+          "callback": "0x371730"
+        }
+      ]
+    },
+    {
+      "name": "AddHeroPoints",
+      "registrations": [
+        {
+          "name": "AddHeroPoints",
+          "call": "0x1d710",
+          "register_function": "0x277ec0",
+          "callback": "0x1cb60"
+        }
+      ]
+    },
+    {
+      "name": "AddItem",
+      "registrations": [
+        {
+          "name": "AddItem",
+          "call": "0x3461a4",
+          "register_function": "0x277ec0",
+          "callback": "0x34539c"
+        }
+      ]
+    },
+    {
+      "name": "AddLife",
+      "registrations": [
+        {
+          "name": "AddLife",
+          "call": "0x3237d4",
+          "register_function": "0x277ec0",
+          "callback": "0x322b88"
+        }
+      ]
+    },
+    {
+      "name": "AddPaintAmmo",
+      "registrations": [
+        {
+          "name": "AddPaintAmmo",
+          "call": "0x2e500c",
+          "register_function": "0x277ec0",
+          "callback": "0x2e4cec"
+        }
+      ]
+    },
+    {
+      "name": "AddPaladinPoints",
+      "registrations": [
+        {
+          "name": "AddPaladinPoints",
+          "call": "0x1d6c0",
+          "register_function": "0x277ec0",
+          "callback": "0x1cb60"
+        }
+      ]
+    },
+    {
+      "name": "AddPhysicsToWorld",
+      "registrations": [
+        {
+          "name": "AddPhysicsToWorld",
+          "call": "0x37f5d8",
+          "register_function": "0x277ec0",
+          "callback": "0x37f37c"
+        }
+      ]
+    },
+    {
+      "name": "AddScrapperPoints",
+      "registrations": [
+        {
+          "name": "AddScrapperPoints",
+          "call": "0x1d670",
+          "register_function": "0x277ec0",
+          "callback": "0x1ca48"
+        }
+      ]
+    },
+    {
+      "name": "AddShotsToWeapon",
+      "registrations": [
+        {
+          "name": "AddShotsToWeapon",
+          "call": "0x3dc10c",
+          "register_function": "0x277ec0",
+          "callback": "0x3db860"
+        }
+      ]
+    },
+    {
+      "name": "AddThinnerAmmo",
+      "registrations": [
+        {
+          "name": "AddThinnerAmmo",
+          "call": "0x2e505c",
+          "register_function": "0x277ec0",
+          "callback": "0x2e4e4c"
+        }
+      ]
+    },
+    {
+      "name": "AdjustJigsawAmmoSpawnPosition",
+      "registrations": [
+        {
+          "name": "AdjustJigsawAmmoSpawnPosition",
+          "call": "0x268c0c",
+          "register_function": "0x277ec0",
+          "callback": "0x26233c"
+        }
+      ]
+    },
+    {
+      "name": "AdvanceBossStage",
+      "registrations": [
+        {
+          "name": "AdvanceBossStage",
+          "call": "0x26fc28",
+          "register_function": "0x277ec0",
+          "callback": "0x26d4dc"
+        }
+      ]
+    },
+    {
+      "name": "AllowJumpBoost",
+      "registrations": [
+        {
+          "name": "AllowJumpBoost",
+          "call": "0x30bd44",
+          "register_function": "0x277ec0",
+          "callback": "0x30b254"
+        }
+      ]
+    },
+    {
+      "name": "AllowMoveBackwards",
+      "registrations": [
+        {
+          "name": "AllowMoveBackwards",
+          "call": "0x30bd94",
+          "register_function": "0x277ec0",
+          "callback": "0x30b39c"
+        }
+      ]
+    },
+    {
+      "name": "AnimEvent",
+      "registrations": [
+        {
+          "name": "AnimEvent",
+          "call": "0x2f3b9c",
+          "register_function": "0x277ec0",
+          "callback": "0x2e9b08"
+        }
+      ]
+    },
+    {
+      "name": "AnimEvent_Type",
+      "registrations": [
+        {
+          "name": "AnimEvent_Type",
+          "call": "0x2f3b4c",
+          "register_function": "0x277ec0",
+          "callback": "0x2ea524"
+        }
+      ]
+    },
+    {
+      "name": "AnimGBGetIdle",
+      "registrations": [
+        {
+          "name": "AnimGBGetIdle",
+          "call": "0x2f8adc",
+          "register_function": "0x277ec0",
+          "callback": "0x2f83dc"
+        }
+      ]
+    },
+    {
+      "name": "AnimGBReset",
+      "registrations": [
+        {
+          "name": "AnimGBReset",
+          "call": "0x2f8a3c",
+          "register_function": "0x277ec0",
+          "callback": "0x2f81f8"
+        }
+      ]
+    },
+    {
+      "name": "AnimGBSequence",
+      "registrations": [
+        {
+          "name": "AnimGBSequence",
+          "call": "0x2f89ec",
+          "register_function": "0x277ec0",
+          "callback": "0x2f7f1c"
+        }
+      ]
+    },
+    {
+      "name": "AnimGBSequenceEndedName",
+      "registrations": [
+        {
+          "name": "AnimGBSequenceEndedName",
+          "call": "0x2f8b2c",
+          "register_function": "0x277ec0",
+          "callback": "0x2f86b0"
+        }
+      ]
+    },
+    {
+      "name": "AnimGBSequenceGetSequenceDuration",
+      "registrations": [
+        {
+          "name": "AnimGBSequenceGetSequenceDuration",
+          "call": "0x2f8b7c",
+          "register_function": "0x277ec0",
+          "callback": "0x2f87b8"
+        }
+      ]
+    },
+    {
+      "name": "AnimGBSetIdle",
+      "registrations": [
+        {
+          "name": "AnimGBSetIdle",
+          "call": "0x2f8a8c",
+          "register_function": "0x277ec0",
+          "callback": "0x2f854c"
+        }
+      ]
+    },
+    {
+      "name": "AnimGetEventString",
+      "registrations": [
+        {
+          "name": "AnimGetEventString",
+          "call": "0x2f3cdc",
+          "register_function": "0x277ec0",
+          "callback": "0x2ea114"
+        }
+      ]
+    },
+    {
+      "name": "AnimVarFloat",
+      "registrations": [
+        {
+          "name": "AnimVarFloat",
+          "call": "0x2f3bec",
+          "register_function": "0x277ec0",
+          "callback": "0x2e9c80"
+        }
+      ]
+    },
+    {
+      "name": "AnimVarInt",
+      "registrations": [
+        {
+          "name": "AnimVarInt",
+          "call": "0x2f3c3c",
+          "register_function": "0x277ec0",
+          "callback": "0x2e9e08"
+        }
+      ]
+    },
+    {
+      "name": "AnimVarIntGet",
+      "registrations": [
+        {
+          "name": "AnimVarIntGet",
+          "call": "0x2f3c8c",
+          "register_function": "0x277ec0",
+          "callback": "0x2e9f90"
+        }
+      ]
+    },
+    {
+      "name": "ApplyAngularImpulse",
+      "registrations": [
+        {
+          "name": "ApplyAngularImpulse",
+          "call": "0x2686bc",
+          "register_function": "0x277ec0",
+          "callback": "0x263064"
+        }
+      ]
+    },
+    {
+      "name": "ApplyForce",
+      "registrations": [
+        {
+          "name": "ApplyForce",
+          "call": "0x26857c",
+          "register_function": "0x277ec0",
+          "callback": "0x2631f4"
+        }
+      ]
+    },
+    {
+      "name": "ApplyImpulse",
+      "registrations": [
+        {
+          "name": "ApplyImpulse",
+          "call": "0x26861c",
+          "register_function": "0x277ec0",
+          "callback": "0x262d64"
+        }
+      ]
+    },
+    {
+      "name": "ApplyTorque",
+      "registrations": [
+        {
+          "name": "ApplyTorque",
+          "call": "0x2685cc",
+          "register_function": "0x277ec0",
+          "callback": "0x263530"
+        }
+      ]
+    },
+    {
+      "name": "AudioPostEventOn",
+      "registrations": [
+        {
+          "name": "AudioPostEventOn",
+          "call": "0x320890",
+          "register_function": "0x277ec0",
+          "callback": "0x31fc8c"
+        }
+      ]
+    },
+    {
+      "name": "AudioPostEventOnWiiRemote",
+      "registrations": [
+        {
+          "name": "AudioPostEventOnWiiRemote",
+          "call": "0x3208e0",
+          "register_function": "0x277ec0",
+          "callback": "0x31fe14"
+        }
+      ]
+    },
+    {
+      "name": "AudioSetParameter",
+      "registrations": [
+        {
+          "name": "AudioSetParameter",
+          "call": "0x320a20",
+          "register_function": "0x277ec0",
+          "callback": "0x320304"
+        }
+      ]
+    },
+    {
+      "name": "AudioSetState",
+      "registrations": [
+        {
+          "name": "AudioSetState",
+          "call": "0x320ac0",
+          "register_function": "0x277ec0",
+          "callback": "0x320620"
+        }
+      ]
+    },
+    {
+      "name": "AudioSetSwitch",
+      "registrations": [
+        {
+          "name": "AudioSetSwitch",
+          "call": "0x320a70",
+          "register_function": "0x277ec0",
+          "callback": "0x320484"
+        }
+      ]
+    },
+    {
+      "name": "AudioStopPlaying",
+      "registrations": [
+        {
+          "name": "AudioStopPlaying",
+          "call": "0x320930",
+          "register_function": "0x277ec0",
+          "callback": "0x31ffd4"
+        }
+      ]
+    },
+    {
+      "name": "AudioStopPlayingAll",
+      "registrations": [
+        {
+          "name": "AudioStopPlayingAll",
+          "call": "0x3209d0",
+          "register_function": "0x277ec0",
+          "callback": "0x320200"
+        }
+      ]
+    },
+    {
+      "name": "AudioStopPlayingOn",
+      "registrations": [
+        {
+          "name": "AudioStopPlayingOn",
+          "call": "0x320980",
+          "register_function": "0x277ec0",
+          "callback": "0x3200d4"
+        }
+      ]
+    },
+    {
+      "name": "Bark",
+      "registrations": [
+        {
+          "name": "Bark",
+          "call": "0x1e77b4",
+          "register_function": "0x277ec0",
+          "callback": "0x1e7234"
+        }
+      ]
+    },
+    {
+      "name": "Bark_CharacterFound",
+      "registrations": [
+        {
+          "name": "Bark_CharacterFound",
+          "call": "0x2da5dc",
+          "register_function": "0x277ec0",
+          "callback": "0x2d597c"
+        }
+      ]
+    },
+    {
+      "name": "Bark_CharacterHit",
+      "registrations": [
+        {
+          "name": "Bark_CharacterHit",
+          "call": "0x2da62c",
+          "register_function": "0x277ec0",
+          "callback": "0x2d5aa8"
+        }
+      ]
+    },
+    {
+      "name": "BaseEvent_Type",
+      "registrations": [
+        {
+          "name": "BaseEvent_Type",
+          "call": "0x26f6d8",
+          "register_function": "0x277ec0",
+          "callback": "0x26b0d4"
+        }
+      ]
+    },
+    {
+      "name": "BeginFogChanges",
+      "registrations": [
+        {
+          "name": "BeginFogChanges",
+          "call": "0x3b0b94",
+          "register_function": "0x277ec0",
+          "callback": "0x3af6f8"
+        }
+      ]
+    },
+    {
+      "name": "BoolThenTest",
+      "registrations": [
+        {
+          "name": "BoolThenTest",
+          "call": "0x35a6dc",
+          "register_function": "0x277ec0",
+          "callback": "0x35a3e8"
+        }
+      ]
+    },
+    {
+      "name": "BrainEvent_Entity",
+      "registrations": [
+        {
+          "name": "BrainEvent_Entity",
+          "call": "0x2da76c",
+          "register_function": "0x277ec0",
+          "callback": "0x2d5ef4"
+        }
+      ]
+    },
+    {
+      "name": "BrainEvent_Instigator",
+      "registrations": [
+        {
+          "name": "BrainEvent_Instigator",
+          "call": "0x2da67c",
+          "register_function": "0x277ec0",
+          "callback": "0x2d5bd4"
+        }
+      ]
+    },
+    {
+      "name": "BrainEvent_Message",
+      "registrations": [
+        {
+          "name": "BrainEvent_Message",
+          "call": "0x2da6cc",
+          "register_function": "0x277ec0",
+          "callback": "0x2d5ce4"
+        }
+      ]
+    },
+    {
+      "name": "BrainEvent_Vector",
+      "registrations": [
+        {
+          "name": "BrainEvent_Vector",
+          "call": "0x2da71c",
+          "register_function": "0x277ec0",
+          "callback": "0x2d5dec"
+        }
+      ]
+    },
+    {
+      "name": "BranchListenerThenTest",
+      "registrations": [
+        {
+          "name": "BranchListenerThenTest",
+          "call": "0x35b248",
+          "register_function": "0x277ec0",
+          "callback": "0x35aff0"
+        }
+      ]
+    },
+    {
+      "name": "BuildConfig",
+      "registrations": [
+        {
+          "name": "BuildConfig",
+          "call": "0x26fea8",
+          "register_function": "0x277ec0",
+          "callback": "0x26cc94"
+        }
+      ]
+    },
+    {
+      "name": "CSGOnPhantom",
+      "registrations": [
+        {
+          "name": "CSGOnPhantom",
+          "call": "0x27760c",
+          "register_function": "0x277ec0",
+          "callback": "0x277164"
+        }
+      ]
+    },
+    {
+      "name": "CSGOperation",
+      "registrations": [
+        {
+          "name": "CSGOperation",
+          "call": "0x277660",
+          "register_function": "0x277ec0",
+          "callback": "0x277274"
+        }
+      ]
+    },
+    {
+      "name": "CameraReset",
+      "registrations": [
+        {
+          "name": "CameraReset",
+          "call": "0x12574",
+          "register_function": "0x277ec0",
+          "callback": "0x10928"
+        }
+      ]
+    },
+    {
+      "name": "CameraResetSD",
+      "registrations": [
+        {
+          "name": "CameraResetSD",
+          "call": "0x125c4",
+          "register_function": "0x277ec0",
+          "callback": "0x10a9c"
+        }
+      ]
+    },
+    {
+      "name": "CanEntitiesCollide",
+      "registrations": [
+        {
+          "name": "CanEntitiesCollide",
+          "call": "0x37f538",
+          "register_function": "0x277ec0",
+          "callback": "0x37f030"
+        }
+      ]
+    },
+    {
+      "name": "ChooseBestWeapon",
+      "registrations": [
+        {
+          "name": "ChooseBestWeapon",
+          "call": "0x2fb984",
+          "register_function": "0x277ec0",
+          "callback": "0x2fb644"
+        }
+      ]
+    },
+    {
+      "name": "CleanLoadLevel",
+      "registrations": [
+        {
+          "name": "CleanLoadLevel",
+          "call": "0x3a738",
+          "register_function": "0x277ec0",
+          "callback": "0x2f458"
+        }
+      ]
+    },
+    {
+      "name": "ClearAllCameraAttributes",
+      "registrations": [
+        {
+          "name": "ClearAllCameraAttributes",
+          "call": "0x12394",
+          "register_function": "0x277ec0",
+          "callback": "0x10700"
+        }
+      ]
+    },
+    {
+      "name": "ClearAllCameraAttributesSD",
+      "registrations": [
+        {
+          "name": "ClearAllCameraAttributesSD",
+          "call": "0x12434",
+          "register_function": "0x277ec0",
+          "callback": "0x104b8"
+        }
+      ]
+    },
+    {
+      "name": "ClearAllCameraAttributesTimed",
+      "registrations": [
+        {
+          "name": "ClearAllCameraAttributesTimed",
+          "call": "0x123e4",
+          "register_function": "0x277ec0",
+          "callback": "0x10810"
+        }
+      ]
+    },
+    {
+      "name": "ClearAllCameraAttributesTimedSD",
+      "registrations": [
+        {
+          "name": "ClearAllCameraAttributesTimedSD",
+          "call": "0x12484",
+          "register_function": "0x277ec0",
+          "callback": "0x105d8"
+        }
+      ]
+    },
+    {
+      "name": "ClearAppCulled",
+      "registrations": [
+        {
+          "name": "ClearAppCulled",
+          "call": "0x268cac",
+          "register_function": "0x277ec0",
+          "callback": "0x267ab8"
+        }
+      ]
+    },
+    {
+      "name": "ClearCameraHintAll",
+      "registrations": [
+        {
+          "name": "ClearCameraHintAll",
+          "call": "0x11d04",
+          "register_function": "0x277ec0",
+          "callback": "0xe550"
+        }
+      ]
+    },
+    {
+      "name": "ClearCameraHintDist",
+      "registrations": [
+        {
+          "name": "ClearCameraHintDist",
+          "call": "0x11d54",
+          "register_function": "0x277ec0",
+          "callback": "0xe684"
+        }
+      ]
+    },
+    {
+      "name": "ClearCameraHintOffset",
+      "registrations": [
+        {
+          "name": "ClearCameraHintOffset",
+          "call": "0x11e44",
+          "register_function": "0x277ec0",
+          "callback": "0xea2c"
+        }
+      ]
+    },
+    {
+      "name": "ClearCameraHintPitch",
+      "registrations": [
+        {
+          "name": "ClearCameraHintPitch",
+          "call": "0x11df4",
+          "register_function": "0x277ec0",
+          "callback": "0xe8f4"
+        }
+      ]
+    },
+    {
+      "name": "ClearCameraHintSide",
+      "registrations": [
+        {
+          "name": "ClearCameraHintSide",
+          "call": "0x11e94",
+          "register_function": "0x277ec0",
+          "callback": "0xeb64"
+        }
+      ]
+    },
+    {
+      "name": "ClearCameraHintYaw",
+      "registrations": [
+        {
+          "name": "ClearCameraHintYaw",
+          "call": "0x11da4",
+          "register_function": "0x277ec0",
+          "callback": "0xe7bc"
+        }
+      ]
+    },
+    {
+      "name": "ClearCutSceneStack",
+      "registrations": [
+        {
+          "name": "ClearCutSceneStack",
+          "call": "0x122a4",
+          "register_function": "0x277ec0",
+          "callback": "0xfdb4"
+        }
+      ]
+    },
+    {
+      "name": "ClearNextPatrolNode",
+      "registrations": [
+        {
+          "name": "ClearNextPatrolNode",
+          "call": "0x301854",
+          "register_function": "0x277ec0",
+          "callback": "0x30116c"
+        }
+      ]
+    },
+    {
+      "name": "ClearParent",
+      "registrations": [
+        {
+          "name": "ClearParent",
+          "call": "0x3577f4",
+          "register_function": "0x277ec0",
+          "callback": "0x3575d4"
+        }
+      ]
+    },
+    {
+      "name": "Compare",
+      "registrations": [
+        {
+          "name": "Compare",
+          "call": "0x35d524",
+          "register_function": "0x277ec0",
+          "callback": "0x35d280"
+        }
+      ]
+    },
+    {
+      "name": "CounterAdd",
+      "registrations": [
+        {
+          "name": "CounterAdd",
+          "call": "0x35f0c8",
+          "register_function": "0x277ec0",
+          "callback": "0x35ddac"
+        }
+      ]
+    },
+    {
+      "name": "CounterDivide",
+      "registrations": [
+        {
+          "name": "CounterDivide",
+          "call": "0x35f1b8",
+          "register_function": "0x277ec0",
+          "callback": "0x35e634"
+        }
+      ]
+    },
+    {
+      "name": "CounterMultiply",
+      "registrations": [
+        {
+          "name": "CounterMultiply",
+          "call": "0x35f168",
+          "register_function": "0x277ec0",
+          "callback": "0x35e394"
+        }
+      ]
+    },
+    {
+      "name": "CounterSetMaxValue",
+      "registrations": [
+        {
+          "name": "CounterSetMaxValue",
+          "call": "0x35f2f8",
+          "register_function": "0x277ec0",
+          "callback": "0x35ef04"
+        }
+      ]
+    },
+    {
+      "name": "CounterSetMinValue",
+      "registrations": [
+        {
+          "name": "CounterSetMinValue",
+          "call": "0x35f2a8",
+          "register_function": "0x277ec0",
+          "callback": "0x35eda0"
+        }
+      ]
+    },
+    {
+      "name": "CounterSetValue",
+      "registrations": [
+        {
+          "name": "CounterSetValue",
+          "call": "0x35f208",
+          "register_function": "0x277ec0",
+          "callback": "0x35e8e0"
+        }
+      ]
+    },
+    {
+      "name": "CounterSetValueNoFire",
+      "registrations": [
+        {
+          "name": "CounterSetValueNoFire",
+          "call": "0x35f258",
+          "register_function": "0x277ec0",
+          "callback": "0x35eb74"
+        }
+      ]
+    },
+    {
+      "name": "CounterSubtract",
+      "registrations": [
+        {
+          "name": "CounterSubtract",
+          "call": "0x35f118",
+          "register_function": "0x277ec0",
+          "callback": "0x35e0f4"
+        }
+      ]
+    },
+    {
+      "name": "CreateEntity",
+      "registrations": [
+        {
+          "name": "CreateEntity",
+          "call": "0x26f228",
+          "register_function": "0x277ec0",
+          "callback": "0x2697a0"
+        }
+      ]
+    },
+    {
+      "name": "CreateMetric",
+      "registrations": [
+        {
+          "name": "CreateMetric",
+          "call": "0x3a918",
+          "register_function": "0x277ec0",
+          "callback": "0x30200"
+        }
+      ]
+    },
+    {
+      "name": "Damage",
+      "registrations": [
+        {
+          "name": "Damage",
+          "call": "0x323644",
+          "register_function": "0x277ec0",
+          "callback": "0x3223c0"
+        }
+      ]
+    },
+    {
+      "name": "DamageEvent_EffectiveAmount",
+      "registrations": [
+        {
+          "name": "DamageEvent_EffectiveAmount",
+          "call": "0x323914",
+          "register_function": "0x277ec0",
+          "callback": "0x3230f8"
+        }
+      ]
+    },
+    {
+      "name": "DamageEvent_HasStimulusType",
+      "registrations": [
+        {
+          "name": "DamageEvent_HasStimulusType",
+          "call": "0x323964",
+          "register_function": "0x277ec0",
+          "callback": "0x32326c"
+        }
+      ]
+    },
+    {
+      "name": "DamageEvent_Instigator",
+      "registrations": [
+        {
+          "name": "DamageEvent_Instigator",
+          "call": "0x323874",
+          "register_function": "0x277ec0",
+          "callback": "0x322ed0"
+        }
+      ]
+    },
+    {
+      "name": "DamageEvent_Source",
+      "registrations": [
+        {
+          "name": "DamageEvent_Source",
+          "call": "0x3238c4",
+          "register_function": "0x277ec0",
+          "callback": "0x322fe4"
+        }
+      ]
+    },
+    {
+      "name": "DamageEvent_SourceStimulusAlias",
+      "registrations": [
+        {
+          "name": "DamageEvent_SourceStimulusAlias",
+          "call": "0x3239b4",
+          "register_function": "0x277ec0",
+          "callback": "0x3233d0"
+        }
+      ]
+    },
+    {
+      "name": "DeactivateAnvilSketch",
+      "registrations": [
+        {
+          "name": "DeactivateAnvilSketch",
+          "call": "0x3c220",
+          "register_function": "0x277ec0",
+          "callback": "0x3bde0"
+        }
+      ]
+    },
+    {
+      "name": "DeactivateForces",
+      "registrations": [
+        {
+          "name": "DeactivateForces",
+          "call": "0x371af0",
+          "register_function": "0x277ec0",
+          "callback": "0x37161c"
+        }
+      ]
+    },
+    {
+      "name": "DeactivateScene",
+      "registrations": [
+        {
+          "name": "DeactivateScene",
+          "call": "0x3aa58",
+          "register_function": "0x277ec0",
+          "callback": "0x30370"
+        }
+      ]
+    },
+    {
+      "name": "DeactivateTVSketch",
+      "registrations": [
+        {
+          "name": "DeactivateTVSketch",
+          "call": "0x3c180",
+          "register_function": "0x277ec0",
+          "callback": "0x3bd18"
+        }
+      ]
+    },
+    {
+      "name": "DeactivateWatchSketch",
+      "registrations": [
+        {
+          "name": "DeactivateWatchSketch",
+          "call": "0x3c040",
+          "register_function": "0x277ec0",
+          "callback": "0x3b37c"
+        }
+      ]
+    },
+    {
+      "name": "DeathEvent_DeathType",
+      "registrations": [
+        {
+          "name": "DeathEvent_DeathType",
+          "call": "0x323a04",
+          "register_function": "0x277ec0",
+          "callback": "0x3234dc"
+        }
+      ]
+    },
+    {
+      "name": "DestroyEntity",
+      "registrations": [
+        {
+          "name": "DestroyEntity",
+          "call": "0x26f278",
+          "register_function": "0x277ec0",
+          "callback": "0x2699fc"
+        }
+      ]
+    },
+    {
+      "name": "DialogBox",
+      "registrations": [
+        {
+          "name": "DialogBox",
+          "call": "0x26ffe8",
+          "register_function": "0x277ec0",
+          "callback": "0x26e038"
+        }
+      ]
+    },
+    {
+      "name": "DialogBoxAdvanced",
+      "registrations": [
+        {
+          "name": "DialogBoxAdvanced",
+          "call": "0x270128",
+          "register_function": "0x277ec0",
+          "callback": "0x26e7c0"
+        }
+      ]
+    },
+    {
+      "name": "DialogBoxAdvancedNoPause",
+      "registrations": [
+        {
+          "name": "DialogBoxAdvancedNoPause",
+          "call": "0x270178",
+          "register_function": "0x277ec0",
+          "callback": "0x26e7c8"
+        }
+      ]
+    },
+    {
+      "name": "DialogBoxNoPause",
+      "registrations": [
+        {
+          "name": "DialogBoxNoPause",
+          "call": "0x270038",
+          "register_function": "0x277ec0",
+          "callback": "0x26e040"
+        }
+      ]
+    },
+    {
+      "name": "Disable",
+      "registrations": [
+        {
+          "name": "Disable",
+          "call": "0x267c6c",
+          "register_function": "0x277ec0",
+          "callback": "0x263b50"
+        }
+      ]
+    },
+    {
+      "name": "DisableAbilities_Player",
+      "registrations": [
+        {
+          "name": "DisableAbilities_Player",
+          "call": "0x92198",
+          "register_function": "0x277ec0",
+          "callback": "0x91468"
+        }
+      ]
+    },
+    {
+      "name": "DisableAbility_Player",
+      "registrations": [
+        {
+          "name": "DisableAbility_Player",
+          "call": "0x920f8",
+          "register_function": "0x277ec0",
+          "callback": "0x91108"
+        }
+      ]
+    },
+    {
+      "name": "DisableAutoQuestGiver",
+      "registrations": [
+        {
+          "name": "DisableAutoQuestGiver",
+          "call": "0x315448",
+          "register_function": "0x277ec0",
+          "callback": "0x315088"
+        }
+      ]
+    },
+    {
+      "name": "DisableComponent",
+      "registrations": [
+        {
+          "name": "DisableComponent",
+          "call": "0x313198",
+          "register_function": "0x277ec0",
+          "callback": "0x312fe4"
+        }
+      ]
+    },
+    {
+      "name": "DisableGuardianSystem",
+      "registrations": [
+        {
+          "name": "DisableGuardianSystem",
+          "call": "0x162d8",
+          "register_function": "0x277ec0",
+          "callback": "0x15e8c"
+        }
+      ]
+    },
+    {
+      "name": "DisableMotion",
+      "registrations": [
+        {
+          "name": "DisableMotion",
+          "call": "0x267d0c",
+          "register_function": "0x277ec0",
+          "callback": "0x263d54"
+        }
+      ]
+    },
+    {
+      "name": "DisableMotion_Player",
+      "registrations": [
+        {
+          "name": "DisableMotion_Player",
+          "call": "0x267dac",
+          "register_function": "0x277ec0",
+          "callback": "0x263d54"
+        }
+      ]
+    },
+    {
+      "name": "DisableMovementInput",
+      "registrations": [
+        {
+          "name": "DisableMovementInput",
+          "call": "0x30be84",
+          "register_function": "0x277ec0",
+          "callback": "0x30b770"
+        }
+      ]
+    },
+    {
+      "name": "Display",
+      "registrations": [
+        {
+          "name": "Display",
+          "call": "0x26ff98",
+          "register_function": "0x277ec0",
+          "callback": "0x26dcd0"
+        }
+      ]
+    },
+    {
+      "name": "DisplayLevelScore",
+      "registrations": [
+        {
+          "name": "DisplayLevelScore",
+          "call": "0x1d800",
+          "register_function": "0x277ec0",
+          "callback": "0x1cee0"
+        }
+      ]
+    },
+    {
+      "name": "DriveMotionWithPhysics",
+      "registrations": [
+        {
+          "name": "DriveMotionWithPhysics",
+          "call": "0x30bca4",
+          "register_function": "0x277ec0",
+          "callback": "0x30afd4"
+        }
+      ]
+    },
+    {
+      "name": "Enable",
+      "registrations": [
+        {
+          "name": "Enable",
+          "call": "0x267c1c",
+          "register_function": "0x277ec0",
+          "callback": "0x263a4c"
+        }
+      ]
+    },
+    {
+      "name": "EnableAbilities_Player",
+      "registrations": [
+        {
+          "name": "EnableAbilities_Player",
+          "call": "0x921e8",
+          "register_function": "0x277ec0",
+          "callback": "0x91588"
+        }
+      ]
+    },
+    {
+      "name": "EnableAbility_Player",
+      "registrations": [
+        {
+          "name": "EnableAbility_Player",
+          "call": "0x92148",
+          "register_function": "0x277ec0",
+          "callback": "0x912b0"
+        }
+      ]
+    },
+    {
+      "name": "EnableComponent",
+      "registrations": [
+        {
+          "name": "EnableComponent",
+          "call": "0x3131e8",
+          "register_function": "0x277ec0",
+          "callback": "0x312e90"
+        }
+      ]
+    },
+    {
+      "name": "EnableGuardianSystem",
+      "registrations": [
+        {
+          "name": "EnableGuardianSystem",
+          "call": "0x16288",
+          "register_function": "0x277ec0",
+          "callback": "0x15e20"
+        }
+      ]
+    },
+    {
+      "name": "EnableMotion",
+      "registrations": [
+        {
+          "name": "EnableMotion",
+          "call": "0x267cbc",
+          "register_function": "0x277ec0",
+          "callback": "0x263c54"
+        }
+      ]
+    },
+    {
+      "name": "EnableMotion_Player",
+      "registrations": [
+        {
+          "name": "EnableMotion_Player",
+          "call": "0x267d5c",
+          "register_function": "0x277ec0",
+          "callback": "0x263c54"
+        }
+      ]
+    },
+    {
+      "name": "EnableMovementInput",
+      "registrations": [
+        {
+          "name": "EnableMovementInput",
+          "call": "0x30be34",
+          "register_function": "0x277ec0",
+          "callback": "0x30b61c"
+        }
+      ]
+    },
+    {
+      "name": "EndFogChanges",
+      "registrations": [
+        {
+          "name": "EndFogChanges",
+          "call": "0x3b0d74",
+          "register_function": "0x277ec0",
+          "callback": "0x3afccc"
+        }
+      ]
+    },
+    {
+      "name": "EndHindrance",
+      "registrations": [
+        {
+          "name": "EndHindrance",
+          "call": "0x30bde4",
+          "register_function": "0x277ec0",
+          "callback": "0x30b4e4"
+        }
+      ]
+    },
+    {
+      "name": "EndTrackingCurrentLevelForScoring",
+      "registrations": [
+        {
+          "name": "EndTrackingCurrentLevelForScoring",
+          "call": "0x1d8a0",
+          "register_function": "0x277ec0",
+          "callback": "0x1d200"
+        }
+      ]
+    },
+    {
+      "name": "EndTrackingCurrentLevelForScoringSD",
+      "registrations": [
+        {
+          "name": "EndTrackingCurrentLevelForScoringSD",
+          "call": "0x1d940",
+          "register_function": "0x277ec0",
+          "callback": "0x1d444"
+        }
+      ]
+    },
+    {
+      "name": "EndTrackingLevelScore",
+      "registrations": [
+        {
+          "name": "EndTrackingLevelScore",
+          "call": "0x1d7b0",
+          "register_function": "0x277ec0",
+          "callback": "0x1cdac"
+        }
+      ]
+    },
+    {
+      "name": "EnterCutscene",
+      "registrations": [
+        {
+          "name": "EnterCutscene",
+          "call": "0x185b14",
+          "register_function": "0x277ec0",
+          "callback": "0x184ce0"
+        }
+      ]
+    },
+    {
+      "name": "Event_Activator",
+      "registrations": [
+        {
+          "name": "Event_Activator",
+          "call": "0x26ef58",
+          "register_function": "0x277ec0",
+          "callback": "0x2693f8"
+        }
+      ]
+    },
+    {
+      "name": "Event_Instigator",
+      "registrations": [
+        {
+          "name": "Event_Instigator",
+          "call": "0x26ef08",
+          "register_function": "0x277ec0",
+          "callback": "0x2692e8"
+        }
+      ]
+    },
+    {
+      "name": "Exists",
+      "registrations": [
+        {
+          "name": "Exists",
+          "call": "0x26f4a8",
+          "register_function": "0x277ec0",
+          "callback": "0x26a2d0"
+        }
+      ]
+    },
+    {
+      "name": "ExitCutscene",
+      "registrations": [
+        {
+          "name": "ExitCutscene",
+          "call": "0x185b64",
+          "register_function": "0x277ec0",
+          "callback": "0x184f20"
+        }
+      ]
+    },
+    {
+      "name": "FaceEntity",
+      "registrations": [
+        {
+          "name": "FaceEntity",
+          "call": "0x185ac4",
+          "register_function": "0x277ec0",
+          "callback": "0x1850d4"
+        }
+      ]
+    },
+    {
+      "name": "FacePoint",
+      "registrations": [
+        {
+          "name": "FacePoint",
+          "call": "0x2d9628",
+          "register_function": "0x277ec0",
+          "callback": "0x2d54e8"
+        }
+      ]
+    },
+    {
+      "name": "FallFromAir",
+      "registrations": [
+        {
+          "name": "FallFromAir",
+          "call": "0x30bc54",
+          "register_function": "0x277ec0",
+          "callback": "0x30ae90"
+        }
+      ]
+    },
+    {
+      "name": "FindNearestAttraction",
+      "registrations": [
+        {
+          "name": "FindNearestAttraction",
+          "call": "0x2fd424",
+          "register_function": "0x277ec0",
+          "callback": "0x2fd014"
+        }
+      ]
+    },
+    {
+      "name": "FindNearestRepelGoal",
+      "registrations": [
+        {
+          "name": "FindNearestRepelGoal",
+          "call": "0x2fd474",
+          "register_function": "0x277ec0",
+          "callback": "0x2fd1e0"
+        }
+      ]
+    },
+    {
+      "name": "FireSequence",
+      "registrations": [
+        {
+          "name": "FireSequence",
+          "call": "0x2838c0",
+          "register_function": "0x277ec0",
+          "callback": "0x283288"
+        }
+      ]
+    },
+    {
+      "name": "FireSequencesOnRole",
+      "registrations": [
+        {
+          "name": "FireSequencesOnRole",
+          "call": "0x28386c",
+          "register_function": "0x277ec0",
+          "callback": "0x28315c"
+        }
+      ]
+    },
+    {
+      "name": "FireThread",
+      "registrations": [
+        {
+          "name": "FireThread",
+          "call": "0x2701c8",
+          "register_function": "0x277ec0",
+          "callback": "0x26d8a4"
+        }
+      ]
+    },
+    {
+      "name": "FireUser1",
+      "registrations": [
+        {
+          "name": "FireUser1",
+          "call": "0x26fd68",
+          "register_function": "0x277ec0",
+          "callback": "0x26cd94"
+        }
+      ]
+    },
+    {
+      "name": "FireUser2",
+      "registrations": [
+        {
+          "name": "FireUser2",
+          "call": "0x26fdb8",
+          "register_function": "0x277ec0",
+          "callback": "0x26ced0"
+        }
+      ]
+    },
+    {
+      "name": "FireUser3",
+      "registrations": [
+        {
+          "name": "FireUser3",
+          "call": "0x26fe08",
+          "register_function": "0x277ec0",
+          "callback": "0x26d00c"
+        }
+      ]
+    },
+    {
+      "name": "FireUser4",
+      "registrations": [
+        {
+          "name": "FireUser4",
+          "call": "0x26fe58",
+          "register_function": "0x277ec0",
+          "callback": "0x26d148"
+        }
+      ]
+    },
+    {
+      "name": "FireWeapon",
+      "registrations": [
+        {
+          "name": "FireWeapon",
+          "call": "0x3dbfcc",
+          "register_function": "0x277ec0",
+          "callback": "0x3db31c"
+        }
+      ]
+    },
+    {
+      "name": "ForEachEntityInGroup",
+      "registrations": [
+        {
+          "name": "ForEachEntityInGroup",
+          "call": "0x270218",
+          "register_function": "0x277ec0",
+          "callback": "0x26d96c"
+        }
+      ]
+    },
+    {
+      "name": "ForEachEntityInPrefab",
+      "registrations": [
+        {
+          "name": "ForEachEntityInPrefab",
+          "call": "0x270268",
+          "register_function": "0x277ec0",
+          "callback": "0x26daa0"
+        }
+      ]
+    },
+    {
+      "name": "ForceKamikaze",
+      "registrations": [
+        {
+          "name": "ForceKamikaze",
+          "call": "0x2d9538",
+          "register_function": "0x277ec0",
+          "callback": "0x2d4eac"
+        }
+      ]
+    },
+    {
+      "name": "ForcePainted",
+      "registrations": [
+        {
+          "name": "ForcePainted",
+          "call": "0x277414",
+          "register_function": "0x277ec0",
+          "callback": "0x2766bc"
+        }
+      ]
+    },
+    {
+      "name": "ForcePaintedPop",
+      "registrations": [
+        {
+          "name": "ForcePaintedPop",
+          "call": "0x2774bc",
+          "register_function": "0x277ec0",
+          "callback": "0x27699c"
+        }
+      ]
+    },
+    {
+      "name": "ForceSequence",
+      "registrations": [
+        {
+          "name": "ForceSequence",
+          "call": "0x283914",
+          "register_function": "0x277ec0",
+          "callback": "0x2833b4"
+        }
+      ]
+    },
+    {
+      "name": "ForceSketched",
+      "registrations": [
+        {
+          "name": "ForceSketched",
+          "call": "0x277468",
+          "register_function": "0x277ec0",
+          "callback": "0x27682c"
+        }
+      ]
+    },
+    {
+      "name": "ForceSketchedPop",
+      "registrations": [
+        {
+          "name": "ForceSketchedPop",
+          "call": "0x277510",
+          "register_function": "0x277ec0",
+          "callback": "0x276af4"
+        }
+      ]
+    },
+    {
+      "name": "ForceSpawn",
+      "registrations": [
+        {
+          "name": "ForceSpawn",
+          "call": "0x3c9eb8",
+          "register_function": "0x277ec0",
+          "callback": "0x3c9a34"
+        }
+      ]
+    },
+    {
+      "name": "ForceSpawnThenParent",
+      "registrations": [
+        {
+          "name": "ForceSpawnThenParent",
+          "call": "0x3c9f08",
+          "register_function": "0x277ec0",
+          "callback": "0x3c9c98"
+        }
+      ]
+    },
+    {
+      "name": "FreezeCamera",
+      "registrations": [
+        {
+          "name": "FreezeCamera",
+          "call": "0x12984",
+          "register_function": "0x277ec0",
+          "callback": "0x11748"
+        }
+      ]
+    },
+    {
+      "name": "GetActiveWeapon",
+      "registrations": [
+        {
+          "name": "GetActiveWeapon",
+          "call": "0x2fb844",
+          "register_function": "0x277ec0",
+          "callback": "0x2fb0b0"
+        }
+      ]
+    },
+    {
+      "name": "GetAutoTarget_Player",
+      "registrations": [
+        {
+          "name": "GetAutoTarget_Player",
+          "call": "0x920a8",
+          "register_function": "0x277ec0",
+          "callback": "0x90f6c"
+        }
+      ]
+    },
+    {
+      "name": "GetCamera",
+      "registrations": [
+        {
+          "name": "GetCamera",
+          "call": "0x26f458",
+          "register_function": "0x277ec0",
+          "callback": "0x26a140"
+        }
+      ]
+    },
+    {
+      "name": "GetCameraPosition",
+      "registrations": [
+        {
+          "name": "GetCameraPosition",
+          "call": "0x12934",
+          "register_function": "0x277ec0",
+          "callback": "0x11630"
+        }
+      ]
+    },
+    {
+      "name": "GetChildEntityByIndex",
+      "registrations": [
+        {
+          "name": "GetChildEntityByIndex",
+          "call": "0x311f44",
+          "register_function": "0x277ec0",
+          "callback": "0x311cf4"
+        }
+      ]
+    },
+    {
+      "name": "GetChildEntityByName",
+      "registrations": [
+        {
+          "name": "GetChildEntityByName",
+          "call": "0x311ef4",
+          "register_function": "0x277ec0",
+          "callback": "0x311b40"
+        }
+      ]
+    },
+    {
+      "name": "GetCombatIntensityBias",
+      "registrations": [
+        {
+          "name": "GetCombatIntensityBias",
+          "call": "0x29a8",
+          "register_function": "0x277ec0",
+          "callback": "0x27f8"
+        }
+      ]
+    },
+    {
+      "name": "GetConfigVariableBool",
+      "registrations": [
+        {
+          "name": "GetConfigVariableBool",
+          "call": "0x26f598",
+          "register_function": "0x277ec0",
+          "callback": "0x26a7e0"
+        }
+      ]
+    },
+    {
+      "name": "GetConfigVariableFloat",
+      "registrations": [
+        {
+          "name": "GetConfigVariableFloat",
+          "call": "0x26f5e8",
+          "register_function": "0x277ec0",
+          "callback": "0x26aa1c"
+        }
+      ]
+    },
+    {
+      "name": "GetConfigVariableString",
+      "registrations": [
+        {
+          "name": "GetConfigVariableString",
+          "call": "0x26f548",
+          "register_function": "0x277ec0",
+          "callback": "0x26a5a8"
+        }
+      ]
+    },
+    {
+      "name": "GetConstraintEntity",
+      "registrations": [
+        {
+          "name": "GetConstraintEntity",
+          "call": "0x26870c",
+          "register_function": "0x277ec0",
+          "callback": "0x267588"
+        }
+      ]
+    },
+    {
+      "name": "GetCurrentCameraOverride",
+      "registrations": [
+        {
+          "name": "GetCurrentCameraOverride",
+          "call": "0x128e4",
+          "register_function": "0x277ec0",
+          "callback": "0x11430"
+        }
+      ]
+    },
+    {
+      "name": "GetCurrentTeam",
+      "registrations": [
+        {
+          "name": "GetCurrentTeam",
+          "call": "0x3c9a1c",
+          "register_function": "0x277ec0",
+          "callback": "0x3c9588"
+        }
+      ]
+    },
+    {
+      "name": "GetDialogResponse",
+      "registrations": [
+        {
+          "name": "GetDialogResponse",
+          "call": "0x1f98d4",
+          "register_function": "0x277ec0",
+          "callback": "0x1f8860"
+        }
+      ]
+    },
+    {
+      "name": "GetDistanceBetweenEntities",
+      "registrations": [
+        {
+          "name": "GetDistanceBetweenEntities",
+          "call": "0x26875c",
+          "register_function": "0x277ec0",
+          "callback": "0x267780"
+        }
+      ]
+    },
+    {
+      "name": "GetElapsedTime",
+      "registrations": [
+        {
+          "name": "GetElapsedTime",
+          "call": "0x26eff8",
+          "register_function": "0x277ec0",
+          "callback": "0x2690dc"
+        }
+      ]
+    },
+    {
+      "name": "GetElementCount",
+      "registrations": [
+        {
+          "name": "GetElementCount",
+          "call": "0x26898c",
+          "register_function": "0x277ec0",
+          "callback": "0x267250"
+        }
+      ]
+    },
+    {
+      "name": "GetEmptyWeapon",
+      "registrations": [
+        {
+          "name": "GetEmptyWeapon",
+          "call": "0x2fb894",
+          "register_function": "0x277ec0",
+          "callback": "0x2fb20c"
+        }
+      ]
+    },
+    {
+      "name": "GetEntity",
+      "registrations": [
+        {
+          "name": "GetEntity",
+          "call": "0x26f2c8",
+          "register_function": "0x277ec0",
+          "callback": "0x269508"
+        }
+      ]
+    },
+    {
+      "name": "GetEntityGroupSize",
+      "registrations": [
+        {
+          "name": "GetEntityGroupSize",
+          "call": "0x2702b8",
+          "register_function": "0x277ec0",
+          "callback": "0x26d758"
+        }
+      ]
+    },
+    {
+      "name": "GetFacing",
+      "registrations": [
+        {
+          "name": "GetFacing",
+          "call": "0x26f8b8",
+          "register_function": "0x277ec0",
+          "callback": "0x26bb34"
+        }
+      ]
+    },
+    {
+      "name": "GetGameTime",
+      "registrations": [
+        {
+          "name": "GetGameTime",
+          "call": "0x26efa8",
+          "register_function": "0x277ec0",
+          "callback": "0x268fdc"
+        }
+      ]
+    },
+    {
+      "name": "GetGlobal",
+      "registrations": [
+        {
+          "name": "GetGlobal",
+          "call": "0x20a11c",
+          "register_function": "0x277ec0",
+          "callback": "0x209ce8"
+        }
+      ]
+    },
+    {
+      "name": "GetHeading",
+      "registrations": [
+        {
+          "name": "GetHeading",
+          "call": "0x26fa98",
+          "register_function": "0x277ec0",
+          "callback": "0x26c37c"
+        }
+      ]
+    },
+    {
+      "name": "GetHeadingToPosition",
+      "registrations": [
+        {
+          "name": "GetHeadingToPosition",
+          "call": "0x26fb88",
+          "register_function": "0x277ec0",
+          "callback": "0x26c814"
+        }
+      ]
+    },
+    {
+      "name": "GetHeadingToTarget",
+      "registrations": [
+        {
+          "name": "GetHeadingToTarget",
+          "call": "0x26fb38",
+          "register_function": "0x277ec0",
+          "callback": "0x26c684"
+        }
+      ]
+    },
+    {
+      "name": "GetHealth",
+      "registrations": [
+        {
+          "name": "GetHealth",
+          "call": "0x3236e4",
+          "register_function": "0x277ec0",
+          "callback": "0x322778"
+        }
+      ]
+    },
+    {
+      "name": "GetHeroPercent",
+      "registrations": [
+        {
+          "name": "GetHeroPercent",
+          "call": "0x16238",
+          "register_function": "0x277ec0",
+          "callback": "0x15d0c"
+        }
+      ]
+    },
+    {
+      "name": "GetIsQuestGiver",
+      "registrations": [
+        {
+          "name": "GetIsQuestGiver",
+          "call": "0x3153a8",
+          "register_function": "0x277ec0",
+          "callback": "0x314dc4"
+        }
+      ]
+    },
+    {
+      "name": "GetLeft",
+      "registrations": [
+        {
+          "name": "GetLeft",
+          "call": "0x26f958",
+          "register_function": "0x277ec0",
+          "callback": "0x26be0c"
+        }
+      ]
+    },
+    {
+      "name": "GetLetterbox",
+      "registrations": [
+        {
+          "name": "GetLetterbox",
+          "call": "0x11a34",
+          "register_function": "0x277ec0",
+          "callback": "0xda04"
+        }
+      ]
+    },
+    {
+      "name": "GetLives",
+      "registrations": [
+        {
+          "name": "GetLives",
+          "call": "0x323734",
+          "register_function": "0x277ec0",
+          "callback": "0x3228d0"
+        }
+      ]
+    },
+    {
+      "name": "GetMaxAngle",
+      "registrations": [
+        {
+          "name": "GetMaxAngle",
+          "call": "0x3dc24c",
+          "register_function": "0x277ec0",
+          "callback": "0x3dbe04"
+        }
+      ]
+    },
+    {
+      "name": "GetMaxRange",
+      "registrations": [
+        {
+          "name": "GetMaxRange",
+          "call": "0x3dc1ac",
+          "register_function": "0x277ec0",
+          "callback": "0x3dbb34"
+        }
+      ]
+    },
+    {
+      "name": "GetMaxTickets",
+      "registrations": [
+        {
+          "name": "GetMaxTickets",
+          "call": "0x346384",
+          "register_function": "0x277ec0",
+          "callback": "0x345fd0"
+        }
+      ]
+    },
+    {
+      "name": "GetMinAngle",
+      "registrations": [
+        {
+          "name": "GetMinAngle",
+          "call": "0x3dc1fc",
+          "register_function": "0x277ec0",
+          "callback": "0x3dbc9c"
+        }
+      ]
+    },
+    {
+      "name": "GetMinRange",
+      "registrations": [
+        {
+          "name": "GetMinRange",
+          "call": "0x3dc15c",
+          "register_function": "0x277ec0",
+          "callback": "0x3db9cc"
+        }
+      ]
+    },
+    {
+      "name": "GetName",
+      "registrations": [
+        {
+          "name": "GetName",
+          "call": "0x26f318",
+          "register_function": "0x277ec0",
+          "callback": "0x269634"
+        }
+      ]
+    },
+    {
+      "name": "GetObjectType",
+      "registrations": [
+        {
+          "name": "GetObjectType",
+          "call": "0x26f688",
+          "register_function": "0x277ec0",
+          "callback": "0x26aee8"
+        }
+      ]
+    },
+    {
+      "name": "GetPaladinPercent",
+      "registrations": [
+        {
+          "name": "GetPaladinPercent",
+          "call": "0x161e8",
+          "register_function": "0x277ec0",
+          "callback": "0x15d0c"
+        }
+      ]
+    },
+    {
+      "name": "GetPlayer",
+      "registrations": [
+        {
+          "name": "GetPlayer",
+          "call": "0x26f3b8",
+          "register_function": "0x277ec0",
+          "callback": "0x269b30"
+        }
+      ]
+    },
+    {
+      "name": "GetPlaythrough",
+      "registrations": [
+        {
+          "name": "GetPlaythrough",
+          "call": "0x1d620",
+          "register_function": "0x277ec0",
+          "callback": "0x1c844"
+        }
+      ]
+    },
+    {
+      "name": "GetPosition",
+      "registrations": [
+        {
+          "name": "GetPosition",
+          "call": "0x26f818",
+          "register_function": "0x277ec0",
+          "callback": "0x26b5cc"
+        }
+      ]
+    },
+    {
+      "name": "GetPrefabData",
+      "registrations": [
+        {
+          "name": "GetPrefabData",
+          "call": "0x34eba8",
+          "register_function": "0x277ec0",
+          "callback": "0x34e960"
+        }
+      ]
+    },
+    {
+      "name": "GetPropertyBool",
+      "registrations": [
+        {
+          "name": "GetPropertyBool",
+          "call": "0x2687fc",
+          "register_function": "0x277ec0",
+          "callback": "0x265798"
+        }
+      ]
+    },
+    {
+      "name": "GetPropertyEntity",
+      "registrations": [
+        {
+          "name": "GetPropertyEntity",
+          "call": "0x26893c",
+          "register_function": "0x277ec0",
+          "callback": "0x2662c0"
+        }
+      ]
+    },
+    {
+      "name": "GetPropertyFloat",
+      "registrations": [
+        {
+          "name": "GetPropertyFloat",
+          "call": "0x2687ac",
+          "register_function": "0x277ec0",
+          "callback": "0x2655b4"
+        }
+      ]
+    },
+    {
+      "name": "GetPropertyInt",
+      "registrations": [
+        {
+          "name": "GetPropertyInt",
+          "call": "0x26884c",
+          "register_function": "0x277ec0",
+          "callback": "0x265970"
+        }
+      ]
+    },
+    {
+      "name": "GetPropertyScalar",
+      "registrations": [
+        {
+          "name": "GetPropertyScalar",
+          "call": "0x26f4f8",
+          "register_function": "0x277ec0",
+          "callback": "0x26a408"
+        }
+      ]
+    },
+    {
+      "name": "GetPropertyString",
+      "registrations": [
+        {
+          "name": "GetPropertyString",
+          "call": "0x26889c",
+          "register_function": "0x277ec0",
+          "callback": "0x265c68"
+        }
+      ]
+    },
+    {
+      "name": "GetPropertyVector",
+      "registrations": [
+        {
+          "name": "GetPropertyVector",
+          "call": "0x2688ec",
+          "register_function": "0x277ec0",
+          "callback": "0x265e54"
+        }
+      ]
+    },
+    {
+      "name": "GetRelativePrefabEntity",
+      "registrations": [
+        {
+          "name": "GetRelativePrefabEntity",
+          "call": "0x34eb58",
+          "register_function": "0x277ec0",
+          "callback": "0x34dbfc"
+        }
+      ]
+    },
+    {
+      "name": "GetScrapperPercent",
+      "registrations": [
+        {
+          "name": "GetScrapperPercent",
+          "call": "0x16198",
+          "register_function": "0x277ec0",
+          "callback": "0x15bf8"
+        }
+      ]
+    },
+    {
+      "name": "GetShotsLeft",
+      "registrations": [
+        {
+          "name": "GetShotsLeft",
+          "call": "0x3dc0bc",
+          "register_function": "0x277ec0",
+          "callback": "0x3db704"
+        }
+      ]
+    },
+    {
+      "name": "GetSketchCount",
+      "registrations": [
+        {
+          "name": "GetSketchCount",
+          "call": "0x923c8",
+          "register_function": "0x277ec0",
+          "callback": "0x91b60"
+        }
+      ]
+    },
+    {
+      "name": "GetTargetPosition",
+      "registrations": [
+        {
+          "name": "GetTargetPosition",
+          "call": "0x1cf818",
+          "register_function": "0x277ec0",
+          "callback": "0x1cf654"
+        }
+      ]
+    },
+    {
+      "name": "GetTicketCount",
+      "registrations": [
+        {
+          "name": "GetTicketCount",
+          "call": "0x26f098",
+          "register_function": "0x277ec0",
+          "callback": "0x26b760"
+        }
+      ]
+    },
+    {
+      "name": "GetTurnAroundTime",
+      "registrations": [
+        {
+          "name": "GetTurnAroundTime",
+          "call": "0x3dc06c",
+          "register_function": "0x277ec0",
+          "callback": "0x3db59c"
+        }
+      ]
+    },
+    {
+      "name": "GetUp",
+      "registrations": [
+        {
+          "name": "GetUp",
+          "call": "0x26f908",
+          "register_function": "0x277ec0",
+          "callback": "0x26bca0"
+        }
+      ]
+    },
+    {
+      "name": "GetVelocity",
+      "registrations": [
+        {
+          "name": "GetVelocity",
+          "call": "0x26f868",
+          "register_function": "0x277ec0",
+          "callback": "0x26b9cc"
+        }
+      ]
+    },
+    {
+      "name": "GetVisualScale",
+      "registrations": [
+        {
+          "name": "GetVisualScale",
+          "call": "0x26f9f8",
+          "register_function": "0x277ec0",
+          "callback": "0x26c140"
+        }
+      ]
+    },
+    {
+      "name": "GetWasEndGame",
+      "registrations": [
+        {
+          "name": "GetWasEndGame",
+          "call": "0x26fcc8",
+          "register_function": "0x277ec0",
+          "callback": "0x26cb90"
+        }
+      ]
+    },
+    {
+      "name": "GetWasQuitGame",
+      "registrations": [
+        {
+          "name": "GetWasQuitGame",
+          "call": "0x26fc78",
+          "register_function": "0x277ec0",
+          "callback": "0x26c984"
+        }
+      ]
+    },
+    {
+      "name": "GiveCollectible",
+      "registrations": [
+        {
+          "name": "GiveCollectible",
+          "call": "0x112114",
+          "register_function": "0x277ec0",
+          "callback": "0x111c28"
+        }
+      ]
+    },
+    {
+      "name": "GivePlayerAllCollectibles",
+      "registrations": [
+        {
+          "name": "GivePlayerAllCollectibles",
+          "call": "0x112210",
+          "register_function": "0x277ec0",
+          "callback": "0x111fa0"
+        }
+      ]
+    },
+    {
+      "name": "GoToEntity",
+      "registrations": [
+        {
+          "name": "GoToEntity",
+          "call": "0x2d95d8",
+          "register_function": "0x277ec0",
+          "callback": "0x2d529c"
+        }
+      ]
+    },
+    {
+      "name": "GoToPoint",
+      "registrations": [
+        {
+          "name": "GoToPoint",
+          "call": "0x2d9588",
+          "register_function": "0x277ec0",
+          "callback": "0x2d5064"
+        }
+      ]
+    },
+    {
+      "name": "GrabCamera",
+      "registrations": [
+        {
+          "name": "GrabCamera",
+          "call": "0x120c4",
+          "register_function": "0x277ec0",
+          "callback": "0xf804"
+        }
+      ]
+    },
+    {
+      "name": "GrabCameraNif",
+      "registrations": [
+        {
+          "name": "GrabCameraNif",
+          "call": "0x12114",
+          "register_function": "0x277ec0",
+          "callback": "0xf958"
+        }
+      ]
+    },
+    {
+      "name": "GuardianController_SetTarget",
+      "registrations": [
+        {
+          "name": "GuardianController_SetTarget",
+          "call": "0x7f100",
+          "register_function": "0x277ec0",
+          "callback": "0x7ee9c"
+        }
+      ]
+    },
+    {
+      "name": "HasCollectible",
+      "registrations": [
+        {
+          "name": "HasCollectible",
+          "call": "0x112168",
+          "register_function": "0x277ec0",
+          "callback": "0x111d54"
+        }
+      ]
+    },
+    {
+      "name": "HasItem",
+      "registrations": [
+        {
+          "name": "HasItem",
+          "call": "0x346294",
+          "register_function": "0x277ec0",
+          "callback": "0x3458c4"
+        }
+      ]
+    },
+    {
+      "name": "Hide",
+      "registrations": [
+        {
+          "name": "Hide",
+          "call": "0x267dfc",
+          "register_function": "0x277ec0",
+          "callback": "0x263e78"
+        }
+      ]
+    },
+    {
+      "name": "HideDropdownCounter",
+      "registrations": [
+        {
+          "name": "HideDropdownCounter",
+          "call": "0xee98c",
+          "register_function": "0x277ec0",
+          "callback": "0xee784"
+        }
+      ]
+    },
+    {
+      "name": "HideHud",
+      "registrations": [
+        {
+          "name": "HideHud",
+          "call": "0x82d8",
+          "register_function": "0x277ec0",
+          "callback": "0x7500"
+        }
+      ]
+    },
+    {
+      "name": "HideReticleOnly",
+      "registrations": [
+        {
+          "name": "HideReticleOnly",
+          "call": "0x84b8",
+          "register_function": "0x277ec0",
+          "callback": "0x7a44"
+        }
+      ]
+    },
+    {
+      "name": "InHardLevelLoad",
+      "registrations": [
+        {
+          "name": "InHardLevelLoad",
+          "call": "0x3aaa8",
+          "register_function": "0x277ec0",
+          "callback": "0x2fec0"
+        }
+      ]
+    },
+    {
+      "name": "InLevelSummaryScreen",
+      "registrations": [
+        {
+          "name": "InLevelSummaryScreen",
+          "call": "0x1f9ab4",
+          "register_function": "0x277ec0",
+          "callback": "0x1f916c"
+        }
+      ]
+    },
+    {
+      "name": "IncrementCollectibleCount",
+      "registrations": [
+        {
+          "name": "IncrementCollectibleCount",
+          "call": "0x1121bc",
+          "register_function": "0x277ec0",
+          "callback": "0x111e80"
+        }
+      ]
+    },
+    {
+      "name": "InitGlobal",
+      "registrations": [
+        {
+          "name": "InitGlobal",
+          "call": "0x20a07c",
+          "register_function": "0x277ec0",
+          "callback": "0x209a0c"
+        }
+      ]
+    },
+    {
+      "name": "InstantRotateToPosition",
+      "registrations": [
+        {
+          "name": "InstantRotateToPosition",
+          "call": "0x26839c",
+          "register_function": "0x277ec0",
+          "callback": "0x264f70"
+        }
+      ]
+    },
+    {
+      "name": "IsAlive",
+      "registrations": [
+        {
+          "name": "IsAlive",
+          "call": "0x26f188",
+          "register_function": "0x277ec0",
+          "callback": "0x269ec0"
+        }
+      ]
+    },
+    {
+      "name": "IsAutoQuestGiverDisabled",
+      "registrations": [
+        {
+          "name": "IsAutoQuestGiverDisabled",
+          "call": "0x315498",
+          "register_function": "0x277ec0",
+          "callback": "0x3151e4"
+        }
+      ]
+    },
+    {
+      "name": "IsCharacter",
+      "registrations": [
+        {
+          "name": "IsCharacter",
+          "call": "0x26f408",
+          "register_function": "0x277ec0",
+          "callback": "0x269c38"
+        }
+      ]
+    },
+    {
+      "name": "IsHidden",
+      "registrations": [
+        {
+          "name": "IsHidden",
+          "call": "0x267e9c",
+          "register_function": "0x277ec0",
+          "callback": "0x264080"
+        }
+      ]
+    },
+    {
+      "name": "IsInCutscene",
+      "registrations": [
+        {
+          "name": "IsInCutscene",
+          "call": "0x2d96c8",
+          "register_function": "0x277ec0",
+          "callback": "0x2d5818"
+        }
+      ]
+    },
+    {
+      "name": "IsLoadingSaveGame",
+      "registrations": [
+        {
+          "name": "IsLoadingSaveGame",
+          "call": "0x3aaf8",
+          "register_function": "0x277ec0",
+          "callback": "0x2ffc4"
+        }
+      ]
+    },
+    {
+      "name": "IsOpponent",
+      "registrations": [
+        {
+          "name": "IsOpponent",
+          "call": "0x3c997c",
+          "register_function": "0x277ec0",
+          "callback": "0x3c93f8"
+        }
+      ]
+    },
+    {
+      "name": "IsPlayer",
+      "registrations": [
+        {
+          "name": "IsPlayer",
+          "call": "0x26f138",
+          "register_function": "0x277ec0",
+          "callback": "0x269d54"
+        }
+      ]
+    },
+    {
+      "name": "IsValidHandle",
+      "registrations": [
+        {
+          "name": "IsValidHandle",
+          "call": "0x26f1d8",
+          "register_function": "0x277ec0",
+          "callback": "0x26a008"
+        }
+      ]
+    },
+    {
+      "name": "JigsawStateChangedEvent_AmmoType",
+      "registrations": [
+        {
+          "name": "JigsawStateChangedEvent_AmmoType",
+          "call": "0x3763b8",
+          "register_function": "0x277ec0",
+          "callback": "0x3761b0"
+        }
+      ]
+    },
+    {
+      "name": "JigsawStateChangedEvent_Position",
+      "registrations": [
+        {
+          "name": "JigsawStateChangedEvent_Position",
+          "call": "0x376368",
+          "register_function": "0x277ec0",
+          "callback": "0x3760a8"
+        }
+      ]
+    },
+    {
+      "name": "Jigsaw_GetPercentagePainted",
+      "registrations": [
+        {
+          "name": "Jigsaw_GetPercentagePainted",
+          "call": "0x376318",
+          "register_function": "0x277ec0",
+          "callback": "0x375eec"
+        }
+      ]
+    },
+    {
+      "name": "Kill",
+      "registrations": [
+        {
+          "name": "Kill",
+          "call": "0x299448",
+          "register_function": "0x277ec0",
+          "callback": "0x2992c4"
+        }
+      ]
+    },
+    {
+      "name": "KillAIAndRescuePlayer",
+      "registrations": [
+        {
+          "name": "KillAIAndRescuePlayer",
+          "call": "0x30bcf4",
+          "register_function": "0x277ec0",
+          "callback": "0x30b10c"
+        }
+      ]
+    },
+    {
+      "name": "LandEvent_HighVelocity",
+      "registrations": [
+        {
+          "name": "LandEvent_HighVelocity",
+          "call": "0x30bc04",
+          "register_function": "0x277ec0",
+          "callback": "0x30ad48"
+        }
+      ]
+    },
+    {
+      "name": "LaunchEntity",
+      "registrations": [
+        {
+          "name": "LaunchEntity",
+          "call": "0x26866c",
+          "register_function": "0x277ec0",
+          "callback": "0x262b20"
+        }
+      ]
+    },
+    {
+      "name": "LoadGameFromMemory",
+      "registrations": [
+        {
+          "name": "LoadGameFromMemory",
+          "call": "0x3a878",
+          "register_function": "0x277ec0",
+          "callback": "0x2fe0c"
+        }
+      ]
+    },
+    {
+      "name": "LoadMainMenu",
+      "registrations": [
+        {
+          "name": "LoadMainMenu",
+          "call": "0x1f9974",
+          "register_function": "0x277ec0",
+          "callback": "0x1f8b38"
+        }
+      ]
+    },
+    {
+      "name": "LoadNIFImpl",
+      "registrations": [
+        {
+          "name": "LoadNIFImpl",
+          "call": "0x3ac88",
+          "register_function": "0x277ec0",
+          "callback": "0x39f10"
+        }
+      ]
+    },
+    {
+      "name": "LoadSavedCameraOverride",
+      "registrations": [
+        {
+          "name": "LoadSavedCameraOverride",
+          "call": "0x12894",
+          "register_function": "0x277ec0",
+          "callback": "0x11538"
+        }
+      ]
+    },
+    {
+      "name": "LongBark",
+      "registrations": [
+        {
+          "name": "LongBark",
+          "call": "0x1e7804",
+          "register_function": "0x277ec0",
+          "callback": "0x1e7454"
+        }
+      ]
+    },
+    {
+      "name": "MakeNoticeableNoise",
+      "registrations": [
+        {
+          "name": "MakeNoticeableNoise",
+          "call": "0x320b10",
+          "register_function": "0x277ec0",
+          "callback": "0x320794"
+        }
+      ]
+    },
+    {
+      "name": "MotionStateEvent_Instigator",
+      "registrations": [
+        {
+          "name": "MotionStateEvent_Instigator",
+          "call": "0x1f5668",
+          "register_function": "0x277ec0",
+          "callback": "0x1f4d60"
+        }
+      ]
+    },
+    {
+      "name": "MotionStateEvent_State",
+      "registrations": [
+        {
+          "name": "MotionStateEvent_State",
+          "call": "0x1f56b8",
+          "register_function": "0x277ec0",
+          "callback": "0x1f4e70"
+        }
+      ]
+    },
+    {
+      "name": "MoveScriptedReticleLocation",
+      "registrations": [
+        {
+          "name": "MoveScriptedReticleLocation",
+          "call": "0x8558",
+          "register_function": "0x277ec0",
+          "callback": "0x7b5c"
+        }
+      ]
+    },
+    {
+      "name": "MoveToEntity",
+      "registrations": [
+        {
+          "name": "MoveToEntity",
+          "call": "0x26f778",
+          "register_function": "0x277ec0",
+          "callback": "0x26b1dc"
+        }
+      ]
+    },
+    {
+      "name": "MultiPosSoundStart",
+      "registrations": [
+        {
+          "name": "MultiPosSoundStart",
+          "call": "0x2ff148",
+          "register_function": "0x277ec0",
+          "callback": "0x2fee90"
+        }
+      ]
+    },
+    {
+      "name": "MultiPosSoundStop",
+      "registrations": [
+        {
+          "name": "MultiPosSoundStop",
+          "call": "0x2ff198",
+          "register_function": "0x277ec0",
+          "callback": "0x2fefbc"
+        }
+      ]
+    },
+    {
+      "name": "Mute",
+      "registrations": [
+        {
+          "name": "Mute",
+          "call": "0x3ab48",
+          "register_function": "0x277ec0",
+          "callback": "0x3a370"
+        }
+      ]
+    },
+    {
+      "name": "NotifyKamikazeJump",
+      "registrations": [
+        {
+          "name": "NotifyKamikazeJump",
+          "call": "0x26fbd8",
+          "register_function": "0x277ec0",
+          "callback": "0x26d284"
+        }
+      ]
+    },
+    {
+      "name": "ObjectiveClear",
+      "registrations": [
+        {
+          "name": "ObjectiveClear",
+          "call": "0x238b50",
+          "register_function": "0x277ec0",
+          "callback": "0x2387c4"
+        }
+      ]
+    },
+    {
+      "name": "ObjectiveClearAll",
+      "registrations": [
+        {
+          "name": "ObjectiveClearAll",
+          "call": "0x238ba0",
+          "register_function": "0x277ec0",
+          "callback": "0x2388f4"
+        }
+      ]
+    },
+    {
+      "name": "ObjectiveComplete",
+      "registrations": [
+        {
+          "name": "ObjectiveComplete",
+          "call": "0x238b00",
+          "register_function": "0x277ec0",
+          "callback": "0x238688"
+        }
+      ]
+    },
+    {
+      "name": "ObjectiveIncrement",
+      "registrations": [
+        {
+          "name": "ObjectiveIncrement",
+          "call": "0x238ab0",
+          "register_function": "0x277ec0",
+          "callback": "0x238548"
+        }
+      ]
+    },
+    {
+      "name": "ObjectiveNew",
+      "registrations": [
+        {
+          "name": "ObjectiveNew",
+          "call": "0x238a60",
+          "register_function": "0x277ec0",
+          "callback": "0x238408"
+        }
+      ]
+    },
+    {
+      "name": "Openfile",
+      "registrations": [
+        {
+          "name": "Openfile",
+          "call": "0x26ff48",
+          "register_function": "0x277ec0",
+          "callback": "0x26d618"
+        }
+      ]
+    },
+    {
+      "name": "PaintExplode",
+      "registrations": [
+        {
+          "name": "PaintExplode",
+          "call": "0x277564",
+          "register_function": "0x277ec0",
+          "callback": "0x276c4c"
+        }
+      ]
+    },
+    {
+      "name": "PaintThinnerCounterReset",
+      "registrations": [
+        {
+          "name": "PaintThinnerCounterReset",
+          "call": "0x365bfc",
+          "register_function": "0x277ec0",
+          "callback": "0x365484"
+        }
+      ]
+    },
+    {
+      "name": "PaintThinnerCounter_GetPaintedPercentage",
+      "registrations": [
+        {
+          "name": "PaintThinnerCounter_GetPaintedPercentage",
+          "call": "0x365c4c",
+          "register_function": "0x277ec0",
+          "callback": "0x3655d0"
+        }
+      ]
+    },
+    {
+      "name": "PaintThinnerCounter_GetStatus",
+      "registrations": [
+        {
+          "name": "PaintThinnerCounter_GetStatus",
+          "call": "0x365cec",
+          "register_function": "0x277ec0",
+          "callback": "0x3658a0"
+        }
+      ]
+    },
+    {
+      "name": "PaintThinnerCounter_GetThinnedPercentage",
+      "registrations": [
+        {
+          "name": "PaintThinnerCounter_GetThinnedPercentage",
+          "call": "0x365c9c",
+          "register_function": "0x277ec0",
+          "callback": "0x365738"
+        }
+      ]
+    },
+    {
+      "name": "PauseAllAI",
+      "registrations": [
+        {
+          "name": "PauseAllAI",
+          "call": "0x185bb4",
+          "register_function": "0x277ec0",
+          "callback": "0x184a08"
+        }
+      ]
+    },
+    {
+      "name": "PauseGame",
+      "registrations": [
+        {
+          "name": "PauseGame",
+          "call": "0x26f048",
+          "register_function": "0x277ec0",
+          "callback": "0x2691e0"
+        }
+      ]
+    },
+    {
+      "name": "PauseMenuObjectives",
+      "registrations": [
+        {
+          "name": "PauseMenuObjectives",
+          "call": "0x1f9b54",
+          "register_function": "0x277ec0",
+          "callback": "0x1f93cc"
+        }
+      ]
+    },
+    {
+      "name": "PauseWatchSketch",
+      "registrations": [
+        {
+          "name": "PauseWatchSketch",
+          "call": "0x3c090",
+          "register_function": "0x277ec0",
+          "callback": "0x3b928"
+        }
+      ]
+    },
+    {
+      "name": "PickCaseRandom",
+      "registrations": [
+        {
+          "name": "PickCaseRandom",
+          "call": "0x35c374",
+          "register_function": "0x277ec0",
+          "callback": "0x35c01c"
+        }
+      ]
+    },
+    {
+      "name": "PickCaseRandomShuffle",
+      "registrations": [
+        {
+          "name": "PickCaseRandomShuffle",
+          "call": "0x35c3c4",
+          "register_function": "0x277ec0",
+          "callback": "0x35c170"
+        }
+      ]
+    },
+    {
+      "name": "PlayMovieInternal",
+      "registrations": [
+        {
+          "name": "PlayMovieInternal",
+          "call": "0x1f99c4",
+          "register_function": "0x277ec0",
+          "callback": "0x1f8c44"
+        }
+      ]
+    },
+    {
+      "name": "PlayerHasPaintThinnerAbilities",
+      "registrations": [
+        {
+          "name": "PlayerHasPaintThinnerAbilities",
+          "call": "0x92238",
+          "register_function": "0x277ec0",
+          "callback": "0x916a8"
+        }
+      ]
+    },
+    {
+      "name": "PlayerHasPaintThinnerAbilitiesSD",
+      "registrations": [
+        {
+          "name": "PlayerHasPaintThinnerAbilitiesSD",
+          "call": "0x92288",
+          "register_function": "0x277ec0",
+          "callback": "0x917d0"
+        }
+      ]
+    },
+    {
+      "name": "PlayerHasSketchAbilities",
+      "registrations": [
+        {
+          "name": "PlayerHasSketchAbilities",
+          "call": "0x922d8",
+          "register_function": "0x277ec0",
+          "callback": "0x91904"
+        }
+      ]
+    },
+    {
+      "name": "PlayerHasSketchAbilitiesSD",
+      "registrations": [
+        {
+          "name": "PlayerHasSketchAbilitiesSD",
+          "call": "0x92328",
+          "register_function": "0x277ec0",
+          "callback": "0x91a2c"
+        }
+      ]
+    },
+    {
+      "name": "PlayerHasUnlockedExtra",
+      "registrations": [
+        {
+          "name": "PlayerHasUnlockedExtra",
+          "call": "0x113648",
+          "register_function": "0x277ec0",
+          "callback": "0x113354"
+        }
+      ]
+    },
+    {
+      "name": "PlayerPickup_SetPendingActivation",
+      "registrations": [
+        {
+          "name": "PlayerPickup_SetPendingActivation",
+          "call": "0x38a588",
+          "register_function": "0x277ec0",
+          "callback": "0x38a404"
+        }
+      ]
+    },
+    {
+      "name": "PlayerSetDripsVisible",
+      "registrations": [
+        {
+          "name": "PlayerSetDripsVisible",
+          "call": "0x92418",
+          "register_function": "0x277ec0",
+          "callback": "0x91ed0"
+        }
+      ]
+    },
+    {
+      "name": "PotentiallyUnhideGuardian",
+      "registrations": [
+        {
+          "name": "PotentiallyUnhideGuardian",
+          "call": "0x16378",
+          "register_function": "0x277ec0",
+          "callback": "0x16014"
+        }
+      ]
+    },
+    {
+      "name": "Print",
+      "registrations": [
+        {
+          "name": "Print",
+          "call": "0x26fef8",
+          "register_function": "0x277ec0",
+          "callback": "0x277d8c"
+        }
+      ]
+    },
+    {
+      "name": "PrintLuaStack",
+      "registrations": [
+        {
+          "name": "PrintLuaStack",
+          "call": "0x3abe8",
+          "register_function": "0x277ec0",
+          "callback": "0x39c50"
+        }
+      ]
+    },
+    {
+      "name": "ProjectileComponent_CalculateLobVelocity",
+      "registrations": [
+        {
+          "name": "ProjectileComponent_CalculateLobVelocity",
+          "call": "0x39274c",
+          "register_function": "0x277ec0",
+          "callback": "0x3922a4"
+        }
+      ]
+    },
+    {
+      "name": "ProjectileComponent_CalculateLobVelocityTimed",
+      "registrations": [
+        {
+          "name": "ProjectileComponent_CalculateLobVelocityTimed",
+          "call": "0x39279c",
+          "register_function": "0x277ec0",
+          "callback": "0x392498"
+        }
+      ]
+    },
+    {
+      "name": "QueueBrainEvent",
+      "registrations": [
+        {
+          "name": "QueueBrainEvent",
+          "call": "0x2d94e8",
+          "register_function": "0x277ec0",
+          "callback": "0x2d4c5c"
+        }
+      ]
+    },
+    {
+      "name": "QueueDropdownCounter",
+      "registrations": [
+        {
+          "name": "QueueDropdownCounter",
+          "call": "0xee8e4",
+          "register_function": "0x277ec0",
+          "callback": "0xee4dc"
+        }
+      ]
+    },
+    {
+      "name": "RaiseCrushedByAnvilEvent",
+      "registrations": [
+        {
+          "name": "RaiseCrushedByAnvilEvent",
+          "call": "0x3c270",
+          "register_function": "0x277ec0",
+          "callback": "0x3be44"
+        }
+      ]
+    },
+    {
+      "name": "RaiseDeathEvent",
+      "registrations": [
+        {
+          "name": "RaiseDeathEvent",
+          "call": "0x783a0",
+          "register_function": "0x277ec0",
+          "callback": "0x77cd8"
+        }
+      ]
+    },
+    {
+      "name": "RelayDisable",
+      "registrations": [
+        {
+          "name": "RelayDisable",
+          "call": "0x360050",
+          "register_function": "0x277ec0",
+          "callback": "0x35fa6c"
+        }
+      ]
+    },
+    {
+      "name": "RelayEnable",
+      "registrations": [
+        {
+          "name": "RelayEnable",
+          "call": "0x360000",
+          "register_function": "0x277ec0",
+          "callback": "0x35f918"
+        }
+      ]
+    },
+    {
+      "name": "RelayToggle",
+      "registrations": [
+        {
+          "name": "RelayToggle",
+          "call": "0x3600a0",
+          "register_function": "0x277ec0",
+          "callback": "0x35fbc0"
+        }
+      ]
+    },
+    {
+      "name": "RelayTrigger",
+      "registrations": [
+        {
+          "name": "RelayTrigger",
+          "call": "0x3600f0",
+          "register_function": "0x277ec0",
+          "callback": "0x35fd50"
+        }
+      ]
+    },
+    {
+      "name": "ReleaseCamera",
+      "registrations": [
+        {
+          "name": "ReleaseCamera",
+          "call": "0x121b4",
+          "register_function": "0x277ec0",
+          "callback": "0xfaac"
+        }
+      ]
+    },
+    {
+      "name": "ReleaseSecondaryCameraTarget",
+      "registrations": [
+        {
+          "name": "ReleaseSecondaryCameraTarget",
+          "call": "0x12024",
+          "register_function": "0x277ec0",
+          "callback": "0xf37c"
+        }
+      ]
+    },
+    {
+      "name": "RemoveAffectedEntity",
+      "registrations": [
+        {
+          "name": "RemoveAffectedEntity",
+          "call": "0x371b90",
+          "register_function": "0x277ec0",
+          "callback": "0x3718bc"
+        }
+      ]
+    },
+    {
+      "name": "RemoveItem",
+      "registrations": [
+        {
+          "name": "RemoveItem",
+          "call": "0x3461f4",
+          "register_function": "0x277ec0",
+          "callback": "0x34556c"
+        }
+      ]
+    },
+    {
+      "name": "RemovePhysicsFromWorld",
+      "registrations": [
+        {
+          "name": "RemovePhysicsFromWorld",
+          "call": "0x37f588",
+          "register_function": "0x277ec0",
+          "callback": "0x37f220"
+        }
+      ]
+    },
+    {
+      "name": "RequestRobotArmChangeIdle",
+      "registrations": [
+        {
+          "name": "RequestRobotArmChangeIdle",
+          "call": "0x5edc8",
+          "register_function": "0x277ec0",
+          "callback": "0x5e470"
+        }
+      ]
+    },
+    {
+      "name": "RequestRobotArmElectrocute",
+      "registrations": [
+        {
+          "name": "RequestRobotArmElectrocute",
+          "call": "0x5ec88",
+          "register_function": "0x277ec0",
+          "callback": "0x5e2b8"
+        }
+      ]
+    },
+    {
+      "name": "RequestRobotArmSmash",
+      "registrations": [
+        {
+          "name": "RequestRobotArmSmash",
+          "call": "0x5ec38",
+          "register_function": "0x277ec0",
+          "callback": "0x5e0e4"
+        }
+      ]
+    },
+    {
+      "name": "ResetCombatCameraValues",
+      "registrations": [
+        {
+          "name": "ResetCombatCameraValues",
+          "call": "0x12754",
+          "register_function": "0x277ec0",
+          "callback": "0x10f0c"
+        }
+      ]
+    },
+    {
+      "name": "ResetDefaultCameraValues",
+      "registrations": [
+        {
+          "name": "ResetDefaultCameraValues",
+          "call": "0x12704",
+          "register_function": "0x277ec0",
+          "callback": "0x10ce4"
+        }
+      ]
+    },
+    {
+      "name": "ResetOverrideTurnRate",
+      "registrations": [
+        {
+          "name": "ResetOverrideTurnRate",
+          "call": "0x30bf24",
+          "register_function": "0x277ec0",
+          "callback": "0x30ba14"
+        }
+      ]
+    },
+    {
+      "name": "ResetSaveGameSlot",
+      "registrations": [
+        {
+          "name": "ResetSaveGameSlot",
+          "call": "0x2608b8",
+          "register_function": "0x277ec0",
+          "callback": "0x260764"
+        }
+      ]
+    },
+    {
+      "name": "ResetTicketCount",
+      "registrations": [
+        {
+          "name": "ResetTicketCount",
+          "call": "0x26f0e8",
+          "register_function": "0x277ec0",
+          "callback": "0x26b8a0"
+        }
+      ]
+    },
+    {
+      "name": "ResetTravelCameraValues",
+      "registrations": [
+        {
+          "name": "ResetTravelCameraValues",
+          "call": "0x127a4",
+          "register_function": "0x277ec0",
+          "callback": "0x11134"
+        }
+      ]
+    },
+    {
+      "name": "RestartCurrentLevel",
+      "registrations": [
+        {
+          "name": "RestartCurrentLevel",
+          "call": "0x3a7d8",
+          "register_function": "0x277ec0",
+          "callback": "0x2f92c"
+        }
+      ]
+    },
+    {
+      "name": "RestoreShadowScale",
+      "registrations": [
+        {
+          "name": "RestoreShadowScale",
+          "call": "0x3b5f78",
+          "register_function": "0x277ec0",
+          "callback": "0x3b5dbc"
+        }
+      ]
+    },
+    {
+      "name": "RestrictCutSceneInput",
+      "registrations": [
+        {
+          "name": "RestrictCutSceneInput",
+          "call": "0x12204",
+          "register_function": "0x277ec0",
+          "callback": "0xfbc4"
+        }
+      ]
+    },
+    {
+      "name": "ResumePatrol",
+      "registrations": [
+        {
+          "name": "ResumePatrol",
+          "call": "0x3018f4",
+          "register_function": "0x277ec0",
+          "callback": "0x301598"
+        }
+      ]
+    },
+    {
+      "name": "ReturnToLastSolidGround",
+      "registrations": [
+        {
+          "name": "ReturnToLastSolidGround",
+          "call": "0x9ca48",
+          "register_function": "0x277ec0",
+          "callback": "0x9c4a8"
+        }
+      ]
+    },
+    {
+      "name": "Reverse",
+      "registrations": [
+        {
+          "name": "Reverse",
+          "call": "0x267f8c",
+          "register_function": "0x277ec0",
+          "callback": "0x2636d0"
+        }
+      ]
+    },
+    {
+      "name": "Rumble",
+      "registrations": [
+        {
+          "name": "Rumble",
+          "call": "0x218e28",
+          "register_function": "0x277ec0",
+          "callback": "0x218c5c"
+        }
+      ]
+    },
+    {
+      "name": "SaveCurrentCameraOverride",
+      "registrations": [
+        {
+          "name": "SaveCurrentCameraOverride",
+          "call": "0x12844",
+          "register_function": "0x277ec0",
+          "callback": "0x11338"
+        }
+      ]
+    },
+    {
+      "name": "SaveGameToMemory",
+      "registrations": [
+        {
+          "name": "SaveGameToMemory",
+          "call": "0x3a828",
+          "register_function": "0x277ec0",
+          "callback": "0x2fa24"
+        }
+      ]
+    },
+    {
+      "name": "SaveQuestGlobal",
+      "registrations": [
+        {
+          "name": "SaveQuestGlobal",
+          "call": "0x20a16c",
+          "register_function": "0x277ec0",
+          "callback": "0x209e7c"
+        }
+      ]
+    },
+    {
+      "name": "Script_UnlockAllExtras",
+      "registrations": [
+        {
+          "name": "Script_UnlockAllExtras",
+          "call": "0x11369c",
+          "register_function": "0x277ec0",
+          "callback": "0x113480"
+        }
+      ]
+    },
+    {
+      "name": "SendReachedPositionEvent",
+      "registrations": [
+        {
+          "name": "SendReachedPositionEvent",
+          "call": "0x2d9678",
+          "register_function": "0x277ec0",
+          "callback": "0x2d56a0"
+        }
+      ]
+    },
+    {
+      "name": "SetActiveWeapon",
+      "registrations": [
+        {
+          "name": "SetActiveWeapon",
+          "call": "0x2fb8e4",
+          "register_function": "0x277ec0",
+          "callback": "0x2fb368"
+        }
+      ]
+    },
+    {
+      "name": "SetActiveWeaponByName",
+      "registrations": [
+        {
+          "name": "SetActiveWeaponByName",
+          "call": "0x2fb934",
+          "register_function": "0x277ec0",
+          "callback": "0x2fb4b4"
+        }
+      ]
+    },
+    {
+      "name": "SetAppCulled",
+      "registrations": [
+        {
+          "name": "SetAppCulled",
+          "call": "0x268c5c",
+          "register_function": "0x277ec0",
+          "callback": "0x2679b4"
+        }
+      ]
+    },
+    {
+      "name": "SetBlotTentacleThreeBlockerInfo",
+      "registrations": [
+        {
+          "name": "SetBlotTentacleThreeBlockerInfo",
+          "call": "0x67614",
+          "register_function": "0x277ec0",
+          "callback": "0x67384"
+        }
+      ]
+    },
+    {
+      "name": "SetBlotTentacleThreeStayHiddenTime",
+      "registrations": [
+        {
+          "name": "SetBlotTentacleThreeStayHiddenTime",
+          "call": "0x675c4",
+          "register_function": "0x277ec0",
+          "callback": "0x67158"
+        }
+      ]
+    },
+    {
+      "name": "SetBoneScale",
+      "registrations": [
+        {
+          "name": "SetBoneScale",
+          "call": "0x6a998",
+          "register_function": "0x277ec0",
+          "callback": "0x6a4bc"
+        }
+      ]
+    },
+    {
+      "name": "SetBoneScaleAll",
+      "registrations": [
+        {
+          "name": "SetBoneScaleAll",
+          "call": "0x6a9e8",
+          "register_function": "0x277ec0",
+          "callback": "0x6a730"
+        }
+      ]
+    },
+    {
+      "name": "SetBoolValue",
+      "registrations": [
+        {
+          "name": "SetBoolValue",
+          "call": "0x35a59c",
+          "register_function": "0x277ec0",
+          "callback": "0x359d10"
+        }
+      ]
+    },
+    {
+      "name": "SetBoolValueThenTest",
+      "registrations": [
+        {
+          "name": "SetBoolValueThenTest",
+          "call": "0x35a5ec",
+          "register_function": "0x277ec0",
+          "callback": "0x359e70"
+        }
+      ]
+    },
+    {
+      "name": "SetCameraAttributes",
+      "registrations": [
+        {
+          "name": "SetCameraAttributes",
+          "call": "0x12344",
+          "register_function": "0x277ec0",
+          "callback": "0x10368"
+        }
+      ]
+    },
+    {
+      "name": "SetCameraHint",
+      "registrations": [
+        {
+          "name": "SetCameraHint",
+          "call": "0x11b24",
+          "register_function": "0x277ec0",
+          "callback": "0xdd24"
+        }
+      ]
+    },
+    {
+      "name": "SetCameraHintDist",
+      "registrations": [
+        {
+          "name": "SetCameraHintDist",
+          "call": "0x11b74",
+          "register_function": "0x277ec0",
+          "callback": "0xdea0"
+        }
+      ]
+    },
+    {
+      "name": "SetCameraHintOffset",
+      "registrations": [
+        {
+          "name": "SetCameraHintOffset",
+          "call": "0x11c64",
+          "register_function": "0x277ec0",
+          "callback": "0xe298"
+        }
+      ]
+    },
+    {
+      "name": "SetCameraHintPitch",
+      "registrations": [
+        {
+          "name": "SetCameraHintPitch",
+          "call": "0x11c14",
+          "register_function": "0x277ec0",
+          "callback": "0xe13c"
+        }
+      ]
+    },
+    {
+      "name": "SetCameraHintSide",
+      "registrations": [
+        {
+          "name": "SetCameraHintSide",
+          "call": "0x11cb4",
+          "register_function": "0x277ec0",
+          "callback": "0xe3f4"
+        }
+      ]
+    },
+    {
+      "name": "SetCameraHintYaw",
+      "registrations": [
+        {
+          "name": "SetCameraHintYaw",
+          "call": "0x11bc4",
+          "register_function": "0x277ec0",
+          "callback": "0xdfe0"
+        }
+      ]
+    },
+    {
+      "name": "SetCannonFleeEnabled",
+      "registrations": [
+        {
+          "name": "SetCannonFleeEnabled",
+          "call": "0x42d80",
+          "register_function": "0x277ec0",
+          "callback": "0x42af8"
+        }
+      ]
+    },
+    {
+      "name": "SetCharacterInConversation",
+      "registrations": [
+        {
+          "name": "SetCharacterInConversation",
+          "call": "0x2839bc",
+          "register_function": "0x277ec0",
+          "callback": "0x283688"
+        }
+      ]
+    },
+    {
+      "name": "SetCharacterWantsCollisionEventsSet",
+      "registrations": [
+        {
+          "name": "SetCharacterWantsCollisionEventsSet",
+          "call": "0x37b76c",
+          "register_function": "0x277ec0",
+          "callback": "0x37b450"
+        }
+      ]
+    },
+    {
+      "name": "SetCombatCameraValues",
+      "registrations": [
+        {
+          "name": "SetCombatCameraValues",
+          "call": "0x12664",
+          "register_function": "0x277ec0",
+          "callback": "0x10de0"
+        }
+      ]
+    },
+    {
+      "name": "SetCombatIntensityBias",
+      "registrations": [
+        {
+          "name": "SetCombatIntensityBias",
+          "call": "0x2958",
+          "register_function": "0x277ec0",
+          "callback": "0x26f0"
+        }
+      ]
+    },
+    {
+      "name": "SetCompareValue",
+      "registrations": [
+        {
+          "name": "SetCompareValue",
+          "call": "0x35d434",
+          "register_function": "0x277ec0",
+          "callback": "0x35cd88"
+        }
+      ]
+    },
+    {
+      "name": "SetCompareValueThenCompare",
+      "registrations": [
+        {
+          "name": "SetCompareValueThenCompare",
+          "call": "0x35d484",
+          "register_function": "0x277ec0",
+          "callback": "0x35ceec"
+        }
+      ]
+    },
+    {
+      "name": "SetConfigVariableString",
+      "registrations": [
+        {
+          "name": "SetConfigVariableString",
+          "call": "0x26f638",
+          "register_function": "0x277ec0",
+          "callback": "0x26ac78"
+        }
+      ]
+    },
+    {
+      "name": "SetConstraintEntities",
+      "registrations": [
+        {
+          "name": "SetConstraintEntities",
+          "call": "0x26848c",
+          "register_function": "0x277ec0",
+          "callback": "0x2628a4"
+        }
+      ]
+    },
+    {
+      "name": "SetCurrentTeam",
+      "registrations": [
+        {
+          "name": "SetCurrentTeam",
+          "call": "0x3c99cc",
+          "register_function": "0x277ec0",
+          "callback": "0x3c9700"
+        }
+      ]
+    },
+    {
+      "name": "SetCutSceneCameraRatio",
+      "registrations": [
+        {
+          "name": "SetCutSceneCameraRatio",
+          "call": "0x122f4",
+          "register_function": "0x277ec0",
+          "callback": "0xfeac"
+        }
+      ]
+    },
+    {
+      "name": "SetDefaultCameraValues",
+      "registrations": [
+        {
+          "name": "SetDefaultCameraValues",
+          "call": "0x12614",
+          "register_function": "0x277ec0",
+          "callback": "0x10bb8"
+        }
+      ]
+    },
+    {
+      "name": "SetDeliveryMethod",
+      "registrations": [
+        {
+          "name": "SetDeliveryMethod",
+          "call": "0x2681bc",
+          "register_function": "0x277ec0",
+          "callback": "0x264bb0"
+        }
+      ]
+    },
+    {
+      "name": "SetDrawSilhouettes",
+      "registrations": [
+        {
+          "name": "SetDrawSilhouettes",
+          "call": "0x3ad28",
+          "register_function": "0x277ec0",
+          "callback": "0x3a260"
+        }
+      ]
+    },
+    {
+      "name": "SetElementCount",
+      "registrations": [
+        {
+          "name": "SetElementCount",
+          "call": "0x268bbc",
+          "register_function": "0x277ec0",
+          "callback": "0x2673f4"
+        }
+      ]
+    },
+    {
+      "name": "SetEmitterSpawnRate",
+      "registrations": [
+        {
+          "name": "SetEmitterSpawnRate",
+          "call": "0x36b370",
+          "register_function": "0x277ec0",
+          "callback": "0x36b0d4"
+        }
+      ]
+    },
+    {
+      "name": "SetEndingGame",
+      "registrations": [
+        {
+          "name": "SetEndingGame",
+          "call": "0x26fd18",
+          "register_function": "0x277ec0",
+          "callback": "0x26ca88"
+        }
+      ]
+    },
+    {
+      "name": "SetEntitiesToNotCollide",
+      "registrations": [
+        {
+          "name": "SetEntitiesToNotCollide",
+          "call": "0x37b7bc",
+          "register_function": "0x277ec0",
+          "callback": "0x37b5a0"
+        }
+      ]
+    },
+    {
+      "name": "SetExternalVelocity",
+      "registrations": [
+        {
+          "name": "SetExternalVelocity",
+          "call": "0x30bbb4",
+          "register_function": "0x277ec0",
+          "callback": "0x30ac0c"
+        }
+      ]
+    },
+    {
+      "name": "SetFacing",
+      "registrations": [
+        {
+          "name": "SetFacing",
+          "call": "0x26f9a8",
+          "register_function": "0x277ec0",
+          "callback": "0x26bf78"
+        }
+      ]
+    },
+    {
+      "name": "SetFirstPersonCameraEnabled",
+      "registrations": [
+        {
+          "name": "SetFirstPersonCameraEnabled",
+          "call": "0x127f4",
+          "register_function": "0x277ec0",
+          "callback": "0x11230"
+        }
+      ]
+    },
+    {
+      "name": "SetFogColor",
+      "registrations": [
+        {
+          "name": "SetFogColor",
+          "call": "0x3b0c34",
+          "register_function": "0x277ec0",
+          "callback": "0x3af8dc"
+        }
+      ]
+    },
+    {
+      "name": "SetFogEnable",
+      "registrations": [
+        {
+          "name": "SetFogEnable",
+          "call": "0x3b0be4",
+          "register_function": "0x277ec0",
+          "callback": "0x3af7e4"
+        }
+      ]
+    },
+    {
+      "name": "SetFogEnd",
+      "registrations": [
+        {
+          "name": "SetFogEnd",
+          "call": "0x3b0cd4",
+          "register_function": "0x277ec0",
+          "callback": "0x3afadc"
+        }
+      ]
+    },
+    {
+      "name": "SetFogStart",
+      "registrations": [
+        {
+          "name": "SetFogStart",
+          "call": "0x3b0c84",
+          "register_function": "0x277ec0",
+          "callback": "0x3af9e4"
+        }
+      ]
+    },
+    {
+      "name": "SetFogType",
+      "registrations": [
+        {
+          "name": "SetFogType",
+          "call": "0x3b0d24",
+          "register_function": "0x277ec0",
+          "callback": "0x3afbd4"
+        }
+      ]
+    },
+    {
+      "name": "SetGlobal",
+      "registrations": [
+        {
+          "name": "SetGlobal",
+          "call": "0x20a0cc",
+          "register_function": "0x277ec0",
+          "callback": "0x209b30"
+        }
+      ]
+    },
+    {
+      "name": "SetGroundPlaneActive",
+      "registrations": [
+        {
+          "name": "SetGroundPlaneActive",
+          "call": "0x129d4",
+          "register_function": "0x277ec0",
+          "callback": "0x11840"
+        }
+      ]
+    },
+    {
+      "name": "SetGuardianSystemVisible",
+      "registrations": [
+        {
+          "name": "SetGuardianSystemVisible",
+          "call": "0x16328",
+          "register_function": "0x277ec0",
+          "callback": "0x15ef8"
+        }
+      ]
+    },
+    {
+      "name": "SetHeading",
+      "registrations": [
+        {
+          "name": "SetHeading",
+          "call": "0x26fae8",
+          "register_function": "0x277ec0",
+          "callback": "0x26c4f4"
+        }
+      ]
+    },
+    {
+      "name": "SetHealth",
+      "registrations": [
+        {
+          "name": "SetHealth",
+          "call": "0x323694",
+          "register_function": "0x277ec0",
+          "callback": "0x322618"
+        }
+      ]
+    },
+    {
+      "name": "SetHudFor2D",
+      "registrations": [
+        {
+          "name": "SetHudFor2D",
+          "call": "0x1f9ba4",
+          "register_function": "0x277ec0",
+          "callback": "0x1f94fc"
+        }
+      ]
+    },
+    {
+      "name": "SetInitialValue",
+      "registrations": [
+        {
+          "name": "SetInitialValue",
+          "call": "0x35d4d4",
+          "register_function": "0x277ec0",
+          "callback": "0x35d120"
+        }
+      ]
+    },
+    {
+      "name": "SetIsQuestGiver",
+      "registrations": [
+        {
+          "name": "SetIsQuestGiver",
+          "call": "0x3153f8",
+          "register_function": "0x277ec0",
+          "callback": "0x314f2c"
+        }
+      ]
+    },
+    {
+      "name": "SetItemCount",
+      "registrations": [
+        {
+          "name": "SetItemCount",
+          "call": "0x346244",
+          "register_function": "0x277ec0",
+          "callback": "0x345718"
+        }
+      ]
+    },
+    {
+      "name": "SetLedgeGrabEnabled",
+      "registrations": [
+        {
+          "name": "SetLedgeGrabEnabled",
+          "call": "0x9cae8",
+          "register_function": "0x277ec0",
+          "callback": "0x9c728"
+        }
+      ]
+    },
+    {
+      "name": "SetLetterbox",
+      "registrations": [
+        {
+          "name": "SetLetterbox",
+          "call": "0x11a84",
+          "register_function": "0x277ec0",
+          "callback": "0xdb08"
+        }
+      ]
+    },
+    {
+      "name": "SetLives",
+      "registrations": [
+        {
+          "name": "SetLives",
+          "call": "0x323784",
+          "register_function": "0x277ec0",
+          "callback": "0x322a2c"
+        }
+      ]
+    },
+    {
+      "name": "SetLookAtTarget",
+      "registrations": [
+        {
+          "name": "SetLookAtTarget",
+          "call": "0x185c54",
+          "register_function": "0x277ec0",
+          "callback": "0x1852d0"
+        }
+      ]
+    },
+    {
+      "name": "SetMap",
+      "registrations": [
+        {
+          "name": "SetMap",
+          "call": "0x1f9bf4",
+          "register_function": "0x277ec0",
+          "callback": "0x1f9618"
+        }
+      ]
+    },
+    {
+      "name": "SetNIFLoaded",
+      "registrations": [
+        {
+          "name": "SetNIFLoaded",
+          "call": "0x3ac38",
+          "register_function": "0x277ec0",
+          "callback": "0x39d5c"
+        }
+      ]
+    },
+    {
+      "name": "SetNPCMood",
+      "registrations": [
+        {
+          "name": "SetNPCMood",
+          "call": "0x2f3d2c",
+          "register_function": "0x277ec0",
+          "callback": "0x2ea22c"
+        }
+      ]
+    },
+    {
+      "name": "SetNPCState",
+      "registrations": [
+        {
+          "name": "SetNPCState",
+          "call": "0x2f3d7c",
+          "register_function": "0x277ec0",
+          "callback": "0x2ea3a8"
+        }
+      ]
+    },
+    {
+      "name": "SetNextPatrolNode",
+      "registrations": [
+        {
+          "name": "SetNextPatrolNode",
+          "call": "0x3018a4",
+          "register_function": "0x277ec0",
+          "callback": "0x301344"
+        }
+      ]
+    },
+    {
+      "name": "SetOverrideTurnRate",
+      "registrations": [
+        {
+          "name": "SetOverrideTurnRate",
+          "call": "0x30bed4",
+          "register_function": "0x277ec0",
+          "callback": "0x30b8c4"
+        }
+      ]
+    },
+    {
+      "name": "SetPaintMax",
+      "registrations": [
+        {
+          "name": "SetPaintMax",
+          "call": "0x3462e4",
+          "register_function": "0x277ec0",
+          "callback": "0x345a7c"
+        }
+      ]
+    },
+    {
+      "name": "SetParent",
+      "registrations": [
+        {
+          "name": "SetParent",
+          "call": "0x3577a4",
+          "register_function": "0x277ec0",
+          "callback": "0x357448"
+        }
+      ]
+    },
+    {
+      "name": "SetParentEntity",
+      "registrations": [
+        {
+          "name": "SetParentEntity",
+          "call": "0x357754",
+          "register_function": "0x277ec0",
+          "callback": "0x357290"
+        }
+      ]
+    },
+    {
+      "name": "SetPercentGameSpeed",
+      "registrations": [
+        {
+          "name": "SetPercentGameSpeed",
+          "call": "0x26843c",
+          "register_function": "0x277ec0",
+          "callback": "0x2654ac"
+        }
+      ]
+    },
+    {
+      "name": "SetPhysicsVelocity",
+      "registrations": [
+        {
+          "name": "SetPhysicsVelocity",
+          "call": "0x26852c",
+          "register_function": "0x277ec0",
+          "callback": "0x262704"
+        }
+      ]
+    },
+    {
+      "name": "SetPlayerSpawnTransform",
+      "registrations": [
+        {
+          "name": "SetPlayerSpawnTransform",
+          "call": "0x3a5f8",
+          "register_function": "0x277ec0",
+          "callback": "0x2f0cc"
+        }
+      ]
+    },
+    {
+      "name": "SetPlayerSpawnTransformEntity",
+      "registrations": [
+        {
+          "name": "SetPlayerSpawnTransformEntity",
+          "call": "0x3a648",
+          "register_function": "0x277ec0",
+          "callback": "0x2f230"
+        }
+      ]
+    },
+    {
+      "name": "SetPlaythrough",
+      "registrations": [
+        {
+          "name": "SetPlaythrough",
+          "call": "0x1d5d0",
+          "register_function": "0x277ec0",
+          "callback": "0x1c944"
+        }
+      ]
+    },
+    {
+      "name": "SetPropertyBool",
+      "registrations": [
+        {
+          "name": "SetPropertyBool",
+          "call": "0x268a2c",
+          "register_function": "0x277ec0",
+          "callback": "0x2666bc"
+        }
+      ]
+    },
+    {
+      "name": "SetPropertyEntity",
+      "registrations": [
+        {
+          "name": "SetPropertyEntity",
+          "call": "0x268b6c",
+          "register_function": "0x277ec0",
+          "callback": "0x26704c"
+        }
+      ]
+    },
+    {
+      "name": "SetPropertyFloat",
+      "registrations": [
+        {
+          "name": "SetPropertyFloat",
+          "call": "0x2689dc",
+          "register_function": "0x277ec0",
+          "callback": "0x2664e0"
+        }
+      ]
+    },
+    {
+      "name": "SetPropertyInt",
+      "registrations": [
+        {
+          "name": "SetPropertyInt",
+          "call": "0x268a7c",
+          "register_function": "0x277ec0",
+          "callback": "0x266898"
+        }
+      ]
+    },
+    {
+      "name": "SetPropertyString",
+      "registrations": [
+        {
+          "name": "SetPropertyString",
+          "call": "0x268acc",
+          "register_function": "0x277ec0",
+          "callback": "0x266b18"
+        }
+      ]
+    },
+    {
+      "name": "SetPropertyVector",
+      "registrations": [
+        {
+          "name": "SetPropertyVector",
+          "call": "0x268b1c",
+          "register_function": "0x277ec0",
+          "callback": "0x266d18"
+        }
+      ]
+    },
+    {
+      "name": "SetR3MTColorReg",
+      "registrations": [
+        {
+          "name": "SetR3MTColorReg",
+          "call": "0x3ad948",
+          "register_function": "0x277ec0",
+          "callback": "0x3acd50"
+        }
+      ]
+    },
+    {
+      "name": "SetR3MTColorRegOnSubGraph",
+      "registrations": [
+        {
+          "name": "SetR3MTColorRegOnSubGraph",
+          "call": "0x3ad9e8",
+          "register_function": "0x277ec0",
+          "callback": "0x3acfe8"
+        }
+      ]
+    },
+    {
+      "name": "SetR3MTConstReg",
+      "registrations": [
+        {
+          "name": "SetR3MTConstReg",
+          "call": "0x3ad998",
+          "register_function": "0x277ec0",
+          "callback": "0x3ace9c"
+        }
+      ]
+    },
+    {
+      "name": "SetR3MTConstRegAlpha",
+      "registrations": [
+        {
+          "name": "SetR3MTConstRegAlpha",
+          "call": "0x3ada88",
+          "register_function": "0x277ec0",
+          "callback": "0x3ad4bc"
+        }
+      ]
+    },
+    {
+      "name": "SetR3MTConstRegOnSubGraph",
+      "registrations": [
+        {
+          "name": "SetR3MTConstRegOnSubGraph",
+          "call": "0x3ada38",
+          "register_function": "0x277ec0",
+          "callback": "0x3ad140"
+        }
+      ]
+    },
+    {
+      "name": "SetR3MTLockAnimation",
+      "registrations": [
+        {
+          "name": "SetR3MTLockAnimation",
+          "call": "0x3adb28",
+          "register_function": "0x277ec0",
+          "callback": "0x3ad660"
+        }
+      ]
+    },
+    {
+      "name": "SetR3MTOverrideTransparent",
+      "registrations": [
+        {
+          "name": "SetR3MTOverrideTransparent",
+          "call": "0x3adad8",
+          "register_function": "0x277ec0",
+          "callback": "0x3ad390"
+        }
+      ]
+    },
+    {
+      "name": "SetR3MTUnlockAnimation",
+      "registrations": [
+        {
+          "name": "SetR3MTUnlockAnimation",
+          "call": "0x3adb78",
+          "register_function": "0x277ec0",
+          "callback": "0x3ad7a8"
+        }
+      ]
+    },
+    {
+      "name": "SetReticleScriptDriven",
+      "registrations": [
+        {
+          "name": "SetReticleScriptDriven",
+          "call": "0x85a8",
+          "register_function": "0x277ec0",
+          "callback": "0x7d1c"
+        }
+      ]
+    },
+    {
+      "name": "SetReversed",
+      "registrations": [
+        {
+          "name": "SetReversed",
+          "call": "0x267fdc",
+          "register_function": "0x277ec0",
+          "callback": "0x263904"
+        }
+      ]
+    },
+    {
+      "name": "SetRobotArmAttackTypeAngleInfo",
+      "registrations": [
+        {
+          "name": "SetRobotArmAttackTypeAngleInfo",
+          "call": "0x5ecd8",
+          "register_function": "0x277ec0",
+          "callback": "0x5db98"
+        }
+      ]
+    },
+    {
+      "name": "SetRobotArmAttackTypeCooldownInfo",
+      "registrations": [
+        {
+          "name": "SetRobotArmAttackTypeCooldownInfo",
+          "call": "0x5ed78",
+          "register_function": "0x277ec0",
+          "callback": "0x5df20"
+        }
+      ]
+    },
+    {
+      "name": "SetRobotArmAttackTypeDelayInfo",
+      "registrations": [
+        {
+          "name": "SetRobotArmAttackTypeDelayInfo",
+          "call": "0x5ed28",
+          "register_function": "0x277ec0",
+          "callback": "0x5dd5c"
+        }
+      ]
+    },
+    {
+      "name": "SetRobotArmAttackTypeEnabled",
+      "registrations": [
+        {
+          "name": "SetRobotArmAttackTypeEnabled",
+          "call": "0x5ebe8",
+          "register_function": "0x277ec0",
+          "callback": "0x5d940"
+        }
+      ]
+    },
+    {
+      "name": "SetRobotArmSpotlightDisabled",
+      "registrations": [
+        {
+          "name": "SetRobotArmSpotlightDisabled",
+          "call": "0x5eeb8",
+          "register_function": "0x277ec0",
+          "callback": "0x5e9e0"
+        }
+      ]
+    },
+    {
+      "name": "SetRobotArmSpotlightEntity",
+      "registrations": [
+        {
+          "name": "SetRobotArmSpotlightEntity",
+          "call": "0x5ee18",
+          "register_function": "0x277ec0",
+          "callback": "0x5e618"
+        }
+      ]
+    },
+    {
+      "name": "SetRobotArmSpotlightStatus",
+      "registrations": [
+        {
+          "name": "SetRobotArmSpotlightStatus",
+          "call": "0x5ee68",
+          "register_function": "0x277ec0",
+          "callback": "0x5e81c"
+        }
+      ]
+    },
+    {
+      "name": "SetRotatorMaxSpeed",
+      "registrations": [
+        {
+          "name": "SetRotatorMaxSpeed",
+          "call": "0x2680cc",
+          "register_function": "0x277ec0",
+          "callback": "0x2646c4"
+        }
+      ]
+    },
+    {
+      "name": "SetScriptedReticleLocation",
+      "registrations": [
+        {
+          "name": "SetScriptedReticleLocation",
+          "call": "0x8508",
+          "register_function": "0x277ec0",
+          "callback": "0x7c3c"
+        }
+      ]
+    },
+    {
+      "name": "SetScriptedReticleType",
+      "registrations": [
+        {
+          "name": "SetScriptedReticleType",
+          "call": "0x85f8",
+          "register_function": "0x277ec0",
+          "callback": "0x7da4"
+        }
+      ]
+    },
+    {
+      "name": "SetSecondaryCameraTarget",
+      "registrations": [
+        {
+          "name": "SetSecondaryCameraTarget",
+          "call": "0x11f34",
+          "register_function": "0x277ec0",
+          "callback": "0xede0"
+        }
+      ]
+    },
+    {
+      "name": "SetSecondaryCameraTargetReverse",
+      "registrations": [
+        {
+          "name": "SetSecondaryCameraTargetReverse",
+          "call": "0x11f84",
+          "register_function": "0x277ec0",
+          "callback": "0xefa0"
+        }
+      ]
+    },
+    {
+      "name": "SetShadowScale",
+      "registrations": [
+        {
+          "name": "SetShadowScale",
+          "call": "0x3b5f28",
+          "register_function": "0x277ec0",
+          "callback": "0x3b5c78"
+        }
+      ]
+    },
+    {
+      "name": "SetShooterSpeed",
+      "registrations": [
+        {
+          "name": "SetShooterSpeed",
+          "call": "0x26811c",
+          "register_function": "0x277ec0",
+          "callback": "0x2647e8"
+        }
+      ]
+    },
+    {
+      "name": "SetSpawnDelay",
+      "registrations": [
+        {
+          "name": "SetSpawnDelay",
+          "call": "0x26820c",
+          "register_function": "0x277ec0",
+          "callback": "0x264a6c"
+        }
+      ]
+    },
+    {
+      "name": "SetSpeed",
+      "registrations": [
+        {
+          "name": "SetSpeed",
+          "call": "0x26802c",
+          "register_function": "0x277ec0",
+          "callback": "0x26449c"
+        }
+      ]
+    },
+    {
+      "name": "SetSplineFollowerInitialSpeed",
+      "registrations": [
+        {
+          "name": "SetSplineFollowerInitialSpeed",
+          "call": "0x26807c",
+          "register_function": "0x277ec0",
+          "callback": "0x2645a0"
+        }
+      ]
+    },
+    {
+      "name": "SetStayInCombatIdle",
+      "registrations": [
+        {
+          "name": "SetStayInCombatIdle",
+          "call": "0x92378",
+          "register_function": "0x277ec0",
+          "callback": "0x91d58"
+        }
+      ]
+    },
+    {
+      "name": "SetStompHeightJumpMultiplier",
+      "registrations": [
+        {
+          "name": "SetStompHeightJumpMultiplier",
+          "call": "0x9ca98",
+          "register_function": "0x277ec0",
+          "callback": "0x9c5e0"
+        }
+      ]
+    },
+    {
+      "name": "SetTarget",
+      "registrations": [
+        {
+          "name": "SetTarget",
+          "call": "0x26816c",
+          "register_function": "0x277ec0",
+          "callback": "0x26492c"
+        }
+      ]
+    },
+    {
+      "name": "SetThinnerMax",
+      "registrations": [
+        {
+          "name": "SetThinnerMax",
+          "call": "0x346334",
+          "register_function": "0x277ec0",
+          "callback": "0x345d24"
+        }
+      ]
+    },
+    {
+      "name": "SetTicketsVisible",
+      "registrations": [
+        {
+          "name": "SetTicketsVisible",
+          "call": "0x1f9c44",
+          "register_function": "0x277ec0",
+          "callback": "0x1f976c"
+        }
+      ]
+    },
+    {
+      "name": "SetTransformation",
+      "registrations": [
+        {
+          "name": "SetTransformation",
+          "call": "0x26f728",
+          "register_function": "0x277ec0",
+          "callback": "0x26b3e0"
+        }
+      ]
+    },
+    {
+      "name": "SetTravelCameraValues",
+      "registrations": [
+        {
+          "name": "SetTravelCameraValues",
+          "call": "0x126b4",
+          "register_function": "0x277ec0",
+          "callback": "0x11008"
+        }
+      ]
+    },
+    {
+      "name": "SetUnlockedExtra",
+      "registrations": [
+        {
+          "name": "SetUnlockedExtra",
+          "call": "0x1135f4",
+          "register_function": "0x277ec0",
+          "callback": "0x1131c0"
+        }
+      ]
+    },
+    {
+      "name": "SetVisualScale",
+      "registrations": [
+        {
+          "name": "SetVisualScale",
+          "call": "0x26fa48",
+          "register_function": "0x277ec0",
+          "callback": "0x26c264"
+        }
+      ]
+    },
+    {
+      "name": "SetVulnerability",
+      "registrations": [
+        {
+          "name": "SetVulnerability",
+          "call": "0x2683ec",
+          "register_function": "0x277ec0",
+          "callback": "0x2641cc"
+        }
+      ]
+    },
+    {
+      "name": "SetWallPushingEnabled",
+      "registrations": [
+        {
+          "name": "SetWallPushingEnabled",
+          "call": "0x9cb38",
+          "register_function": "0x277ec0",
+          "callback": "0x9c898"
+        }
+      ]
+    },
+    {
+      "name": "ShakeCamera",
+      "registrations": [
+        {
+          "name": "ShakeCamera",
+          "call": "0x12164",
+          "register_function": "0x277ec0",
+          "callback": "0xf64c"
+        }
+      ]
+    },
+    {
+      "name": "Shooter_ClearTargetPoint",
+      "registrations": [
+        {
+          "name": "Shooter_ClearTargetPoint",
+          "call": "0x3b9f50",
+          "register_function": "0x277ec0",
+          "callback": "0x3b9bf8"
+        }
+      ]
+    },
+    {
+      "name": "Shooter_DropBombs",
+      "registrations": [
+        {
+          "name": "Shooter_DropBombs",
+          "call": "0x3b9dc0",
+          "register_function": "0x277ec0",
+          "callback": "0x3b9468"
+        }
+      ]
+    },
+    {
+      "name": "Shooter_LaunchProjectiles",
+      "registrations": [
+        {
+          "name": "Shooter_LaunchProjectiles",
+          "call": "0x3b9e60",
+          "register_function": "0x277ec0",
+          "callback": "0x3b97a0"
+        }
+      ]
+    },
+    {
+      "name": "Shooter_PrepareProjectiles",
+      "registrations": [
+        {
+          "name": "Shooter_PrepareProjectiles",
+          "call": "0x3b9e10",
+          "register_function": "0x277ec0",
+          "callback": "0x3b9638"
+        }
+      ]
+    },
+    {
+      "name": "Shooter_RemoveProjectiles",
+      "registrations": [
+        {
+          "name": "Shooter_RemoveProjectiles",
+          "call": "0x3b9eb0",
+          "register_function": "0x277ec0",
+          "callback": "0x3b9908"
+        }
+      ]
+    },
+    {
+      "name": "Shooter_SetTargetPoint",
+      "registrations": [
+        {
+          "name": "Shooter_SetTargetPoint",
+          "call": "0x3b9f00",
+          "register_function": "0x277ec0",
+          "callback": "0x3b9a70"
+        }
+      ]
+    },
+    {
+      "name": "Show",
+      "registrations": [
+        {
+          "name": "Show",
+          "call": "0x267eec",
+          "register_function": "0x277ec0",
+          "callback": "0x263f7c"
+        }
+      ]
+    },
+    {
+      "name": "ShowDropdownCounter",
+      "registrations": [
+        {
+          "name": "ShowDropdownCounter",
+          "call": "0xee938",
+          "register_function": "0x277ec0",
+          "callback": "0xee630"
+        }
+      ]
+    },
+    {
+      "name": "ShowHud",
+      "registrations": [
+        {
+          "name": "ShowHud",
+          "call": "0x8328",
+          "register_function": "0x277ec0",
+          "callback": "0x760c"
+        }
+      ]
+    },
+    {
+      "name": "ShowReticleOnly",
+      "registrations": [
+        {
+          "name": "ShowReticleOnly",
+          "call": "0x8468",
+          "register_function": "0x277ec0",
+          "callback": "0x792c"
+        }
+      ]
+    },
+    {
+      "name": "ShowWatchParticle",
+      "registrations": [
+        {
+          "name": "ShowWatchParticle",
+          "call": "0x1f9b04",
+          "register_function": "0x277ec0",
+          "callback": "0x1f9270"
+        }
+      ]
+    },
+    {
+      "name": "SplineFollower_ClearDeadEndFlag",
+      "registrations": [
+        {
+          "name": "SplineFollower_ClearDeadEndFlag",
+          "call": "0x3bea08",
+          "register_function": "0x277ec0",
+          "callback": "0x3be2dc"
+        }
+      ]
+    },
+    {
+      "name": "SplineFollower_ClearStopPosition",
+      "registrations": [
+        {
+          "name": "SplineFollower_ClearStopPosition",
+          "call": "0x3beaa8",
+          "register_function": "0x277ec0",
+          "callback": "0x3be6dc"
+        }
+      ]
+    },
+    {
+      "name": "SplineFollower_HasSplinePath",
+      "registrations": [
+        {
+          "name": "SplineFollower_HasSplinePath",
+          "call": "0x3be8c8",
+          "register_function": "0x277ec0",
+          "callback": "0x3be16c"
+        }
+      ]
+    },
+    {
+      "name": "SplineFollower_SetDisabled",
+      "registrations": [
+        {
+          "name": "SplineFollower_SetDisabled",
+          "call": "0x3be918",
+          "register_function": "0x277ec0",
+          "callback": "0x3bdffc"
+        }
+      ]
+    },
+    {
+      "name": "SplineFollower_StopAtPosition",
+      "registrations": [
+        {
+          "name": "SplineFollower_StopAtPosition",
+          "call": "0x3bea58",
+          "register_function": "0x277ec0",
+          "callback": "0x3be468"
+        }
+      ]
+    },
+    {
+      "name": "SplineFollower_TeleportToKnot",
+      "registrations": [
+        {
+          "name": "SplineFollower_TeleportToKnot",
+          "call": "0x3be968",
+          "register_function": "0x277ec0",
+          "callback": "0x3bdc10"
+        }
+      ]
+    },
+    {
+      "name": "SplineFollower_TeleportToPosition",
+      "registrations": [
+        {
+          "name": "SplineFollower_TeleportToPosition",
+          "call": "0x3be9b8",
+          "register_function": "0x277ec0",
+          "callback": "0x3bddc4"
+        }
+      ]
+    },
+    {
+      "name": "SplineKnotComponent_GetNextSplineKnot",
+      "registrations": [
+        {
+          "name": "SplineKnotComponent_GetNextSplineKnot",
+          "call": "0x3c07b8",
+          "register_function": "0x277ec0",
+          "callback": "0x3c0488"
+        }
+      ]
+    },
+    {
+      "name": "SplineKnotComponent_SetBranchProbability",
+      "registrations": [
+        {
+          "name": "SplineKnotComponent_SetBranchProbability",
+          "call": "0x3c0808",
+          "register_function": "0x277ec0",
+          "callback": "0x3c05e8"
+        }
+      ]
+    },
+    {
+      "name": "StartCamControl",
+      "registrations": [
+        {
+          "name": "StartCamControl",
+          "call": "0x26825c",
+          "register_function": "0x277ec0",
+          "callback": "0x2650a0"
+        }
+      ]
+    },
+    {
+      "name": "StartCameraPivotSnap",
+      "registrations": [
+        {
+          "name": "StartCameraPivotSnap",
+          "call": "0x11fd4",
+          "register_function": "0x277ec0",
+          "callback": "0xf160"
+        }
+      ]
+    },
+    {
+      "name": "StartCameraSideScrollPass",
+      "registrations": [
+        {
+          "name": "StartCameraSideScrollPass",
+          "call": "0x124d4",
+          "register_function": "0x277ec0",
+          "callback": "0x101ac"
+        }
+      ]
+    },
+    {
+      "name": "StartCameraSideScrollPassSD",
+      "registrations": [
+        {
+          "name": "StartCameraSideScrollPassSD",
+          "call": "0x12524",
+          "register_function": "0x277ec0",
+          "callback": "0xffe0"
+        }
+      ]
+    },
+    {
+      "name": "StartCameraSplinePass",
+      "registrations": [
+        {
+          "name": "StartCameraSplinePass",
+          "call": "0x12074",
+          "register_function": "0x277ec0",
+          "callback": "0xf4a4"
+        }
+      ]
+    },
+    {
+      "name": "StartEmitterByName",
+      "registrations": [
+        {
+          "name": "StartEmitterByName",
+          "call": "0x31c2f0",
+          "register_function": "0x277ec0",
+          "callback": "0x31bd74"
+        }
+      ]
+    },
+    {
+      "name": "StartEmitterByNameFireForget",
+      "registrations": [
+        {
+          "name": "StartEmitterByNameFireForget",
+          "call": "0x31c390",
+          "register_function": "0x277ec0",
+          "callback": "0x31beec"
+        }
+      ]
+    },
+    {
+      "name": "StartEmitters",
+      "registrations": [
+        {
+          "name": "StartEmitters",
+          "call": "0x36b2d0",
+          "register_function": "0x277ec0",
+          "callback": "0x36adf4"
+        }
+      ]
+    },
+    {
+      "name": "StartFadeIn",
+      "registrations": [
+        {
+          "name": "StartFadeIn",
+          "call": "0x83c8",
+          "register_function": "0x277ec0",
+          "callback": "0x7824"
+        }
+      ]
+    },
+    {
+      "name": "StartFadeInNoHUD",
+      "registrations": [
+        {
+          "name": "StartFadeInNoHUD",
+          "call": "0x8418",
+          "register_function": "0x277ec0",
+          "callback": "0x78a8"
+        }
+      ]
+    },
+    {
+      "name": "StartFadeOut",
+      "registrations": [
+        {
+          "name": "StartFadeOut",
+          "call": "0x8378",
+          "register_function": "0x277ec0",
+          "callback": "0x7718"
+        }
+      ]
+    },
+    {
+      "name": "StartRotateToPosition",
+      "registrations": [
+        {
+          "name": "StartRotateToPosition",
+          "call": "0x2682fc",
+          "register_function": "0x277ec0",
+          "callback": "0x264cf4"
+        }
+      ]
+    },
+    {
+      "name": "StartSequence",
+      "registrations": [
+        {
+          "name": "StartSequence",
+          "call": "0x1f9924",
+          "register_function": "0x277ec0",
+          "callback": "0x1f8978"
+        }
+      ]
+    },
+    {
+      "name": "StartTrackingCurrentLevelForScoring",
+      "registrations": [
+        {
+          "name": "StartTrackingCurrentLevelForScoring",
+          "call": "0x1d850",
+          "register_function": "0x277ec0",
+          "callback": "0x1d0e8"
+        }
+      ]
+    },
+    {
+      "name": "StartTrackingCurrentLevelForScoringSD",
+      "registrations": [
+        {
+          "name": "StartTrackingCurrentLevelForScoringSD",
+          "call": "0x1d8f0",
+          "register_function": "0x277ec0",
+          "callback": "0x1d318"
+        }
+      ]
+    },
+    {
+      "name": "StartTrackingLevelScore",
+      "registrations": [
+        {
+          "name": "StartTrackingLevelScore",
+          "call": "0x1d760",
+          "register_function": "0x277ec0",
+          "callback": "0x1cc78"
+        }
+      ]
+    },
+    {
+      "name": "StimulusEntity",
+      "registrations": [
+        {
+          "name": "StimulusEntity",
+          "call": "0x28b0c4",
+          "register_function": "0x277ec0",
+          "callback": "0x289a18"
+        }
+      ]
+    },
+    {
+      "name": "StimulusEntityWithAlias",
+      "registrations": [
+        {
+          "name": "StimulusEntityWithAlias",
+          "call": "0x28b118",
+          "register_function": "0x277ec0",
+          "callback": "0x289c10"
+        }
+      ]
+    },
+    {
+      "name": "StimulusEntityWithAliasCalculateDirectionInRadius",
+      "registrations": [
+        {
+          "name": "StimulusEntityWithAliasCalculateDirectionInRadius",
+          "call": "0x28b16c",
+          "register_function": "0x277ec0",
+          "callback": "0x289e24"
+        }
+      ]
+    },
+    {
+      "name": "StimulusEntityWithAliasInEntityDirectionInRadius",
+      "registrations": [
+        {
+          "name": "StimulusEntityWithAliasInEntityDirectionInRadius",
+          "call": "0x28b1c0",
+          "register_function": "0x277ec0",
+          "callback": "0x28a134"
+        }
+      ]
+    },
+    {
+      "name": "StimulusEvent_Center",
+      "registrations": [
+        {
+          "name": "StimulusEvent_Center",
+          "call": "0x28afc8",
+          "register_function": "0x277ec0",
+          "callback": "0x289544"
+        }
+      ]
+    },
+    {
+      "name": "StimulusEvent_DirectHit",
+      "registrations": [
+        {
+          "name": "StimulusEvent_DirectHit",
+          "call": "0x28ae78",
+          "register_function": "0x277ec0",
+          "callback": "0x2891ec"
+        }
+      ]
+    },
+    {
+      "name": "StimulusEvent_Direction",
+      "registrations": [
+        {
+          "name": "StimulusEvent_Direction",
+          "call": "0x28aecc",
+          "register_function": "0x277ec0",
+          "callback": "0x2890ec"
+        }
+      ]
+    },
+    {
+      "name": "StimulusEvent_EffectiveAmount",
+      "registrations": [
+        {
+          "name": "StimulusEvent_EffectiveAmount",
+          "call": "0x28ae24",
+          "register_function": "0x277ec0",
+          "callback": "0x288f84"
+        }
+      ]
+    },
+    {
+      "name": "StimulusEvent_HasStimulusType",
+      "registrations": [
+        {
+          "name": "StimulusEvent_HasStimulusType",
+          "call": "0x28af20",
+          "register_function": "0x277ec0",
+          "callback": "0x2892ec"
+        }
+      ]
+    },
+    {
+      "name": "StimulusEvent_Instigator",
+      "registrations": [
+        {
+          "name": "StimulusEvent_Instigator",
+          "call": "0x28ad7c",
+          "register_function": "0x277ec0",
+          "callback": "0x288d74"
+        }
+      ]
+    },
+    {
+      "name": "StimulusEvent_Source",
+      "registrations": [
+        {
+          "name": "StimulusEvent_Source",
+          "call": "0x28add0",
+          "register_function": "0x277ec0",
+          "callback": "0x288e7c"
+        }
+      ]
+    },
+    {
+      "name": "StimulusEvent_SourceStimulusAlias",
+      "registrations": [
+        {
+          "name": "StimulusEvent_SourceStimulusAlias",
+          "call": "0x28af74",
+          "register_function": "0x277ec0",
+          "callback": "0x289444"
+        }
+      ]
+    },
+    {
+      "name": "StimulusSphere",
+      "registrations": [
+        {
+          "name": "StimulusSphere",
+          "call": "0x28b01c",
+          "register_function": "0x277ec0",
+          "callback": "0x289644"
+        }
+      ]
+    },
+    {
+      "name": "StimulusSphereWithAlias",
+      "registrations": [
+        {
+          "name": "StimulusSphereWithAlias",
+          "call": "0x28b070",
+          "register_function": "0x277ec0",
+          "callback": "0x289820"
+        }
+      ]
+    },
+    {
+      "name": "StopCamControl",
+      "registrations": [
+        {
+          "name": "StopCamControl",
+          "call": "0x2682ac",
+          "register_function": "0x277ec0",
+          "callback": "0x26530c"
+        }
+      ]
+    },
+    {
+      "name": "StopConversation",
+      "registrations": [
+        {
+          "name": "StopConversation",
+          "call": "0x283968",
+          "register_function": "0x277ec0",
+          "callback": "0x2834e0"
+        }
+      ]
+    },
+    {
+      "name": "StopEmitterByName",
+      "registrations": [
+        {
+          "name": "StopEmitterByName",
+          "call": "0x31c340",
+          "register_function": "0x277ec0",
+          "callback": "0x31c118"
+        }
+      ]
+    },
+    {
+      "name": "StopEmitters",
+      "registrations": [
+        {
+          "name": "StopEmitters",
+          "call": "0x36b320",
+          "register_function": "0x277ec0",
+          "callback": "0x36af64"
+        }
+      ]
+    },
+    {
+      "name": "StopFiringWeapon",
+      "registrations": [
+        {
+          "name": "StopFiringWeapon",
+          "call": "0x3dc01c",
+          "register_function": "0x277ec0",
+          "callback": "0x3db45c"
+        }
+      ]
+    },
+    {
+      "name": "StopRotateToPosition",
+      "registrations": [
+        {
+          "name": "StopRotateToPosition",
+          "call": "0x26834c",
+          "register_function": "0x277ec0",
+          "callback": "0x264e4c"
+        }
+      ]
+    },
+    {
+      "name": "StoreEndgameData",
+      "registrations": [
+        {
+          "name": "StoreEndgameData",
+          "call": "0x3a698",
+          "register_function": "0x277ec0",
+          "callback": "0x2fd14"
+        }
+      ]
+    },
+    {
+      "name": "StreamInteriorZone",
+      "registrations": [
+        {
+          "name": "StreamInteriorZone",
+          "call": "0x3a9b8",
+          "register_function": "0x277ec0",
+          "callback": "0x2f810"
+        }
+      ]
+    },
+    {
+      "name": "StreamPart",
+      "registrations": [
+        {
+          "name": "StreamPart",
+          "call": "0x3a968",
+          "register_function": "0x277ec0",
+          "callback": "0x2f6e4"
+        }
+      ]
+    },
+    {
+      "name": "SubtractLife",
+      "registrations": [
+        {
+          "name": "SubtractLife",
+          "call": "0x323824",
+          "register_function": "0x277ec0",
+          "callback": "0x322d28"
+        }
+      ]
+    },
+    {
+      "name": "TargetSetEvent_NewTarget",
+      "registrations": [
+        {
+          "name": "TargetSetEvent_NewTarget",
+          "call": "0x2da7bc",
+          "register_function": "0x277ec0",
+          "callback": "0x2d5ffc"
+        }
+      ]
+    },
+    {
+      "name": "TargetSetEvent_OldTarget",
+      "registrations": [
+        {
+          "name": "TargetSetEvent_OldTarget",
+          "call": "0x2da80c",
+          "register_function": "0x277ec0",
+          "callback": "0x2d6104"
+        }
+      ]
+    },
+    {
+      "name": "TeleportToEntity",
+      "registrations": [
+        {
+          "name": "TeleportToEntity",
+          "call": "0x26f7c8",
+          "register_function": "0x277ec0",
+          "callback": "0x26b1dc"
+        }
+      ]
+    },
+    {
+      "name": "TestCaseValue",
+      "registrations": [
+        {
+          "name": "TestCaseValue",
+          "call": "0x35c324",
+          "register_function": "0x277ec0",
+          "callback": "0x35be10"
+        }
+      ]
+    },
+    {
+      "name": "ThinnerExplode",
+      "registrations": [
+        {
+          "name": "ThinnerExplode",
+          "call": "0x2775b8",
+          "register_function": "0x277ec0",
+          "callback": "0x276e90"
+        }
+      ]
+    },
+    {
+      "name": "TimerAddTime",
+      "registrations": [
+        {
+          "name": "TimerAddTime",
+          "call": "0x21206c",
+          "register_function": "0x277ec0",
+          "callback": "0x21171c"
+        }
+      ]
+    },
+    {
+      "name": "TimerDisable",
+      "registrations": [
+        {
+          "name": "TimerDisable",
+          "call": "0x361a9c",
+          "register_function": "0x277ec0",
+          "callback": "0x360fa0"
+        }
+      ]
+    },
+    {
+      "name": "TimerEnable",
+      "registrations": [
+        {
+          "name": "TimerEnable",
+          "call": "0x361a4c",
+          "register_function": "0x277ec0",
+          "callback": "0x360e4c"
+        }
+      ]
+    },
+    {
+      "name": "TimerForceFire",
+      "registrations": [
+        {
+          "name": "TimerForceFire",
+          "call": "0x361b3c",
+          "register_function": "0x277ec0",
+          "callback": "0x361284"
+        }
+      ]
+    },
+    {
+      "name": "TimerGetState",
+      "registrations": [
+        {
+          "name": "TimerGetState",
+          "call": "0x21215c",
+          "register_function": "0x277ec0",
+          "callback": "0x211a2c"
+        }
+      ]
+    },
+    {
+      "name": "TimerGetTime",
+      "registrations": [
+        {
+          "name": "TimerGetTime",
+          "call": "0x21210c",
+          "register_function": "0x277ec0",
+          "callback": "0x21192c"
+        }
+      ]
+    },
+    {
+      "name": "TimerPause",
+      "registrations": [
+        {
+          "name": "TimerPause",
+          "call": "0x2121fc",
+          "register_function": "0x277ec0",
+          "callback": "0x211d24"
+        }
+      ]
+    },
+    {
+      "name": "TimerReset",
+      "registrations": [
+        {
+          "name": "TimerReset",
+          "call": "0x361bdc",
+          "register_function": "0x277ec0",
+          "callback": "0x361480"
+        }
+      ]
+    },
+    {
+      "name": "TimerSetInterval",
+      "registrations": [
+        {
+          "name": "TimerSetInterval",
+          "call": "0x361b8c",
+          "register_function": "0x277ec0",
+          "callback": "0x3615c0"
+        }
+      ]
+    },
+    {
+      "name": "TimerSetMaxRandomInterval",
+      "registrations": [
+        {
+          "name": "TimerSetMaxRandomInterval",
+          "call": "0x361c7c",
+          "register_function": "0x277ec0",
+          "callback": "0x361888"
+        }
+      ]
+    },
+    {
+      "name": "TimerSetMinRandomInterval",
+      "registrations": [
+        {
+          "name": "TimerSetMinRandomInterval",
+          "call": "0x361c2c",
+          "register_function": "0x277ec0",
+          "callback": "0x361724"
+        }
+      ]
+    },
+    {
+      "name": "TimerSetTime",
+      "registrations": [
+        {
+          "name": "TimerSetTime",
+          "call": "0x2120bc",
+          "register_function": "0x277ec0",
+          "callback": "0x211824"
+        }
+      ]
+    },
+    {
+      "name": "TimerStart",
+      "registrations": [
+        {
+          "name": "TimerStart",
+          "call": "0x2121ac",
+          "register_function": "0x277ec0",
+          "callback": "0x211b70"
+        }
+      ]
+    },
+    {
+      "name": "TimerStop",
+      "registrations": [
+        {
+          "name": "TimerStop",
+          "call": "0x21229c",
+          "register_function": "0x277ec0",
+          "callback": "0x211f14"
+        }
+      ]
+    },
+    {
+      "name": "TimerToggle",
+      "registrations": [
+        {
+          "name": "TimerToggle",
+          "call": "0x361aec",
+          "register_function": "0x277ec0",
+          "callback": "0x3610f4"
+        }
+      ]
+    },
+    {
+      "name": "TimerUnpause",
+      "registrations": [
+        {
+          "name": "TimerUnpause",
+          "call": "0x21224c",
+          "register_function": "0x277ec0",
+          "callback": "0x211e1c"
+        }
+      ]
+    },
+    {
+      "name": "ToggleBool",
+      "registrations": [
+        {
+          "name": "ToggleBool",
+          "call": "0x35a63c",
+          "register_function": "0x277ec0",
+          "callback": "0x35a0a0"
+        }
+      ]
+    },
+    {
+      "name": "ToggleBoolThenTest",
+      "registrations": [
+        {
+          "name": "ToggleBoolThenTest",
+          "call": "0x35a68c",
+          "register_function": "0x277ec0",
+          "callback": "0x35a230"
+        }
+      ]
+    },
+    {
+      "name": "ToggleCameraOcclusion",
+      "registrations": [
+        {
+          "name": "ToggleCameraOcclusion",
+          "call": "0x11ee4",
+          "register_function": "0x277ec0",
+          "callback": "0xec9c"
+        }
+      ]
+    },
+    {
+      "name": "ToggleDebugText",
+      "registrations": [
+        {
+          "name": "ToggleDebugText",
+          "call": "0x8648",
+          "register_function": "0x277ec0",
+          "callback": "0x8070"
+        }
+      ]
+    },
+    {
+      "name": "ToggleHudVisibility",
+      "registrations": [
+        {
+          "name": "ToggleHudVisibility",
+          "call": "0x8698",
+          "register_function": "0x277ec0",
+          "callback": "0x8168"
+        }
+      ]
+    },
+    {
+      "name": "ToggleLetterbox",
+      "registrations": [
+        {
+          "name": "ToggleLetterbox",
+          "call": "0x119e4",
+          "register_function": "0x277ec0",
+          "callback": "0xd90c"
+        }
+      ]
+    },
+    {
+      "name": "TransitionToLevel",
+      "registrations": [
+        {
+          "name": "TransitionToLevel",
+          "call": "0x3a788",
+          "register_function": "0x277ec0",
+          "callback": "0x2f5a4"
+        }
+      ]
+    },
+    {
+      "name": "Trigger",
+      "registrations": [
+        {
+          "name": "Trigger",
+          "call": "0x267f3c",
+          "register_function": "0x277ec0",
+          "callback": "0x264300"
+        }
+      ]
+    },
+    {
+      "name": "Unhide",
+      "registrations": [
+        {
+          "name": "Unhide",
+          "call": "0x267e4c",
+          "register_function": "0x277ec0",
+          "callback": "0x263f7c"
+        }
+      ]
+    },
+    {
+      "name": "UnloadNIFImpl",
+      "registrations": [
+        {
+          "name": "UnloadNIFImpl",
+          "call": "0x3acd8",
+          "register_function": "0x277ec0",
+          "callback": "0x3a0b8"
+        }
+      ]
+    },
+    {
+      "name": "Unmute",
+      "registrations": [
+        {
+          "name": "Unmute",
+          "call": "0x3ab98",
+          "register_function": "0x277ec0",
+          "callback": "0x3a47c"
+        }
+      ]
+    },
+    {
+      "name": "UnpauseAllAI",
+      "registrations": [
+        {
+          "name": "UnpauseAllAI",
+          "call": "0x185c04",
+          "register_function": "0x277ec0",
+          "callback": "0x184b74"
+        }
+      ]
+    },
+    {
+      "name": "UnpauseWatchSketch",
+      "registrations": [
+        {
+          "name": "UnpauseWatchSketch",
+          "call": "0x3c0e0",
+          "register_function": "0x277ec0",
+          "callback": "0x3bb1c"
+        }
+      ]
+    },
+    {
+      "name": "UnrestrictCutSceneInput",
+      "registrations": [
+        {
+          "name": "UnrestrictCutSceneInput",
+          "call": "0x12254",
+          "register_function": "0x277ec0",
+          "callback": "0xfcbc"
+        }
+      ]
+    },
+    {
+      "name": "UnuseTurret",
+      "registrations": [
+        {
+          "name": "UnuseTurret",
+          "call": "0x1f9a64",
+          "register_function": "0x277ec0",
+          "callback": "0x1f901c"
+        }
+      ]
+    },
+    {
+      "name": "UpdatePins",
+      "registrations": [
+        {
+          "name": "UpdatePins",
+          "call": "0x3a6e8",
+          "register_function": "0x277ec0",
+          "callback": "0x2f360"
+        }
+      ]
+    },
+    {
+      "name": "UseTurret",
+      "registrations": [
+        {
+          "name": "UseTurret",
+          "call": "0x1f9a14",
+          "register_function": "0x277ec0",
+          "callback": "0x1f8e98"
+        }
+      ]
+    },
+    {
+      "name": "WaitForLevelToLoad",
+      "registrations": [
+        {
+          "name": "WaitForLevelToLoad",
+          "call": "0x3a8c8",
+          "register_function": "0x277ec0",
+          "callback": "0x300c8"
+        }
+      ]
+    },
+    {
+      "name": "YesNoDialogBox",
+      "registrations": [
+        {
+          "name": "YesNoDialogBox",
+          "call": "0x270088",
+          "register_function": "0x277ec0",
+          "callback": "0x26e7d0"
+        }
+      ]
+    },
+    {
+      "name": "YesNoDialogBoxNoPause",
+      "registrations": [
+        {
+          "name": "YesNoDialogBoxNoPause",
+          "call": "0x2700d8",
+          "register_function": "0x277ec0",
+          "callback": "0x26e7d8"
+        }
+      ]
+    },
+    {
+      "name": "ZeroCharacterVelocity",
+      "registrations": [
+        {
+          "name": "ZeroCharacterVelocity",
+          "call": "0x2684dc",
+          "register_function": "0x277ec0",
+          "callback": "0x2625c0"
+        }
+      ]
+    },
+    {
+      "name": "ZoomToLevel",
+      "registrations": [
+        {
+          "name": "ZoomToLevel",
+          "call": "0x11ad4",
+          "register_function": "0x277ec0",
+          "callback": "0xdc10"
+        }
+      ]
+    },
+    {
+      "name": "_activator",
+      "registrations": [
+        {
+          "name": "_activator",
+          "call": "0x26ee68",
+          "register_function": "0x277ec0",
+          "callback": "0x268dcc"
+        }
+      ]
+    },
+    {
+      "name": "_player",
+      "registrations": [
+        {
+          "name": "_player",
+          "call": "0x26f368",
+          "register_function": "0x277ec0",
+          "callback": "0x269b30"
+        }
+      ]
+    },
+    {
+      "name": "_prev_trigger",
+      "registrations": [
+        {
+          "name": "_prev_trigger",
+          "call": "0x26eeb8",
+          "register_function": "0x277ec0",
+          "callback": "0x268ed4"
+        }
+      ]
+    },
+    {
+      "name": "_self",
+      "registrations": [
+        {
+          "name": "_self",
+          "call": "0x26ee18",
+          "register_function": "0x277ec0",
+          "callback": "0x268cc4"
+        }
+      ]
+    }
+  ]
+}

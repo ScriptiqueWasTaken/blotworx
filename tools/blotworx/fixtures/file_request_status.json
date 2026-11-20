@@ -1,0 +1,2078 @@
+{
+  "cases": [
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 0,
+          "status": 0,
+          "result": 305419896
+        },
+        "handle": 0,
+        "output": false
+      },
+      "expected": {
+        "result": 0,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 0,
+          "status": 0,
+          "result": 305419896
+        },
+        "handle": 0,
+        "output": true
+      },
+      "expected": {
+        "result": 0,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 0,
+          "status": 1,
+          "result": 305419896
+        },
+        "handle": 0,
+        "output": false
+      },
+      "expected": {
+        "result": 1,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 0,
+          "status": 1,
+          "result": 305419896
+        },
+        "handle": 0,
+        "output": true
+      },
+      "expected": {
+        "result": 1,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 0,
+          "status": 2,
+          "result": 305419896
+        },
+        "handle": 0,
+        "output": false
+      },
+      "expected": {
+        "result": 2,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 0,
+          "status": 2,
+          "result": 305419896
+        },
+        "handle": 0,
+        "output": true
+      },
+      "expected": {
+        "result": 2,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 0,
+          "status": 5,
+          "result": 305419896
+        },
+        "handle": 0,
+        "output": false
+      },
+      "expected": {
+        "result": 5,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 0,
+          "status": 5,
+          "result": 305419896
+        },
+        "handle": 0,
+        "output": true
+      },
+      "expected": {
+        "result": 5,
+        "output": 305419896
+      },
+      "instructions": 63
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 0,
+          "status": 4294967295,
+          "result": 305419896
+        },
+        "handle": 0,
+        "output": false
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 0,
+          "status": 4294967295,
+          "result": 305419896
+        },
+        "handle": 0,
+        "output": true
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 1,
+          "status": 0,
+          "result": 305419896
+        },
+        "handle": 65536,
+        "output": false
+      },
+      "expected": {
+        "result": 0,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 1,
+          "status": 0,
+          "result": 305419896
+        },
+        "handle": 65536,
+        "output": true
+      },
+      "expected": {
+        "result": 0,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 1,
+          "status": 1,
+          "result": 305419896
+        },
+        "handle": 65536,
+        "output": false
+      },
+      "expected": {
+        "result": 1,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 1,
+          "status": 1,
+          "result": 305419896
+        },
+        "handle": 65536,
+        "output": true
+      },
+      "expected": {
+        "result": 1,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 1,
+          "status": 2,
+          "result": 305419896
+        },
+        "handle": 65536,
+        "output": false
+      },
+      "expected": {
+        "result": 2,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 1,
+          "status": 2,
+          "result": 305419896
+        },
+        "handle": 65536,
+        "output": true
+      },
+      "expected": {
+        "result": 2,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 1,
+          "status": 5,
+          "result": 305419896
+        },
+        "handle": 65536,
+        "output": false
+      },
+      "expected": {
+        "result": 5,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 1,
+          "status": 5,
+          "result": 305419896
+        },
+        "handle": 65536,
+        "output": true
+      },
+      "expected": {
+        "result": 5,
+        "output": 305419896
+      },
+      "instructions": 63
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 1,
+          "status": 4294967295,
+          "result": 305419896
+        },
+        "handle": 65536,
+        "output": false
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 1,
+          "status": 4294967295,
+          "result": 305419896
+        },
+        "handle": 65536,
+        "output": true
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 65535,
+          "status": 0,
+          "result": 305419896
+        },
+        "handle": 4294901760,
+        "output": false
+      },
+      "expected": {
+        "result": 0,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 65535,
+          "status": 0,
+          "result": 305419896
+        },
+        "handle": 4294901760,
+        "output": true
+      },
+      "expected": {
+        "result": 0,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 65535,
+          "status": 1,
+          "result": 305419896
+        },
+        "handle": 4294901760,
+        "output": false
+      },
+      "expected": {
+        "result": 1,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 65535,
+          "status": 1,
+          "result": 305419896
+        },
+        "handle": 4294901760,
+        "output": true
+      },
+      "expected": {
+        "result": 1,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 65535,
+          "status": 2,
+          "result": 305419896
+        },
+        "handle": 4294901760,
+        "output": false
+      },
+      "expected": {
+        "result": 2,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 65535,
+          "status": 2,
+          "result": 305419896
+        },
+        "handle": 4294901760,
+        "output": true
+      },
+      "expected": {
+        "result": 2,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 65535,
+          "status": 5,
+          "result": 305419896
+        },
+        "handle": 4294901760,
+        "output": false
+      },
+      "expected": {
+        "result": 5,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 65535,
+          "status": 5,
+          "result": 305419896
+        },
+        "handle": 4294901760,
+        "output": true
+      },
+      "expected": {
+        "result": 5,
+        "output": 305419896
+      },
+      "instructions": 63
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 65535,
+          "status": 4294967295,
+          "result": 305419896
+        },
+        "handle": 4294901760,
+        "output": false
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 65535,
+          "status": 4294967295,
+          "result": 305419896
+        },
+        "handle": 4294901760,
+        "output": true
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 0,
+          "status": 0,
+          "result": 305419896
+        },
+        "handle": 1,
+        "output": false
+      },
+      "expected": {
+        "result": 0,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 0,
+          "status": 0,
+          "result": 305419896
+        },
+        "handle": 1,
+        "output": true
+      },
+      "expected": {
+        "result": 0,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 0,
+          "status": 1,
+          "result": 305419896
+        },
+        "handle": 1,
+        "output": false
+      },
+      "expected": {
+        "result": 1,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 0,
+          "status": 1,
+          "result": 305419896
+        },
+        "handle": 1,
+        "output": true
+      },
+      "expected": {
+        "result": 1,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 0,
+          "status": 2,
+          "result": 305419896
+        },
+        "handle": 1,
+        "output": false
+      },
+      "expected": {
+        "result": 2,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 0,
+          "status": 2,
+          "result": 305419896
+        },
+        "handle": 1,
+        "output": true
+      },
+      "expected": {
+        "result": 2,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 0,
+          "status": 5,
+          "result": 305419896
+        },
+        "handle": 1,
+        "output": false
+      },
+      "expected": {
+        "result": 5,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 0,
+          "status": 5,
+          "result": 305419896
+        },
+        "handle": 1,
+        "output": true
+      },
+      "expected": {
+        "result": 5,
+        "output": 305419896
+      },
+      "instructions": 63
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 0,
+          "status": 4294967295,
+          "result": 305419896
+        },
+        "handle": 1,
+        "output": false
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 0,
+          "status": 4294967295,
+          "result": 305419896
+        },
+        "handle": 1,
+        "output": true
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 1,
+          "status": 0,
+          "result": 305419896
+        },
+        "handle": 65537,
+        "output": false
+      },
+      "expected": {
+        "result": 0,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 1,
+          "status": 0,
+          "result": 305419896
+        },
+        "handle": 65537,
+        "output": true
+      },
+      "expected": {
+        "result": 0,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 1,
+          "status": 1,
+          "result": 305419896
+        },
+        "handle": 65537,
+        "output": false
+      },
+      "expected": {
+        "result": 1,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 1,
+          "status": 1,
+          "result": 305419896
+        },
+        "handle": 65537,
+        "output": true
+      },
+      "expected": {
+        "result": 1,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 1,
+          "status": 2,
+          "result": 305419896
+        },
+        "handle": 65537,
+        "output": false
+      },
+      "expected": {
+        "result": 2,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 1,
+          "status": 2,
+          "result": 305419896
+        },
+        "handle": 65537,
+        "output": true
+      },
+      "expected": {
+        "result": 2,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 1,
+          "status": 5,
+          "result": 305419896
+        },
+        "handle": 65537,
+        "output": false
+      },
+      "expected": {
+        "result": 5,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 1,
+          "status": 5,
+          "result": 305419896
+        },
+        "handle": 65537,
+        "output": true
+      },
+      "expected": {
+        "result": 5,
+        "output": 305419896
+      },
+      "instructions": 63
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 1,
+          "status": 4294967295,
+          "result": 305419896
+        },
+        "handle": 65537,
+        "output": false
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 1,
+          "status": 4294967295,
+          "result": 305419896
+        },
+        "handle": 65537,
+        "output": true
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 65535,
+          "status": 0,
+          "result": 305419896
+        },
+        "handle": 4294901761,
+        "output": false
+      },
+      "expected": {
+        "result": 0,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 65535,
+          "status": 0,
+          "result": 305419896
+        },
+        "handle": 4294901761,
+        "output": true
+      },
+      "expected": {
+        "result": 0,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 65535,
+          "status": 1,
+          "result": 305419896
+        },
+        "handle": 4294901761,
+        "output": false
+      },
+      "expected": {
+        "result": 1,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 65535,
+          "status": 1,
+          "result": 305419896
+        },
+        "handle": 4294901761,
+        "output": true
+      },
+      "expected": {
+        "result": 1,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 65535,
+          "status": 2,
+          "result": 305419896
+        },
+        "handle": 4294901761,
+        "output": false
+      },
+      "expected": {
+        "result": 2,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 65535,
+          "status": 2,
+          "result": 305419896
+        },
+        "handle": 4294901761,
+        "output": true
+      },
+      "expected": {
+        "result": 2,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 65535,
+          "status": 5,
+          "result": 305419896
+        },
+        "handle": 4294901761,
+        "output": false
+      },
+      "expected": {
+        "result": 5,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 65535,
+          "status": 5,
+          "result": 305419896
+        },
+        "handle": 4294901761,
+        "output": true
+      },
+      "expected": {
+        "result": 5,
+        "output": 305419896
+      },
+      "instructions": 63
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 65535,
+          "status": 4294967295,
+          "result": 305419896
+        },
+        "handle": 4294901761,
+        "output": false
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1,
+        "request": {
+          "generation": 65535,
+          "status": 4294967295,
+          "result": 305419896
+        },
+        "handle": 4294901761,
+        "output": true
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 0,
+          "status": 0,
+          "result": 305419896
+        },
+        "handle": 1199,
+        "output": false
+      },
+      "expected": {
+        "result": 0,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 0,
+          "status": 0,
+          "result": 305419896
+        },
+        "handle": 1199,
+        "output": true
+      },
+      "expected": {
+        "result": 0,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 0,
+          "status": 1,
+          "result": 305419896
+        },
+        "handle": 1199,
+        "output": false
+      },
+      "expected": {
+        "result": 1,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 0,
+          "status": 1,
+          "result": 305419896
+        },
+        "handle": 1199,
+        "output": true
+      },
+      "expected": {
+        "result": 1,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 0,
+          "status": 2,
+          "result": 305419896
+        },
+        "handle": 1199,
+        "output": false
+      },
+      "expected": {
+        "result": 2,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 0,
+          "status": 2,
+          "result": 305419896
+        },
+        "handle": 1199,
+        "output": true
+      },
+      "expected": {
+        "result": 2,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 0,
+          "status": 5,
+          "result": 305419896
+        },
+        "handle": 1199,
+        "output": false
+      },
+      "expected": {
+        "result": 5,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 0,
+          "status": 5,
+          "result": 305419896
+        },
+        "handle": 1199,
+        "output": true
+      },
+      "expected": {
+        "result": 5,
+        "output": 305419896
+      },
+      "instructions": 63
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 0,
+          "status": 4294967295,
+          "result": 305419896
+        },
+        "handle": 1199,
+        "output": false
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 0,
+          "status": 4294967295,
+          "result": 305419896
+        },
+        "handle": 1199,
+        "output": true
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 1,
+          "status": 0,
+          "result": 305419896
+        },
+        "handle": 66735,
+        "output": false
+      },
+      "expected": {
+        "result": 0,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 1,
+          "status": 0,
+          "result": 305419896
+        },
+        "handle": 66735,
+        "output": true
+      },
+      "expected": {
+        "result": 0,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 1,
+          "status": 1,
+          "result": 305419896
+        },
+        "handle": 66735,
+        "output": false
+      },
+      "expected": {
+        "result": 1,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 1,
+          "status": 1,
+          "result": 305419896
+        },
+        "handle": 66735,
+        "output": true
+      },
+      "expected": {
+        "result": 1,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 1,
+          "status": 2,
+          "result": 305419896
+        },
+        "handle": 66735,
+        "output": false
+      },
+      "expected": {
+        "result": 2,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 1,
+          "status": 2,
+          "result": 305419896
+        },
+        "handle": 66735,
+        "output": true
+      },
+      "expected": {
+        "result": 2,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 1,
+          "status": 5,
+          "result": 305419896
+        },
+        "handle": 66735,
+        "output": false
+      },
+      "expected": {
+        "result": 5,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 1,
+          "status": 5,
+          "result": 305419896
+        },
+        "handle": 66735,
+        "output": true
+      },
+      "expected": {
+        "result": 5,
+        "output": 305419896
+      },
+      "instructions": 63
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 1,
+          "status": 4294967295,
+          "result": 305419896
+        },
+        "handle": 66735,
+        "output": false
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 1,
+          "status": 4294967295,
+          "result": 305419896
+        },
+        "handle": 66735,
+        "output": true
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 65535,
+          "status": 0,
+          "result": 305419896
+        },
+        "handle": 4294902959,
+        "output": false
+      },
+      "expected": {
+        "result": 0,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 65535,
+          "status": 0,
+          "result": 305419896
+        },
+        "handle": 4294902959,
+        "output": true
+      },
+      "expected": {
+        "result": 0,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 65535,
+          "status": 1,
+          "result": 305419896
+        },
+        "handle": 4294902959,
+        "output": false
+      },
+      "expected": {
+        "result": 1,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 65535,
+          "status": 1,
+          "result": 305419896
+        },
+        "handle": 4294902959,
+        "output": true
+      },
+      "expected": {
+        "result": 1,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 65535,
+          "status": 2,
+          "result": 305419896
+        },
+        "handle": 4294902959,
+        "output": false
+      },
+      "expected": {
+        "result": 2,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 65535,
+          "status": 2,
+          "result": 305419896
+        },
+        "handle": 4294902959,
+        "output": true
+      },
+      "expected": {
+        "result": 2,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 65535,
+          "status": 5,
+          "result": 305419896
+        },
+        "handle": 4294902959,
+        "output": false
+      },
+      "expected": {
+        "result": 5,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 65535,
+          "status": 5,
+          "result": 305419896
+        },
+        "handle": 4294902959,
+        "output": true
+      },
+      "expected": {
+        "result": 5,
+        "output": 305419896
+      },
+      "instructions": 63
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 65535,
+          "status": 4294967295,
+          "result": 305419896
+        },
+        "handle": 4294902959,
+        "output": false
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 65535,
+          "status": 4294967295,
+          "result": 305419896
+        },
+        "handle": 4294902959,
+        "output": true
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 0
+      },
+      "instructions": 62
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 0,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 4294967295,
+        "output": false
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 40
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 0,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 4294967295,
+        "output": true
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 40
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 0,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 1200,
+        "output": false
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 51
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 0,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 1200,
+        "output": true
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 51
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 0,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 65535,
+        "output": false
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 51
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 0,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 65535,
+        "output": true
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 51
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 0,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 65536,
+        "output": false
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 55
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 0,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 65536,
+        "output": true
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 55
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 65535,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 4294967295,
+        "output": false
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 40
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 65535,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 4294967295,
+        "output": true
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 40
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 65535,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 1200,
+        "output": false
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 51
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 65535,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 1200,
+        "output": true
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 51
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 65535,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 65535,
+        "output": false
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 51
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 65535,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 65535,
+        "output": true
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 51
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 65535,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 65536,
+        "output": false
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 55
+    },
+    {
+      "input": {
+        "slot": 0,
+        "request": {
+          "generation": 65535,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 65536,
+        "output": true
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 55
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 0,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 4294967295,
+        "output": false
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 40
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 0,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 4294967295,
+        "output": true
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 40
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 0,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 1200,
+        "output": false
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 51
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 0,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 1200,
+        "output": true
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 51
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 0,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 65535,
+        "output": false
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 51
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 0,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 65535,
+        "output": true
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 51
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 0,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 4294902959,
+        "output": false
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 55
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 0,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 4294902959,
+        "output": true
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 55
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 65535,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 4294967295,
+        "output": false
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 40
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 65535,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 4294967295,
+        "output": true
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 40
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 65535,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 1200,
+        "output": false
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 51
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 65535,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 1200,
+        "output": true
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 51
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 65535,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 65535,
+        "output": false
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 51
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 65535,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 65535,
+        "output": true
+      },
+      "expected": {
+        "result": 4294967295,
+        "output": 77
+      },
+      "instructions": 51
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 65535,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 4294902959,
+        "output": false
+      },
+      "expected": {
+        "result": 5,
+        "output": 77
+      },
+      "instructions": 57
+    },
+    {
+      "input": {
+        "slot": 1199,
+        "request": {
+          "generation": 65535,
+          "status": 5,
+          "result": 42
+        },
+        "handle": 4294902959,
+        "output": true
+      },
+      "expected": {
+        "result": 5,
+        "output": 42
+      },
+      "instructions": 63
+    }
+  ]
+}

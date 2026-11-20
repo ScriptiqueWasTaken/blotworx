@@ -1,0 +1,1828 @@
+{
+  "scope": "EM1 agent base construction/binding/cache/speed instructions. Class, service,\nattribute and action queries supplied; no pathfinder or NPC trajectory executes.\n",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "cases": [
+    {
+      "input": {
+        "op": "new",
+        "owner": false
+      },
+      "trace": [],
+      "configuration": null,
+      "owner": null,
+      "world_service_61d14": null,
+      "owner_service_6af6c": null,
+      "speed": 3212836864,
+      "action_vector": [
+        0,
+        0,
+        0
+      ],
+      "action_scalar": 0,
+      "bound_owner": null,
+      "blackboard_head": 0,
+      "world_service_45dcc": null,
+      "result": null,
+      "instructions": 36
+    },
+    {
+      "input": {
+        "op": "new",
+        "owner": true
+      },
+      "trace": [],
+      "configuration": null,
+      "owner": 7,
+      "world_service_61d14": null,
+      "owner_service_6af6c": null,
+      "speed": 3212836864,
+      "action_vector": [
+        0,
+        0,
+        0
+      ],
+      "action_scalar": 0,
+      "bound_owner": null,
+      "blackboard_head": 0,
+      "world_service_45dcc": null,
+      "result": null,
+      "instructions": 36
+    },
+    {
+      "input": {
+        "op": "bind"
+      },
+      "trace": [
+        [
+          "class",
+          7
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "required_world"
+        ],
+        [
+          "optional_world"
+        ],
+        [
+          "attributes",
+          88
+        ],
+        [
+          "speed_value",
+          7
+        ]
+      ],
+      "configuration": 99,
+      "owner": 7,
+      "world_service_61d14": 102,
+      "owner_service_6af6c": 101,
+      "speed": 1084227584,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 7,
+      "blackboard_head": 82,
+      "world_service_45dcc": 103,
+      "result": true,
+      "instructions": 73
+    },
+    {
+      "input": {
+        "op": "bind",
+        "owner": false
+      },
+      "trace": [],
+      "configuration": 90,
+      "owner": null,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": false,
+      "instructions": 19
+    },
+    {
+      "input": {
+        "op": "bind",
+        "class": false
+      },
+      "trace": [
+        [
+          "class",
+          7
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": false,
+      "instructions": 34
+    },
+    {
+      "input": {
+        "op": "bind",
+        "blackboard": false
+      },
+      "trace": [
+        [
+          "class",
+          7
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 7,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": false,
+      "instructions": 37
+    },
+    {
+      "input": {
+        "op": "bind",
+        "owner_service": false
+      },
+      "trace": [
+        [
+          "class",
+          7
+        ],
+        [
+          "owner_service",
+          7
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": null,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 7,
+      "blackboard_head": 82,
+      "world_service_45dcc": 94,
+      "result": false,
+      "instructions": 46
+    },
+    {
+      "input": {
+        "op": "bind",
+        "required_world": false
+      },
+      "trace": [
+        [
+          "class",
+          7
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "required_world"
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": null,
+      "owner_service_6af6c": 101,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 7,
+      "blackboard_head": 82,
+      "world_service_45dcc": 94,
+      "result": false,
+      "instructions": 54
+    },
+    {
+      "input": {
+        "op": "bind",
+        "optional_world": false
+      },
+      "trace": [
+        [
+          "class",
+          7
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "required_world"
+        ],
+        [
+          "optional_world"
+        ],
+        [
+          "attributes",
+          88
+        ],
+        [
+          "speed_value",
+          7
+        ]
+      ],
+      "configuration": 99,
+      "owner": 7,
+      "world_service_61d14": 102,
+      "owner_service_6af6c": 101,
+      "speed": 1084227584,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 7,
+      "blackboard_head": 82,
+      "world_service_45dcc": null,
+      "result": true,
+      "instructions": 73
+    },
+    {
+      "input": {
+        "op": "bind",
+        "attributes": false
+      },
+      "trace": [
+        [
+          "class",
+          7
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "required_world"
+        ],
+        [
+          "optional_world"
+        ],
+        [
+          "attributes",
+          88
+        ]
+      ],
+      "configuration": 99,
+      "owner": 7,
+      "world_service_61d14": 102,
+      "owner_service_6af6c": 101,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 7,
+      "blackboard_head": 82,
+      "world_service_45dcc": 103,
+      "result": false,
+      "instructions": 64
+    },
+    {
+      "input": {
+        "op": "bind",
+        "speed_record": false
+      },
+      "trace": [
+        [
+          "class",
+          7
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "required_world"
+        ],
+        [
+          "optional_world"
+        ],
+        [
+          "attributes",
+          88
+        ],
+        [
+          "speed_value",
+          7
+        ]
+      ],
+      "configuration": 99,
+      "owner": 7,
+      "world_service_61d14": 102,
+      "owner_service_6af6c": 101,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 7,
+      "blackboard_head": 82,
+      "world_service_45dcc": 103,
+      "result": false,
+      "instructions": 72
+    },
+    {
+      "input": {
+        "op": "bind",
+        "head": 0
+      },
+      "trace": [
+        [
+          "class",
+          7
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "required_world"
+        ],
+        [
+          "optional_world"
+        ],
+        [
+          "attributes",
+          88
+        ],
+        [
+          "speed_value",
+          7
+        ]
+      ],
+      "configuration": 99,
+      "owner": 7,
+      "world_service_61d14": 102,
+      "owner_service_6af6c": 101,
+      "speed": 1084227584,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 7,
+      "blackboard_head": 0,
+      "world_service_45dcc": 103,
+      "result": true,
+      "instructions": 73
+    },
+    {
+      "input": {
+        "op": "bind",
+        "optional_world": false,
+        "attributes": false
+      },
+      "trace": [
+        [
+          "class",
+          7
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "required_world"
+        ],
+        [
+          "optional_world"
+        ],
+        [
+          "attributes",
+          88
+        ]
+      ],
+      "configuration": 99,
+      "owner": 7,
+      "world_service_61d14": 102,
+      "owner_service_6af6c": 101,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 7,
+      "blackboard_head": 82,
+      "world_service_45dcc": null,
+      "result": false,
+      "instructions": 64
+    },
+    {
+      "input": {
+        "op": "bind",
+        "limit": 3212836864
+      },
+      "trace": [
+        [
+          "class",
+          7
+        ],
+        [
+          "owner_service",
+          7
+        ],
+        [
+          "required_world"
+        ],
+        [
+          "optional_world"
+        ],
+        [
+          "attributes",
+          88
+        ],
+        [
+          "speed_value",
+          7
+        ]
+      ],
+      "configuration": 99,
+      "owner": 7,
+      "world_service_61d14": 102,
+      "owner_service_6af6c": 101,
+      "speed": 3212836864,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 7,
+      "blackboard_head": 82,
+      "world_service_45dcc": 103,
+      "result": true,
+      "instructions": 73
+    },
+    {
+      "input": {
+        "op": "cache",
+        "bound": false,
+        "path": true,
+        "vector": true,
+        "scalar": true
+      },
+      "trace": [],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": null,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": false,
+      "instructions": 16
+    },
+    {
+      "input": {
+        "op": "cache",
+        "bound": false,
+        "path": true,
+        "vector": false,
+        "scalar": false
+      },
+      "trace": [],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": null,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": false,
+      "instructions": 16
+    },
+    {
+      "input": {
+        "op": "cache",
+        "bound": false,
+        "path": true,
+        "vector": true,
+        "scalar": false
+      },
+      "trace": [],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": null,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": false,
+      "instructions": 16
+    },
+    {
+      "input": {
+        "op": "cache",
+        "bound": false,
+        "path": true,
+        "vector": false,
+        "scalar": true
+      },
+      "trace": [],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": null,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": false,
+      "instructions": 16
+    },
+    {
+      "input": {
+        "op": "cache",
+        "bound": true,
+        "path": false,
+        "vector": true,
+        "scalar": true
+      },
+      "trace": [],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": null,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": false,
+      "instructions": 19
+    },
+    {
+      "input": {
+        "op": "cache",
+        "bound": true,
+        "path": false,
+        "vector": false,
+        "scalar": false
+      },
+      "trace": [],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": null,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": false,
+      "instructions": 19
+    },
+    {
+      "input": {
+        "op": "cache",
+        "bound": true,
+        "path": false,
+        "vector": true,
+        "scalar": false
+      },
+      "trace": [],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": null,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": false,
+      "instructions": 19
+    },
+    {
+      "input": {
+        "op": "cache",
+        "bound": true,
+        "path": false,
+        "vector": false,
+        "scalar": true
+      },
+      "trace": [],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": null,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": false,
+      "instructions": 19
+    },
+    {
+      "input": {
+        "op": "cache",
+        "bound": true,
+        "path": true,
+        "vector": true,
+        "scalar": true
+      },
+      "trace": [
+        [
+          "vector",
+          8
+        ],
+        [
+          "scalar",
+          8
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1088421888,
+      "action_vector": [
+        1067450368,
+        3223322624,
+        1081081856
+      ],
+      "action_scalar": 1061158912,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": true,
+      "instructions": 39
+    },
+    {
+      "input": {
+        "op": "cache",
+        "bound": true,
+        "path": true,
+        "vector": false,
+        "scalar": false
+      },
+      "trace": [
+        [
+          "vector",
+          8
+        ],
+        [
+          "scalar",
+          8
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1088421888,
+      "action_vector": [
+        0,
+        0,
+        0
+      ],
+      "action_scalar": 0,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": true,
+      "instructions": 39
+    },
+    {
+      "input": {
+        "op": "cache",
+        "bound": true,
+        "path": true,
+        "vector": true,
+        "scalar": false
+      },
+      "trace": [
+        [
+          "vector",
+          8
+        ],
+        [
+          "scalar",
+          8
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1088421888,
+      "action_vector": [
+        1067450368,
+        3223322624,
+        1081081856
+      ],
+      "action_scalar": 0,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": true,
+      "instructions": 39
+    },
+    {
+      "input": {
+        "op": "cache",
+        "bound": true,
+        "path": true,
+        "vector": false,
+        "scalar": true
+      },
+      "trace": [
+        [
+          "vector",
+          8
+        ],
+        [
+          "scalar",
+          8
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1088421888,
+      "action_vector": [
+        0,
+        0,
+        0
+      ],
+      "action_scalar": 1061158912,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": true,
+      "instructions": 39
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 3221225472,
+        "speed_record": false
+      },
+      "trace": [],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 19
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 3221225472,
+        "speed_record": true,
+        "limit": 3212836864
+      },
+      "trace": [],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 19
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 3221225472,
+        "speed_record": true,
+        "limit": 0
+      },
+      "trace": [],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 19
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 3221225472,
+        "speed_record": true,
+        "limit": 1077936128
+      },
+      "trace": [],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 19
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 3221225472,
+        "speed_record": true,
+        "limit": 2143433814
+      },
+      "trace": [],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 19
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 2147483648,
+        "speed_record": false
+      },
+      "trace": [],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 19
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 2147483648,
+        "speed_record": true,
+        "limit": 3212836864
+      },
+      "trace": [],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 19
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 2147483648,
+        "speed_record": true,
+        "limit": 0
+      },
+      "trace": [],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 19
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 2147483648,
+        "speed_record": true,
+        "limit": 1077936128
+      },
+      "trace": [],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 19
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 2147483648,
+        "speed_record": true,
+        "limit": 2143433814
+      },
+      "trace": [],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 19
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 0,
+        "speed_record": false
+      },
+      "trace": [],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 19
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 0,
+        "speed_record": true,
+        "limit": 3212836864
+      },
+      "trace": [],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 19
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 0,
+        "speed_record": true,
+        "limit": 0
+      },
+      "trace": [],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 19
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 0,
+        "speed_record": true,
+        "limit": 1077936128
+      },
+      "trace": [],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 19
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 0,
+        "speed_record": true,
+        "limit": 2143433814
+      },
+      "trace": [],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1088421888,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 19
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 1056964608,
+        "speed_record": false
+      },
+      "trace": [
+        [
+          "speed_value",
+          7
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1056964608,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 29
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 1056964608,
+        "speed_record": true,
+        "limit": 3212836864
+      },
+      "trace": [
+        [
+          "speed_value",
+          7
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 3212836864,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 32
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 1056964608,
+        "speed_record": true,
+        "limit": 0
+      },
+      "trace": [
+        [
+          "speed_value",
+          7
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 0,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 32
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 1056964608,
+        "speed_record": true,
+        "limit": 1077936128
+      },
+      "trace": [
+        [
+          "speed_value",
+          7
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1056964608,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 31
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 1056964608,
+        "speed_record": true,
+        "limit": 2143433814
+      },
+      "trace": [
+        [
+          "speed_value",
+          7
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1056964608,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 31
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 1084227584,
+        "speed_record": false
+      },
+      "trace": [
+        [
+          "speed_value",
+          7
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1084227584,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 29
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 1084227584,
+        "speed_record": true,
+        "limit": 3212836864
+      },
+      "trace": [
+        [
+          "speed_value",
+          7
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 3212836864,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 32
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 1084227584,
+        "speed_record": true,
+        "limit": 0
+      },
+      "trace": [
+        [
+          "speed_value",
+          7
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 0,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 32
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 1084227584,
+        "speed_record": true,
+        "limit": 1077936128
+      },
+      "trace": [
+        [
+          "speed_value",
+          7
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1077936128,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 32
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 1084227584,
+        "speed_record": true,
+        "limit": 2143433814
+      },
+      "trace": [
+        [
+          "speed_value",
+          7
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1084227584,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 31
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 1092616192,
+        "speed_record": false
+      },
+      "trace": [
+        [
+          "speed_value",
+          7
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1092616192,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 29
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 1092616192,
+        "speed_record": true,
+        "limit": 3212836864
+      },
+      "trace": [
+        [
+          "speed_value",
+          7
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 3212836864,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 32
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 1092616192,
+        "speed_record": true,
+        "limit": 0
+      },
+      "trace": [
+        [
+          "speed_value",
+          7
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 0,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 32
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 1092616192,
+        "speed_record": true,
+        "limit": 1077936128
+      },
+      "trace": [
+        [
+          "speed_value",
+          7
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1077936128,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 32
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 1092616192,
+        "speed_record": true,
+        "limit": 2143433814
+      },
+      "trace": [
+        [
+          "speed_value",
+          7
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 1092616192,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 31
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 2143363909,
+        "speed_record": false
+      },
+      "trace": [
+        [
+          "speed_value",
+          7
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 2143363909,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 29
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 2143363909,
+        "speed_record": true,
+        "limit": 3212836864
+      },
+      "trace": [
+        [
+          "speed_value",
+          7
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 2143363909,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 31
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 2143363909,
+        "speed_record": true,
+        "limit": 0
+      },
+      "trace": [
+        [
+          "speed_value",
+          7
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 2143363909,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 31
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 2143363909,
+        "speed_record": true,
+        "limit": 1077936128
+      },
+      "trace": [
+        [
+          "speed_value",
+          7
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 2143363909,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 31
+    },
+    {
+      "input": {
+        "op": "speed",
+        "request": 2143363909,
+        "speed_record": true,
+        "limit": 2143433814
+      },
+      "trace": [
+        [
+          "speed_value",
+          7
+        ]
+      ],
+      "configuration": 90,
+      "owner": 7,
+      "world_service_61d14": 91,
+      "owner_service_6af6c": 92,
+      "speed": 2143363909,
+      "action_vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "action_scalar": 1082130432,
+      "bound_owner": 8,
+      "blackboard_head": 93,
+      "world_service_45dcc": 94,
+      "result": null,
+      "instructions": 31
+    }
+  ]
+}

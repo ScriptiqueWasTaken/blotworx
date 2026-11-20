@@ -1,0 +1,681 @@
+{
+  "source": "solo-fps30-gdb-config-only-idle-samples10-clip-clock-clip-clock.json",
+  "capture_sha256": "8a66355d4f4155d03523acd99fabd7da01afc8fde883394625c60729c93b40cf",
+  "dol_sha256": "994779fa2e276983efdb50f02c406568f285a82558cb5d54bbdf74651a98a920",
+  "function": "0x801fa620",
+  "scenario": "VillageTest startup, idle, 30 FPS; debugger pauses invalidate performance timing; graph identities not captured",
+  "samples": [
+    {
+      "dt": 0.03333333507180214,
+      "duration": 2.366666555404663,
+      "settings": {
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "start_time": 0.0,
+        "playback_speed": 1.0,
+        "enforced_duration": 0.0,
+        "user_fraction": 0.0,
+        "mode": 1,
+        "flags": 0
+      },
+      "runtime": {
+        "local_time": 0.0,
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "previous_user_fraction": 0.0,
+        "at_end": false,
+        "ping_pong_backward": false
+      },
+      "result": {
+        "from_time": 0.0,
+        "to_time": 0.03333333507180214,
+        "loops": 0,
+        "at_end": false
+      }
+    },
+    {
+      "dt": 0.03333333507180214,
+      "duration": 1.7666666507720947,
+      "settings": {
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "start_time": 0.0,
+        "playback_speed": 1.0,
+        "enforced_duration": 0.0,
+        "user_fraction": 0.0,
+        "mode": 1,
+        "flags": 0
+      },
+      "runtime": {
+        "local_time": 0.0,
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "previous_user_fraction": 0.0,
+        "at_end": false,
+        "ping_pong_backward": false
+      },
+      "result": {
+        "from_time": 0.0,
+        "to_time": 0.03333333507180214,
+        "loops": 0,
+        "at_end": false
+      }
+    },
+    {
+      "dt": 0.03333333507180214,
+      "duration": 2.366666555404663,
+      "settings": {
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "start_time": 0.0,
+        "playback_speed": 1.0,
+        "enforced_duration": 0.0,
+        "user_fraction": 0.0,
+        "mode": 1,
+        "flags": 0
+      },
+      "runtime": {
+        "local_time": 0.03333333507180214,
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "previous_user_fraction": 0.0,
+        "at_end": false,
+        "ping_pong_backward": false
+      },
+      "result": {
+        "from_time": 0.03333333507180214,
+        "to_time": 0.06666667014360428,
+        "loops": 0,
+        "at_end": false
+      }
+    },
+    {
+      "dt": 0.03333333507180214,
+      "duration": 1.7666666507720947,
+      "settings": {
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "start_time": 0.0,
+        "playback_speed": 1.0,
+        "enforced_duration": 0.0,
+        "user_fraction": 0.0,
+        "mode": 1,
+        "flags": 0
+      },
+      "runtime": {
+        "local_time": 0.03333333507180214,
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "previous_user_fraction": 0.0,
+        "at_end": false,
+        "ping_pong_backward": false
+      },
+      "result": {
+        "from_time": 0.03333333507180214,
+        "to_time": 0.06666667014360428,
+        "loops": 0,
+        "at_end": false
+      }
+    },
+    {
+      "dt": 0.03333333879709244,
+      "duration": 2.366666555404663,
+      "settings": {
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "start_time": 0.0,
+        "playback_speed": 1.0,
+        "enforced_duration": 0.0,
+        "user_fraction": 0.0,
+        "mode": 1,
+        "flags": 0
+      },
+      "runtime": {
+        "local_time": 0.06666667014360428,
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "previous_user_fraction": 0.0,
+        "at_end": false,
+        "ping_pong_backward": false
+      },
+      "result": {
+        "from_time": 0.06666667014360428,
+        "to_time": 0.10000000894069672,
+        "loops": 0,
+        "at_end": false
+      }
+    },
+    {
+      "dt": 0.03333333879709244,
+      "duration": 1.7666666507720947,
+      "settings": {
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "start_time": 0.0,
+        "playback_speed": 1.0,
+        "enforced_duration": 0.0,
+        "user_fraction": 0.0,
+        "mode": 1,
+        "flags": 0
+      },
+      "runtime": {
+        "local_time": 0.06666667014360428,
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "previous_user_fraction": 0.0,
+        "at_end": false,
+        "ping_pong_backward": false
+      },
+      "result": {
+        "from_time": 0.06666667014360428,
+        "to_time": 0.10000000894069672,
+        "loops": 0,
+        "at_end": false
+      }
+    },
+    {
+      "dt": 0.03333333134651184,
+      "duration": 2.366666555404663,
+      "settings": {
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "start_time": 0.0,
+        "playback_speed": 1.0,
+        "enforced_duration": 0.0,
+        "user_fraction": 0.0,
+        "mode": 1,
+        "flags": 0
+      },
+      "runtime": {
+        "local_time": 0.10000000894069672,
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "previous_user_fraction": 0.0,
+        "at_end": false,
+        "ping_pong_backward": false
+      },
+      "result": {
+        "from_time": 0.10000000894069672,
+        "to_time": 0.13333334028720856,
+        "loops": 0,
+        "at_end": false
+      }
+    },
+    {
+      "dt": 0.03333333134651184,
+      "duration": 1.7666666507720947,
+      "settings": {
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "start_time": 0.0,
+        "playback_speed": 1.0,
+        "enforced_duration": 0.0,
+        "user_fraction": 0.0,
+        "mode": 1,
+        "flags": 0
+      },
+      "runtime": {
+        "local_time": 0.10000000894069672,
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "previous_user_fraction": 0.0,
+        "at_end": false,
+        "ping_pong_backward": false
+      },
+      "result": {
+        "from_time": 0.10000000894069672,
+        "to_time": 0.13333334028720856,
+        "loops": 0,
+        "at_end": false
+      }
+    },
+    {
+      "dt": 0.03333333134651184,
+      "duration": 2.366666555404663,
+      "settings": {
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "start_time": 0.0,
+        "playback_speed": 1.0,
+        "enforced_duration": 0.0,
+        "user_fraction": 0.0,
+        "mode": 1,
+        "flags": 0
+      },
+      "runtime": {
+        "local_time": 0.13333334028720856,
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "previous_user_fraction": 0.0,
+        "at_end": false,
+        "ping_pong_backward": false
+      },
+      "result": {
+        "from_time": 0.13333334028720856,
+        "to_time": 0.1666666716337204,
+        "loops": 0,
+        "at_end": false
+      }
+    },
+    {
+      "dt": 0.03333333134651184,
+      "duration": 1.7666666507720947,
+      "settings": {
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "start_time": 0.0,
+        "playback_speed": 1.0,
+        "enforced_duration": 0.0,
+        "user_fraction": 0.0,
+        "mode": 1,
+        "flags": 0
+      },
+      "runtime": {
+        "local_time": 0.13333334028720856,
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "previous_user_fraction": 0.0,
+        "at_end": false,
+        "ping_pong_backward": false
+      },
+      "result": {
+        "from_time": 0.13333334028720856,
+        "to_time": 0.1666666716337204,
+        "loops": 0,
+        "at_end": false
+      }
+    },
+    {
+      "dt": 0.03333333134651184,
+      "duration": 2.366666555404663,
+      "settings": {
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "start_time": 0.0,
+        "playback_speed": 1.0,
+        "enforced_duration": 0.0,
+        "user_fraction": 0.0,
+        "mode": 1,
+        "flags": 0
+      },
+      "runtime": {
+        "local_time": 0.1666666716337204,
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "previous_user_fraction": 0.0,
+        "at_end": false,
+        "ping_pong_backward": false
+      },
+      "result": {
+        "from_time": 0.1666666716337204,
+        "to_time": 0.20000000298023224,
+        "loops": 0,
+        "at_end": false
+      }
+    },
+    {
+      "dt": 0.03333333134651184,
+      "duration": 1.7666666507720947,
+      "settings": {
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "start_time": 0.0,
+        "playback_speed": 1.0,
+        "enforced_duration": 0.0,
+        "user_fraction": 0.0,
+        "mode": 1,
+        "flags": 0
+      },
+      "runtime": {
+        "local_time": 0.1666666716337204,
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "previous_user_fraction": 0.0,
+        "at_end": false,
+        "ping_pong_backward": false
+      },
+      "result": {
+        "from_time": 0.1666666716337204,
+        "to_time": 0.20000000298023224,
+        "loops": 0,
+        "at_end": false
+      }
+    },
+    {
+      "dt": 0.03333333134651184,
+      "duration": 2.366666555404663,
+      "settings": {
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "start_time": 0.0,
+        "playback_speed": 1.0,
+        "enforced_duration": 0.0,
+        "user_fraction": 0.0,
+        "mode": 1,
+        "flags": 0
+      },
+      "runtime": {
+        "local_time": 0.20000000298023224,
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "previous_user_fraction": 0.0,
+        "at_end": false,
+        "ping_pong_backward": false
+      },
+      "result": {
+        "from_time": 0.20000000298023224,
+        "to_time": 0.23333333432674408,
+        "loops": 0,
+        "at_end": false
+      }
+    },
+    {
+      "dt": 0.033333346247673035,
+      "duration": 1.7666666507720947,
+      "settings": {
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "start_time": 0.0,
+        "playback_speed": 1.0,
+        "enforced_duration": 0.0,
+        "user_fraction": 0.0,
+        "mode": 1,
+        "flags": 0
+      },
+      "runtime": {
+        "local_time": 0.20000000298023224,
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "previous_user_fraction": 0.0,
+        "at_end": false,
+        "ping_pong_backward": false
+      },
+      "result": {
+        "from_time": 0.20000000298023224,
+        "to_time": 0.23333334922790527,
+        "loops": 0,
+        "at_end": false
+      }
+    },
+    {
+      "dt": 0.033333346247673035,
+      "duration": 2.366666555404663,
+      "settings": {
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "start_time": 0.0,
+        "playback_speed": 1.0,
+        "enforced_duration": 0.0,
+        "user_fraction": 0.0,
+        "mode": 1,
+        "flags": 0
+      },
+      "runtime": {
+        "local_time": 0.23333333432674408,
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "previous_user_fraction": 0.0,
+        "at_end": false,
+        "ping_pong_backward": false
+      },
+      "result": {
+        "from_time": 0.23333333432674408,
+        "to_time": 0.2666666805744171,
+        "loops": 0,
+        "at_end": false
+      }
+    },
+    {
+      "dt": 0.03333333134651184,
+      "duration": 1.7666666507720947,
+      "settings": {
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "start_time": 0.0,
+        "playback_speed": 1.0,
+        "enforced_duration": 0.0,
+        "user_fraction": 0.0,
+        "mode": 1,
+        "flags": 0
+      },
+      "runtime": {
+        "local_time": 0.23333334922790527,
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "previous_user_fraction": 0.0,
+        "at_end": false,
+        "ping_pong_backward": false
+      },
+      "result": {
+        "from_time": 0.23333334922790527,
+        "to_time": 0.2666666805744171,
+        "loops": 0,
+        "at_end": false
+      }
+    },
+    {
+      "dt": 0.03333333134651184,
+      "duration": 2.366666555404663,
+      "settings": {
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "start_time": 0.0,
+        "playback_speed": 1.0,
+        "enforced_duration": 0.0,
+        "user_fraction": 0.0,
+        "mode": 1,
+        "flags": 0
+      },
+      "runtime": {
+        "local_time": 0.2666666805744171,
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "previous_user_fraction": 0.0,
+        "at_end": false,
+        "ping_pong_backward": false
+      },
+      "result": {
+        "from_time": 0.2666666805744171,
+        "to_time": 0.30000001192092896,
+        "loops": 0,
+        "at_end": false
+      }
+    },
+    {
+      "dt": 0.03333333134651184,
+      "duration": 1.7666666507720947,
+      "settings": {
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "start_time": 0.0,
+        "playback_speed": 1.0,
+        "enforced_duration": 0.0,
+        "user_fraction": 0.0,
+        "mode": 1,
+        "flags": 0
+      },
+      "runtime": {
+        "local_time": 0.2666666805744171,
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "previous_user_fraction": 0.0,
+        "at_end": false,
+        "ping_pong_backward": false
+      },
+      "result": {
+        "from_time": 0.2666666805744171,
+        "to_time": 0.30000001192092896,
+        "loops": 0,
+        "at_end": false
+      }
+    },
+    {
+      "dt": 0.03333333134651184,
+      "duration": 2.366666555404663,
+      "settings": {
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "start_time": 0.0,
+        "playback_speed": 1.0,
+        "enforced_duration": 0.0,
+        "user_fraction": 0.0,
+        "mode": 1,
+        "flags": 0
+      },
+      "runtime": {
+        "local_time": 0.30000001192092896,
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "previous_user_fraction": 0.0,
+        "at_end": false,
+        "ping_pong_backward": false
+      },
+      "result": {
+        "from_time": 0.30000001192092896,
+        "to_time": 0.3333333432674408,
+        "loops": 0,
+        "at_end": false
+      }
+    },
+    {
+      "dt": 0.03333333134651184,
+      "duration": 1.7666666507720947,
+      "settings": {
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "start_time": 0.0,
+        "playback_speed": 1.0,
+        "enforced_duration": 0.0,
+        "user_fraction": 0.0,
+        "mode": 1,
+        "flags": 0
+      },
+      "runtime": {
+        "local_time": 0.30000001192092896,
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "previous_user_fraction": 0.0,
+        "at_end": false,
+        "ping_pong_backward": false
+      },
+      "result": {
+        "from_time": 0.30000001192092896,
+        "to_time": 0.3333333432674408,
+        "loops": 0,
+        "at_end": false
+      }
+    },
+    {
+      "dt": 0.03333333134651184,
+      "duration": 2.366666555404663,
+      "settings": {
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "start_time": 0.0,
+        "playback_speed": 1.0,
+        "enforced_duration": 0.0,
+        "user_fraction": 0.0,
+        "mode": 1,
+        "flags": 0
+      },
+      "runtime": {
+        "local_time": 0.3333333432674408,
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "previous_user_fraction": 0.0,
+        "at_end": false,
+        "ping_pong_backward": false
+      },
+      "result": {
+        "from_time": 0.3333333432674408,
+        "to_time": 0.36666667461395264,
+        "loops": 0,
+        "at_end": false
+      }
+    },
+    {
+      "dt": 0.03333333134651184,
+      "duration": 1.7666666507720947,
+      "settings": {
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "start_time": 0.0,
+        "playback_speed": 1.0,
+        "enforced_duration": 0.0,
+        "user_fraction": 0.0,
+        "mode": 1,
+        "flags": 0
+      },
+      "runtime": {
+        "local_time": 0.3333333432674408,
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "previous_user_fraction": 0.0,
+        "at_end": false,
+        "ping_pong_backward": false
+      },
+      "result": {
+        "from_time": 0.3333333432674408,
+        "to_time": 0.36666667461395264,
+        "loops": 0,
+        "at_end": false
+      }
+    },
+    {
+      "dt": 0.03333333134651184,
+      "duration": 2.366666555404663,
+      "settings": {
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "start_time": 0.0,
+        "playback_speed": 1.0,
+        "enforced_duration": 0.0,
+        "user_fraction": 0.0,
+        "mode": 1,
+        "flags": 0
+      },
+      "runtime": {
+        "local_time": 0.36666667461395264,
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "previous_user_fraction": 0.0,
+        "at_end": false,
+        "ping_pong_backward": false
+      },
+      "result": {
+        "from_time": 0.36666667461395264,
+        "to_time": 0.4000000059604645,
+        "loops": 0,
+        "at_end": false
+      }
+    },
+    {
+      "dt": 0.03333333134651184,
+      "duration": 1.7666666507720947,
+      "settings": {
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "start_time": 0.0,
+        "playback_speed": 1.0,
+        "enforced_duration": 0.0,
+        "user_fraction": 0.0,
+        "mode": 1,
+        "flags": 0
+      },
+      "runtime": {
+        "local_time": 0.36666667461395264,
+        "crop_start": 0.0,
+        "crop_end": 0.0,
+        "previous_user_fraction": 0.0,
+        "at_end": false,
+        "ping_pong_backward": false
+      },
+      "result": {
+        "from_time": 0.36666667461395264,
+        "to_time": 0.4000000059604645,
+        "loops": 0,
+        "at_end": false
+      }
+    }
+  ]
+}

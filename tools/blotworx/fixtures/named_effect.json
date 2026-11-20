@@ -1,0 +1,1122 @@
+{
+  "scope": "Execute retail31b9cc named-FX control flow with supplied runtime boundaries.\n\nChild/template lookup, component getters, creation, pose publication and restart\nare supplied boundaries. This verifies admission, order and partial effects;\nit does not execute entity creation, particle simulation or rendering.\n",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "cases": [
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": false,
+        "pose": false
+      },
+      "result": {
+        "entity": 4,
+        "created": true,
+        "trace": [
+          "factory",
+          "existing",
+          "template",
+          "create",
+          "particles",
+          "retain"
+        ],
+        "instructions": 78
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": false,
+        "pose": true
+      },
+      "result": {
+        "entity": 4,
+        "created": true,
+        "trace": [
+          "factory",
+          "existing",
+          "template",
+          "create",
+          "pose",
+          "particles",
+          "retain"
+        ],
+        "instructions": 84
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": true,
+        "pose": false
+      },
+      "result": {
+        "entity": 4,
+        "created": true,
+        "trace": [
+          "factory",
+          "template",
+          "lifetime",
+          "create",
+          "particles"
+        ],
+        "instructions": 98
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": true,
+        "pose": true
+      },
+      "result": {
+        "entity": 4,
+        "created": true,
+        "trace": [
+          "factory",
+          "template",
+          "lifetime",
+          "create",
+          "pose",
+          "particles"
+        ],
+        "instructions": 104
+      }
+    },
+    {
+      "input": {
+        "factory": false,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": false,
+        "pose": false
+      },
+      "result": {
+        "entity": 0,
+        "created": false,
+        "trace": [
+          "factory"
+        ],
+        "instructions": 26
+      }
+    },
+    {
+      "input": {
+        "factory": false,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": false,
+        "pose": true
+      },
+      "result": {
+        "entity": 0,
+        "created": false,
+        "trace": [
+          "factory"
+        ],
+        "instructions": 26
+      }
+    },
+    {
+      "input": {
+        "factory": false,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": true,
+        "pose": false
+      },
+      "result": {
+        "entity": 0,
+        "created": false,
+        "trace": [
+          "factory"
+        ],
+        "instructions": 26
+      }
+    },
+    {
+      "input": {
+        "factory": false,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": true,
+        "pose": true
+      },
+      "result": {
+        "entity": 0,
+        "created": false,
+        "trace": [
+          "factory"
+        ],
+        "instructions": 26
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": false,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": false,
+        "pose": false
+      },
+      "result": {
+        "entity": 0,
+        "created": false,
+        "trace": [
+          "factory",
+          "existing",
+          "template"
+        ],
+        "instructions": 60
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": false,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": false,
+        "pose": true
+      },
+      "result": {
+        "entity": 0,
+        "created": false,
+        "trace": [
+          "factory",
+          "existing",
+          "template"
+        ],
+        "instructions": 60
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": false,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": true,
+        "pose": false
+      },
+      "result": {
+        "entity": 0,
+        "created": false,
+        "trace": [
+          "factory",
+          "template"
+        ],
+        "instructions": 55
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": false,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": true,
+        "pose": true
+      },
+      "result": {
+        "entity": 0,
+        "created": false,
+        "trace": [
+          "factory",
+          "template"
+        ],
+        "instructions": 55
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": false,
+        "life": 1.5,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": false,
+        "pose": false
+      },
+      "result": {
+        "entity": 0,
+        "created": false,
+        "trace": [
+          "factory",
+          "existing",
+          "template"
+        ],
+        "instructions": 59
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": false,
+        "life": 1.5,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": false,
+        "pose": true
+      },
+      "result": {
+        "entity": 0,
+        "created": false,
+        "trace": [
+          "factory",
+          "existing",
+          "template"
+        ],
+        "instructions": 59
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": false,
+        "life": 1.5,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": true,
+        "pose": false
+      },
+      "result": {
+        "entity": 0,
+        "created": false,
+        "trace": [
+          "factory",
+          "template"
+        ],
+        "instructions": 54
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": false,
+        "life": 1.5,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": true,
+        "pose": true
+      },
+      "result": {
+        "entity": 0,
+        "created": false,
+        "trace": [
+          "factory",
+          "template"
+        ],
+        "instructions": 54
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": null,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": false,
+        "pose": false
+      },
+      "result": {
+        "entity": 4,
+        "created": true,
+        "trace": [
+          "factory",
+          "existing",
+          "template",
+          "create",
+          "particles",
+          "retain"
+        ],
+        "instructions": 78
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": null,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": false,
+        "pose": true
+      },
+      "result": {
+        "entity": 4,
+        "created": true,
+        "trace": [
+          "factory",
+          "existing",
+          "template",
+          "create",
+          "pose",
+          "particles",
+          "retain"
+        ],
+        "instructions": 84
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": null,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": true,
+        "pose": false
+      },
+      "result": {
+        "entity": 0,
+        "created": false,
+        "trace": [
+          "factory",
+          "template",
+          "lifetime"
+        ],
+        "instructions": 66
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": null,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": true,
+        "pose": true
+      },
+      "result": {
+        "entity": 0,
+        "created": false,
+        "trace": [
+          "factory",
+          "template",
+          "lifetime"
+        ],
+        "instructions": 66
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": 0.0,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": false,
+        "pose": false
+      },
+      "result": {
+        "entity": 4,
+        "created": true,
+        "trace": [
+          "factory",
+          "existing",
+          "template",
+          "create",
+          "particles",
+          "retain"
+        ],
+        "instructions": 78
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": 0.0,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": false,
+        "pose": true
+      },
+      "result": {
+        "entity": 4,
+        "created": true,
+        "trace": [
+          "factory",
+          "existing",
+          "template",
+          "create",
+          "pose",
+          "particles",
+          "retain"
+        ],
+        "instructions": 84
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": 0.0,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": true,
+        "pose": false
+      },
+      "result": {
+        "entity": 0,
+        "created": false,
+        "trace": [
+          "factory",
+          "template",
+          "lifetime"
+        ],
+        "instructions": 83
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": 0.0,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": true,
+        "pose": true
+      },
+      "result": {
+        "entity": 0,
+        "created": false,
+        "trace": [
+          "factory",
+          "template",
+          "lifetime"
+        ],
+        "instructions": 83
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": -1.0,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": false,
+        "pose": false
+      },
+      "result": {
+        "entity": 4,
+        "created": true,
+        "trace": [
+          "factory",
+          "existing",
+          "template",
+          "create",
+          "particles",
+          "retain"
+        ],
+        "instructions": 78
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": -1.0,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": false,
+        "pose": true
+      },
+      "result": {
+        "entity": 4,
+        "created": true,
+        "trace": [
+          "factory",
+          "existing",
+          "template",
+          "create",
+          "pose",
+          "particles",
+          "retain"
+        ],
+        "instructions": 84
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": -1.0,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": true,
+        "pose": false
+      },
+      "result": {
+        "entity": 0,
+        "created": false,
+        "trace": [
+          "factory",
+          "template",
+          "lifetime"
+        ],
+        "instructions": 83
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": -1.0,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": true,
+        "pose": true
+      },
+      "result": {
+        "entity": 0,
+        "created": false,
+        "trace": [
+          "factory",
+          "template",
+          "lifetime"
+        ],
+        "instructions": 83
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": true,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": false,
+        "pose": false
+      },
+      "result": {
+        "entity": 2,
+        "created": false,
+        "trace": [
+          "factory",
+          "existing",
+          "particles",
+          "restart",
+          "retain"
+        ],
+        "instructions": 46
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": true,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": false,
+        "pose": true
+      },
+      "result": {
+        "entity": 2,
+        "created": false,
+        "trace": [
+          "factory",
+          "existing",
+          "pose",
+          "particles",
+          "restart",
+          "retain"
+        ],
+        "instructions": 52
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": true,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": true,
+        "pose": false
+      },
+      "result": {
+        "entity": 4,
+        "created": true,
+        "trace": [
+          "factory",
+          "template",
+          "lifetime",
+          "create",
+          "particles"
+        ],
+        "instructions": 98
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": true,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": true,
+        "pose": true
+      },
+      "result": {
+        "entity": 4,
+        "created": true,
+        "trace": [
+          "factory",
+          "template",
+          "lifetime",
+          "create",
+          "pose",
+          "particles"
+        ],
+        "instructions": 104
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": true,
+        "existing_particle": false,
+        "template": true,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": false,
+        "pose": false
+      },
+      "result": {
+        "entity": 4,
+        "created": true,
+        "trace": [
+          "factory",
+          "existing",
+          "particles",
+          "template",
+          "create",
+          "particles",
+          "retain"
+        ],
+        "instructions": 87
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": true,
+        "existing_particle": false,
+        "template": true,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": false,
+        "pose": true
+      },
+      "result": {
+        "entity": 4,
+        "created": true,
+        "trace": [
+          "factory",
+          "existing",
+          "pose",
+          "particles",
+          "template",
+          "create",
+          "pose",
+          "particles",
+          "retain"
+        ],
+        "instructions": 99
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": true,
+        "existing_particle": false,
+        "template": true,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": true,
+        "pose": false
+      },
+      "result": {
+        "entity": 4,
+        "created": true,
+        "trace": [
+          "factory",
+          "template",
+          "lifetime",
+          "create",
+          "particles"
+        ],
+        "instructions": 98
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": true,
+        "existing_particle": false,
+        "template": true,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": true,
+        "new_particle": true,
+        "fire_and_forget": true,
+        "pose": true
+      },
+      "result": {
+        "entity": 4,
+        "created": true,
+        "trace": [
+          "factory",
+          "template",
+          "lifetime",
+          "create",
+          "pose",
+          "particles"
+        ],
+        "instructions": 104
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": false,
+        "new_particle": true,
+        "fire_and_forget": false,
+        "pose": false
+      },
+      "result": {
+        "entity": 0,
+        "created": false,
+        "trace": [
+          "factory",
+          "existing",
+          "template",
+          "create"
+        ],
+        "instructions": 68
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": false,
+        "new_particle": true,
+        "fire_and_forget": false,
+        "pose": true
+      },
+      "result": {
+        "entity": 0,
+        "created": false,
+        "trace": [
+          "factory",
+          "existing",
+          "template",
+          "create"
+        ],
+        "instructions": 68
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": false,
+        "new_particle": true,
+        "fire_and_forget": true,
+        "pose": false
+      },
+      "result": {
+        "entity": 0,
+        "created": false,
+        "trace": [
+          "factory",
+          "template",
+          "lifetime",
+          "create"
+        ],
+        "instructions": 91
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": false,
+        "new_particle": true,
+        "fire_and_forget": true,
+        "pose": true
+      },
+      "result": {
+        "entity": 0,
+        "created": false,
+        "trace": [
+          "factory",
+          "template",
+          "lifetime",
+          "create"
+        ],
+        "instructions": 91
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": true,
+        "new_particle": false,
+        "fire_and_forget": false,
+        "pose": false
+      },
+      "result": {
+        "entity": 0,
+        "created": true,
+        "trace": [
+          "factory",
+          "existing",
+          "template",
+          "create",
+          "particles"
+        ],
+        "instructions": 74
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": true,
+        "new_particle": false,
+        "fire_and_forget": false,
+        "pose": true
+      },
+      "result": {
+        "entity": 0,
+        "created": true,
+        "trace": [
+          "factory",
+          "existing",
+          "template",
+          "create",
+          "pose",
+          "particles"
+        ],
+        "instructions": 80
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": true,
+        "new_particle": false,
+        "fire_and_forget": true,
+        "pose": false
+      },
+      "result": {
+        "entity": 0,
+        "created": true,
+        "trace": [
+          "factory",
+          "template",
+          "lifetime",
+          "create",
+          "particles"
+        ],
+        "instructions": 97
+      }
+    },
+    {
+      "input": {
+        "factory": true,
+        "existing": false,
+        "existing_particle": true,
+        "template": true,
+        "template_nonnull": true,
+        "life": 1.5,
+        "create": true,
+        "new_particle": false,
+        "fire_and_forget": true,
+        "pose": true
+      },
+      "result": {
+        "entity": 0,
+        "created": true,
+        "trace": [
+          "factory",
+          "template",
+          "lifetime",
+          "create",
+          "pose",
+          "particles"
+        ],
+        "instructions": 103
+      }
+    }
+  ]
+}

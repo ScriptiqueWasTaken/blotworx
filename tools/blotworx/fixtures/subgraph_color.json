@@ -1,0 +1,473 @@
+{
+  "scope": "Bounded EM1 named-subgraph color protocol and float-to-byte publication.\n\nRuns3ac8ec and its original register validator. Model/root lookup, fixed-string\nlength, name lookup and subtree publication are supplied runtime boundaries.\nSeparately runs16ccf8 through packing, before traversal. No Lua, allocation,\nRTTI traversal, renderer or FPSCR/special-value behavior is established.\n",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "cases": [
+    {
+      "root": false,
+      "name": "null",
+      "slot": -2,
+      "trace": [
+        "model"
+      ],
+      "instructions": 19
+    },
+    {
+      "root": false,
+      "name": "null",
+      "slot": 0,
+      "trace": [
+        "model"
+      ],
+      "instructions": 19
+    },
+    {
+      "root": false,
+      "name": "null",
+      "slot": 1,
+      "trace": [
+        "model"
+      ],
+      "instructions": 19
+    },
+    {
+      "root": false,
+      "name": "null",
+      "slot": 3,
+      "trace": [
+        "model"
+      ],
+      "instructions": 19
+    },
+    {
+      "root": false,
+      "name": "null",
+      "slot": 4,
+      "trace": [
+        "model"
+      ],
+      "instructions": 19
+    },
+    {
+      "root": false,
+      "name": "empty",
+      "slot": -2,
+      "trace": [
+        "model"
+      ],
+      "instructions": 19
+    },
+    {
+      "root": false,
+      "name": "empty",
+      "slot": 0,
+      "trace": [
+        "model"
+      ],
+      "instructions": 19
+    },
+    {
+      "root": false,
+      "name": "empty",
+      "slot": 1,
+      "trace": [
+        "model"
+      ],
+      "instructions": 19
+    },
+    {
+      "root": false,
+      "name": "empty",
+      "slot": 3,
+      "trace": [
+        "model"
+      ],
+      "instructions": 19
+    },
+    {
+      "root": false,
+      "name": "empty",
+      "slot": 4,
+      "trace": [
+        "model"
+      ],
+      "instructions": 19
+    },
+    {
+      "root": false,
+      "name": "found",
+      "slot": -2,
+      "trace": [
+        "model"
+      ],
+      "instructions": 19
+    },
+    {
+      "root": false,
+      "name": "found",
+      "slot": 0,
+      "trace": [
+        "model"
+      ],
+      "instructions": 19
+    },
+    {
+      "root": false,
+      "name": "found",
+      "slot": 1,
+      "trace": [
+        "model"
+      ],
+      "instructions": 19
+    },
+    {
+      "root": false,
+      "name": "found",
+      "slot": 3,
+      "trace": [
+        "model"
+      ],
+      "instructions": 19
+    },
+    {
+      "root": false,
+      "name": "found",
+      "slot": 4,
+      "trace": [
+        "model"
+      ],
+      "instructions": 19
+    },
+    {
+      "root": false,
+      "name": "missing",
+      "slot": -2,
+      "trace": [
+        "model"
+      ],
+      "instructions": 19
+    },
+    {
+      "root": false,
+      "name": "missing",
+      "slot": 0,
+      "trace": [
+        "model"
+      ],
+      "instructions": 19
+    },
+    {
+      "root": false,
+      "name": "missing",
+      "slot": 1,
+      "trace": [
+        "model"
+      ],
+      "instructions": 19
+    },
+    {
+      "root": false,
+      "name": "missing",
+      "slot": 3,
+      "trace": [
+        "model"
+      ],
+      "instructions": 19
+    },
+    {
+      "root": false,
+      "name": "missing",
+      "slot": 4,
+      "trace": [
+        "model"
+      ],
+      "instructions": 19
+    },
+    {
+      "root": true,
+      "name": "null",
+      "slot": -2,
+      "trace": [
+        "model"
+      ],
+      "instructions": 32
+    },
+    {
+      "root": true,
+      "name": "null",
+      "slot": 0,
+      "trace": [
+        "model",
+        "constant:1:0"
+      ],
+      "instructions": 54
+    },
+    {
+      "root": true,
+      "name": "null",
+      "slot": 1,
+      "trace": [
+        "model",
+        "constant:1:1"
+      ],
+      "instructions": 54
+    },
+    {
+      "root": true,
+      "name": "null",
+      "slot": 3,
+      "trace": [
+        "model",
+        "constant:1:3"
+      ],
+      "instructions": 54
+    },
+    {
+      "root": true,
+      "name": "null",
+      "slot": 4,
+      "trace": [
+        "model"
+      ],
+      "instructions": 34
+    },
+    {
+      "root": true,
+      "name": "empty",
+      "slot": -2,
+      "trace": [
+        "model"
+      ],
+      "instructions": 32
+    },
+    {
+      "root": true,
+      "name": "empty",
+      "slot": 0,
+      "trace": [
+        "model",
+        "constant:1:0"
+      ],
+      "instructions": 54
+    },
+    {
+      "root": true,
+      "name": "empty",
+      "slot": 1,
+      "trace": [
+        "model",
+        "constant:1:1"
+      ],
+      "instructions": 54
+    },
+    {
+      "root": true,
+      "name": "empty",
+      "slot": 3,
+      "trace": [
+        "model",
+        "constant:1:3"
+      ],
+      "instructions": 54
+    },
+    {
+      "root": true,
+      "name": "empty",
+      "slot": 4,
+      "trace": [
+        "model"
+      ],
+      "instructions": 34
+    },
+    {
+      "root": true,
+      "name": "found",
+      "slot": -2,
+      "trace": [
+        "model"
+      ],
+      "instructions": 32
+    },
+    {
+      "root": true,
+      "name": "found",
+      "slot": 0,
+      "trace": [
+        "model",
+        "find",
+        "constant:2:0"
+      ],
+      "instructions": 62
+    },
+    {
+      "root": true,
+      "name": "found",
+      "slot": 1,
+      "trace": [
+        "model",
+        "find",
+        "constant:2:1"
+      ],
+      "instructions": 62
+    },
+    {
+      "root": true,
+      "name": "found",
+      "slot": 3,
+      "trace": [
+        "model",
+        "find",
+        "constant:2:3"
+      ],
+      "instructions": 62
+    },
+    {
+      "root": true,
+      "name": "found",
+      "slot": 4,
+      "trace": [
+        "model"
+      ],
+      "instructions": 34
+    },
+    {
+      "root": true,
+      "name": "missing",
+      "slot": -2,
+      "trace": [
+        "model"
+      ],
+      "instructions": 32
+    },
+    {
+      "root": true,
+      "name": "missing",
+      "slot": 0,
+      "trace": [
+        "model",
+        "find"
+      ],
+      "instructions": 55
+    },
+    {
+      "root": true,
+      "name": "missing",
+      "slot": 1,
+      "trace": [
+        "model",
+        "find"
+      ],
+      "instructions": 55
+    },
+    {
+      "root": true,
+      "name": "missing",
+      "slot": 3,
+      "trace": [
+        "model",
+        "find"
+      ],
+      "instructions": 55
+    },
+    {
+      "root": true,
+      "name": "missing",
+      "slot": 4,
+      "trace": [
+        "model"
+      ],
+      "instructions": 34
+    }
+  ],
+  "packed": [
+    {
+      "color": [
+        0.337,
+        0.467,
+        0.306,
+        0.0
+      ],
+      "rgba": [
+        85,
+        119,
+        78,
+        0
+      ],
+      "instructions": 39
+    },
+    {
+      "color": [
+        0.75,
+        0.75,
+        0.75,
+        0.007843
+      ],
+      "rgba": [
+        191,
+        191,
+        191,
+        1
+      ],
+      "instructions": 39
+    },
+    {
+      "color": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rgba": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "instructions": 39
+    },
+    {
+      "color": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rgba": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "instructions": 39
+    },
+    {
+      "color": [
+        -1.0,
+        2.0,
+        0.5,
+        -0.5
+      ],
+      "rgba": [
+        1,
+        254,
+        127,
+        129
+      ],
+      "instructions": 39
+    },
+    {
+      "color": [
+        255.0,
+        -255.0,
+        128.5,
+        -128.5
+      ],
+      "rgba": [
+        1,
+        255,
+        255,
+        1
+      ],
+      "instructions": 39
+    }
+  ]
+}

@@ -1,0 +1,242 @@
+{
+  "scope": "Original base-camera ControlPoint branch with supplied component callbacks.\n\nExecutes1e1420..160c. Clock, component resolution, readiness, virtual callbacks\nand constrained position are supplied boundaries, not original world execution.\n",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "cases": [
+    {
+      "present": false,
+      "mode": false,
+      "ready": false,
+      "handled": false,
+      "calls": [
+        "clock",
+        "resolve",
+        "generate"
+      ],
+      "kind": 1,
+      "reference": 0,
+      "instructions": 30
+    },
+    {
+      "present": false,
+      "mode": false,
+      "ready": false,
+      "handled": true,
+      "calls": [
+        "clock",
+        "resolve",
+        "generate"
+      ],
+      "kind": 1,
+      "reference": 0,
+      "instructions": 30
+    },
+    {
+      "present": false,
+      "mode": false,
+      "ready": true,
+      "handled": false,
+      "calls": [
+        "clock",
+        "resolve",
+        "generate"
+      ],
+      "kind": 1,
+      "reference": 0,
+      "instructions": 30
+    },
+    {
+      "present": false,
+      "mode": false,
+      "ready": true,
+      "handled": true,
+      "calls": [
+        "clock",
+        "resolve",
+        "generate"
+      ],
+      "kind": 1,
+      "reference": 0,
+      "instructions": 30
+    },
+    {
+      "present": false,
+      "mode": true,
+      "ready": false,
+      "handled": false,
+      "calls": [
+        "clock",
+        "resolve",
+        "generate"
+      ],
+      "kind": 1,
+      "reference": 0,
+      "instructions": 30
+    },
+    {
+      "present": false,
+      "mode": true,
+      "ready": false,
+      "handled": true,
+      "calls": [
+        "clock",
+        "resolve",
+        "generate"
+      ],
+      "kind": 1,
+      "reference": 0,
+      "instructions": 30
+    },
+    {
+      "present": false,
+      "mode": true,
+      "ready": true,
+      "handled": false,
+      "calls": [
+        "clock",
+        "resolve",
+        "generate"
+      ],
+      "kind": 1,
+      "reference": 0,
+      "instructions": 30
+    },
+    {
+      "present": false,
+      "mode": true,
+      "ready": true,
+      "handled": true,
+      "calls": [
+        "clock",
+        "resolve",
+        "generate"
+      ],
+      "kind": 1,
+      "reference": 0,
+      "instructions": 30
+    },
+    {
+      "present": true,
+      "mode": false,
+      "ready": false,
+      "handled": false,
+      "calls": [
+        "clock",
+        "resolve",
+        "special",
+        "generate"
+      ],
+      "kind": 2,
+      "reference": 42,
+      "instructions": 30
+    },
+    {
+      "present": true,
+      "mode": false,
+      "ready": false,
+      "handled": true,
+      "calls": [
+        "clock",
+        "resolve",
+        "special"
+      ],
+      "kind": 2,
+      "reference": 42,
+      "instructions": 19
+    },
+    {
+      "present": true,
+      "mode": false,
+      "ready": true,
+      "handled": false,
+      "calls": [
+        "clock",
+        "resolve",
+        "special",
+        "generate"
+      ],
+      "kind": 2,
+      "reference": 42,
+      "instructions": 30
+    },
+    {
+      "present": true,
+      "mode": false,
+      "ready": true,
+      "handled": true,
+      "calls": [
+        "clock",
+        "resolve",
+        "special"
+      ],
+      "kind": 2,
+      "reference": 42,
+      "instructions": 19
+    },
+    {
+      "present": true,
+      "mode": true,
+      "ready": false,
+      "handled": false,
+      "calls": [
+        "clock",
+        "resolve",
+        "ready",
+        "generate",
+        "constrain"
+      ],
+      "kind": 2,
+      "reference": 42,
+      "instructions": 32
+    },
+    {
+      "present": true,
+      "mode": true,
+      "ready": false,
+      "handled": true,
+      "calls": [
+        "clock",
+        "resolve",
+        "ready",
+        "generate",
+        "constrain"
+      ],
+      "kind": 2,
+      "reference": 42,
+      "instructions": 32
+    },
+    {
+      "present": true,
+      "mode": true,
+      "ready": true,
+      "handled": false,
+      "calls": [
+        "clock",
+        "resolve",
+        "ready",
+        "fallback",
+        "select",
+        "generate"
+      ],
+      "kind": 1,
+      "reference": 0,
+      "instructions": 49
+    },
+    {
+      "present": true,
+      "mode": true,
+      "ready": true,
+      "handled": true,
+      "calls": [
+        "clock",
+        "resolve",
+        "ready",
+        "fallback",
+        "select",
+        "generate"
+      ],
+      "kind": 1,
+      "reference": 0,
+      "instructions": 49
+    }
+  ]
+}

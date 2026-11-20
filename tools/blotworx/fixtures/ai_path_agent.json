@@ -1,0 +1,2816 @@
+{
+  "scope": "EM1 path-agent wrapper/constructor instructions. Derived bind/factory/reset,\npathfinder and observer class services supplied. No pathfinding executes.\n",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "cases": [
+    {
+      "input": {
+        "op": "new",
+        "slot": 0,
+        "observer_mutation": false
+      },
+      "trace": [
+        [
+          "observer",
+          3212836864,
+          4294967295,
+          0
+        ]
+      ],
+      "speed": 3212836864,
+      "configuration": null,
+      "vector": [
+        0,
+        0,
+        0
+      ],
+      "scalar": 0,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "attributes": [
+        900,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 4294967295,
+      "pathfinder": null,
+      "result": null,
+      "instructions": 107
+    },
+    {
+      "input": {
+        "op": "new",
+        "slot": 0,
+        "observer_mutation": true
+      },
+      "trace": [
+        [
+          "observer",
+          3212836864,
+          4294967295,
+          0
+        ]
+      ],
+      "speed": 3212836864,
+      "configuration": null,
+      "vector": [
+        0,
+        0,
+        0
+      ],
+      "scalar": 0,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "attributes": [
+        900,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 5,
+      "pathfinder": null,
+      "result": null,
+      "instructions": 107
+    },
+    {
+      "input": {
+        "op": "new",
+        "slot": 4,
+        "observer_mutation": false
+      },
+      "trace": [
+        [
+          "observer",
+          3212836864,
+          4294967295,
+          0
+        ]
+      ],
+      "speed": 3212836864,
+      "configuration": null,
+      "vector": [
+        0,
+        0,
+        0
+      ],
+      "scalar": 0,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "attributes": [
+        null,
+        null,
+        null,
+        null,
+        900,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 4294967295,
+      "pathfinder": null,
+      "result": null,
+      "instructions": 107
+    },
+    {
+      "input": {
+        "op": "new",
+        "slot": 4,
+        "observer_mutation": true
+      },
+      "trace": [
+        [
+          "observer",
+          3212836864,
+          4294967295,
+          0
+        ]
+      ],
+      "speed": 3212836864,
+      "configuration": null,
+      "vector": [
+        0,
+        0,
+        0
+      ],
+      "scalar": 0,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "attributes": [
+        null,
+        null,
+        null,
+        null,
+        900,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 5,
+      "pathfinder": null,
+      "result": null,
+      "instructions": 107
+    },
+    {
+      "input": {
+        "op": "new",
+        "slot": 15,
+        "observer_mutation": false
+      },
+      "trace": [
+        [
+          "observer",
+          3212836864,
+          4294967295,
+          0
+        ]
+      ],
+      "speed": 3212836864,
+      "configuration": null,
+      "vector": [
+        0,
+        0,
+        0
+      ],
+      "scalar": 0,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "attributes": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        900
+      ],
+      "request_state": 4294967295,
+      "pathfinder": null,
+      "result": null,
+      "instructions": 107
+    },
+    {
+      "input": {
+        "op": "new",
+        "slot": 15,
+        "observer_mutation": true
+      },
+      "trace": [
+        [
+          "observer",
+          3212836864,
+          4294967295,
+          0
+        ]
+      ],
+      "speed": 3212836864,
+      "configuration": null,
+      "vector": [
+        0,
+        0,
+        0
+      ],
+      "scalar": 0,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "attributes": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        900
+      ],
+      "request_state": 5,
+      "pathfinder": null,
+      "result": null,
+      "instructions": 107
+    },
+    {
+      "input": {
+        "op": "bind",
+        "base": false,
+        "created": false,
+        "factory_mutation": false,
+        "initialize_mutation": false
+      },
+      "trace": [
+        [
+          "base",
+          88
+        ]
+      ],
+      "speed": 1093664768,
+      "configuration": 89,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 100,
+      "result": 0,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "op": "bind",
+        "base": false,
+        "created": false,
+        "factory_mutation": false,
+        "initialize_mutation": true
+      },
+      "trace": [
+        [
+          "base",
+          88
+        ]
+      ],
+      "speed": 1093664768,
+      "configuration": 89,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 100,
+      "result": 0,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "op": "bind",
+        "base": false,
+        "created": false,
+        "factory_mutation": true,
+        "initialize_mutation": false
+      },
+      "trace": [
+        [
+          "base",
+          88
+        ]
+      ],
+      "speed": 1093664768,
+      "configuration": 89,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 100,
+      "result": 0,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "op": "bind",
+        "base": false,
+        "created": false,
+        "factory_mutation": true,
+        "initialize_mutation": true
+      },
+      "trace": [
+        [
+          "base",
+          88
+        ]
+      ],
+      "speed": 1093664768,
+      "configuration": 89,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 100,
+      "result": 0,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "op": "bind",
+        "base": false,
+        "created": true,
+        "factory_mutation": false,
+        "initialize_mutation": false
+      },
+      "trace": [
+        [
+          "base",
+          88
+        ]
+      ],
+      "speed": 1093664768,
+      "configuration": 89,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 100,
+      "result": 0,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "op": "bind",
+        "base": false,
+        "created": true,
+        "factory_mutation": false,
+        "initialize_mutation": true
+      },
+      "trace": [
+        [
+          "base",
+          88
+        ]
+      ],
+      "speed": 1093664768,
+      "configuration": 89,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 100,
+      "result": 0,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "op": "bind",
+        "base": false,
+        "created": true,
+        "factory_mutation": true,
+        "initialize_mutation": false
+      },
+      "trace": [
+        [
+          "base",
+          88
+        ]
+      ],
+      "speed": 1093664768,
+      "configuration": 89,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 100,
+      "result": 0,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "op": "bind",
+        "base": false,
+        "created": true,
+        "factory_mutation": true,
+        "initialize_mutation": true
+      },
+      "trace": [
+        [
+          "base",
+          88
+        ]
+      ],
+      "speed": 1093664768,
+      "configuration": 89,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 100,
+      "result": 0,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "op": "bind",
+        "base": true,
+        "created": false,
+        "factory_mutation": false,
+        "initialize_mutation": false
+      },
+      "trace": [
+        [
+          "base",
+          88
+        ],
+        [
+          "create"
+        ],
+        [
+          "initialize",
+          null
+        ]
+      ],
+      "speed": 1093664768,
+      "configuration": 89,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": null,
+      "result": 1,
+      "instructions": 24
+    },
+    {
+      "input": {
+        "op": "bind",
+        "base": true,
+        "created": false,
+        "factory_mutation": false,
+        "initialize_mutation": true
+      },
+      "trace": [
+        [
+          "base",
+          88
+        ],
+        [
+          "create"
+        ],
+        [
+          "initialize",
+          null
+        ]
+      ],
+      "speed": 1093664768,
+      "configuration": 89,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 105,
+      "result": 1,
+      "instructions": 24
+    },
+    {
+      "input": {
+        "op": "bind",
+        "base": true,
+        "created": false,
+        "factory_mutation": true,
+        "initialize_mutation": false
+      },
+      "trace": [
+        [
+          "base",
+          88
+        ],
+        [
+          "create"
+        ],
+        [
+          "initialize",
+          null
+        ]
+      ],
+      "speed": 1093664768,
+      "configuration": 89,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": null,
+      "result": 1,
+      "instructions": 24
+    },
+    {
+      "input": {
+        "op": "bind",
+        "base": true,
+        "created": false,
+        "factory_mutation": true,
+        "initialize_mutation": true
+      },
+      "trace": [
+        [
+          "base",
+          88
+        ],
+        [
+          "create"
+        ],
+        [
+          "initialize",
+          null
+        ]
+      ],
+      "speed": 1093664768,
+      "configuration": 89,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 105,
+      "result": 1,
+      "instructions": 24
+    },
+    {
+      "input": {
+        "op": "bind",
+        "base": true,
+        "created": true,
+        "factory_mutation": false,
+        "initialize_mutation": false
+      },
+      "trace": [
+        [
+          "base",
+          88
+        ],
+        [
+          "create"
+        ],
+        [
+          "initialize",
+          101
+        ]
+      ],
+      "speed": 1093664768,
+      "configuration": 89,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 101,
+      "result": 1,
+      "instructions": 24
+    },
+    {
+      "input": {
+        "op": "bind",
+        "base": true,
+        "created": true,
+        "factory_mutation": false,
+        "initialize_mutation": true
+      },
+      "trace": [
+        [
+          "base",
+          88
+        ],
+        [
+          "create"
+        ],
+        [
+          "initialize",
+          101
+        ]
+      ],
+      "speed": 1093664768,
+      "configuration": 89,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 105,
+      "result": 1,
+      "instructions": 24
+    },
+    {
+      "input": {
+        "op": "bind",
+        "base": true,
+        "created": true,
+        "factory_mutation": true,
+        "initialize_mutation": false
+      },
+      "trace": [
+        [
+          "base",
+          88
+        ],
+        [
+          "create"
+        ],
+        [
+          "initialize",
+          101
+        ]
+      ],
+      "speed": 1093664768,
+      "configuration": 89,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 101,
+      "result": 1,
+      "instructions": 24
+    },
+    {
+      "input": {
+        "op": "bind",
+        "base": true,
+        "created": true,
+        "factory_mutation": true,
+        "initialize_mutation": true
+      },
+      "trace": [
+        [
+          "base",
+          88
+        ],
+        [
+          "create"
+        ],
+        [
+          "initialize",
+          101
+        ]
+      ],
+      "speed": 1093664768,
+      "configuration": 89,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 105,
+      "result": 1,
+      "instructions": 24
+    },
+    {
+      "input": {
+        "op": "initialize",
+        "reset_path": false
+      },
+      "trace": [
+        [
+          "reset",
+          9
+        ]
+      ],
+      "speed": 1088421888,
+      "configuration": null,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 4294967295,
+      "pathfinder": null,
+      "result": null,
+      "instructions": 18
+    },
+    {
+      "input": {
+        "op": "initialize",
+        "reset_path": true
+      },
+      "trace": [
+        [
+          "reset",
+          9
+        ]
+      ],
+      "speed": 1088421888,
+      "configuration": null,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 4294967295,
+      "pathfinder": 106,
+      "result": null,
+      "instructions": 18
+    },
+    {
+      "input": {
+        "op": "update",
+        "ready": false,
+        "reconcile": 0,
+        "status": 0,
+        "motion_mutation": false,
+        "ready_mutation": false
+      },
+      "trace": [
+        [
+          "motion",
+          100,
+          [
+            1065353216,
+            3221225472,
+            1077936128
+          ],
+          1061158912
+        ],
+        [
+          "ready",
+          100
+        ],
+        [
+          "status",
+          100
+        ]
+      ],
+      "speed": 1088421888,
+      "configuration": null,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 100,
+      "result": 1,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "update",
+        "ready": false,
+        "reconcile": 0,
+        "status": 0,
+        "motion_mutation": false,
+        "ready_mutation": true
+      },
+      "trace": [
+        [
+          "motion",
+          100,
+          [
+            1065353216,
+            3221225472,
+            1077936128
+          ],
+          1061158912
+        ],
+        [
+          "ready",
+          100
+        ],
+        [
+          "status",
+          103
+        ]
+      ],
+      "speed": 1088421888,
+      "configuration": null,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 103,
+      "result": 1,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "update",
+        "ready": false,
+        "reconcile": 0,
+        "status": 0,
+        "motion_mutation": true,
+        "ready_mutation": false
+      },
+      "trace": [
+        [
+          "motion",
+          100,
+          [
+            1065353216,
+            3221225472,
+            1077936128
+          ],
+          1061158912
+        ],
+        [
+          "ready",
+          102
+        ],
+        [
+          "status",
+          102
+        ]
+      ],
+      "speed": 1088421888,
+      "configuration": null,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 102,
+      "result": 1,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "update",
+        "ready": false,
+        "reconcile": 0,
+        "status": 0,
+        "motion_mutation": true,
+        "ready_mutation": true
+      },
+      "trace": [
+        [
+          "motion",
+          100,
+          [
+            1065353216,
+            3221225472,
+            1077936128
+          ],
+          1061158912
+        ],
+        [
+          "ready",
+          102
+        ],
+        [
+          "status",
+          103
+        ]
+      ],
+      "speed": 1088421888,
+      "configuration": null,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 103,
+      "result": 1,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "update",
+        "ready": false,
+        "reconcile": 0,
+        "status": 1,
+        "motion_mutation": false,
+        "ready_mutation": false
+      },
+      "trace": [
+        [
+          "motion",
+          100,
+          [
+            1065353216,
+            3221225472,
+            1077936128
+          ],
+          1061158912
+        ],
+        [
+          "ready",
+          100
+        ],
+        [
+          "status",
+          100
+        ]
+      ],
+      "speed": 1088421888,
+      "configuration": null,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 100,
+      "result": 0,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "update",
+        "ready": false,
+        "reconcile": 0,
+        "status": 1,
+        "motion_mutation": false,
+        "ready_mutation": true
+      },
+      "trace": [
+        [
+          "motion",
+          100,
+          [
+            1065353216,
+            3221225472,
+            1077936128
+          ],
+          1061158912
+        ],
+        [
+          "ready",
+          100
+        ],
+        [
+          "status",
+          103
+        ]
+      ],
+      "speed": 1088421888,
+      "configuration": null,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 103,
+      "result": 0,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "update",
+        "ready": false,
+        "reconcile": 0,
+        "status": 1,
+        "motion_mutation": true,
+        "ready_mutation": false
+      },
+      "trace": [
+        [
+          "motion",
+          100,
+          [
+            1065353216,
+            3221225472,
+            1077936128
+          ],
+          1061158912
+        ],
+        [
+          "ready",
+          102
+        ],
+        [
+          "status",
+          102
+        ]
+      ],
+      "speed": 1088421888,
+      "configuration": null,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 102,
+      "result": 0,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "update",
+        "ready": false,
+        "reconcile": 0,
+        "status": 1,
+        "motion_mutation": true,
+        "ready_mutation": true
+      },
+      "trace": [
+        [
+          "motion",
+          100,
+          [
+            1065353216,
+            3221225472,
+            1077936128
+          ],
+          1061158912
+        ],
+        [
+          "ready",
+          102
+        ],
+        [
+          "status",
+          103
+        ]
+      ],
+      "speed": 1088421888,
+      "configuration": null,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 103,
+      "result": 0,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "update",
+        "ready": false,
+        "reconcile": 0,
+        "status": 7,
+        "motion_mutation": false,
+        "ready_mutation": false
+      },
+      "trace": [
+        [
+          "motion",
+          100,
+          [
+            1065353216,
+            3221225472,
+            1077936128
+          ],
+          1061158912
+        ],
+        [
+          "ready",
+          100
+        ],
+        [
+          "status",
+          100
+        ]
+      ],
+      "speed": 1088421888,
+      "configuration": null,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 100,
+      "result": 0,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "update",
+        "ready": false,
+        "reconcile": 0,
+        "status": 7,
+        "motion_mutation": false,
+        "ready_mutation": true
+      },
+      "trace": [
+        [
+          "motion",
+          100,
+          [
+            1065353216,
+            3221225472,
+            1077936128
+          ],
+          1061158912
+        ],
+        [
+          "ready",
+          100
+        ],
+        [
+          "status",
+          103
+        ]
+      ],
+      "speed": 1088421888,
+      "configuration": null,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 103,
+      "result": 0,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "update",
+        "ready": false,
+        "reconcile": 0,
+        "status": 7,
+        "motion_mutation": true,
+        "ready_mutation": false
+      },
+      "trace": [
+        [
+          "motion",
+          100,
+          [
+            1065353216,
+            3221225472,
+            1077936128
+          ],
+          1061158912
+        ],
+        [
+          "ready",
+          102
+        ],
+        [
+          "status",
+          102
+        ]
+      ],
+      "speed": 1088421888,
+      "configuration": null,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 102,
+      "result": 0,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "update",
+        "ready": false,
+        "reconcile": 0,
+        "status": 7,
+        "motion_mutation": true,
+        "ready_mutation": true
+      },
+      "trace": [
+        [
+          "motion",
+          100,
+          [
+            1065353216,
+            3221225472,
+            1077936128
+          ],
+          1061158912
+        ],
+        [
+          "ready",
+          102
+        ],
+        [
+          "status",
+          103
+        ]
+      ],
+      "speed": 1088421888,
+      "configuration": null,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 103,
+      "result": 0,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "update",
+        "ready": true,
+        "reconcile": 0,
+        "status": 0,
+        "motion_mutation": false,
+        "ready_mutation": false
+      },
+      "trace": [
+        [
+          "motion",
+          100,
+          [
+            1065353216,
+            3221225472,
+            1077936128
+          ],
+          1061158912
+        ],
+        [
+          "ready",
+          100
+        ],
+        [
+          "reconcile",
+          100
+        ]
+      ],
+      "speed": 1088421888,
+      "configuration": null,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 100,
+      "result": 0,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "update",
+        "ready": true,
+        "reconcile": 0,
+        "status": 0,
+        "motion_mutation": false,
+        "ready_mutation": true
+      },
+      "trace": [
+        [
+          "motion",
+          100,
+          [
+            1065353216,
+            3221225472,
+            1077936128
+          ],
+          1061158912
+        ],
+        [
+          "ready",
+          100
+        ],
+        [
+          "reconcile",
+          103
+        ]
+      ],
+      "speed": 1088421888,
+      "configuration": null,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 103,
+      "result": 0,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "update",
+        "ready": true,
+        "reconcile": 0,
+        "status": 0,
+        "motion_mutation": true,
+        "ready_mutation": false
+      },
+      "trace": [
+        [
+          "motion",
+          100,
+          [
+            1065353216,
+            3221225472,
+            1077936128
+          ],
+          1061158912
+        ],
+        [
+          "ready",
+          102
+        ],
+        [
+          "reconcile",
+          102
+        ]
+      ],
+      "speed": 1088421888,
+      "configuration": null,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 102,
+      "result": 0,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "update",
+        "ready": true,
+        "reconcile": 0,
+        "status": 0,
+        "motion_mutation": true,
+        "ready_mutation": true
+      },
+      "trace": [
+        [
+          "motion",
+          100,
+          [
+            1065353216,
+            3221225472,
+            1077936128
+          ],
+          1061158912
+        ],
+        [
+          "ready",
+          102
+        ],
+        [
+          "reconcile",
+          103
+        ]
+      ],
+      "speed": 1088421888,
+      "configuration": null,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 103,
+      "result": 0,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "update",
+        "ready": true,
+        "reconcile": 1,
+        "status": 0,
+        "motion_mutation": false,
+        "ready_mutation": false
+      },
+      "trace": [
+        [
+          "motion",
+          100,
+          [
+            1065353216,
+            3221225472,
+            1077936128
+          ],
+          1061158912
+        ],
+        [
+          "ready",
+          100
+        ],
+        [
+          "reconcile",
+          100
+        ]
+      ],
+      "speed": 1088421888,
+      "configuration": null,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 100,
+      "result": 1,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "update",
+        "ready": true,
+        "reconcile": 1,
+        "status": 0,
+        "motion_mutation": false,
+        "ready_mutation": true
+      },
+      "trace": [
+        [
+          "motion",
+          100,
+          [
+            1065353216,
+            3221225472,
+            1077936128
+          ],
+          1061158912
+        ],
+        [
+          "ready",
+          100
+        ],
+        [
+          "reconcile",
+          103
+        ]
+      ],
+      "speed": 1088421888,
+      "configuration": null,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 103,
+      "result": 1,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "update",
+        "ready": true,
+        "reconcile": 1,
+        "status": 0,
+        "motion_mutation": true,
+        "ready_mutation": false
+      },
+      "trace": [
+        [
+          "motion",
+          100,
+          [
+            1065353216,
+            3221225472,
+            1077936128
+          ],
+          1061158912
+        ],
+        [
+          "ready",
+          102
+        ],
+        [
+          "reconcile",
+          102
+        ]
+      ],
+      "speed": 1088421888,
+      "configuration": null,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 102,
+      "result": 1,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "update",
+        "ready": true,
+        "reconcile": 1,
+        "status": 0,
+        "motion_mutation": true,
+        "ready_mutation": true
+      },
+      "trace": [
+        [
+          "motion",
+          100,
+          [
+            1065353216,
+            3221225472,
+            1077936128
+          ],
+          1061158912
+        ],
+        [
+          "ready",
+          102
+        ],
+        [
+          "reconcile",
+          103
+        ]
+      ],
+      "speed": 1088421888,
+      "configuration": null,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 103,
+      "result": 1,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "update",
+        "ready": true,
+        "reconcile": 7,
+        "status": 0,
+        "motion_mutation": false,
+        "ready_mutation": false
+      },
+      "trace": [
+        [
+          "motion",
+          100,
+          [
+            1065353216,
+            3221225472,
+            1077936128
+          ],
+          1061158912
+        ],
+        [
+          "ready",
+          100
+        ],
+        [
+          "reconcile",
+          100
+        ]
+      ],
+      "speed": 1088421888,
+      "configuration": null,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 100,
+      "result": 7,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "update",
+        "ready": true,
+        "reconcile": 7,
+        "status": 0,
+        "motion_mutation": false,
+        "ready_mutation": true
+      },
+      "trace": [
+        [
+          "motion",
+          100,
+          [
+            1065353216,
+            3221225472,
+            1077936128
+          ],
+          1061158912
+        ],
+        [
+          "ready",
+          100
+        ],
+        [
+          "reconcile",
+          103
+        ]
+      ],
+      "speed": 1088421888,
+      "configuration": null,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 103,
+      "result": 7,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "update",
+        "ready": true,
+        "reconcile": 7,
+        "status": 0,
+        "motion_mutation": true,
+        "ready_mutation": false
+      },
+      "trace": [
+        [
+          "motion",
+          100,
+          [
+            1065353216,
+            3221225472,
+            1077936128
+          ],
+          1061158912
+        ],
+        [
+          "ready",
+          102
+        ],
+        [
+          "reconcile",
+          102
+        ]
+      ],
+      "speed": 1088421888,
+      "configuration": null,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 102,
+      "result": 7,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "update",
+        "ready": true,
+        "reconcile": 7,
+        "status": 0,
+        "motion_mutation": true,
+        "ready_mutation": true
+      },
+      "trace": [
+        [
+          "motion",
+          100,
+          [
+            1065353216,
+            3221225472,
+            1077936128
+          ],
+          1061158912
+        ],
+        [
+          "ready",
+          102
+        ],
+        [
+          "reconcile",
+          103
+        ]
+      ],
+      "speed": 1088421888,
+      "configuration": null,
+      "vector": [
+        1065353216,
+        3221225472,
+        1077936128
+      ],
+      "scalar": 1061158912,
+      "position": [
+        1082130432,
+        1084227584,
+        1086324736
+      ],
+      "attributes": [
+        null,
+        null,
+        77,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "request_state": 9,
+      "pathfinder": 103,
+      "result": 7,
+      "instructions": 21
+    }
+  ]
+}

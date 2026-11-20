@@ -1,0 +1,1011 @@
+{
+  "scope": "Concrete flat-handle strategy factory/ctor/init/refresh/clear instructions.\nAllocation, graph release/acquisition and owner virtual64 are supplied. Real\nconfiguration loops, name comparisons, pointer reads/writes and branches execute.\nNo graph-handle manager internals or production World agent executes.\n",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "dol_sha256": "994779fa2e276983efdb50f02c406568f285a82558cb5d54bbdf74651a98a920",
+  "cases": [
+    {
+      "input": {
+        "op": "factory",
+        "allocated": false,
+        "observer": false
+      },
+      "trace": [
+        [
+          "allocate",
+          16
+        ]
+      ],
+      "available": false,
+      "state": null,
+      "result": null,
+      "instructions": 24
+    },
+    {
+      "input": {
+        "op": "factory",
+        "allocated": false,
+        "observer": true
+      },
+      "trace": [
+        [
+          "allocate",
+          16
+        ],
+        [
+          "observer",
+          null,
+          16,
+          123
+        ]
+      ],
+      "available": false,
+      "state": null,
+      "result": null,
+      "instructions": 28
+    },
+    {
+      "input": {
+        "op": "factory",
+        "allocated": true,
+        "observer": false
+      },
+      "trace": [
+        [
+          "allocate",
+          16
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": null,
+        "owner": null,
+        "handle": null
+      },
+      "result": null,
+      "instructions": 33
+    },
+    {
+      "input": {
+        "op": "factory",
+        "allocated": true,
+        "observer": true
+      },
+      "trace": [
+        [
+          "allocate",
+          16
+        ],
+        [
+          "observer",
+          100,
+          16,
+          123
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": null,
+        "owner": null,
+        "handle": null
+      },
+      "result": null,
+      "instructions": 37
+    },
+    {
+      "input": {
+        "op": "initialize",
+        "names": []
+      },
+      "trace": [],
+      "available": true,
+      "state": {
+        "manager": null,
+        "owner": null,
+        "handle": null
+      },
+      "result": true,
+      "instructions": 31
+    },
+    {
+      "input": {
+        "op": "initialize",
+        "names": [
+          "Class"
+        ]
+      },
+      "trace": [
+        [
+          "child",
+          0
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": null,
+        "owner": null,
+        "handle": null
+      },
+      "result": true,
+      "instructions": 225
+    },
+    {
+      "input": {
+        "op": "initialize",
+        "names": [
+          "cLaSs",
+          "Class"
+        ]
+      },
+      "trace": [
+        [
+          "child",
+          0
+        ],
+        [
+          "child",
+          1
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": null,
+        "owner": null,
+        "handle": null
+      },
+      "result": true,
+      "instructions": 419
+    },
+    {
+      "input": {
+        "op": "initialize",
+        "names": [
+          "Unknown"
+        ]
+      },
+      "trace": [
+        [
+          "child",
+          0
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": null,
+        "owner": null,
+        "handle": null
+      },
+      "result": false,
+      "instructions": 85
+    },
+    {
+      "input": {
+        "op": "initialize",
+        "names": [
+          "_ignored"
+        ]
+      },
+      "trace": [
+        [
+          "child",
+          0
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": null,
+        "owner": null,
+        "handle": null
+      },
+      "result": false,
+      "instructions": 84
+    },
+    {
+      "input": {
+        "op": "initialize",
+        "names": [
+          "Class",
+          "Unknown",
+          "Class"
+        ]
+      },
+      "trace": [
+        [
+          "child",
+          0
+        ],
+        [
+          "child",
+          1
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": null,
+        "owner": null,
+        "handle": null
+      },
+      "result": false,
+      "instructions": 279
+    },
+    {
+      "input": {
+        "op": "refresh",
+        "manager": 88,
+        "owner": 44,
+        "handle": null,
+        "value": null,
+        "acquired": null
+      },
+      "trace": [
+        [
+          "owner_value",
+          44
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": 88,
+        "owner": 44,
+        "handle": null
+      },
+      "result": null,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "refresh",
+        "manager": 88,
+        "owner": 44,
+        "handle": null,
+        "value": null,
+        "acquired": 101
+      },
+      "trace": [
+        [
+          "owner_value",
+          44
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": 88,
+        "owner": 44,
+        "handle": null
+      },
+      "result": null,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "refresh",
+        "manager": 88,
+        "owner": 44,
+        "handle": null,
+        "value": 66,
+        "acquired": null
+      },
+      "trace": [
+        [
+          "owner_value",
+          44
+        ],
+        [
+          "acquire",
+          88,
+          66
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": 88,
+        "owner": 44,
+        "handle": null
+      },
+      "result": null,
+      "instructions": 24
+    },
+    {
+      "input": {
+        "op": "refresh",
+        "manager": 88,
+        "owner": 44,
+        "handle": null,
+        "value": 66,
+        "acquired": 101
+      },
+      "trace": [
+        [
+          "owner_value",
+          44
+        ],
+        [
+          "acquire",
+          88,
+          66
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": 88,
+        "owner": 44,
+        "handle": 101
+      },
+      "result": 101,
+      "instructions": 24
+    },
+    {
+      "input": {
+        "op": "refresh",
+        "manager": 88,
+        "owner": 44,
+        "handle": 100,
+        "value": null,
+        "acquired": null
+      },
+      "trace": [
+        [
+          "release",
+          88,
+          100
+        ],
+        [
+          "owner_value",
+          44
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": 88,
+        "owner": 44,
+        "handle": null
+      },
+      "result": null,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "refresh",
+        "manager": 88,
+        "owner": 44,
+        "handle": 100,
+        "value": null,
+        "acquired": 101
+      },
+      "trace": [
+        [
+          "release",
+          88,
+          100
+        ],
+        [
+          "owner_value",
+          44
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": 88,
+        "owner": 44,
+        "handle": null
+      },
+      "result": null,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "refresh",
+        "manager": 88,
+        "owner": 44,
+        "handle": 100,
+        "value": 66,
+        "acquired": null
+      },
+      "trace": [
+        [
+          "release",
+          88,
+          100
+        ],
+        [
+          "owner_value",
+          44
+        ],
+        [
+          "acquire",
+          88,
+          66
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": 88,
+        "owner": 44,
+        "handle": null
+      },
+      "result": null,
+      "instructions": 28
+    },
+    {
+      "input": {
+        "op": "refresh",
+        "manager": 88,
+        "owner": 44,
+        "handle": 100,
+        "value": 66,
+        "acquired": 101
+      },
+      "trace": [
+        [
+          "release",
+          88,
+          100
+        ],
+        [
+          "owner_value",
+          44
+        ],
+        [
+          "acquire",
+          88,
+          66
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": 88,
+        "owner": 44,
+        "handle": 101
+      },
+      "result": 101,
+      "instructions": 28
+    },
+    {
+      "input": {
+        "op": "refresh",
+        "manager": 88,
+        "owner": 45,
+        "handle": null,
+        "value": null,
+        "acquired": null
+      },
+      "trace": [
+        [
+          "owner_value",
+          45
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": 88,
+        "owner": 45,
+        "handle": null
+      },
+      "result": null,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "refresh",
+        "manager": 88,
+        "owner": 45,
+        "handle": null,
+        "value": null,
+        "acquired": 101
+      },
+      "trace": [
+        [
+          "owner_value",
+          45
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": 88,
+        "owner": 45,
+        "handle": null
+      },
+      "result": null,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "refresh",
+        "manager": 88,
+        "owner": 45,
+        "handle": null,
+        "value": 66,
+        "acquired": null
+      },
+      "trace": [
+        [
+          "owner_value",
+          45
+        ],
+        [
+          "acquire",
+          88,
+          66
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": 88,
+        "owner": 45,
+        "handle": null
+      },
+      "result": null,
+      "instructions": 24
+    },
+    {
+      "input": {
+        "op": "refresh",
+        "manager": 88,
+        "owner": 45,
+        "handle": null,
+        "value": 66,
+        "acquired": 101
+      },
+      "trace": [
+        [
+          "owner_value",
+          45
+        ],
+        [
+          "acquire",
+          88,
+          66
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": 88,
+        "owner": 45,
+        "handle": 101
+      },
+      "result": 101,
+      "instructions": 24
+    },
+    {
+      "input": {
+        "op": "refresh",
+        "manager": 88,
+        "owner": 45,
+        "handle": 100,
+        "value": null,
+        "acquired": null
+      },
+      "trace": [
+        [
+          "release",
+          88,
+          100
+        ],
+        [
+          "owner_value",
+          45
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": 88,
+        "owner": 45,
+        "handle": null
+      },
+      "result": null,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "refresh",
+        "manager": 88,
+        "owner": 45,
+        "handle": 100,
+        "value": null,
+        "acquired": 101
+      },
+      "trace": [
+        [
+          "release",
+          88,
+          100
+        ],
+        [
+          "owner_value",
+          45
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": 88,
+        "owner": 45,
+        "handle": null
+      },
+      "result": null,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "refresh",
+        "manager": 88,
+        "owner": 45,
+        "handle": 100,
+        "value": 66,
+        "acquired": null
+      },
+      "trace": [
+        [
+          "release",
+          88,
+          100
+        ],
+        [
+          "owner_value",
+          45
+        ],
+        [
+          "acquire",
+          88,
+          66
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": 88,
+        "owner": 45,
+        "handle": null
+      },
+      "result": null,
+      "instructions": 28
+    },
+    {
+      "input": {
+        "op": "refresh",
+        "manager": 88,
+        "owner": 45,
+        "handle": 100,
+        "value": 66,
+        "acquired": 101
+      },
+      "trace": [
+        [
+          "release",
+          88,
+          100
+        ],
+        [
+          "owner_value",
+          45
+        ],
+        [
+          "acquire",
+          88,
+          66
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": 88,
+        "owner": 45,
+        "handle": 101
+      },
+      "result": 101,
+      "instructions": 28
+    },
+    {
+      "input": {
+        "op": "refresh",
+        "manager": null,
+        "owner": 44,
+        "handle": null,
+        "value": null
+      },
+      "trace": [
+        [
+          "owner_value",
+          44
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": null,
+        "owner": 44,
+        "handle": null
+      },
+      "result": null,
+      "instructions": 21
+    },
+    {
+      "input": {
+        "op": "clear",
+        "manager": null,
+        "owner": null,
+        "handle": null
+      },
+      "trace": [],
+      "available": true,
+      "state": {
+        "manager": null,
+        "owner": null,
+        "handle": null
+      },
+      "result": null,
+      "instructions": 12
+    },
+    {
+      "input": {
+        "op": "clear",
+        "manager": 88,
+        "owner": 44,
+        "handle": null
+      },
+      "trace": [],
+      "available": true,
+      "state": {
+        "manager": 88,
+        "owner": 44,
+        "handle": null
+      },
+      "result": null,
+      "instructions": 12
+    },
+    {
+      "input": {
+        "op": "clear",
+        "manager": 88,
+        "owner": null,
+        "handle": 100
+      },
+      "trace": [
+        [
+          "release",
+          88,
+          100
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": 88,
+        "owner": null,
+        "handle": null
+      },
+      "result": null,
+      "instructions": 16
+    },
+    {
+      "input": {
+        "op": "clear",
+        "manager": 88,
+        "owner": 44,
+        "handle": 100
+      },
+      "trace": [
+        [
+          "release",
+          88,
+          100
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": 88,
+        "owner": 44,
+        "handle": null
+      },
+      "result": null,
+      "instructions": 16
+    },
+    {
+      "input": {
+        "op": "refresh",
+        "manager": 88,
+        "owner": 44,
+        "handle": 100,
+        "value": 66,
+        "acquired": 101,
+        "release_mutation": {
+          "manager": 89,
+          "owner": 45,
+          "handle": 102
+        }
+      },
+      "trace": [
+        [
+          "release",
+          88,
+          100
+        ],
+        [
+          "owner_value",
+          45
+        ],
+        [
+          "acquire",
+          89,
+          66
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": 89,
+        "owner": 45,
+        "handle": 101
+      },
+      "result": 101,
+      "instructions": 28
+    },
+    {
+      "input": {
+        "op": "refresh",
+        "manager": 88,
+        "owner": 44,
+        "handle": 100,
+        "value": 66,
+        "acquired": 101,
+        "owner_mutation": {
+          "manager": 89,
+          "handle": 102
+        }
+      },
+      "trace": [
+        [
+          "release",
+          88,
+          100
+        ],
+        [
+          "owner_value",
+          44
+        ],
+        [
+          "acquire",
+          89,
+          66
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": 89,
+        "owner": 44,
+        "handle": 101
+      },
+      "result": 101,
+      "instructions": 28
+    },
+    {
+      "input": {
+        "op": "refresh",
+        "manager": 88,
+        "owner": 44,
+        "handle": 100,
+        "value": null,
+        "acquired": 101,
+        "owner_mutation": {
+          "handle": 102
+        }
+      },
+      "trace": [
+        [
+          "release",
+          88,
+          100
+        ],
+        [
+          "owner_value",
+          44
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": 88,
+        "owner": 44,
+        "handle": 102
+      },
+      "result": 102,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "refresh",
+        "manager": 88,
+        "owner": 44,
+        "handle": 100,
+        "value": 66,
+        "acquired": 101,
+        "acquire_mutation": {
+          "manager": 89,
+          "owner": 45,
+          "handle": 102
+        }
+      },
+      "trace": [
+        [
+          "release",
+          88,
+          100
+        ],
+        [
+          "owner_value",
+          44
+        ],
+        [
+          "acquire",
+          88,
+          66
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": 89,
+        "owner": 45,
+        "handle": 101
+      },
+      "result": 101,
+      "instructions": 28
+    },
+    {
+      "input": {
+        "op": "refresh",
+        "manager": 88,
+        "owner": 44,
+        "handle": 100,
+        "value": 66,
+        "acquired": null,
+        "acquire_mutation": {
+          "handle": 102
+        }
+      },
+      "trace": [
+        [
+          "release",
+          88,
+          100
+        ],
+        [
+          "owner_value",
+          44
+        ],
+        [
+          "acquire",
+          88,
+          66
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": 88,
+        "owner": 44,
+        "handle": null
+      },
+      "result": null,
+      "instructions": 28
+    },
+    {
+      "input": {
+        "op": "clear",
+        "manager": 88,
+        "owner": 44,
+        "handle": 100,
+        "release_mutation": {
+          "manager": 89,
+          "owner": 45,
+          "handle": 102
+        }
+      },
+      "trace": [
+        [
+          "release",
+          88,
+          100
+        ]
+      ],
+      "available": true,
+      "state": {
+        "manager": 89,
+        "owner": 45,
+        "handle": null
+      },
+      "result": null,
+      "instructions": 16
+    }
+  ]
+}

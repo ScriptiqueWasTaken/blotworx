@@ -1,0 +1,197 @@
+{
+  "scope": "Native SIS callback conversion80366d88 and ordered PBI mute gain8035a1b0.\nFinite supplied map values/static volume; object-map mutation, notification\nordering, source rendering and full mixer behavior are outside these bounds.\n",
+  "dol_sha256": "994779fa2e276983efdb50f02c406568f285a82558cb5d54bbdf74651a98a920",
+  "callbacks": [
+    {
+      "db_bits": 0,
+      "byte": 254,
+      "value_bits": 1132396543
+    },
+    {
+      "db_bits": 3212836864,
+      "byte": 252,
+      "value_bits": 1132223006
+    },
+    {
+      "db_bits": 3240099840,
+      "byte": 228,
+      "value_bits": 1130661167
+    },
+    {
+      "db_bits": 3259498496,
+      "byte": 122,
+      "value_bits": 1123365847
+    },
+    {
+      "db_bits": 3267402138,
+      "byte": 0,
+      "value_bits": 0
+    }
+  ],
+  "gain": [
+    {
+      "base_bits": 1082130432,
+      "values_bits": [],
+      "gain_bits": 0
+    },
+    {
+      "base_bits": 1082130432,
+      "values_bits": [
+        0
+      ],
+      "gain_bits": 3267402138
+    },
+    {
+      "base_bits": 1082130432,
+      "values_bits": [
+        1132396544
+      ],
+      "gain_bits": 0
+    },
+    {
+      "base_bits": 1082130432,
+      "values_bits": [
+        1124007936
+      ],
+      "gain_bits": 3259013530
+    },
+    {
+      "base_bits": 1082130432,
+      "values_bits": [
+        1120403456,
+        1128808448
+      ],
+      "gain_bits": 3263515014
+    },
+    {
+      "base_bits": 1082130432,
+      "values_bits": [
+        3127463652
+      ],
+      "gain_bits": 3267402182
+    },
+    {
+      "base_bits": 0,
+      "values_bits": [],
+      "gain_bits": 0
+    },
+    {
+      "base_bits": 0,
+      "values_bits": [
+        0
+      ],
+      "gain_bits": 3267402138
+    },
+    {
+      "base_bits": 0,
+      "values_bits": [
+        1132396544
+      ],
+      "gain_bits": 0
+    },
+    {
+      "base_bits": 0,
+      "values_bits": [
+        1124007936
+      ],
+      "gain_bits": 3259013530
+    },
+    {
+      "base_bits": 0,
+      "values_bits": [
+        1120403456,
+        1128808448
+      ],
+      "gain_bits": 3263515014
+    },
+    {
+      "base_bits": 0,
+      "values_bits": [
+        3127463652
+      ],
+      "gain_bits": 3267402182
+    },
+    {
+      "base_bits": 3240099840,
+      "values_bits": [],
+      "gain_bits": 3240099840
+    },
+    {
+      "base_bits": 3240099840,
+      "values_bits": [
+        0
+      ],
+      "gain_bits": 3267402138
+    },
+    {
+      "base_bits": 3240099840,
+      "values_bits": [
+        1132396544
+      ],
+      "gain_bits": 3240099840
+    },
+    {
+      "base_bits": 3240099840,
+      "values_bits": [
+        1124007936
+      ],
+      "gain_bits": 3260324250
+    },
+    {
+      "base_bits": 3240099840,
+      "values_bits": [
+        1120403456,
+        1128808448
+      ],
+      "gain_bits": 3263918661
+    },
+    {
+      "base_bits": 3240099840,
+      "values_bits": [
+        3127463652
+      ],
+      "gain_bits": 3267402177
+    },
+    {
+      "base_bits": 3267887104,
+      "values_bits": [],
+      "gain_bits": 3267887104
+    },
+    {
+      "base_bits": 3267887104,
+      "values_bits": [
+        0
+      ],
+      "gain_bits": 3267402138
+    },
+    {
+      "base_bits": 3267887104,
+      "values_bits": [
+        1132396544
+      ],
+      "gain_bits": 3267887104
+    },
+    {
+      "base_bits": 3267887104,
+      "values_bits": [
+        1124007936
+      ],
+      "gain_bits": 3267644621
+    },
+    {
+      "base_bits": 3267887104,
+      "values_bits": [
+        1120403456,
+        1128808448
+      ],
+      "gain_bits": 3267551487
+    },
+    {
+      "base_bits": 3267887104,
+      "values_bits": [
+        3127463652
+      ],
+      "gain_bits": 3267402136
+    }
+  ]
+}

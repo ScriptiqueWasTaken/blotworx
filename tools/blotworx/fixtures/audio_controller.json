@@ -1,0 +1,282 @@
+{
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "scope": "Bounded admission and position-copy instructions; supplied physics boundaries, not a runtime audio capture",
+  "admission": [
+    {
+      "condition": -1,
+      "paint": null,
+      "admitted": true,
+      "instructions": 7
+    },
+    {
+      "condition": -1,
+      "paint": 0,
+      "admitted": false,
+      "instructions": 14
+    },
+    {
+      "condition": -1,
+      "paint": 1,
+      "admitted": false,
+      "instructions": 14
+    },
+    {
+      "condition": -1,
+      "paint": 255,
+      "admitted": false,
+      "instructions": 14
+    },
+    {
+      "condition": 0,
+      "paint": null,
+      "admitted": true,
+      "instructions": 3
+    },
+    {
+      "condition": 0,
+      "paint": 0,
+      "admitted": true,
+      "instructions": 3
+    },
+    {
+      "condition": 0,
+      "paint": 1,
+      "admitted": true,
+      "instructions": 3
+    },
+    {
+      "condition": 0,
+      "paint": 255,
+      "admitted": true,
+      "instructions": 3
+    },
+    {
+      "condition": 1,
+      "paint": null,
+      "admitted": true,
+      "instructions": 7
+    },
+    {
+      "condition": 1,
+      "paint": 0,
+      "admitted": false,
+      "instructions": 18
+    },
+    {
+      "condition": 1,
+      "paint": 1,
+      "admitted": true,
+      "instructions": 16
+    },
+    {
+      "condition": 1,
+      "paint": 255,
+      "admitted": true,
+      "instructions": 16
+    },
+    {
+      "condition": 2,
+      "paint": null,
+      "admitted": true,
+      "instructions": 7
+    },
+    {
+      "condition": 2,
+      "paint": 0,
+      "admitted": true,
+      "instructions": 20
+    },
+    {
+      "condition": 2,
+      "paint": 1,
+      "admitted": false,
+      "instructions": 19
+    },
+    {
+      "condition": 2,
+      "paint": 255,
+      "admitted": false,
+      "instructions": 19
+    },
+    {
+      "condition": 3,
+      "paint": null,
+      "admitted": true,
+      "instructions": 7
+    },
+    {
+      "condition": 3,
+      "paint": 0,
+      "admitted": false,
+      "instructions": 14
+    },
+    {
+      "condition": 3,
+      "paint": 1,
+      "admitted": false,
+      "instructions": 14
+    },
+    {
+      "condition": 3,
+      "paint": 255,
+      "admitted": false,
+      "instructions": 14
+    }
+  ],
+  "positions": [
+    {
+      "input": [
+        [
+          1.0,
+          2.0,
+          3.0,
+          0.0
+        ]
+      ],
+      "bits": [
+        [
+          3212836864,
+          1073741824,
+          1077936128
+        ]
+      ],
+      "instructions": 12
+    },
+    {
+      "input": [
+        [
+          1.0,
+          2.0,
+          3.0,
+          0.0
+        ],
+        [
+          1.0,
+          2.0,
+          3.0,
+          0.0
+        ]
+      ],
+      "bits": [
+        [
+          3212836864,
+          1073741824,
+          1077936128
+        ],
+        [
+          3212836864,
+          1073741824,
+          1077936128
+        ]
+      ],
+      "instructions": 22
+    },
+    {
+      "input": [
+        [
+          -0.0,
+          -2.0,
+          7.0,
+          0.0
+        ],
+        [
+          16.5,
+          0.0,
+          -4.0,
+          0.0
+        ]
+      ],
+      "bits": [
+        [
+          0,
+          3221225472,
+          1088421888
+        ],
+        [
+          3246653440,
+          0,
+          3229614080
+        ]
+      ],
+      "instructions": 22
+    }
+  ],
+  "dynamic": [
+    {
+      "authored": false,
+      "condition": -1,
+      "dynamic": true,
+      "property_reads": 1,
+      "instructions": 17
+    },
+    {
+      "authored": false,
+      "condition": 0,
+      "dynamic": false,
+      "property_reads": 1,
+      "instructions": 15
+    },
+    {
+      "authored": false,
+      "condition": 1,
+      "dynamic": true,
+      "property_reads": 1,
+      "instructions": 17
+    },
+    {
+      "authored": false,
+      "condition": 2,
+      "dynamic": true,
+      "property_reads": 1,
+      "instructions": 17
+    },
+    {
+      "authored": false,
+      "condition": 3,
+      "dynamic": true,
+      "property_reads": 1,
+      "instructions": 17
+    },
+    {
+      "authored": true,
+      "condition": -1,
+      "dynamic": true,
+      "property_reads": 0,
+      "instructions": 3
+    },
+    {
+      "authored": true,
+      "condition": 0,
+      "dynamic": true,
+      "property_reads": 0,
+      "instructions": 3
+    },
+    {
+      "authored": true,
+      "condition": 1,
+      "dynamic": true,
+      "property_reads": 0,
+      "instructions": 3
+    },
+    {
+      "authored": true,
+      "condition": 2,
+      "dynamic": true,
+      "property_reads": 0,
+      "instructions": 3
+    },
+    {
+      "authored": true,
+      "condition": 3,
+      "dynamic": true,
+      "property_reads": 0,
+      "instructions": 3
+    }
+  ],
+  "empty_position_bits": [
+    3323740160,
+    3323740160,
+    3323740160
+  ],
+  "instructions": 391
+}

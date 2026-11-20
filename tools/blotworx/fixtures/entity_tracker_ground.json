@@ -1,0 +1,922 @@
+{
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "range": [
+    "319444",
+    "3197fc"
+  ],
+  "scope": "Instruction body; external property, motion and entity getters supplied by fixture",
+  "cases": [
+    {
+      "name": "stationary",
+      "initial": {
+        "ground_target": 0.7,
+        "height": 0.7,
+        "offset_y": 0.7,
+        "moving_blend": 0.1,
+        "follow_boost": 0.0,
+        "eligible": true,
+        "follow_jump": false,
+        "previous_eligible": false,
+        "moving_surface": false,
+        "inactive_held": false
+      },
+      "motion": {
+        "state": 0,
+        "support": 2,
+        "distance": 0.0,
+        "surface_velocity_y": 0.0,
+        "ground_point": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "maximum_speed": 5.0,
+        "inactive": false
+      },
+      "tuning": {
+        "up": 0.1,
+        "down": 0.2,
+        "jump_up": 0.2,
+        "moving_up": 0.25
+      },
+      "point": [
+        0.0,
+        0.7,
+        0.0
+      ],
+      "target_position": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "ground_states": [],
+      "follow_threshold": 0.5,
+      "follow_scale": 2.0,
+      "follow_blend": 3.0,
+      "expected": {
+        "float_bits": {
+          "ground_target": 1060320051,
+          "height": 1060320051,
+          "offset_y": 1060320051,
+          "moving_blend": 1036831949,
+          "follow_boost": 0
+        },
+        "flags": {
+          "eligible": true,
+          "follow_jump": false,
+          "previous_eligible": true,
+          "moving_surface": false,
+          "inactive_held": false
+        },
+        "point_bits": [
+          0,
+          1060320051,
+          0
+        ],
+        "steps": 131
+      }
+    },
+    {
+      "name": "steady",
+      "initial": {
+        "ground_target": 0.7,
+        "height": 0.7,
+        "offset_y": 0.7,
+        "moving_blend": 0.1,
+        "follow_boost": 0.0,
+        "eligible": true,
+        "follow_jump": false,
+        "previous_eligible": true,
+        "moving_surface": false,
+        "inactive_held": false
+      },
+      "motion": {
+        "state": 0,
+        "support": 2,
+        "distance": 0.0,
+        "surface_velocity_y": 0.0,
+        "ground_point": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "maximum_speed": 5.0,
+        "inactive": false
+      },
+      "tuning": {
+        "up": 0.1,
+        "down": 0.2,
+        "jump_up": 0.2,
+        "moving_up": 0.25
+      },
+      "point": [
+        0.0,
+        0.7,
+        0.0
+      ],
+      "target_position": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "ground_states": [],
+      "follow_threshold": 0.5,
+      "follow_scale": 2.0,
+      "follow_blend": 3.0,
+      "expected": {
+        "float_bits": {
+          "ground_target": 1060320051,
+          "height": 1060320051,
+          "offset_y": 1060320051,
+          "moving_blend": 1036831949,
+          "follow_boost": 0
+        },
+        "flags": {
+          "eligible": true,
+          "follow_jump": false,
+          "previous_eligible": true,
+          "moving_surface": false,
+          "inactive_held": false
+        },
+        "point_bits": [
+          0,
+          1060320051,
+          0
+        ],
+        "steps": 134
+      }
+    },
+    {
+      "name": "moving_up",
+      "initial": {
+        "ground_target": 0.7,
+        "height": 0.7,
+        "offset_y": 0.7,
+        "moving_blend": 0.1,
+        "follow_boost": 0.0,
+        "eligible": true,
+        "follow_jump": false,
+        "previous_eligible": false,
+        "moving_surface": false,
+        "inactive_held": false
+      },
+      "motion": {
+        "state": 0,
+        "support": 2,
+        "distance": 0.0,
+        "surface_velocity_y": 2.0,
+        "ground_point": [
+          0.0,
+          2.0,
+          0.0
+        ],
+        "maximum_speed": 5.0,
+        "inactive": false
+      },
+      "tuning": {
+        "up": 0.1,
+        "down": 0.2,
+        "jump_up": 0.2,
+        "moving_up": 0.25
+      },
+      "point": [
+        0.0,
+        2.7,
+        0.0
+      ],
+      "target_position": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "ground_states": [],
+      "follow_threshold": 0.5,
+      "follow_scale": 2.0,
+      "follow_blend": 3.0,
+      "expected": {
+        "float_bits": {
+          "ground_target": 1076677837,
+          "height": 1067660083,
+          "offset_y": 1060320051,
+          "moving_blend": 1038845215,
+          "follow_boost": 1077936128
+        },
+        "flags": {
+          "eligible": true,
+          "follow_jump": false,
+          "previous_eligible": true,
+          "moving_surface": true,
+          "inactive_held": false
+        },
+        "point_bits": [
+          0,
+          1067660083,
+          0
+        ],
+        "steps": 144
+      }
+    },
+    {
+      "name": "moving_down",
+      "initial": {
+        "ground_target": 0.7,
+        "height": 0.7,
+        "offset_y": 0.7,
+        "moving_blend": 0.1,
+        "follow_boost": 0.0,
+        "eligible": true,
+        "follow_jump": false,
+        "previous_eligible": true,
+        "moving_surface": true,
+        "inactive_held": false
+      },
+      "motion": {
+        "state": 0,
+        "support": 2,
+        "distance": 0.0,
+        "surface_velocity_y": -2.0,
+        "ground_point": [
+          0.0,
+          -2.0,
+          0.0
+        ],
+        "maximum_speed": 5.0,
+        "inactive": false
+      },
+      "tuning": {
+        "up": 0.1,
+        "down": 0.2,
+        "jump_up": 0.2,
+        "moving_up": 0.25
+      },
+      "point": [
+        0.0,
+        -1.3,
+        0.0
+      ],
+      "target_position": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "ground_states": [],
+      "follow_threshold": 0.5,
+      "follow_scale": 2.0,
+      "follow_blend": 3.0,
+      "expected": {
+        "float_bits": {
+          "ground_target": 3215353446,
+          "height": 1055957974,
+          "offset_y": 1060320051,
+          "moving_blend": 1038845215,
+          "follow_boost": 0
+        },
+        "flags": {
+          "eligible": true,
+          "follow_jump": false,
+          "previous_eligible": true,
+          "moving_surface": true,
+          "inactive_held": false
+        },
+        "point_bits": [
+          0,
+          1055957974,
+          0
+        ],
+        "steps": 135
+      }
+    },
+    {
+      "name": "jump",
+      "initial": {
+        "ground_target": 0.7,
+        "height": 0.7,
+        "offset_y": 0.7,
+        "moving_blend": 0.1,
+        "follow_boost": 0.0,
+        "eligible": true,
+        "follow_jump": true,
+        "previous_eligible": false,
+        "moving_surface": false,
+        "inactive_held": false
+      },
+      "motion": {
+        "state": 1,
+        "support": 0,
+        "distance": 2.0,
+        "surface_velocity_y": 0.0,
+        "ground_point": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "maximum_speed": 5.0,
+        "inactive": false
+      },
+      "tuning": {
+        "up": 0.1,
+        "down": 0.2,
+        "jump_up": 0.2,
+        "moving_up": 0.25
+      },
+      "point": [
+        0.0,
+        2.4,
+        0.0
+      ],
+      "target_position": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "ground_states": [],
+      "follow_threshold": 0.5,
+      "follow_scale": 2.0,
+      "follow_blend": 3.0,
+      "expected": {
+        "float_bits": {
+          "ground_target": 1060320051,
+          "height": 1068265741,
+          "offset_y": 1060320051,
+          "moving_blend": 1036831949,
+          "follow_boost": 1069849511
+        },
+        "flags": {
+          "eligible": false,
+          "follow_jump": true,
+          "previous_eligible": false,
+          "moving_surface": false,
+          "inactive_held": false
+        },
+        "point_bits": [
+          0,
+          1068265741,
+          0
+        ],
+        "steps": 128
+      }
+    },
+    {
+      "name": "fall",
+      "initial": {
+        "ground_target": 0.7,
+        "height": 0.7,
+        "offset_y": 0.7,
+        "moving_blend": 0.1,
+        "follow_boost": 0.0,
+        "eligible": true,
+        "follow_jump": false,
+        "previous_eligible": false,
+        "moving_surface": false,
+        "inactive_held": false
+      },
+      "motion": {
+        "state": 2,
+        "support": 0,
+        "distance": 1.0,
+        "surface_velocity_y": 0.0,
+        "ground_point": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "maximum_speed": 5.0,
+        "inactive": false
+      },
+      "tuning": {
+        "up": 0.1,
+        "down": 0.2,
+        "jump_up": 0.2,
+        "moving_up": 0.25
+      },
+      "point": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "target_position": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "ground_states": [],
+      "follow_threshold": 0.5,
+      "follow_scale": 2.0,
+      "follow_blend": 3.0,
+      "expected": {
+        "float_bits": {
+          "ground_target": 3197737370,
+          "height": 1052266987,
+          "offset_y": 1060320051,
+          "moving_blend": 1036831949,
+          "follow_boost": 0
+        },
+        "flags": {
+          "eligible": false,
+          "follow_jump": false,
+          "previous_eligible": false,
+          "moving_surface": false,
+          "inactive_held": false
+        },
+        "point_bits": [
+          0,
+          1052266987,
+          0
+        ],
+        "steps": 118
+      }
+    },
+    {
+      "name": "inactive",
+      "initial": {
+        "ground_target": 0.7,
+        "height": 0.7,
+        "offset_y": 0.7,
+        "moving_blend": 0.1,
+        "follow_boost": 0.0,
+        "eligible": true,
+        "follow_jump": false,
+        "previous_eligible": false,
+        "moving_surface": false,
+        "inactive_held": false
+      },
+      "motion": {
+        "state": 0,
+        "support": 2,
+        "distance": 0.0,
+        "surface_velocity_y": 0.0,
+        "ground_point": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "maximum_speed": 5.0,
+        "inactive": true
+      },
+      "tuning": {
+        "up": 0.1,
+        "down": 0.2,
+        "jump_up": 0.2,
+        "moving_up": 0.25
+      },
+      "point": [
+        0.0,
+        1.7,
+        0.0
+      ],
+      "target_position": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "ground_states": [],
+      "follow_threshold": 0.5,
+      "follow_scale": 2.0,
+      "follow_blend": 3.0,
+      "expected": {
+        "float_bits": {
+          "ground_target": 1071225242,
+          "height": 1062184186,
+          "offset_y": 1060320051,
+          "moving_blend": 1036831949,
+          "follow_boost": 1038323258
+        },
+        "flags": {
+          "eligible": true,
+          "follow_jump": false,
+          "previous_eligible": true,
+          "moving_surface": false,
+          "inactive_held": true
+        },
+        "point_bits": [
+          0,
+          1062184186,
+          0
+        ],
+        "steps": 143
+      }
+    },
+    {
+      "name": "inactive_release",
+      "initial": {
+        "ground_target": 0.7,
+        "height": 0.7,
+        "offset_y": 0.7,
+        "moving_blend": 0.1,
+        "follow_boost": 0.0,
+        "eligible": true,
+        "follow_jump": false,
+        "previous_eligible": true,
+        "moving_surface": false,
+        "inactive_held": true
+      },
+      "motion": {
+        "state": 0,
+        "support": 2,
+        "distance": 0.0,
+        "surface_velocity_y": 0.0,
+        "ground_point": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "maximum_speed": 5.0,
+        "inactive": false
+      },
+      "tuning": {
+        "up": 0.1,
+        "down": 0.2,
+        "jump_up": 0.2,
+        "moving_up": 0.25
+      },
+      "point": [
+        0.0,
+        1.7,
+        0.0
+      ],
+      "target_position": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "ground_states": [],
+      "follow_threshold": 0.5,
+      "follow_scale": 2.0,
+      "follow_blend": 3.0,
+      "expected": {
+        "float_bits": {
+          "ground_target": 1071225242,
+          "height": 1062184186,
+          "offset_y": 1060320051,
+          "moving_blend": 1036831949,
+          "follow_boost": 1038323258
+        },
+        "flags": {
+          "eligible": true,
+          "follow_jump": false,
+          "previous_eligible": true,
+          "moving_surface": false,
+          "inactive_held": false
+        },
+        "point_bits": [
+          0,
+          1062184186,
+          0
+        ],
+        "steps": 149
+      }
+    },
+    {
+      "name": "zero_speed",
+      "initial": {
+        "ground_target": 0.7,
+        "height": 0.7,
+        "offset_y": 0.7,
+        "moving_blend": 0.1,
+        "follow_boost": 0.0,
+        "eligible": true,
+        "follow_jump": false,
+        "previous_eligible": false,
+        "moving_surface": false,
+        "inactive_held": false
+      },
+      "motion": {
+        "state": 0,
+        "support": 2,
+        "distance": 0.0,
+        "surface_velocity_y": 0.0,
+        "ground_point": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "maximum_speed": 0.0,
+        "inactive": false
+      },
+      "tuning": {
+        "up": 0.1,
+        "down": 0.2,
+        "jump_up": 0.2,
+        "moving_up": 0.25
+      },
+      "point": [
+        0.0,
+        1.7,
+        0.0
+      ],
+      "target_position": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "ground_states": [],
+      "follow_threshold": 0.5,
+      "follow_scale": 2.0,
+      "follow_blend": 3.0,
+      "expected": {
+        "float_bits": {
+          "ground_target": 1071225242,
+          "height": 1062184186,
+          "offset_y": 1060320051,
+          "moving_blend": 1036831949,
+          "follow_boost": 1038323258
+        },
+        "flags": {
+          "eligible": true,
+          "follow_jump": false,
+          "previous_eligible": true,
+          "moving_surface": false,
+          "inactive_held": true
+        },
+        "point_bits": [
+          0,
+          1062184186,
+          0
+        ],
+        "steps": 136
+      }
+    },
+    {
+      "name": "special_ground_state",
+      "initial": {
+        "ground_target": 0.7,
+        "height": 0.7,
+        "offset_y": 0.7,
+        "moving_blend": 0.1,
+        "follow_boost": 0.0,
+        "eligible": true,
+        "follow_jump": false,
+        "previous_eligible": false,
+        "moving_surface": false,
+        "inactive_held": false
+      },
+      "motion": {
+        "state": 7,
+        "support": 0,
+        "distance": 2.0,
+        "surface_velocity_y": 0.0,
+        "ground_point": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "maximum_speed": 5.0,
+        "inactive": false
+      },
+      "tuning": {
+        "up": 0.1,
+        "down": 0.2,
+        "jump_up": 0.2,
+        "moving_up": 0.25
+      },
+      "point": [
+        0.0,
+        2.7,
+        0.0
+      ],
+      "target_position": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "ground_states": [
+        7
+      ],
+      "follow_threshold": 0.5,
+      "follow_scale": 2.0,
+      "follow_blend": 3.0,
+      "expected": {
+        "float_bits": {
+          "ground_target": 1076677837,
+          "height": 1067030938,
+          "offset_y": 1060320051,
+          "moving_blend": 1036831949,
+          "follow_boost": 1077936128
+        },
+        "flags": {
+          "eligible": true,
+          "follow_jump": false,
+          "previous_eligible": false,
+          "moving_surface": false,
+          "inactive_held": false
+        },
+        "point_bits": [
+          0,
+          1067030938,
+          0
+        ],
+        "steps": 140
+      }
+    },
+    {
+      "name": "moving_airborne",
+      "initial": {
+        "ground_target": 0.7,
+        "height": 0.7,
+        "offset_y": 0.7,
+        "moving_blend": 0.1,
+        "follow_boost": 0.0,
+        "eligible": true,
+        "follow_jump": false,
+        "previous_eligible": false,
+        "moving_surface": true,
+        "inactive_held": false
+      },
+      "motion": {
+        "state": 2,
+        "support": 0,
+        "distance": 1.0,
+        "surface_velocity_y": 1.0,
+        "ground_point": [
+          0.0,
+          3.0,
+          0.0
+        ],
+        "maximum_speed": 5.0,
+        "inactive": false
+      },
+      "tuning": {
+        "up": 0.1,
+        "down": 0.2,
+        "jump_up": 0.2,
+        "moving_up": 0.25
+      },
+      "point": [
+        0.0,
+        2.0,
+        0.0
+      ],
+      "target_position": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "ground_states": [],
+      "follow_threshold": 0.5,
+      "follow_scale": 2.0,
+      "follow_blend": 3.0,
+      "expected": {
+        "float_bits": {
+          "ground_target": 1080872141,
+          "height": 1065781221,
+          "offset_y": 1060320051,
+          "moving_blend": 1038845215,
+          "follow_boost": 1055458385
+        },
+        "flags": {
+          "eligible": false,
+          "follow_jump": false,
+          "previous_eligible": false,
+          "moving_surface": true,
+          "inactive_held": false
+        },
+        "point_bits": [
+          0,
+          1065781221,
+          0
+        ],
+        "steps": 141
+      }
+    },
+    {
+      "name": "large_follow",
+      "initial": {
+        "ground_target": 0.7,
+        "height": 0.7,
+        "offset_y": 0.7,
+        "moving_blend": 0.1,
+        "follow_boost": 0.0,
+        "eligible": true,
+        "follow_jump": false,
+        "previous_eligible": false,
+        "moving_surface": false,
+        "inactive_held": false
+      },
+      "motion": {
+        "state": 1,
+        "support": 0,
+        "distance": 4.0,
+        "surface_velocity_y": 0.0,
+        "ground_point": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "maximum_speed": 5.0,
+        "inactive": false
+      },
+      "tuning": {
+        "up": 0.1,
+        "down": 0.2,
+        "jump_up": 0.2,
+        "moving_up": 0.25
+      },
+      "point": [
+        0.0,
+        10.0,
+        0.0
+      ],
+      "target_position": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "ground_states": [],
+      "follow_threshold": 0.5,
+      "follow_scale": 2.0,
+      "follow_blend": 3.0,
+      "expected": {
+        "float_bits": {
+          "ground_target": 1060320051,
+          "height": 1075671204,
+          "offset_y": 1060320051,
+          "moving_blend": 1036831949,
+          "follow_boost": 1099746509
+        },
+        "flags": {
+          "eligible": false,
+          "follow_jump": false,
+          "previous_eligible": false,
+          "moving_surface": false,
+          "inactive_held": false
+        },
+        "point_bits": [
+          0,
+          1075671204,
+          0
+        ],
+        "steps": 127
+      }
+    },
+    {
+      "name": "zero_follow_blend",
+      "initial": {
+        "ground_target": 0.7,
+        "height": 0.7,
+        "offset_y": 0.7,
+        "moving_blend": 0.1,
+        "follow_boost": 0.0,
+        "eligible": true,
+        "follow_jump": true,
+        "previous_eligible": false,
+        "moving_surface": false,
+        "inactive_held": false
+      },
+      "motion": {
+        "state": 1,
+        "support": 0,
+        "distance": 2.0,
+        "surface_velocity_y": 0.0,
+        "ground_point": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "maximum_speed": 5.0,
+        "inactive": false
+      },
+      "tuning": {
+        "up": 0.1,
+        "down": 0.2,
+        "jump_up": 0.2,
+        "moving_up": 0.25
+      },
+      "point": [
+        0.0,
+        2.4,
+        0.0
+      ],
+      "target_position": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "ground_states": [],
+      "follow_threshold": 0.5,
+      "follow_scale": 2.0,
+      "follow_blend": 0.0,
+      "expected": {
+        "float_bits": {
+          "ground_target": 1060320051,
+          "height": 1069715293,
+          "offset_y": 1060320051,
+          "moving_blend": 1036831949,
+          "follow_boost": 1075419546
+        },
+        "flags": {
+          "eligible": false,
+          "follow_jump": true,
+          "previous_eligible": false,
+          "moving_surface": false,
+          "inactive_held": false
+        },
+        "point_bits": [
+          0,
+          1069715293,
+          0
+        ],
+        "steps": 124
+      }
+    }
+  ]
+}

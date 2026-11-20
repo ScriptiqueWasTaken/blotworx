@@ -1,0 +1,467 @@
+{
+  "capture_sha256": "61d0e61eb390343afa9f81124aedcd83b44011cc8ec0402dc27d874f87764606",
+  "dol_sha256": "994779fa2e276983efdb50f02c406568f285a82558cb5d54bbdf74651a98a920",
+  "function": "0x8021ebdc",
+  "scope": "Generator-transition clock arithmetic with debugger-observed f1 inputs. This capture did not record the generator identity or blend durations; do not infer graph scheduling, node identity or blend-stage parity. Debugger pauses invalidate performance comparisons.",
+  "samples": [
+    {
+      "time": 0.0,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333333507180214,
+      "dt_register_bits": "3FA1111120000000",
+      "fpscr": "84000004",
+      "stage": 0,
+      "target_state": 0
+    },
+    {
+      "time": 0.03333333507180214,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333333507180214,
+      "dt_register_bits": "3FA1111120000000",
+      "fpscr": "84000004",
+      "stage": 0,
+      "target_state": 0
+    },
+    {
+      "time": 0.06666667014360428,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333333879709244,
+      "dt_register_bits": "3FA1111140000000",
+      "fpscr": "84000004",
+      "stage": 0,
+      "target_state": 0
+    },
+    {
+      "time": 0.10000000894069672,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333333134651184,
+      "dt_register_bits": "3FA1111100000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 0.13333334028720856,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333333134651184,
+      "dt_register_bits": "3FA1111100000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 0.1666666716337204,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333333134651184,
+      "dt_register_bits": "3FA1111100000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 0.20000000298023224,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333331644535065,
+      "dt_register_bits": "3FA1111080000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 0.23333331942558289,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333333134651184,
+      "dt_register_bits": "3FA1111100000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 0.2666666507720947,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333333134651184,
+      "dt_register_bits": "3FA1111100000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 0.29999998211860657,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333333134651184,
+      "dt_register_bits": "3FA1111100000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 0.3333333134651184,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333333134651184,
+      "dt_register_bits": "3FA1111100000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 0.36666664481163025,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333333134651184,
+      "dt_register_bits": "3FA1111100000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 0.3999999761581421,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333333134651184,
+      "dt_register_bits": "3FA1111100000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 0.43333330750465393,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333333134651184,
+      "dt_register_bits": "3FA1111100000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 0.46666663885116577,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333330154418945,
+      "dt_register_bits": "3FA1111000000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 0.4999999403953552,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333336114883423,
+      "dt_register_bits": "3FA1111200000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 0.5333333015441895,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333336114883423,
+      "dt_register_bits": "3FA1111200000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 0.5666666626930237,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333336114883423,
+      "dt_register_bits": "3FA1111200000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 0.6000000238418579,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333336114883423,
+      "dt_register_bits": "3FA1111200000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 0.6333333849906921,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333336114883423,
+      "dt_register_bits": "3FA1111200000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 0.6666667461395264,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333336114883423,
+      "dt_register_bits": "3FA1111200000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 0.7000001072883606,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333336114883423,
+      "dt_register_bits": "3FA1111200000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 0.7333334684371948,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333336114883423,
+      "dt_register_bits": "3FA1111200000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 0.766666829586029,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333336114883423,
+      "dt_register_bits": "3FA1111200000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 0.8000001907348633,
+      "duration": 1.6666666269302368,
+      "dt": 0.033333420753479004,
+      "dt_register_bits": "3FA1111400000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 0.8333336114883423,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333336114883423,
+      "dt_register_bits": "3FA1111200000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 0.8666669726371765,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333330154418945,
+      "dt_register_bits": "3FA1111000000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 0.900000274181366,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333330154418945,
+      "dt_register_bits": "3FA1111000000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 0.9333335757255554,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333330154418945,
+      "dt_register_bits": "3FA1111000000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 0.9666668772697449,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333336114883423,
+      "dt_register_bits": "3FA1111200000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 1.000000238418579,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333330154418945,
+      "dt_register_bits": "3FA1111000000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 1.0333335399627686,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333330154418945,
+      "dt_register_bits": "3FA1111000000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 1.066666841506958,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333330154418945,
+      "dt_register_bits": "3FA1111000000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 1.1000001430511475,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333330154418945,
+      "dt_register_bits": "3FA1111000000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 1.133333444595337,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333330154418945,
+      "dt_register_bits": "3FA1111000000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 1.1666667461395264,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333330154418945,
+      "dt_register_bits": "3FA1111000000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 1.2000000476837158,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333330154418945,
+      "dt_register_bits": "3FA1111000000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 1.2333333492279053,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333330154418945,
+      "dt_register_bits": "3FA1111000000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 1.2666666507720947,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333330154418945,
+      "dt_register_bits": "3FA1111000000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 1.2999999523162842,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333330154418945,
+      "dt_register_bits": "3FA1111000000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 1.3333332538604736,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333330154418945,
+      "dt_register_bits": "3FA1111000000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 1.366666555404663,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333330154418945,
+      "dt_register_bits": "3FA1111000000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 1.3999998569488525,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333330154418945,
+      "dt_register_bits": "3FA1111000000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 1.433333158493042,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333330154418945,
+      "dt_register_bits": "3FA1111000000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 1.4666664600372314,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333330154418945,
+      "dt_register_bits": "3FA1111000000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 1.499999761581421,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333330154418945,
+      "dt_register_bits": "3FA1111000000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 1.5333330631256104,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333330154418945,
+      "dt_register_bits": "3FA1111000000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 1.5666663646697998,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333330154418945,
+      "dt_register_bits": "3FA1111000000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 1.5999996662139893,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333330154418945,
+      "dt_register_bits": "3FA1111000000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 1.6333329677581787,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333330154418945,
+      "dt_register_bits": "3FA1111000000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    },
+    {
+      "time": 1.6666662693023682,
+      "duration": 1.6666666269302368,
+      "dt": 0.03333330154418945,
+      "dt_register_bits": "3FA1111000000000",
+      "fpscr": "84000004",
+      "stage": 1,
+      "target_state": 0
+    }
+  ]
+}

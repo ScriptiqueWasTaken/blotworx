@@ -1,0 +1,64 @@
+{
+  "scope": "Original dynamic normalization on selected owned sector payload spans.\nOffset16 follows the existing source-sector parser; the original caller's\npayload handoff is not yet verified. Fixture stores identities/hashes only,\nnot extracted game bytes. No source file is modified.\n",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "dol_sha256": "994779fa2e276983efdb50f02c406568f285a82558cb5d54bbdf74651a98a920",
+  "cases": [
+    {
+      "path": "sectors/gv_main_gremlinvillage_ai_ai_path_database_01/sector_1008.prelnk.obj",
+      "source_sha256": "9dac8890a626fb217ddf903e04918753ff4d6f196fd377cfeff6b8df42611a41",
+      "offset": 16,
+      "payload": {
+        "node_count": 93,
+        "edge_count": 356,
+        "points": 8,
+        "edges": 3356,
+        "external": null,
+        "external_count": 0,
+        "field38": {
+          "kind": "scalar",
+          "value": 1082130432
+        },
+        "sha256": "bc460cf7ea5d592806f96116c13b85feafde0a2ae9cd2e3b05bcc1ebad28d4e8"
+      },
+      "instructions": 17063
+    },
+    {
+      "path": "sectors/dbc_main_1st_dbc_shared_1st_ai_path_database_01/sector_1001.prelnk.obj",
+      "source_sha256": "98cf6753892ec9087f8628e8ec9703c5486911ca223537228725c496f6eb31f8",
+      "offset": 16,
+      "payload": {
+        "node_count": 46,
+        "edge_count": 134,
+        "points": 8,
+        "edges": 1664,
+        "external": 584,
+        "external_count": 30,
+        "field38": {
+          "kind": "scalar",
+          "value": 1082130432
+        },
+        "sha256": "c0f25348c5e5e9884136483c6634d3ed9e0ca648a04aca7a540c30dde0e5bcb5"
+      },
+      "instructions": 7354
+    },
+    {
+      "path": "sectors/building_standards_building_standards_ai_path_database_01/sector_1000.prelnk.obj",
+      "source_sha256": "9fc71306bc7bf320f1ba015faf164234a858535eff9730459924e562434c4cd4",
+      "offset": 16,
+      "payload": {
+        "node_count": 1049,
+        "edge_count": 5308,
+        "points": 8,
+        "edges": 37772,
+        "external": null,
+        "external_count": 0,
+        "field38": {
+          "kind": "scalar",
+          "value": 1082130432
+        },
+        "sha256": "fe844fb91872ea0b777b8296561be753034e13d92976390bc4270f8cbc840b9f"
+      },
+      "instructions": 231759
+    }
+  ]
+}

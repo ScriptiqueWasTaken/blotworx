@@ -1,0 +1,170 @@
+{
+  "pc_sha256": "80fdf5ea01fdde0e0e640bb0bade4b8af6c90686ed78f51473870b734b8056cb",
+  "code_sha256": "4506fc90c4c52c342daf103ebcf050c624e6dc145019e83ce5bc49547ffbcf49",
+  "function": "f0b480..f0b546",
+  "scope": "isolated native setter; UI fade clear and loading-throbber calls are explicit hosts",
+  "cases": [
+    {
+      "name": "inactive_still_clears_and_defers",
+      "elapsed": -1.0,
+      "duration": 2.0,
+      "request_duration": 0.8,
+      "no_hud": 1,
+      "reference": {
+        "out": false,
+        "forced": false,
+        "entering": false,
+        "no_hud": false,
+        "deferred": 1,
+        "elapsed_bits": 3212836864,
+        "duration_bits": 1073741824,
+        "calls": [
+          "clear_ui_fade",
+          "hide_loading_throbber"
+        ]
+      }
+    },
+    {
+      "name": "forced_out_rejects_after_other_owners",
+      "out": 1,
+      "forced": 1,
+      "elapsed": 0.4,
+      "duration": 1.0,
+      "request_duration": 2.0,
+      "no_hud": 1,
+      "reference": {
+        "out": true,
+        "forced": true,
+        "entering": false,
+        "no_hud": true,
+        "deferred": 0,
+        "elapsed_bits": 1053609165,
+        "duration_bits": 1065353216,
+        "calls": [
+          "clear_ui_fade",
+          "hide_loading_throbber"
+        ]
+      }
+    },
+    {
+      "name": "reverse_and_replace_duration",
+      "out": 1,
+      "elapsed": 0.4,
+      "duration": 1.0,
+      "request_duration": 2.0,
+      "reference": {
+        "out": false,
+        "forced": false,
+        "entering": true,
+        "no_hud": false,
+        "deferred": 1,
+        "elapsed_bits": 1070386381,
+        "duration_bits": 1073741824,
+        "calls": [
+          "clear_ui_fade",
+          "hide_loading_throbber"
+        ]
+      }
+    },
+    {
+      "name": "negative_duration_retains_previous",
+      "out": 1,
+      "elapsed": 0.4,
+      "duration": 2.0,
+      "request_duration": -1.0,
+      "reference": {
+        "out": false,
+        "forced": false,
+        "entering": true,
+        "no_hud": false,
+        "deferred": 1,
+        "elapsed_bits": 1070386381,
+        "duration_bits": 1073741824,
+        "calls": [
+          "clear_ui_fade",
+          "hide_loading_throbber"
+        ]
+      }
+    },
+    {
+      "name": "reverse_clamps_past_duration",
+      "out": 1,
+      "elapsed": 1.5,
+      "duration": 2.0,
+      "request_duration": 0.5,
+      "reference": {
+        "out": false,
+        "forced": false,
+        "entering": true,
+        "no_hud": false,
+        "deferred": 1,
+        "elapsed_bits": 0,
+        "duration_bits": 1056964608,
+        "calls": [
+          "clear_ui_fade",
+          "hide_loading_throbber"
+        ]
+      }
+    },
+    {
+      "name": "existing_delay_is_retained",
+      "elapsed": -1.0,
+      "duration": 2.0,
+      "request_duration": 0.8,
+      "deferred": 3,
+      "reference": {
+        "out": false,
+        "forced": false,
+        "entering": false,
+        "no_hud": false,
+        "deferred": 3,
+        "elapsed_bits": 3212836864,
+        "duration_bits": 1073741824,
+        "calls": [
+          "clear_ui_fade",
+          "hide_loading_throbber"
+        ]
+      }
+    },
+    {
+      "name": "no_hud_is_stored_while_inactive",
+      "elapsed": -1.0,
+      "duration": 2.0,
+      "request_duration": -1.0,
+      "request_no_hud": 1,
+      "reference": {
+        "out": false,
+        "forced": false,
+        "entering": false,
+        "no_hud": true,
+        "deferred": 1,
+        "elapsed_bits": 3212836864,
+        "duration_bits": 1073741824,
+        "calls": [
+          "clear_ui_fade",
+          "hide_loading_throbber"
+        ]
+      }
+    },
+    {
+      "name": "negative_elapsed_starts_at_zero",
+      "out": 1,
+      "elapsed": -1.0,
+      "duration": 2.0,
+      "request_duration": 1.0,
+      "reference": {
+        "out": false,
+        "forced": false,
+        "entering": true,
+        "no_hud": false,
+        "deferred": 1,
+        "elapsed_bits": 0,
+        "duration_bits": 1065353216,
+        "calls": [
+          "clear_ui_fade",
+          "hide_loading_throbber"
+        ]
+      }
+    }
+  ]
+}

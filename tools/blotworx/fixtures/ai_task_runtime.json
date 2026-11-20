@@ -1,0 +1,2736 @@
+{
+  "scope": "Execute EM1 common child-task install/update; concrete virtual callbacks supplied.\nDoes not execute navigation, behavior selection or original NPC trajectories.\n",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "cases": [
+    {
+      "input": {
+        "op": "install",
+        "child": 0,
+        "mode": 0,
+        "timer": 1050253722,
+        "wait": false,
+        "activate_mode": null
+      },
+      "trace": [
+        [
+          "activate",
+          2
+        ]
+      ],
+      "child": 2,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 1050253722,
+      "returned": null,
+      "instructions": 32
+    },
+    {
+      "input": {
+        "op": "install",
+        "child": 0,
+        "mode": 0,
+        "timer": 1050253722,
+        "wait": false,
+        "activate_mode": 9
+      },
+      "trace": [
+        [
+          "activate",
+          2
+        ]
+      ],
+      "child": 2,
+      "previous_kind": 17,
+      "mode": 9,
+      "timer": 1050253722,
+      "returned": null,
+      "instructions": 32
+    },
+    {
+      "input": {
+        "op": "install",
+        "child": 0,
+        "mode": 0,
+        "timer": 1050253722,
+        "wait": true,
+        "activate_mode": null
+      },
+      "trace": [
+        [
+          "activate",
+          2
+        ]
+      ],
+      "child": 2,
+      "previous_kind": 17,
+      "mode": 1,
+      "timer": 1050253722,
+      "returned": null,
+      "instructions": 34
+    },
+    {
+      "input": {
+        "op": "install",
+        "child": 0,
+        "mode": 0,
+        "timer": 1050253722,
+        "wait": true,
+        "activate_mode": 9
+      },
+      "trace": [
+        [
+          "activate",
+          2
+        ]
+      ],
+      "child": 2,
+      "previous_kind": 17,
+      "mode": 1,
+      "timer": 1050253722,
+      "returned": null,
+      "instructions": 34
+    },
+    {
+      "input": {
+        "op": "install",
+        "child": 0,
+        "mode": 1,
+        "timer": 1050253722,
+        "wait": false,
+        "activate_mode": null
+      },
+      "trace": [
+        [
+          "activate",
+          2
+        ]
+      ],
+      "child": 2,
+      "previous_kind": 17,
+      "mode": 1,
+      "timer": 1050253722,
+      "returned": null,
+      "instructions": 32
+    },
+    {
+      "input": {
+        "op": "install",
+        "child": 0,
+        "mode": 1,
+        "timer": 1050253722,
+        "wait": false,
+        "activate_mode": 9
+      },
+      "trace": [
+        [
+          "activate",
+          2
+        ]
+      ],
+      "child": 2,
+      "previous_kind": 17,
+      "mode": 9,
+      "timer": 1050253722,
+      "returned": null,
+      "instructions": 32
+    },
+    {
+      "input": {
+        "op": "install",
+        "child": 0,
+        "mode": 1,
+        "timer": 1050253722,
+        "wait": true,
+        "activate_mode": null
+      },
+      "trace": [
+        [
+          "activate",
+          2
+        ]
+      ],
+      "child": 2,
+      "previous_kind": 17,
+      "mode": 1,
+      "timer": 1050253722,
+      "returned": null,
+      "instructions": 34
+    },
+    {
+      "input": {
+        "op": "install",
+        "child": 0,
+        "mode": 1,
+        "timer": 1050253722,
+        "wait": true,
+        "activate_mode": 9
+      },
+      "trace": [
+        [
+          "activate",
+          2
+        ]
+      ],
+      "child": 2,
+      "previous_kind": 17,
+      "mode": 1,
+      "timer": 1050253722,
+      "returned": null,
+      "instructions": 34
+    },
+    {
+      "input": {
+        "op": "install",
+        "child": 0,
+        "mode": 9,
+        "timer": 1050253722,
+        "wait": false,
+        "activate_mode": null
+      },
+      "trace": [
+        [
+          "activate",
+          2
+        ]
+      ],
+      "child": 2,
+      "previous_kind": 17,
+      "mode": 9,
+      "timer": 1050253722,
+      "returned": null,
+      "instructions": 32
+    },
+    {
+      "input": {
+        "op": "install",
+        "child": 0,
+        "mode": 9,
+        "timer": 1050253722,
+        "wait": false,
+        "activate_mode": 9
+      },
+      "trace": [
+        [
+          "activate",
+          2
+        ]
+      ],
+      "child": 2,
+      "previous_kind": 17,
+      "mode": 9,
+      "timer": 1050253722,
+      "returned": null,
+      "instructions": 32
+    },
+    {
+      "input": {
+        "op": "install",
+        "child": 0,
+        "mode": 9,
+        "timer": 1050253722,
+        "wait": true,
+        "activate_mode": null
+      },
+      "trace": [
+        [
+          "activate",
+          2
+        ]
+      ],
+      "child": 2,
+      "previous_kind": 17,
+      "mode": 1,
+      "timer": 1050253722,
+      "returned": null,
+      "instructions": 34
+    },
+    {
+      "input": {
+        "op": "install",
+        "child": 0,
+        "mode": 9,
+        "timer": 1050253722,
+        "wait": true,
+        "activate_mode": 9
+      },
+      "trace": [
+        [
+          "activate",
+          2
+        ]
+      ],
+      "child": 2,
+      "previous_kind": 17,
+      "mode": 1,
+      "timer": 1050253722,
+      "returned": null,
+      "instructions": 34
+    },
+    {
+      "input": {
+        "op": "install",
+        "child": 1,
+        "mode": 0,
+        "timer": 1050253722,
+        "wait": false,
+        "activate_mode": null
+      },
+      "trace": [
+        [
+          "kind",
+          1
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          1
+        ],
+        [
+          "activate",
+          2
+        ]
+      ],
+      "child": 2,
+      "previous_kind": 100,
+      "mode": 0,
+      "timer": 1050253722,
+      "returned": null,
+      "instructions": 53
+    },
+    {
+      "input": {
+        "op": "install",
+        "child": 1,
+        "mode": 0,
+        "timer": 1050253722,
+        "wait": false,
+        "activate_mode": 9
+      },
+      "trace": [
+        [
+          "kind",
+          1
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          1
+        ],
+        [
+          "activate",
+          2
+        ]
+      ],
+      "child": 2,
+      "previous_kind": 100,
+      "mode": 9,
+      "timer": 1050253722,
+      "returned": null,
+      "instructions": 53
+    },
+    {
+      "input": {
+        "op": "install",
+        "child": 1,
+        "mode": 0,
+        "timer": 1050253722,
+        "wait": true,
+        "activate_mode": null
+      },
+      "trace": [
+        [
+          "kind",
+          1
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          1
+        ],
+        [
+          "activate",
+          2
+        ]
+      ],
+      "child": 2,
+      "previous_kind": 100,
+      "mode": 1,
+      "timer": 1050253722,
+      "returned": null,
+      "instructions": 55
+    },
+    {
+      "input": {
+        "op": "install",
+        "child": 1,
+        "mode": 0,
+        "timer": 1050253722,
+        "wait": true,
+        "activate_mode": 9
+      },
+      "trace": [
+        [
+          "kind",
+          1
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          1
+        ],
+        [
+          "activate",
+          2
+        ]
+      ],
+      "child": 2,
+      "previous_kind": 100,
+      "mode": 1,
+      "timer": 1050253722,
+      "returned": null,
+      "instructions": 55
+    },
+    {
+      "input": {
+        "op": "install",
+        "child": 1,
+        "mode": 1,
+        "timer": 1050253722,
+        "wait": false,
+        "activate_mode": null
+      },
+      "trace": [
+        [
+          "kind",
+          1
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          1
+        ],
+        [
+          "activate",
+          2
+        ]
+      ],
+      "child": 2,
+      "previous_kind": 100,
+      "mode": 1,
+      "timer": 1050253722,
+      "returned": null,
+      "instructions": 53
+    },
+    {
+      "input": {
+        "op": "install",
+        "child": 1,
+        "mode": 1,
+        "timer": 1050253722,
+        "wait": false,
+        "activate_mode": 9
+      },
+      "trace": [
+        [
+          "kind",
+          1
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          1
+        ],
+        [
+          "activate",
+          2
+        ]
+      ],
+      "child": 2,
+      "previous_kind": 100,
+      "mode": 9,
+      "timer": 1050253722,
+      "returned": null,
+      "instructions": 53
+    },
+    {
+      "input": {
+        "op": "install",
+        "child": 1,
+        "mode": 1,
+        "timer": 1050253722,
+        "wait": true,
+        "activate_mode": null
+      },
+      "trace": [
+        [
+          "kind",
+          1
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          1
+        ],
+        [
+          "activate",
+          2
+        ]
+      ],
+      "child": 2,
+      "previous_kind": 100,
+      "mode": 1,
+      "timer": 1050253722,
+      "returned": null,
+      "instructions": 55
+    },
+    {
+      "input": {
+        "op": "install",
+        "child": 1,
+        "mode": 1,
+        "timer": 1050253722,
+        "wait": true,
+        "activate_mode": 9
+      },
+      "trace": [
+        [
+          "kind",
+          1
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          1
+        ],
+        [
+          "activate",
+          2
+        ]
+      ],
+      "child": 2,
+      "previous_kind": 100,
+      "mode": 1,
+      "timer": 1050253722,
+      "returned": null,
+      "instructions": 55
+    },
+    {
+      "input": {
+        "op": "install",
+        "child": 1,
+        "mode": 9,
+        "timer": 1050253722,
+        "wait": false,
+        "activate_mode": null
+      },
+      "trace": [
+        [
+          "kind",
+          1
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          1
+        ],
+        [
+          "activate",
+          2
+        ]
+      ],
+      "child": 2,
+      "previous_kind": 100,
+      "mode": 9,
+      "timer": 1050253722,
+      "returned": null,
+      "instructions": 53
+    },
+    {
+      "input": {
+        "op": "install",
+        "child": 1,
+        "mode": 9,
+        "timer": 1050253722,
+        "wait": false,
+        "activate_mode": 9
+      },
+      "trace": [
+        [
+          "kind",
+          1
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          1
+        ],
+        [
+          "activate",
+          2
+        ]
+      ],
+      "child": 2,
+      "previous_kind": 100,
+      "mode": 9,
+      "timer": 1050253722,
+      "returned": null,
+      "instructions": 53
+    },
+    {
+      "input": {
+        "op": "install",
+        "child": 1,
+        "mode": 9,
+        "timer": 1050253722,
+        "wait": true,
+        "activate_mode": null
+      },
+      "trace": [
+        [
+          "kind",
+          1
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          1
+        ],
+        [
+          "activate",
+          2
+        ]
+      ],
+      "child": 2,
+      "previous_kind": 100,
+      "mode": 1,
+      "timer": 1050253722,
+      "returned": null,
+      "instructions": 55
+    },
+    {
+      "input": {
+        "op": "install",
+        "child": 1,
+        "mode": 9,
+        "timer": 1050253722,
+        "wait": true,
+        "activate_mode": 9
+      },
+      "trace": [
+        [
+          "kind",
+          1
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          1
+        ],
+        [
+          "activate",
+          2
+        ]
+      ],
+      "child": 2,
+      "previous_kind": 100,
+      "mode": 1,
+      "timer": 1050253722,
+      "returned": null,
+      "instructions": 55
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 0,
+        "timer": 3184315597,
+        "result": 1
+      },
+      "trace": [
+        [
+          "behavior"
+        ]
+      ],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 3184315597,
+      "returned": 6,
+      "instructions": 36
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 0,
+        "timer": 3184315597,
+        "result": 2
+      },
+      "trace": [
+        [
+          "behavior"
+        ]
+      ],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 3184315597,
+      "returned": 6,
+      "instructions": 36
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 0,
+        "timer": 3184315597,
+        "result": 3
+      },
+      "trace": [
+        [
+          "behavior"
+        ]
+      ],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 3184315597,
+      "returned": 6,
+      "instructions": 36
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 0,
+        "timer": 2147483648,
+        "result": 1
+      },
+      "trace": [
+        [
+          "behavior"
+        ]
+      ],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 2147483648,
+      "returned": 6,
+      "instructions": 36
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 0,
+        "timer": 2147483648,
+        "result": 2
+      },
+      "trace": [
+        [
+          "behavior"
+        ]
+      ],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 2147483648,
+      "returned": 6,
+      "instructions": 36
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 0,
+        "timer": 2147483648,
+        "result": 3
+      },
+      "trace": [
+        [
+          "behavior"
+        ]
+      ],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 2147483648,
+      "returned": 6,
+      "instructions": 36
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 0,
+        "timer": 1017370378,
+        "result": 1
+      },
+      "trace": [],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 3181631242,
+      "returned": 1,
+      "instructions": 34
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 0,
+        "timer": 1017370378,
+        "result": 2
+      },
+      "trace": [],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 3181631242,
+      "returned": 1,
+      "instructions": 34
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 0,
+        "timer": 1017370378,
+        "result": 3
+      },
+      "trace": [],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 3181631242,
+      "returned": 1,
+      "instructions": 34
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 0,
+        "timer": 1065353216,
+        "result": 1
+      },
+      "trace": [],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 1063675494,
+      "returned": 1,
+      "instructions": 34
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 0,
+        "timer": 1065353216,
+        "result": 2
+      },
+      "trace": [],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 1063675494,
+      "returned": 1,
+      "instructions": 34
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 0,
+        "timer": 1065353216,
+        "result": 3
+      },
+      "trace": [],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 1063675494,
+      "returned": 1,
+      "instructions": 34
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 1,
+        "timer": 3184315597,
+        "result": 1
+      },
+      "trace": [
+        [
+          "behavior"
+        ]
+      ],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 3184315597,
+      "returned": 6,
+      "instructions": 39
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 1,
+        "timer": 3184315597,
+        "result": 2
+      },
+      "trace": [
+        [
+          "behavior"
+        ]
+      ],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 3184315597,
+      "returned": 6,
+      "instructions": 39
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 1,
+        "timer": 3184315597,
+        "result": 3
+      },
+      "trace": [
+        [
+          "behavior"
+        ]
+      ],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 3184315597,
+      "returned": 6,
+      "instructions": 39
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 1,
+        "timer": 2147483648,
+        "result": 1
+      },
+      "trace": [
+        [
+          "behavior"
+        ]
+      ],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 2147483648,
+      "returned": 6,
+      "instructions": 39
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 1,
+        "timer": 2147483648,
+        "result": 2
+      },
+      "trace": [
+        [
+          "behavior"
+        ]
+      ],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 2147483648,
+      "returned": 6,
+      "instructions": 39
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 1,
+        "timer": 2147483648,
+        "result": 3
+      },
+      "trace": [
+        [
+          "behavior"
+        ]
+      ],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 2147483648,
+      "returned": 6,
+      "instructions": 39
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 1,
+        "timer": 1017370378,
+        "result": 1
+      },
+      "trace": [],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 3181631242,
+      "returned": 1,
+      "instructions": 37
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 1,
+        "timer": 1017370378,
+        "result": 2
+      },
+      "trace": [],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 3181631242,
+      "returned": 1,
+      "instructions": 37
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 1,
+        "timer": 1017370378,
+        "result": 3
+      },
+      "trace": [],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 3181631242,
+      "returned": 1,
+      "instructions": 37
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 1,
+        "timer": 1065353216,
+        "result": 1
+      },
+      "trace": [],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 1063675494,
+      "returned": 1,
+      "instructions": 37
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 1,
+        "timer": 1065353216,
+        "result": 2
+      },
+      "trace": [],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 1063675494,
+      "returned": 1,
+      "instructions": 37
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 1,
+        "timer": 1065353216,
+        "result": 3
+      },
+      "trace": [],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 1063675494,
+      "returned": 1,
+      "instructions": 37
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 9,
+        "timer": 3184315597,
+        "result": 1
+      },
+      "trace": [],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 9,
+      "timer": 3184315597,
+      "returned": 2,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 9,
+        "timer": 3184315597,
+        "result": 2
+      },
+      "trace": [],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 9,
+      "timer": 3184315597,
+      "returned": 2,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 9,
+        "timer": 3184315597,
+        "result": 3
+      },
+      "trace": [],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 9,
+      "timer": 3184315597,
+      "returned": 2,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 9,
+        "timer": 2147483648,
+        "result": 1
+      },
+      "trace": [],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 9,
+      "timer": 2147483648,
+      "returned": 2,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 9,
+        "timer": 2147483648,
+        "result": 2
+      },
+      "trace": [],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 9,
+      "timer": 2147483648,
+      "returned": 2,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 9,
+        "timer": 2147483648,
+        "result": 3
+      },
+      "trace": [],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 9,
+      "timer": 2147483648,
+      "returned": 2,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 9,
+        "timer": 1017370378,
+        "result": 1
+      },
+      "trace": [],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 9,
+      "timer": 1017370378,
+      "returned": 2,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 9,
+        "timer": 1017370378,
+        "result": 2
+      },
+      "trace": [],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 9,
+      "timer": 1017370378,
+      "returned": 2,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 9,
+        "timer": 1017370378,
+        "result": 3
+      },
+      "trace": [],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 9,
+      "timer": 1017370378,
+      "returned": 2,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 9,
+        "timer": 1065353216,
+        "result": 1
+      },
+      "trace": [],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 9,
+      "timer": 1065353216,
+      "returned": 2,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 9,
+        "timer": 1065353216,
+        "result": 2
+      },
+      "trace": [],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 9,
+      "timer": 1065353216,
+      "returned": 2,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 0,
+        "mode": 9,
+        "timer": 1065353216,
+        "result": 3
+      },
+      "trace": [],
+      "child": null,
+      "previous_kind": 17,
+      "mode": 9,
+      "timer": 1065353216,
+      "returned": 2,
+      "instructions": 25
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 0,
+        "timer": 3184315597,
+        "result": 1
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "kind",
+          1
+        ],
+        [
+          "completed"
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          1
+        ],
+        [
+          "behavior"
+        ]
+      ],
+      "child": null,
+      "previous_kind": 100,
+      "mode": 0,
+      "timer": 3184315597,
+      "returned": 6,
+      "instructions": 76
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 0,
+        "timer": 3184315597,
+        "result": 2
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "behavior"
+        ]
+      ],
+      "child": 1,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 3184315597,
+      "returned": 6,
+      "instructions": 49
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 0,
+        "timer": 3184315597,
+        "result": 3
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "behavior"
+        ]
+      ],
+      "child": 1,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 3184315597,
+      "returned": 6,
+      "instructions": 49
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 0,
+        "timer": 2147483648,
+        "result": 1
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "kind",
+          1
+        ],
+        [
+          "completed"
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          1
+        ],
+        [
+          "behavior"
+        ]
+      ],
+      "child": null,
+      "previous_kind": 100,
+      "mode": 0,
+      "timer": 2147483648,
+      "returned": 6,
+      "instructions": 76
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 0,
+        "timer": 2147483648,
+        "result": 2
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "behavior"
+        ]
+      ],
+      "child": 1,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 2147483648,
+      "returned": 6,
+      "instructions": 49
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 0,
+        "timer": 2147483648,
+        "result": 3
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "behavior"
+        ]
+      ],
+      "child": 1,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 2147483648,
+      "returned": 6,
+      "instructions": 49
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 0,
+        "timer": 1017370378,
+        "result": 1
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "kind",
+          1
+        ],
+        [
+          "completed"
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          1
+        ]
+      ],
+      "child": null,
+      "previous_kind": 100,
+      "mode": 0,
+      "timer": 3181631242,
+      "returned": 1,
+      "instructions": 74
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 0,
+        "timer": 1017370378,
+        "result": 2
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ]
+      ],
+      "child": 1,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 3181631242,
+      "returned": 1,
+      "instructions": 47
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 0,
+        "timer": 1017370378,
+        "result": 3
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ]
+      ],
+      "child": 1,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 3181631242,
+      "returned": 1,
+      "instructions": 47
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 0,
+        "timer": 1065353216,
+        "result": 1
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "kind",
+          1
+        ],
+        [
+          "completed"
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          1
+        ]
+      ],
+      "child": null,
+      "previous_kind": 100,
+      "mode": 0,
+      "timer": 1063675494,
+      "returned": 1,
+      "instructions": 74
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 0,
+        "timer": 1065353216,
+        "result": 2
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ]
+      ],
+      "child": 1,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 1063675494,
+      "returned": 1,
+      "instructions": 47
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 0,
+        "timer": 1065353216,
+        "result": 3
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ]
+      ],
+      "child": 1,
+      "previous_kind": 17,
+      "mode": 0,
+      "timer": 1063675494,
+      "returned": 1,
+      "instructions": 47
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 1,
+        "timer": 3184315597,
+        "result": 1
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "kind",
+          1
+        ],
+        [
+          "completed"
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          1
+        ],
+        [
+          "behavior"
+        ]
+      ],
+      "child": null,
+      "previous_kind": 100,
+      "mode": 0,
+      "timer": 3184315597,
+      "returned": 6,
+      "instructions": 79
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 1,
+        "timer": 3184315597,
+        "result": 2
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ]
+      ],
+      "child": 1,
+      "previous_kind": 17,
+      "mode": 1,
+      "timer": 3184315597,
+      "returned": 1,
+      "instructions": 38
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 1,
+        "timer": 3184315597,
+        "result": 3
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ]
+      ],
+      "child": 1,
+      "previous_kind": 17,
+      "mode": 1,
+      "timer": 3184315597,
+      "returned": 1,
+      "instructions": 38
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 1,
+        "timer": 2147483648,
+        "result": 1
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "kind",
+          1
+        ],
+        [
+          "completed"
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          1
+        ],
+        [
+          "behavior"
+        ]
+      ],
+      "child": null,
+      "previous_kind": 100,
+      "mode": 0,
+      "timer": 2147483648,
+      "returned": 6,
+      "instructions": 79
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 1,
+        "timer": 2147483648,
+        "result": 2
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ]
+      ],
+      "child": 1,
+      "previous_kind": 17,
+      "mode": 1,
+      "timer": 2147483648,
+      "returned": 1,
+      "instructions": 38
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 1,
+        "timer": 2147483648,
+        "result": 3
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ]
+      ],
+      "child": 1,
+      "previous_kind": 17,
+      "mode": 1,
+      "timer": 2147483648,
+      "returned": 1,
+      "instructions": 38
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 1,
+        "timer": 1017370378,
+        "result": 1
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "kind",
+          1
+        ],
+        [
+          "completed"
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          1
+        ]
+      ],
+      "child": null,
+      "previous_kind": 100,
+      "mode": 0,
+      "timer": 3181631242,
+      "returned": 1,
+      "instructions": 77
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 1,
+        "timer": 1017370378,
+        "result": 2
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ]
+      ],
+      "child": 1,
+      "previous_kind": 17,
+      "mode": 1,
+      "timer": 1017370378,
+      "returned": 1,
+      "instructions": 38
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 1,
+        "timer": 1017370378,
+        "result": 3
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ]
+      ],
+      "child": 1,
+      "previous_kind": 17,
+      "mode": 1,
+      "timer": 1017370378,
+      "returned": 1,
+      "instructions": 38
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 1,
+        "timer": 1065353216,
+        "result": 1
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "kind",
+          1
+        ],
+        [
+          "completed"
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          1
+        ]
+      ],
+      "child": null,
+      "previous_kind": 100,
+      "mode": 0,
+      "timer": 1063675494,
+      "returned": 1,
+      "instructions": 77
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 1,
+        "timer": 1065353216,
+        "result": 2
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ]
+      ],
+      "child": 1,
+      "previous_kind": 17,
+      "mode": 1,
+      "timer": 1065353216,
+      "returned": 1,
+      "instructions": 38
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 1,
+        "timer": 1065353216,
+        "result": 3
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ]
+      ],
+      "child": 1,
+      "previous_kind": 17,
+      "mode": 1,
+      "timer": 1065353216,
+      "returned": 1,
+      "instructions": 38
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 9,
+        "timer": 3184315597,
+        "result": 1
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "kind",
+          1
+        ],
+        [
+          "completed"
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          1
+        ]
+      ],
+      "child": null,
+      "previous_kind": 100,
+      "mode": 9,
+      "timer": 3184315597,
+      "returned": 2,
+      "instructions": 65
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 9,
+        "timer": 3184315597,
+        "result": 2
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ]
+      ],
+      "child": 1,
+      "previous_kind": 17,
+      "mode": 9,
+      "timer": 3184315597,
+      "returned": 2,
+      "instructions": 38
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 9,
+        "timer": 3184315597,
+        "result": 3
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ]
+      ],
+      "child": 1,
+      "previous_kind": 17,
+      "mode": 9,
+      "timer": 3184315597,
+      "returned": 2,
+      "instructions": 38
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 9,
+        "timer": 2147483648,
+        "result": 1
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "kind",
+          1
+        ],
+        [
+          "completed"
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          1
+        ]
+      ],
+      "child": null,
+      "previous_kind": 100,
+      "mode": 9,
+      "timer": 2147483648,
+      "returned": 2,
+      "instructions": 65
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 9,
+        "timer": 2147483648,
+        "result": 2
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ]
+      ],
+      "child": 1,
+      "previous_kind": 17,
+      "mode": 9,
+      "timer": 2147483648,
+      "returned": 2,
+      "instructions": 38
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 9,
+        "timer": 2147483648,
+        "result": 3
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ]
+      ],
+      "child": 1,
+      "previous_kind": 17,
+      "mode": 9,
+      "timer": 2147483648,
+      "returned": 2,
+      "instructions": 38
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 9,
+        "timer": 1017370378,
+        "result": 1
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "kind",
+          1
+        ],
+        [
+          "completed"
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          1
+        ]
+      ],
+      "child": null,
+      "previous_kind": 100,
+      "mode": 9,
+      "timer": 1017370378,
+      "returned": 2,
+      "instructions": 65
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 9,
+        "timer": 1017370378,
+        "result": 2
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ]
+      ],
+      "child": 1,
+      "previous_kind": 17,
+      "mode": 9,
+      "timer": 1017370378,
+      "returned": 2,
+      "instructions": 38
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 9,
+        "timer": 1017370378,
+        "result": 3
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ]
+      ],
+      "child": 1,
+      "previous_kind": 17,
+      "mode": 9,
+      "timer": 1017370378,
+      "returned": 2,
+      "instructions": 38
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 9,
+        "timer": 1065353216,
+        "result": 1
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "kind",
+          1
+        ],
+        [
+          "completed"
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          1
+        ]
+      ],
+      "child": null,
+      "previous_kind": 100,
+      "mode": 9,
+      "timer": 1065353216,
+      "returned": 2,
+      "instructions": 65
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 9,
+        "timer": 1065353216,
+        "result": 2
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ]
+      ],
+      "child": 1,
+      "previous_kind": 17,
+      "mode": 9,
+      "timer": 1065353216,
+      "returned": 2,
+      "instructions": 38
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 9,
+        "timer": 1065353216,
+        "result": 3
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ]
+      ],
+      "child": 1,
+      "previous_kind": 17,
+      "mode": 9,
+      "timer": 1065353216,
+      "returned": 2,
+      "instructions": 38
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 0,
+        "timer": 0,
+        "result": 1,
+        "replace_at": "tick",
+        "completed_mode": null
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "kind",
+          3
+        ],
+        [
+          "completed"
+        ],
+        [
+          "stop",
+          3
+        ],
+        [
+          "destroy",
+          3
+        ],
+        [
+          "behavior"
+        ]
+      ],
+      "child": null,
+      "previous_kind": 300,
+      "mode": 0,
+      "timer": 0,
+      "returned": 6,
+      "instructions": 76
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 0,
+        "timer": 0,
+        "result": 1,
+        "replace_at": "tick",
+        "completed_mode": 9
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "kind",
+          3
+        ],
+        [
+          "completed"
+        ],
+        [
+          "stop",
+          3
+        ],
+        [
+          "destroy",
+          3
+        ]
+      ],
+      "child": null,
+      "previous_kind": 300,
+      "mode": 9,
+      "timer": 0,
+      "returned": 2,
+      "instructions": 65
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 0,
+        "timer": 0,
+        "result": 1,
+        "replace_at": "completed",
+        "completed_mode": null
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "kind",
+          1
+        ],
+        [
+          "completed"
+        ],
+        [
+          "stop",
+          3
+        ],
+        [
+          "destroy",
+          3
+        ],
+        [
+          "behavior"
+        ]
+      ],
+      "child": null,
+      "previous_kind": 100,
+      "mode": 0,
+      "timer": 0,
+      "returned": 6,
+      "instructions": 76
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 0,
+        "timer": 0,
+        "result": 1,
+        "replace_at": "completed",
+        "completed_mode": 9
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "kind",
+          1
+        ],
+        [
+          "completed"
+        ],
+        [
+          "stop",
+          3
+        ],
+        [
+          "destroy",
+          3
+        ]
+      ],
+      "child": null,
+      "previous_kind": 100,
+      "mode": 9,
+      "timer": 0,
+      "returned": 2,
+      "instructions": 65
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 0,
+        "timer": 0,
+        "result": 1,
+        "replace_at": "stop",
+        "completed_mode": null
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "kind",
+          1
+        ],
+        [
+          "completed"
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          3
+        ],
+        [
+          "behavior"
+        ]
+      ],
+      "child": null,
+      "previous_kind": 100,
+      "mode": 0,
+      "timer": 0,
+      "returned": 6,
+      "instructions": 76
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 0,
+        "timer": 0,
+        "result": 1,
+        "replace_at": "stop",
+        "completed_mode": 9
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "kind",
+          1
+        ],
+        [
+          "completed"
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          3
+        ]
+      ],
+      "child": null,
+      "previous_kind": 100,
+      "mode": 9,
+      "timer": 0,
+      "returned": 2,
+      "instructions": 65
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 1,
+        "timer": 0,
+        "result": 1,
+        "replace_at": "tick",
+        "completed_mode": null
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "kind",
+          3
+        ],
+        [
+          "completed"
+        ],
+        [
+          "stop",
+          3
+        ],
+        [
+          "destroy",
+          3
+        ],
+        [
+          "behavior"
+        ]
+      ],
+      "child": null,
+      "previous_kind": 300,
+      "mode": 0,
+      "timer": 0,
+      "returned": 6,
+      "instructions": 79
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 1,
+        "timer": 0,
+        "result": 1,
+        "replace_at": "tick",
+        "completed_mode": 9
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "kind",
+          3
+        ],
+        [
+          "completed"
+        ],
+        [
+          "stop",
+          3
+        ],
+        [
+          "destroy",
+          3
+        ]
+      ],
+      "child": null,
+      "previous_kind": 300,
+      "mode": 9,
+      "timer": 0,
+      "returned": 2,
+      "instructions": 65
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 1,
+        "timer": 0,
+        "result": 1,
+        "replace_at": "completed",
+        "completed_mode": null
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "kind",
+          1
+        ],
+        [
+          "completed"
+        ],
+        [
+          "stop",
+          3
+        ],
+        [
+          "destroy",
+          3
+        ],
+        [
+          "behavior"
+        ]
+      ],
+      "child": null,
+      "previous_kind": 100,
+      "mode": 0,
+      "timer": 0,
+      "returned": 6,
+      "instructions": 79
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 1,
+        "timer": 0,
+        "result": 1,
+        "replace_at": "completed",
+        "completed_mode": 9
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "kind",
+          1
+        ],
+        [
+          "completed"
+        ],
+        [
+          "stop",
+          3
+        ],
+        [
+          "destroy",
+          3
+        ]
+      ],
+      "child": null,
+      "previous_kind": 100,
+      "mode": 9,
+      "timer": 0,
+      "returned": 2,
+      "instructions": 65
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 1,
+        "timer": 0,
+        "result": 1,
+        "replace_at": "stop",
+        "completed_mode": null
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "kind",
+          1
+        ],
+        [
+          "completed"
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          3
+        ],
+        [
+          "behavior"
+        ]
+      ],
+      "child": null,
+      "previous_kind": 100,
+      "mode": 0,
+      "timer": 0,
+      "returned": 6,
+      "instructions": 79
+    },
+    {
+      "input": {
+        "op": "update",
+        "child": 1,
+        "mode": 1,
+        "timer": 0,
+        "result": 1,
+        "replace_at": "stop",
+        "completed_mode": 9
+      },
+      "trace": [
+        [
+          "tick",
+          1
+        ],
+        [
+          "kind",
+          1
+        ],
+        [
+          "completed"
+        ],
+        [
+          "stop",
+          1
+        ],
+        [
+          "destroy",
+          3
+        ]
+      ],
+      "child": null,
+      "previous_kind": 100,
+      "mode": 9,
+      "timer": 0,
+      "returned": 2,
+      "instructions": 65
+    }
+  ]
+}

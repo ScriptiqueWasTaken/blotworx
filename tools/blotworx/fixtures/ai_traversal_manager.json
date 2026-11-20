@@ -1,0 +1,2854 @@
+{
+  "scope": "Original traversal publication479e5c..479fa8. Allocation, array helper and\nrelease are supplied boundaries; native growth, copying, publication and fresh\nstate reads execute. No concrete traversal or World registration executes.\n",
+  "rel_sha256": "ac25d520f329a3d0507d656f0ab1cf1c34025bb36ff866187ad082ae3e0a4ebf",
+  "cases": [
+    {
+      "input": {
+        "capacity": 0,
+        "count": 0,
+        "old": true,
+        "observer": false
+      },
+      "trace": [
+        [
+          "allocate",
+          48,
+          4,
+          0,
+          1
+        ],
+        [
+          "construct",
+          2,
+          4
+        ],
+        [
+          "release",
+          1
+        ],
+        [
+          "write",
+          2,
+          0,
+          99
+        ]
+      ],
+      "state": {
+        "array": 2,
+        "capacity": 4,
+        "count": 1
+      },
+      "entries": [
+        99
+      ],
+      "result": 1,
+      "instructions": 68
+    },
+    {
+      "input": {
+        "capacity": 0,
+        "count": 0,
+        "old": true,
+        "observer": true
+      },
+      "trace": [
+        [
+          "allocate",
+          48,
+          4,
+          0,
+          1
+        ],
+        [
+          "observer",
+          2,
+          48,
+          123
+        ],
+        [
+          "construct",
+          2,
+          4
+        ],
+        [
+          "release",
+          1
+        ],
+        [
+          "write",
+          2,
+          0,
+          99
+        ]
+      ],
+      "state": {
+        "array": 2,
+        "capacity": 4,
+        "count": 1
+      },
+      "entries": [
+        99
+      ],
+      "result": 1,
+      "instructions": 72
+    },
+    {
+      "input": {
+        "capacity": 1,
+        "count": 0,
+        "old": true,
+        "observer": false
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          0,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 1,
+        "count": 1
+      },
+      "entries": [
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 1,
+        "count": 0,
+        "old": true,
+        "observer": true
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          0,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 1,
+        "count": 1
+      },
+      "entries": [
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 1,
+        "count": 1,
+        "old": true,
+        "observer": false
+      },
+      "trace": [
+        [
+          "allocate",
+          32,
+          2,
+          1,
+          1
+        ],
+        [
+          "construct",
+          2,
+          2
+        ],
+        [
+          "read",
+          1,
+          0,
+          100
+        ],
+        [
+          "write",
+          2,
+          0,
+          100
+        ],
+        [
+          "release",
+          1
+        ],
+        [
+          "write",
+          2,
+          1,
+          99
+        ]
+      ],
+      "state": {
+        "array": 2,
+        "capacity": 2,
+        "count": 2
+      },
+      "entries": [
+        100,
+        99
+      ],
+      "result": 1,
+      "instructions": 77
+    },
+    {
+      "input": {
+        "capacity": 1,
+        "count": 1,
+        "old": true,
+        "observer": true
+      },
+      "trace": [
+        [
+          "allocate",
+          32,
+          2,
+          1,
+          1
+        ],
+        [
+          "observer",
+          2,
+          32,
+          123
+        ],
+        [
+          "construct",
+          2,
+          2
+        ],
+        [
+          "read",
+          1,
+          0,
+          100
+        ],
+        [
+          "write",
+          2,
+          0,
+          100
+        ],
+        [
+          "release",
+          1
+        ],
+        [
+          "write",
+          2,
+          1,
+          99
+        ]
+      ],
+      "state": {
+        "array": 2,
+        "capacity": 2,
+        "count": 2
+      },
+      "entries": [
+        100,
+        99
+      ],
+      "result": 1,
+      "instructions": 81
+    },
+    {
+      "input": {
+        "capacity": 2,
+        "count": 0,
+        "old": true,
+        "observer": false
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          0,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 2,
+        "count": 1
+      },
+      "entries": [
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 2,
+        "count": 0,
+        "old": true,
+        "observer": true
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          0,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 2,
+        "count": 1
+      },
+      "entries": [
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 2,
+        "count": 1,
+        "old": true,
+        "observer": false
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          1,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 2,
+        "count": 2
+      },
+      "entries": [
+        100,
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 2,
+        "count": 1,
+        "old": true,
+        "observer": true
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          1,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 2,
+        "count": 2
+      },
+      "entries": [
+        100,
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 2,
+        "count": 2,
+        "old": true,
+        "observer": false
+      },
+      "trace": [
+        [
+          "allocate",
+          48,
+          4,
+          2,
+          1
+        ],
+        [
+          "construct",
+          2,
+          4
+        ],
+        [
+          "read",
+          1,
+          0,
+          100
+        ],
+        [
+          "write",
+          2,
+          0,
+          100
+        ],
+        [
+          "read",
+          1,
+          1,
+          101
+        ],
+        [
+          "write",
+          2,
+          1,
+          101
+        ],
+        [
+          "release",
+          1
+        ],
+        [
+          "write",
+          2,
+          2,
+          99
+        ]
+      ],
+      "state": {
+        "array": 2,
+        "capacity": 4,
+        "count": 3
+      },
+      "entries": [
+        100,
+        101,
+        99
+      ],
+      "result": 1,
+      "instructions": 87
+    },
+    {
+      "input": {
+        "capacity": 2,
+        "count": 2,
+        "old": true,
+        "observer": true
+      },
+      "trace": [
+        [
+          "allocate",
+          48,
+          4,
+          2,
+          1
+        ],
+        [
+          "observer",
+          2,
+          48,
+          123
+        ],
+        [
+          "construct",
+          2,
+          4
+        ],
+        [
+          "read",
+          1,
+          0,
+          100
+        ],
+        [
+          "write",
+          2,
+          0,
+          100
+        ],
+        [
+          "read",
+          1,
+          1,
+          101
+        ],
+        [
+          "write",
+          2,
+          1,
+          101
+        ],
+        [
+          "release",
+          1
+        ],
+        [
+          "write",
+          2,
+          2,
+          99
+        ]
+      ],
+      "state": {
+        "array": 2,
+        "capacity": 4,
+        "count": 3
+      },
+      "entries": [
+        100,
+        101,
+        99
+      ],
+      "result": 1,
+      "instructions": 91
+    },
+    {
+      "input": {
+        "capacity": 4,
+        "count": 0,
+        "old": true,
+        "observer": false
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          0,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 4,
+        "count": 1
+      },
+      "entries": [
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 4,
+        "count": 0,
+        "old": true,
+        "observer": true
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          0,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 4,
+        "count": 1
+      },
+      "entries": [
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 4,
+        "count": 1,
+        "old": true,
+        "observer": false
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          1,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 4,
+        "count": 2
+      },
+      "entries": [
+        100,
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 4,
+        "count": 1,
+        "old": true,
+        "observer": true
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          1,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 4,
+        "count": 2
+      },
+      "entries": [
+        100,
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 4,
+        "count": 2,
+        "old": true,
+        "observer": false
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          2,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 4,
+        "count": 3
+      },
+      "entries": [
+        100,
+        101,
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 4,
+        "count": 2,
+        "old": true,
+        "observer": true
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          2,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 4,
+        "count": 3
+      },
+      "entries": [
+        100,
+        101,
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 4,
+        "count": 3,
+        "old": true,
+        "observer": false
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          3,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 4,
+        "count": 4
+      },
+      "entries": [
+        100,
+        101,
+        102,
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 4,
+        "count": 3,
+        "old": true,
+        "observer": true
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          3,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 4,
+        "count": 4
+      },
+      "entries": [
+        100,
+        101,
+        102,
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 4,
+        "count": 4,
+        "old": true,
+        "observer": false
+      },
+      "trace": [
+        [
+          "allocate",
+          80,
+          8,
+          4,
+          1
+        ],
+        [
+          "construct",
+          2,
+          8
+        ],
+        [
+          "read",
+          1,
+          0,
+          100
+        ],
+        [
+          "write",
+          2,
+          0,
+          100
+        ],
+        [
+          "read",
+          1,
+          1,
+          101
+        ],
+        [
+          "write",
+          2,
+          1,
+          101
+        ],
+        [
+          "read",
+          1,
+          2,
+          102
+        ],
+        [
+          "write",
+          2,
+          2,
+          102
+        ],
+        [
+          "read",
+          1,
+          3,
+          103
+        ],
+        [
+          "write",
+          2,
+          3,
+          103
+        ],
+        [
+          "release",
+          1
+        ],
+        [
+          "write",
+          2,
+          4,
+          99
+        ]
+      ],
+      "state": {
+        "array": 2,
+        "capacity": 8,
+        "count": 5
+      },
+      "entries": [
+        100,
+        101,
+        102,
+        103,
+        99
+      ],
+      "result": 1,
+      "instructions": 107
+    },
+    {
+      "input": {
+        "capacity": 4,
+        "count": 4,
+        "old": true,
+        "observer": true
+      },
+      "trace": [
+        [
+          "allocate",
+          80,
+          8,
+          4,
+          1
+        ],
+        [
+          "observer",
+          2,
+          80,
+          123
+        ],
+        [
+          "construct",
+          2,
+          8
+        ],
+        [
+          "read",
+          1,
+          0,
+          100
+        ],
+        [
+          "write",
+          2,
+          0,
+          100
+        ],
+        [
+          "read",
+          1,
+          1,
+          101
+        ],
+        [
+          "write",
+          2,
+          1,
+          101
+        ],
+        [
+          "read",
+          1,
+          2,
+          102
+        ],
+        [
+          "write",
+          2,
+          2,
+          102
+        ],
+        [
+          "read",
+          1,
+          3,
+          103
+        ],
+        [
+          "write",
+          2,
+          3,
+          103
+        ],
+        [
+          "release",
+          1
+        ],
+        [
+          "write",
+          2,
+          4,
+          99
+        ]
+      ],
+      "state": {
+        "array": 2,
+        "capacity": 8,
+        "count": 5
+      },
+      "entries": [
+        100,
+        101,
+        102,
+        103,
+        99
+      ],
+      "result": 1,
+      "instructions": 111
+    },
+    {
+      "input": {
+        "capacity": 8,
+        "count": 0,
+        "old": true,
+        "observer": false
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          0,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 8,
+        "count": 1
+      },
+      "entries": [
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 8,
+        "count": 0,
+        "old": true,
+        "observer": true
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          0,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 8,
+        "count": 1
+      },
+      "entries": [
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 8,
+        "count": 1,
+        "old": true,
+        "observer": false
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          1,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 8,
+        "count": 2
+      },
+      "entries": [
+        100,
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 8,
+        "count": 1,
+        "old": true,
+        "observer": true
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          1,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 8,
+        "count": 2
+      },
+      "entries": [
+        100,
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 8,
+        "count": 2,
+        "old": true,
+        "observer": false
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          2,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 8,
+        "count": 3
+      },
+      "entries": [
+        100,
+        101,
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 8,
+        "count": 2,
+        "old": true,
+        "observer": true
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          2,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 8,
+        "count": 3
+      },
+      "entries": [
+        100,
+        101,
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 8,
+        "count": 3,
+        "old": true,
+        "observer": false
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          3,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 8,
+        "count": 4
+      },
+      "entries": [
+        100,
+        101,
+        102,
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 8,
+        "count": 3,
+        "old": true,
+        "observer": true
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          3,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 8,
+        "count": 4
+      },
+      "entries": [
+        100,
+        101,
+        102,
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 8,
+        "count": 4,
+        "old": true,
+        "observer": false
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          4,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 8,
+        "count": 5
+      },
+      "entries": [
+        100,
+        101,
+        102,
+        103,
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 8,
+        "count": 4,
+        "old": true,
+        "observer": true
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          4,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 8,
+        "count": 5
+      },
+      "entries": [
+        100,
+        101,
+        102,
+        103,
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 8,
+        "count": 5,
+        "old": true,
+        "observer": false
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          5,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 8,
+        "count": 6
+      },
+      "entries": [
+        100,
+        101,
+        102,
+        103,
+        104,
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 8,
+        "count": 5,
+        "old": true,
+        "observer": true
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          5,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 8,
+        "count": 6
+      },
+      "entries": [
+        100,
+        101,
+        102,
+        103,
+        104,
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 8,
+        "count": 6,
+        "old": true,
+        "observer": false
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          6,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 8,
+        "count": 7
+      },
+      "entries": [
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 8,
+        "count": 6,
+        "old": true,
+        "observer": true
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          6,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 8,
+        "count": 7
+      },
+      "entries": [
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 8,
+        "count": 7,
+        "old": true,
+        "observer": false
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          7,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 8,
+        "count": 8
+      },
+      "entries": [
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 8,
+        "count": 7,
+        "old": true,
+        "observer": true
+      },
+      "trace": [
+        [
+          "write",
+          1,
+          7,
+          99
+        ]
+      ],
+      "state": {
+        "array": 1,
+        "capacity": 8,
+        "count": 8
+      },
+      "entries": [
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        99
+      ],
+      "result": 1,
+      "instructions": 14
+    },
+    {
+      "input": {
+        "capacity": 8,
+        "count": 8,
+        "old": true,
+        "observer": false
+      },
+      "trace": [
+        [
+          "allocate",
+          144,
+          16,
+          8,
+          1
+        ],
+        [
+          "construct",
+          2,
+          16
+        ],
+        [
+          "read",
+          1,
+          0,
+          100
+        ],
+        [
+          "write",
+          2,
+          0,
+          100
+        ],
+        [
+          "read",
+          1,
+          1,
+          101
+        ],
+        [
+          "write",
+          2,
+          1,
+          101
+        ],
+        [
+          "read",
+          1,
+          2,
+          102
+        ],
+        [
+          "write",
+          2,
+          2,
+          102
+        ],
+        [
+          "read",
+          1,
+          3,
+          103
+        ],
+        [
+          "write",
+          2,
+          3,
+          103
+        ],
+        [
+          "read",
+          1,
+          4,
+          104
+        ],
+        [
+          "write",
+          2,
+          4,
+          104
+        ],
+        [
+          "read",
+          1,
+          5,
+          105
+        ],
+        [
+          "write",
+          2,
+          5,
+          105
+        ],
+        [
+          "read",
+          1,
+          6,
+          106
+        ],
+        [
+          "write",
+          2,
+          6,
+          106
+        ],
+        [
+          "read",
+          1,
+          7,
+          107
+        ],
+        [
+          "write",
+          2,
+          7,
+          107
+        ],
+        [
+          "release",
+          1
+        ],
+        [
+          "write",
+          2,
+          8,
+          99
+        ]
+      ],
+      "state": {
+        "array": 2,
+        "capacity": 16,
+        "count": 9
+      },
+      "entries": [
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        99
+      ],
+      "result": 1,
+      "instructions": 147
+    },
+    {
+      "input": {
+        "capacity": 8,
+        "count": 8,
+        "old": true,
+        "observer": true
+      },
+      "trace": [
+        [
+          "allocate",
+          144,
+          16,
+          8,
+          1
+        ],
+        [
+          "observer",
+          2,
+          144,
+          123
+        ],
+        [
+          "construct",
+          2,
+          16
+        ],
+        [
+          "read",
+          1,
+          0,
+          100
+        ],
+        [
+          "write",
+          2,
+          0,
+          100
+        ],
+        [
+          "read",
+          1,
+          1,
+          101
+        ],
+        [
+          "write",
+          2,
+          1,
+          101
+        ],
+        [
+          "read",
+          1,
+          2,
+          102
+        ],
+        [
+          "write",
+          2,
+          2,
+          102
+        ],
+        [
+          "read",
+          1,
+          3,
+          103
+        ],
+        [
+          "write",
+          2,
+          3,
+          103
+        ],
+        [
+          "read",
+          1,
+          4,
+          104
+        ],
+        [
+          "write",
+          2,
+          4,
+          104
+        ],
+        [
+          "read",
+          1,
+          5,
+          105
+        ],
+        [
+          "write",
+          2,
+          5,
+          105
+        ],
+        [
+          "read",
+          1,
+          6,
+          106
+        ],
+        [
+          "write",
+          2,
+          6,
+          106
+        ],
+        [
+          "read",
+          1,
+          7,
+          107
+        ],
+        [
+          "write",
+          2,
+          7,
+          107
+        ],
+        [
+          "release",
+          1
+        ],
+        [
+          "write",
+          2,
+          8,
+          99
+        ]
+      ],
+      "state": {
+        "array": 2,
+        "capacity": 16,
+        "count": 9
+      },
+      "entries": [
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        99
+      ],
+      "result": 1,
+      "instructions": 151
+    },
+    {
+      "input": {
+        "capacity": 0,
+        "count": 0,
+        "old": false,
+        "observer": false
+      },
+      "trace": [
+        [
+          "allocate",
+          48,
+          4,
+          0,
+          null
+        ],
+        [
+          "construct",
+          2,
+          4
+        ],
+        [
+          "write",
+          2,
+          0,
+          99
+        ]
+      ],
+      "state": {
+        "array": 2,
+        "capacity": 4,
+        "count": 1
+      },
+      "entries": [
+        99
+      ],
+      "result": 1,
+      "instructions": 61
+    },
+    {
+      "input": {
+        "capacity": 0,
+        "count": 0,
+        "old": false,
+        "observer": true
+      },
+      "trace": [
+        [
+          "allocate",
+          48,
+          4,
+          0,
+          null
+        ],
+        [
+          "observer",
+          2,
+          48,
+          123
+        ],
+        [
+          "construct",
+          2,
+          4
+        ],
+        [
+          "write",
+          2,
+          0,
+          99
+        ]
+      ],
+      "state": {
+        "array": 2,
+        "capacity": 4,
+        "count": 1
+      },
+      "entries": [
+        99
+      ],
+      "result": 1,
+      "instructions": 65
+    },
+    {
+      "input": {
+        "capacity": 4,
+        "count": 4,
+        "old": true,
+        "observer": true,
+        "observer_mutation": {
+          "array": 3
+        }
+      },
+      "trace": [
+        [
+          "allocate",
+          80,
+          8,
+          4,
+          1
+        ],
+        [
+          "observer",
+          2,
+          80,
+          123
+        ],
+        [
+          "construct",
+          2,
+          8
+        ],
+        [
+          "read",
+          3,
+          0,
+          200
+        ],
+        [
+          "write",
+          2,
+          0,
+          200
+        ],
+        [
+          "read",
+          3,
+          1,
+          201
+        ],
+        [
+          "write",
+          2,
+          1,
+          201
+        ],
+        [
+          "read",
+          3,
+          2,
+          202
+        ],
+        [
+          "write",
+          2,
+          2,
+          202
+        ],
+        [
+          "read",
+          3,
+          3,
+          203
+        ],
+        [
+          "write",
+          2,
+          3,
+          203
+        ],
+        [
+          "release",
+          3
+        ],
+        [
+          "write",
+          2,
+          4,
+          99
+        ]
+      ],
+      "state": {
+        "array": 2,
+        "capacity": 8,
+        "count": 5
+      },
+      "entries": [
+        200,
+        201,
+        202,
+        203,
+        99
+      ],
+      "result": 1,
+      "instructions": 111
+    },
+    {
+      "input": {
+        "capacity": 4,
+        "count": 4,
+        "old": true,
+        "observer": true,
+        "observer_mutation": {
+          "count": 2
+        }
+      },
+      "trace": [
+        [
+          "allocate",
+          80,
+          8,
+          4,
+          1
+        ],
+        [
+          "observer",
+          2,
+          80,
+          123
+        ],
+        [
+          "construct",
+          2,
+          8
+        ],
+        [
+          "read",
+          1,
+          0,
+          100
+        ],
+        [
+          "write",
+          2,
+          0,
+          100
+        ],
+        [
+          "read",
+          1,
+          1,
+          101
+        ],
+        [
+          "write",
+          2,
+          1,
+          101
+        ],
+        [
+          "release",
+          1
+        ],
+        [
+          "write",
+          2,
+          2,
+          99
+        ]
+      ],
+      "state": {
+        "array": 2,
+        "capacity": 8,
+        "count": 3
+      },
+      "entries": [
+        100,
+        101,
+        99
+      ],
+      "result": 1,
+      "instructions": 91
+    },
+    {
+      "input": {
+        "capacity": 4,
+        "count": 4,
+        "old": true,
+        "observer": true,
+        "observer_mutation": {
+          "capacity": 1
+        }
+      },
+      "trace": [
+        [
+          "allocate",
+          80,
+          8,
+          4,
+          1
+        ],
+        [
+          "observer",
+          2,
+          80,
+          123
+        ],
+        [
+          "construct",
+          2,
+          8
+        ],
+        [
+          "read",
+          1,
+          0,
+          100
+        ],
+        [
+          "write",
+          2,
+          0,
+          100
+        ],
+        [
+          "release",
+          1
+        ],
+        [
+          "write",
+          2,
+          1,
+          99
+        ]
+      ],
+      "state": {
+        "array": 2,
+        "capacity": 1,
+        "count": 2
+      },
+      "entries": [
+        100,
+        99
+      ],
+      "result": 1,
+      "instructions": 82
+    },
+    {
+      "input": {
+        "capacity": 4,
+        "count": 4,
+        "old": true,
+        "observer": true,
+        "observer_mutation": {
+          "capacity": 3,
+          "count": 2,
+          "array": 3
+        }
+      },
+      "trace": [
+        [
+          "allocate",
+          80,
+          8,
+          4,
+          1
+        ],
+        [
+          "observer",
+          2,
+          80,
+          123
+        ],
+        [
+          "construct",
+          2,
+          8
+        ],
+        [
+          "read",
+          3,
+          0,
+          200
+        ],
+        [
+          "write",
+          2,
+          0,
+          200
+        ],
+        [
+          "read",
+          3,
+          1,
+          201
+        ],
+        [
+          "write",
+          2,
+          1,
+          201
+        ],
+        [
+          "release",
+          3
+        ],
+        [
+          "write",
+          2,
+          2,
+          99
+        ]
+      ],
+      "state": {
+        "array": 2,
+        "capacity": 3,
+        "count": 3
+      },
+      "entries": [
+        200,
+        201,
+        99
+      ],
+      "result": 1,
+      "instructions": 91
+    },
+    {
+      "input": {
+        "capacity": 4,
+        "count": 4,
+        "old": true,
+        "release_mutation": {
+          "array": 3
+        }
+      },
+      "trace": [
+        [
+          "allocate",
+          80,
+          8,
+          4,
+          1
+        ],
+        [
+          "construct",
+          2,
+          8
+        ],
+        [
+          "read",
+          1,
+          0,
+          100
+        ],
+        [
+          "write",
+          2,
+          0,
+          100
+        ],
+        [
+          "read",
+          1,
+          1,
+          101
+        ],
+        [
+          "write",
+          2,
+          1,
+          101
+        ],
+        [
+          "read",
+          1,
+          2,
+          102
+        ],
+        [
+          "write",
+          2,
+          2,
+          102
+        ],
+        [
+          "read",
+          1,
+          3,
+          103
+        ],
+        [
+          "write",
+          2,
+          3,
+          103
+        ],
+        [
+          "release",
+          1
+        ],
+        [
+          "write",
+          2,
+          4,
+          99
+        ]
+      ],
+      "state": {
+        "array": 2,
+        "capacity": 8,
+        "count": 5
+      },
+      "entries": [
+        100,
+        101,
+        102,
+        103,
+        99
+      ],
+      "result": 1,
+      "instructions": 107
+    },
+    {
+      "input": {
+        "capacity": 4,
+        "count": 4,
+        "old": true,
+        "release_mutation": {
+          "count": 0
+        }
+      },
+      "trace": [
+        [
+          "allocate",
+          80,
+          8,
+          4,
+          1
+        ],
+        [
+          "construct",
+          2,
+          8
+        ],
+        [
+          "read",
+          1,
+          0,
+          100
+        ],
+        [
+          "write",
+          2,
+          0,
+          100
+        ],
+        [
+          "read",
+          1,
+          1,
+          101
+        ],
+        [
+          "write",
+          2,
+          1,
+          101
+        ],
+        [
+          "read",
+          1,
+          2,
+          102
+        ],
+        [
+          "write",
+          2,
+          2,
+          102
+        ],
+        [
+          "read",
+          1,
+          3,
+          103
+        ],
+        [
+          "write",
+          2,
+          3,
+          103
+        ],
+        [
+          "release",
+          1
+        ],
+        [
+          "write",
+          2,
+          0,
+          99
+        ]
+      ],
+      "state": {
+        "array": 2,
+        "capacity": 8,
+        "count": 1
+      },
+      "entries": [
+        99
+      ],
+      "result": 1,
+      "instructions": 107
+    },
+    {
+      "input": {
+        "capacity": 4,
+        "count": 4,
+        "old": true,
+        "release_mutation": {
+          "count": 2
+        }
+      },
+      "trace": [
+        [
+          "allocate",
+          80,
+          8,
+          4,
+          1
+        ],
+        [
+          "construct",
+          2,
+          8
+        ],
+        [
+          "read",
+          1,
+          0,
+          100
+        ],
+        [
+          "write",
+          2,
+          0,
+          100
+        ],
+        [
+          "read",
+          1,
+          1,
+          101
+        ],
+        [
+          "write",
+          2,
+          1,
+          101
+        ],
+        [
+          "read",
+          1,
+          2,
+          102
+        ],
+        [
+          "write",
+          2,
+          2,
+          102
+        ],
+        [
+          "read",
+          1,
+          3,
+          103
+        ],
+        [
+          "write",
+          2,
+          3,
+          103
+        ],
+        [
+          "release",
+          1
+        ],
+        [
+          "write",
+          2,
+          2,
+          99
+        ]
+      ],
+      "state": {
+        "array": 2,
+        "capacity": 8,
+        "count": 3
+      },
+      "entries": [
+        100,
+        101,
+        99
+      ],
+      "result": 1,
+      "instructions": 107
+    },
+    {
+      "input": {
+        "capacity": 4,
+        "count": 4,
+        "old": true,
+        "release_mutation": {
+          "capacity": 2,
+          "count": 1,
+          "array": 3
+        }
+      },
+      "trace": [
+        [
+          "allocate",
+          80,
+          8,
+          4,
+          1
+        ],
+        [
+          "construct",
+          2,
+          8
+        ],
+        [
+          "read",
+          1,
+          0,
+          100
+        ],
+        [
+          "write",
+          2,
+          0,
+          100
+        ],
+        [
+          "read",
+          1,
+          1,
+          101
+        ],
+        [
+          "write",
+          2,
+          1,
+          101
+        ],
+        [
+          "read",
+          1,
+          2,
+          102
+        ],
+        [
+          "write",
+          2,
+          2,
+          102
+        ],
+        [
+          "read",
+          1,
+          3,
+          103
+        ],
+        [
+          "write",
+          2,
+          3,
+          103
+        ],
+        [
+          "release",
+          1
+        ],
+        [
+          "write",
+          2,
+          1,
+          99
+        ]
+      ],
+      "state": {
+        "array": 2,
+        "capacity": 2,
+        "count": 2
+      },
+      "entries": [
+        100,
+        99
+      ],
+      "result": 1,
+      "instructions": 107
+    },
+    {
+      "input": {
+        "capacity": 4,
+        "count": 4,
+        "old": true,
+        "null_entry": 0
+      },
+      "trace": [
+        [
+          "allocate",
+          80,
+          8,
+          4,
+          1
+        ],
+        [
+          "construct",
+          2,
+          8
+        ],
+        [
+          "read",
+          1,
+          0,
+          null
+        ],
+        [
+          "write",
+          2,
+          0,
+          null
+        ],
+        [
+          "read",
+          1,
+          1,
+          101
+        ],
+        [
+          "write",
+          2,
+          1,
+          101
+        ],
+        [
+          "read",
+          1,
+          2,
+          102
+        ],
+        [
+          "write",
+          2,
+          2,
+          102
+        ],
+        [
+          "read",
+          1,
+          3,
+          103
+        ],
+        [
+          "write",
+          2,
+          3,
+          103
+        ],
+        [
+          "release",
+          1
+        ],
+        [
+          "write",
+          2,
+          4,
+          99
+        ]
+      ],
+      "state": {
+        "array": 2,
+        "capacity": 8,
+        "count": 5
+      },
+      "entries": [
+        null,
+        101,
+        102,
+        103,
+        99
+      ],
+      "result": 1,
+      "instructions": 107
+    },
+    {
+      "input": {
+        "capacity": 4,
+        "count": 4,
+        "old": true,
+        "null_entry": 1
+      },
+      "trace": [
+        [
+          "allocate",
+          80,
+          8,
+          4,
+          1
+        ],
+        [
+          "construct",
+          2,
+          8
+        ],
+        [
+          "read",
+          1,
+          0,
+          100
+        ],
+        [
+          "write",
+          2,
+          0,
+          100
+        ],
+        [
+          "read",
+          1,
+          1,
+          null
+        ],
+        [
+          "write",
+          2,
+          1,
+          null
+        ],
+        [
+          "read",
+          1,
+          2,
+          102
+        ],
+        [
+          "write",
+          2,
+          2,
+          102
+        ],
+        [
+          "read",
+          1,
+          3,
+          103
+        ],
+        [
+          "write",
+          2,
+          3,
+          103
+        ],
+        [
+          "release",
+          1
+        ],
+        [
+          "write",
+          2,
+          4,
+          99
+        ]
+      ],
+      "state": {
+        "array": 2,
+        "capacity": 8,
+        "count": 5
+      },
+      "entries": [
+        100,
+        null,
+        102,
+        103,
+        99
+      ],
+      "result": 1,
+      "instructions": 107
+    },
+    {
+      "input": {
+        "capacity": 4,
+        "count": 4,
+        "old": true,
+        "null_entry": 2
+      },
+      "trace": [
+        [
+          "allocate",
+          80,
+          8,
+          4,
+          1
+        ],
+        [
+          "construct",
+          2,
+          8
+        ],
+        [
+          "read",
+          1,
+          0,
+          100
+        ],
+        [
+          "write",
+          2,
+          0,
+          100
+        ],
+        [
+          "read",
+          1,
+          1,
+          101
+        ],
+        [
+          "write",
+          2,
+          1,
+          101
+        ],
+        [
+          "read",
+          1,
+          2,
+          null
+        ],
+        [
+          "write",
+          2,
+          2,
+          null
+        ],
+        [
+          "read",
+          1,
+          3,
+          103
+        ],
+        [
+          "write",
+          2,
+          3,
+          103
+        ],
+        [
+          "release",
+          1
+        ],
+        [
+          "write",
+          2,
+          4,
+          99
+        ]
+      ],
+      "state": {
+        "array": 2,
+        "capacity": 8,
+        "count": 5
+      },
+      "entries": [
+        100,
+        101,
+        null,
+        103,
+        99
+      ],
+      "result": 1,
+      "instructions": 107
+    },
+    {
+      "input": {
+        "capacity": 4,
+        "count": 4,
+        "old": true,
+        "null_entry": 3
+      },
+      "trace": [
+        [
+          "allocate",
+          80,
+          8,
+          4,
+          1
+        ],
+        [
+          "construct",
+          2,
+          8
+        ],
+        [
+          "read",
+          1,
+          0,
+          100
+        ],
+        [
+          "write",
+          2,
+          0,
+          100
+        ],
+        [
+          "read",
+          1,
+          1,
+          101
+        ],
+        [
+          "write",
+          2,
+          1,
+          101
+        ],
+        [
+          "read",
+          1,
+          2,
+          102
+        ],
+        [
+          "write",
+          2,
+          2,
+          102
+        ],
+        [
+          "read",
+          1,
+          3,
+          null
+        ],
+        [
+          "write",
+          2,
+          3,
+          null
+        ],
+        [
+          "release",
+          1
+        ],
+        [
+          "write",
+          2,
+          4,
+          99
+        ]
+      ],
+      "state": {
+        "array": 2,
+        "capacity": 8,
+        "count": 5
+      },
+      "entries": [
+        100,
+        101,
+        102,
+        null,
+        99
+      ],
+      "result": 1,
+      "instructions": 107
+    }
+  ]
+}

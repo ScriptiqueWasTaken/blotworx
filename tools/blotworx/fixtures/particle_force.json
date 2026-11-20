@@ -1,0 +1,8106 @@
+{
+  "scope": "Bounded original Wii drag/radial/vortex force-kernel instruction reference.\n\nExecutes the unattenuated/no-distance-limit cases and their original vector\nhelpers. Prepared field transforms and input particle streams are supplied.\nDoes not execute model/field updates, RNG, allocation or the world scheduler.\nFinite normal fixtures only; FPSCR exceptions/NI subnormal modes are not modeled.\n",
+  "dol_sha256": "994779fa2e276983efdb50f02c406568f285a82558cb5d54bbdf74651a98a920",
+  "cases": [
+    {
+      "kind": "drag",
+      "magnitude": -78.00234985351562,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": -78.00234985351562,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1080453038,
+        3236325294,
+        1072064430
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": -78.00234985351562,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1118929242,
+        3274801498,
+        1110540634
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1080453038,
+        3236325294,
+        1072064430
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1118929242,
+        3274801498,
+        1110540634
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": -78.00234985351562,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": -78.00234985351562,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1080453038,
+        3236325294,
+        1072064430
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": -78.00234985351562,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1118929242,
+        3274801498,
+        1110540634
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1080453038,
+        3236325294,
+        1072064430
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1118929242,
+        3274801498,
+        1110540634
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": -6.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": -6.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1067030938,
+        3222903194,
+        1058642330
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": -6.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1089994752,
+        3245867008,
+        1081606144
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": -6.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": -6.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1067030938,
+        3222903194,
+        1058642330
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": -6.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1089994752,
+        3245867008,
+        1081606144
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": -6.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": -6.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1067030938,
+        3222903194,
+        1058642330
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": -6.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1089994752,
+        3245867008,
+        1081606144
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": -6.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": -6.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1067030938,
+        3222903194,
+        1058642330
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": -6.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1089994752,
+        3245867008,
+        1081606144
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 0.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 0.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 0.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 0.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 0.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 0.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 0.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 0.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 0.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 0.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 0.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 0.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 3.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 3.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1063675494,
+        3219547750,
+        1055286886
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 3.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        0,
+        0,
+        0
+      ],
+      "instructions": 45
+    },
+    {
+      "kind": "drag",
+      "magnitude": 3.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 3.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1063675494,
+        3219547750,
+        1055286886
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 3.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        0,
+        0,
+        0
+      ],
+      "instructions": 45
+    },
+    {
+      "kind": "drag",
+      "magnitude": 3.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 3.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1063675494,
+        3219547750,
+        1055286886
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 3.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        0,
+        0,
+        0
+      ],
+      "instructions": 45
+    },
+    {
+      "kind": "drag",
+      "magnitude": 3.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 3.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1063675494,
+        3219547750,
+        1055286886
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 3.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        0,
+        0,
+        0
+      ],
+      "instructions": 45
+    },
+    {
+      "kind": "drag",
+      "magnitude": 30.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 30.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        864026624,
+        3019898880,
+        855638016
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 30.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        0,
+        0,
+        0
+      ],
+      "instructions": 45
+    },
+    {
+      "kind": "drag",
+      "magnitude": 30.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 30.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        864026624,
+        3019898880,
+        855638016
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 30.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        0,
+        0,
+        0
+      ],
+      "instructions": 45
+    },
+    {
+      "kind": "drag",
+      "magnitude": 30.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 30.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        864026624,
+        3019898880,
+        855638016
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 30.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        0,
+        0,
+        0
+      ],
+      "instructions": 45
+    },
+    {
+      "kind": "drag",
+      "magnitude": 30.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 30.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        864026624,
+        3019898880,
+        855638016
+      ],
+      "instructions": 57
+    },
+    {
+      "kind": "drag",
+      "magnitude": 30.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        0,
+        0,
+        0
+      ],
+      "instructions": 45
+    },
+    {
+      "kind": "radial",
+      "magnitude": -78.00234985351562,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": -78.00234985351562,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        3230033838,
+        3239890370,
+        3239995310
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": -78.00234985351562,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        3274604890,
+        3280249092,
+        3283042650
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3239890370,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3280249092,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": -78.00234985351562,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": -78.00234985351562,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": -78.00234985351562,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353201,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        3205455676,
+        3228859334,
+        1067702223
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        3259931449,
+        3263018263,
+        1104583481
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": -6.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": -6.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1058642330,
+        3223742054,
+        3197737368
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": -6.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        3242721280,
+        3249668096,
+        3251896320
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": -6.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": -6.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3223742054,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": -6.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3249668096,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": -6.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": -6.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": -6.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353215,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": -6.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": -6.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1063339950,
+        3221812674,
+        1057971241
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": -6.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        3225629492,
+        3235328819,
+        1075943834
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 0.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 0.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 0.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 0.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 0.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 0.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 0.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 0.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 0.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 0.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 0.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 0.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 3.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 3.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1067030938,
+        3218708890,
+        1063675494
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 3.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1089994752,
+        1090650112,
+        1096810496
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 3.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 3.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3218708890,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 3.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        1090650112,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 3.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 3.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 3.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 3.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 3.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065856532,
+        3220638270,
+        1055957975
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 3.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1078040986,
+        1052350872,
+        3204657972
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 30.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 30.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1077936128,
+        1065353212,
+        1083179008
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 30.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1116274688,
+        1120305152,
+        1124564992
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 30.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 30.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        1065353212,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 30.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        1120305152,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 30.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 30.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 30.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353219,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 30.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 30.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1070386380,
+        3215353447,
+        1045220558
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "radial",
+      "magnitude": 30.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1101660160,
+        1101856768,
+        3239706624
+      ],
+      "instructions": 73
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        3215568030,
+        3221225472,
+        1070913103
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1078621460,
+        3227274765,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        3213486706,
+        3202498728,
+        1052607844
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        3264936456,
+        3221225472,
+        1109326344
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1116997499,
+        3259675812,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        3263838883,
+        1112168436,
+        3229119814
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 191
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 268
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 191
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1080453037,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 268
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        3221645231
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 191
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1118929241,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 268
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        3266216283
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1074424616,
+        3221225472,
+        1077204560
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1077827606,
+        3228322690,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1078102512,
+        3227641716,
+        1065436408
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1109457417,
+        3221225472,
+        1117649417
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1116160232,
+        3261886278,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -78.00234985351562,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1116450172,
+        3260449849,
+        1099804026
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1062352017,
+        3221225472,
+        1058465208
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1066749165,
+        3221690788,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1062672211,
+        3220220095,
+        1056629482
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        3231789630,
+        3221225472,
+        1080111678
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1087617294,
+        3233271988,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        3230438812,
+        1073930344,
+        1042732232
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 191
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 268
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 191
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1067030937,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 268
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1050253721
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 191
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1089994751,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 268
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        3234332674
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1066103516,
+        3221225472,
+        1059965808
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1066627037,
+        3221771395,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1066669329,
+        3221719014,
+        1057622664
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1082169632,
+        3221225472,
+        1087451711
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1086586842,
+        3234632233,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": -6.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1086943680,
+        3233748304,
+        1072263615
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 191
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 268
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 191
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 268
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 191
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 268
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 0.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1066103516,
+        3221225472,
+        1055464008
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1063957267,
+        3220760156,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1066023467,
+        3221476816,
+        1057048389
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1082169631,
+        3221225472,
+        3212915262
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        3219616284,
+        3187864776,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1080858012,
+        3229661210,
+        1059792231
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 191
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 268
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 191
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1063675495,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 268
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1058642330
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 191
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        3222798335,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 268
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1081606146
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1064602916,
+        3221225472,
+        1053963408
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1064079395,
+        3220679549,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1064037103,
+        3220731930,
+        1056306552
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        3204605054,
+        3221225472,
+        3223401023
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        3217555380,
+        1044980368,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 3.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        3218269056,
+        3161108480,
+        3190146812
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1072856214,
+        3221225472,
+        1029191328
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1043069700,
+        3216572310,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1072055729,
+        3223738914,
+        1057802422
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1106869965,
+        3221225472,
+        3244916429
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        3252201298,
+        1099285729,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        2.0,
+        3.0,
+        4.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1105181442,
+        3249654850,
+        1074519425
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 191
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 268
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 191
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        872415232,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 268
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1069547520
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 191
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        3254976511,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 268
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        0.0,
+        3.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1107886081
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        1e-08,
+        0.0,
+        0.0
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 242
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.5,
+      "bits": [
+        1065353216,
+        3221225472,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1057850218,
+        3221225472,
+        3200905818
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1047954804,
+        3215766238,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 0.5,
+      "last": 0.46666666865348816,
+      "bits": [
+        1046263128,
+        3216290048,
+        1050384044
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        3244392143,
+        3221225472,
+        3253567183
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        3250913233,
+        1100986036,
+        1056964608
+      ],
+      "instructions": 264
+    },
+    {
+      "kind": "vortex",
+      "magnitude": 30.0,
+      "position": [
+        0.6,
+        0.7,
+        -0.3
+      ],
+      "velocity": [
+        1.0,
+        -2.0,
+        0.5
+      ],
+      "direction": [
+        0.6000000238418579,
+        0.800000011920929,
+        0.0
+      ],
+      "time": 1.25,
+      "last": 0.125,
+      "bits": [
+        3251359280,
+        1099881124,
+        3234057774
+      ],
+      "instructions": 264
+    }
+  ]
+}

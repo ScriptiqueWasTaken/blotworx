@@ -1,0 +1,112 @@
+[package]
+name = "blotworx"
+version = "0.1.0"
+edition = "2021"
+description = "Standalone Rust game asset runtime"
+license = "GPL-3.0-only"
+repository = "https://github.com/Bloticle/blotworx"
+
+[features]
+# Embedded movie compatibility is kept out of the shipped gameplay path until
+# original Scaleform resources and host services have reference validation.
+blotworx-ui = ["dep:ruffle_core", "dep:ruffle_render", "dep:swf", "dep:url", "dep:async-channel", "dep:encoding_rs"]
+blotworx-ui-render = ["blotworx-ui", "dep:ruffle_render_wgpu", "dep:wgpu", "dep:pollster"]
+blotworx-memory-profile = []
+
+[[bin]]
+name = "blotworx_ui_probe"
+path = "src/bin/blotworx_ui_probe.rs"
+required-features = ["blotworx-ui"]
+
+[dependencies]
+libm = "0.2.16"
+eframe = { version = "0.36", default-features = false, features = ["glow", "default_fonts"] }
+egui = "0.36"
+egui_extras = { version = "0.36", features = ["all_loaders"] }
+egui_glow = "0.36"
+glow = "0.15"
+ruffle_core = { path = "third_party/ruffle/core", default-features = false, optional = true }
+ruffle_render = { git = "https://github.com/ruffle-rs/ruffle", rev = "45366370ed7d1a59c89aa3cf7b765c7a274407cd", optional = true }
+swf = { git = "https://github.com/ruffle-rs/ruffle", rev = "45366370ed7d1a59c89aa3cf7b765c7a274407cd", optional = true }
+url = { version = "2", optional = true }
+async-channel = { version = "2", optional = true }
+encoding_rs = { version = "0.8", optional = true }
+ruffle_render_wgpu = { git = "https://github.com/ruffle-rs/ruffle", rev = "45366370ed7d1a59c89aa3cf7b765c7a274407cd", optional = true }
+wgpu = { version = "30.0.1", optional = true }
+pollster = { version = "0.4", optional = true }
+epic-mickey-lib-rs = { path = "crates/asset-formats" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+roxmltree = "0.20"
+toml = "0.8"
+rfd = "0.15"
+anyhow = "1"
+memchr = "2.8"
+ring = "0.17"
+ureq = "3.4"
+unluac = { version = "=1.4.3", default-features = false }
+mlua = { version = "0.11", features = ["lua51", "vendored", "send"] }
+zip = { version = "2", default-features = false, features = ["deflate"] }
+flate2 = "1"
+log = "0.4"
+env_logger = "0.11"
+open = "5"
+dirs = "5"
+image = { version = "0.25", default-features = false, features = ["dds", "png", "jpeg", "tga"] }
+wiiu_swizzle = { version = "0.3", features = ["std"] }
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.61.2", features = ["Win32_System_LibraryLoader", "Win32_System_Memory", "Win32_System_ProcessStatus", "Win32_System_Threading"] }
+
+[profile.release]
+opt-level = 3
+# ThinLTO preserves cross-crate optimization without the large linker working
+# set of full LTO for this app and its substantial native/parser dependencies.
+lto = "thin"
+codegen-units = 8
+
+[profile.dev.package.miniz_oxide]
+opt-level = 3
+
+[build-dependencies]
+cc = "1"
+
+# The development engine/editor does not need DWARF/PDB data for every codec,
+# graphics and parser dependency. Keeping dev symbols off avoids shipping a
+# huge linker database and reduces compiler/linker memory; runtime code is
+# unchanged. Opt in to dependency symbols with CARGO_PROFILE_DEV_DEBUG=1 and
+# app symbols with CARGO_PROFILE_DEV_PACKAGE_BLOTWORX_DEBUG=1 when needed.
+[profile.dev]
+debug = 0
+
+# Dependencies used by the development demo keep their optimized profile below.
+# Keep runtime optimization while omitting the app crate's very large PDB by
+# default. This reduces rustc/linker peak memory without changing generated
+# machine code; set CARGO_PROFILE_DEV_PACKAGE_BLOTWORX_DEBUG=1 when stepping
+# through the app in a debugger.
+[profile.dev.package.blotworx]
+opt-level = 1
+debug = 0
+# More, smaller LLVM modules lowered measured rustc peak RSS for this crate
+# (about 3.4 GiB at 16 units versus about 3.8 GiB at 8 in a full engine build).
+codegen-units = 16
+# The engine/editor is a very large crate. Incremental dep-graph state raised
+# rustc's measured peak private memory by about 350 MiB in a clean check while
+# saving only ~4 seconds (67s incremental vs 71s without it) on this workspace.
+# Keep dev builds memory-bounded; dependencies retain Cargo's normal reuse.
+incremental = false
+
+[profile.dev.package."*"]
+opt-level = 2
+
+# The application crate contains the full engine/editor and a large set of
+# regression fixtures. Emitting full variable debug information for the single
+# giant unit-test harness makes rustc's peak memory disproportionately high.
+# Panic locations remain available without native debug symbols. Keep the
+# root test target's backend parallelism bounded and leave dependency profiles
+# untouched so the graphics/codec graph stays reusable.
+[profile.test.package.blotworx]
+opt-level = 0
+debug = 0
+codegen-units = 16
+incremental = false

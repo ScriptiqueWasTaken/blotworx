@@ -1,0 +1,115 @@
+{
+  "scope": "reflection decoding; not behavior execution or native registry lifecycle",
+  "sources": {
+    "characters/mickey/characters/mickey.hkx_wii": "c22627dee6ac1042db0d225cb62eefdad964a80c21ac14a54fb27838738f50cb",
+    "skinnedprops/watch/characters/watch.hkx_wii": "e723e5771b415eda23babfef4736d56bd877d0a890dd6257c4c3ddd2b6a11dc4"
+  },
+  "class_signatures": {
+    "hkRootLevelContainer": "2772c11e",
+    "hkbCharacterData": "cd83778f",
+    "hkbVariableValueSet": "27812d8d",
+    "hkbCharacterStringData": "01433e0a",
+    "hkbMirroredSkeletonInfo": "c6c2da4f"
+  },
+  "objects": {
+    "2:0": {
+      "klass": "hkRootLevelContainer",
+      "fields": {
+        "namedVariants": [
+          {
+            "name": "hkbCharacterData",
+            "className": "hkbCharacterData",
+            "variant": {
+              "ref": "2:80"
+            }
+          }
+        ]
+      }
+    },
+    "2:80": {
+      "klass": "hkbCharacterData",
+      "fields": {
+        "modelUpMS": [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "modelForwardMS": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "modelRightMS": [
+          -0.0,
+          -0.0,
+          1.0,
+          0.0
+        ],
+        "characterPropertyInfos": [],
+        "numBonesPerLod": [
+          17
+        ],
+        "characterPropertyValues": {
+          "ref": "2:208"
+        },
+        "scale": 1.0,
+        "stringData": {
+          "ref": "2:256"
+        },
+        "mirroredSkeletonInfo": {
+          "ref": "2:608"
+        }
+      }
+    },
+    "2:208": {
+      "klass": "hkbVariableValueSet",
+      "fields": {
+        "wordVariableValues": [],
+        "quadVariableValues": [],
+        "variantVariableValues": []
+      }
+    },
+    "2:256": {
+      "klass": "hkbCharacterStringData",
+      "fields": {
+        "deformableSkinNames": [
+          "Characters\\watch_Rig_Skin.hkx"
+        ],
+        "rigidSkinNames": [],
+        "animationNames": [
+          "watch_countdown.hkx",
+          "watch_exit.hkx",
+          "watch_spawn.hkx"
+        ],
+        "animationFilenames": [
+          null,
+          null,
+          null
+        ],
+        "characterPropertyNames": [],
+        "retargetingSkeletonMapperFilenames": [],
+        "lodNames": [
+          "Default (All Bones)"
+        ],
+        "name": "watch",
+        "rigName": "Characters\\watch_Rig_Skin.hkx",
+        "ragdollName": null,
+        "behaviorFilename": "Behaviors\\BehaviorGraph00.hkx"
+      }
+    },
+    "2:608": {
+      "klass": "hkbMirroredSkeletonInfo",
+      "fields": {
+        "mirrorAxis": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "bonePairMap": []
+      }
+    }
+  }
+}

@@ -2,6 +2,9 @@
 //! Native request ordering/defaults: REL1f8c44, 1f878c, 1f8800.
 //! Aspect policy, optional flag meanings and global MovieState events still
 //! require reference validation; this is functional playback, not full parity.
+#[path = "movie_ending.rs"]
+mod ending;
+
 use anyhow::{ensure, Context, Result};
 use std::{
     fs::File,
@@ -31,6 +34,8 @@ pub struct Request {
     pub(super) frontend_skip: Option<FrontendSkip>,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     credits: bool,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    ending: Vec<String>,
 }
 
 /// REL398cc registers credits as state 13. EndGame returns 13 at baaa4
@@ -45,7 +50,7 @@ enum EndingTail {
 #[derive(Default)]
 pub struct Requests {
     pub pending: Option<Request>,
-    ending: std::collections::VecDeque<String>,
+    ending: Vec<String>,
     ending_total: usize,
     ending_tail: EndingTail,
     startup: Option<std::collections::VecDeque<(String, FrontendSkip)>>,
@@ -89,12 +94,13 @@ impl Requests {
             flags: [truth(2), truth(3)],
             frontend_skip: None,
             credits: false,
+            ending: Vec::new(),
         });
         Ok(vec![mlua::Value::Boolean(true)].into())
     }
     pub(super) fn start_ending(&mut self, paths: Vec<String>) {
         self.ending_total = paths.len();
-        self.ending = paths.into();
+        self.ending = paths;
         self.ending_tail = EndingTail::Credits;
     }
 
@@ -140,13 +146,14 @@ impl Requests {
         if let Some(startup) = &mut self.startup {
             if let Some((filename, skip)) = startup.pop_front() {
                 self.submitted += 1;
-                return Some(Request { serial: self.submitted, filename, flags: [true, true], frontend_skip: Some(skip), credits: false });
+                return Some(Request { serial: self.submitted, filename, flags: [true, true], frontend_skip: Some(skip), credits: false, ending: Vec::new() });
             }
             self.startup = None;
             self.title_ready = true;
         }
-        let (filename, credits) = if let Some(filename) = self.ending.pop_front() {
-            (filename, false)
+        let ending = std::mem::take(&mut self.ending);
+        let (filename, credits) = if let Some(filename) = ending.first() {
+            (filename.clone(), false)
         } else {
             match std::mem::take(&mut self.ending_tail) {
                 EndingTail::Idle => return None,
@@ -161,7 +168,7 @@ impl Requests {
             }
         };
         self.submitted += 1;
-        Some(Request { serial: self.submitted, filename, flags: [true, true], frontend_skip: None, credits })
+        Some(Request { serial: self.submitted, filename, flags: [true, true], frontend_skip: None, credits, ending })
     }
 
     pub fn summary(&self) -> serde_json::Value {
@@ -330,9 +337,20 @@ struct Ready {
     header: Header,
     audio_plan:Option<super::movie_tracks::Plan>,
     credits_audio: Option<super::audio_codec::Info>,
+    ending: Option<ending::Sequence>,
     video: Receiver<Video>,
     audio: Option<Receiver<Audio>>,
 }
+impl Ready {
+    fn duration(&self) -> f64 {
+        self.ending.as_ref().map_or_else(|| self.header.duration(), |ending| ending.duration)
+    }
+
+    fn frame_time(&self, frame: u32) -> f64 {
+        self.ending.as_ref().map_or_else(|| ending::frame_seconds(&self.header, frame), |ending| ending.frame_time(frame))
+    }
+}
+
 fn child(
     exe: &Path,
     path: &Path,
@@ -437,6 +455,32 @@ fn finish(child: &Arc<Mutex<Child>>, diagnostic: &Arc<Mutex<String>>) -> Result<
     );
     Ok(())
 }
+fn decode_video_clip(
+    exe: &Path,
+    path: &Path,
+    header: &Header,
+    first_frame: u32,
+    cancel: &Arc<Cancellation>,
+    tx: &SyncSender<Video>,
+) -> Result<bool> {
+    let (child, mut stdout, diagnostic) = child(exe, path, None, cancel)?;
+    let size = usize::try_from(u64::from(header.width) * u64::from(header.height) * 4)?;
+    for local_frame in 0..header.frames {
+        if cancel.stop.load(Ordering::Acquire) {
+            return Ok(false);
+        }
+        let mut rgba = vec![0; size];
+        stdout.read_exact(&mut rgba)
+            .with_context(|| format!("Decode {} frame {local_frame}", path.display()))?;
+        if tx.send(Video::Frame(first_frame + local_frame, rgba)).is_err() {
+            return Ok(false);
+        }
+    }
+    ensure!(stdout.read(&mut [0])? == 0, "Movie decoder produced unexpected extra frames");
+    finish(&child, &diagnostic)?;
+    Ok(true)
+}
+
 fn video_worker(
     exe: PathBuf,
     path: PathBuf,
@@ -444,33 +488,12 @@ fn video_worker(
     cancel: Arc<Cancellation>,
     tx: SyncSender<Video>,
 ) {
-    let result = (|| -> Result<()> {
-        let (child, mut stdout, diagnostic) = child(&exe, &path, None, &cancel)?;
-        let size = usize::try_from(u64::from(header.width) * u64::from(header.height) * 4)?;
-        for index in 0..header.frames {
-            if cancel.stop.load(Ordering::Acquire) {
-                return Ok(());
-            }
-            let mut frame = vec![0; size];
-            stdout
-                .read_exact(&mut frame)
-                .with_context(|| format!("Truncated decoded movie frame {index}"))?;
-            if tx.send(Video::Frame(index, frame)).is_err() {
-                return Ok(());
-            }
-        }
-        let mut extra = [0];
-        ensure!(
-            stdout.read(&mut extra)? == 0,
-            "Movie decoder produced unexpected extra frames"
-        );
-        finish(&child, &diagnostic)?;
-        let _ = tx.send(Video::End);
-        Ok(())
-    })();
-    if let Err(error) = result {
-        let _ = tx.send(Video::Error(format!("{error:#}")));
-    }
+    let terminal = match decode_video_clip(&exe, &path, &header, 0, &cancel, &tx) {
+        Ok(true) => Video::End,
+        Ok(false) => return,
+        Err(error) => Video::Error(format!("{error:#}")),
+    };
+    let _ = tx.send(terminal);
 }
 fn audio_worker(
     exe: PathBuf,
@@ -521,26 +544,14 @@ fn audio_worker(
 /// RELb8b6c opens the movie and posts Play_music_credits. The movie has a
 /// silent audio track and the Wwise soundtrack matches its duration within
 /// one source sample. Drive presentation with that soundtrack's clock.
-fn credits_audio(root: &Path, header: &Header) -> Result<super::audio_codec::Decoder> {
-    let root = root.join("Audio/Wii");
-    let bytes = std::fs::read(root.join("Localize/English_NTSC/fmv_endgame_soundtrack.bnk"))
-        .context("Read the original credits soundtrack bank")?;
-    let bank = super::audio_bank::Bank::parse(&bytes)?;
-    let actions = bank.named_event_actions("Play_music_credits")?;
-    let [action] = actions.as_slice() else { anyhow::bail!("Unexpected credits music action list"); };
-    let play = bank.objects.get(action).context("Missing credits music action")?.action()?;
-    ensure!(play.kind == 0x4011 && play.delay == [0; 3], "Unexpected credits music Play action");
-    let source = bank.objects.get(&play.target).context("Missing credits music sound")?.source()?;
-    ensure!(source.plugin == 0x40001 && source.stream_type == 1, "Unexpected credits music source");
-    let path = root.join(format!("{}.ogg", source.file_id));
-    let decoder = super::audio_codec::Decoder::open_file(&path, source.media_id)?;
-    ensure!(decoder.info.rate == source.sample_rate, "Credits music rate disagrees with its bank");
-    let frames = header.duration() * f64::from(decoder.info.rate);
-    ensure!((decoder.info.frames as f64 - frames).abs() <= 1., "Credits music and picture durations disagree");
+fn credits_audio(root: &Path, header: &Header) -> Result<ending::Soundtrack> {
+    let decoder = ending::soundtrack(root, "Play_music_credits")?;
+    let frames = header.duration() * f64::from(decoder.info().rate);
+    ensure!((decoder.info().frames as f64 - frames).abs() <= 1., "Credits music and picture durations disagree");
     Ok(decoder)
 }
 
-fn stream_credits_audio(mut decoder: super::audio_codec::Decoder, tx: SyncSender<Audio>) {
+fn stream_credits_audio(mut decoder: ending::Soundtrack, tx: SyncSender<Audio>) {
     loop {
         let message = match decoder.read_chunk() {
             Ok(Some(samples)) => Audio::Samples(samples),
@@ -598,10 +609,13 @@ impl Player {
                     "Non-default native movie options are not reconstructed: {:?}",
                     worker_request.flags
                 );
+                if !worker_request.ending.is_empty() {
+                    return ending::prepare(&root, &worker_request.ending, worker_cancel);
+                }
                 let path = resolve(&root, &worker_request.filename)?;
                 let header = Header::read(&path)?;
                 let decoder = worker_request.credits.then(|| credits_audio(&root, &header)).transpose()?;
-                let credits_audio = decoder.as_ref().map(|decoder| decoder.info.clone());
+                let credits_audio = decoder.as_ref().map(|decoder| decoder.info().clone());
                 let audio_plan = if credits_audio.is_none() {
                     super::movie_tracks::Plan::select(&header.audio_streams, &selection)?
                 } else {
@@ -631,6 +645,7 @@ impl Player {
                     header,
                     audio_plan,
                     credits_audio,
+                    ending: None,
                     video,
                     audio,
                 })
@@ -663,7 +678,8 @@ impl Player {
             match self.ready.try_recv() {
                 Ok(Ok(ready)) => {
                     ensure!(self.loop_frames.is_none() || ready.audio.is_none(), "UI movie loops must be silent");
-                    let format = ready.credits_audio.as_ref().map(|info| (info.rate, info.channels))
+                    let external = ready.credits_audio.as_ref().or_else(|| ready.ending.as_ref().map(|ending| &ending.soundtrack));
+                    let format = external.map(|info| (info.rate, info.channels))
                         .or_else(|| ready.audio_plan.as_ref().map(|plan| (plan.rate, plan.channels)));
                     self.audio = format.map(|(rate, channels)| super::movie_audio::Stream::open(rate, channels)).transpose()?;
                     self.audio_end = ready.audio.is_none();
@@ -727,11 +743,8 @@ impl Player {
             } else {
                 started.elapsed().as_secs_f64()
             };
-            let target = (self.seconds * f64::from(ready.header.fps[0])
-                / f64::from(ready.header.fps[1]))
-            .floor() as u32;
             loop {
-                if self.next.as_ref().is_none_or(|(index, _)| *index > target) {
+                if self.next.as_ref().is_none_or(|(index, _)| ready.frame_time(*index) > self.seconds) {
                     break;
                 }
                 let (index, bytes) = self.next.take().unwrap();
@@ -763,7 +776,7 @@ impl Player {
                 }
             }
             self.completed = self.video_end
-                && self.seconds >= ready.header.duration()
+                && self.seconds >= ready.duration()
                 && self
                     .audio
                     .as_ref()
@@ -772,7 +785,7 @@ impl Player {
         Ok(())
     }
     pub(super) fn title_background(root: PathBuf, filename: String, looping: bool) -> Self {
-        let request = Request { serial: 0, filename, flags: [true, true], frontend_skip: None, credits: false };
+        let request = Request { serial: 0, filename, flags: [true, true], frontend_skip: None, credits: false, ending: Vec::new() };
         let mut player = Self::new(root, request, None);
         player.loop_frames = looping.then(Vec::new);
         player
@@ -856,7 +869,13 @@ impl Player {
         ui.ctx().request_repaint();
     }
     pub fn summary(&self) -> serde_json::Value {
-        serde_json::json!({"request":self.request,"header":self.streams.as_ref().map(|ready|&ready.header),"audio_plan":self.streams.as_ref().and_then(|ready|ready.audio_plan.as_ref()),"credits_audio":self.streams.as_ref().and_then(|ready|ready.credits_audio.as_ref()),"frame":self.frame,"seconds":self.seconds,"completed":self.completed,"skipped":self.skipped,"skip_hold_seconds":self.skip.as_ref().map(|skip|skip.seconds),"skip_prompt_native_presentation":false,"error":self.error,"clock":if self.audio.is_some(){"audio device samples"}else{"monotonic"},"reference_parity_verified":false})
+        let ending = self.streams.as_ref().and_then(|ready| ready.ending.as_ref());
+        let ending_position = ending.zip(self.frame).map(|(ending, frame)| {
+            let clip = ending.clip(frame);
+            serde_json::json!({"clip": clip.name, "frame": frame - clip.first_frame,
+                "clip_start_seconds": clip.start, "frame_seconds": ending.frame_time(frame)})
+        });
+        serde_json::json!({"request":self.request,"header":self.streams.as_ref().map(|ready|&ready.header),"ending_soundtrack":ending.map(|ending| &ending.soundtrack),"ending_position":ending_position,"audio_plan":self.streams.as_ref().and_then(|ready|ready.audio_plan.as_ref()),"credits_audio":self.streams.as_ref().and_then(|ready|ready.credits_audio.as_ref()),"frame":self.frame,"seconds":self.seconds,"completed":self.completed,"skipped":self.skipped,"skip_hold_seconds":self.skip.as_ref().map(|skip|skip.seconds),"skip_prompt_native_presentation":false,"error":self.error,"clock":if self.audio.is_some(){"audio device samples"}else{"monotonic"},"reference_parity_verified":false})
     }
 }
 impl Drop for Player {

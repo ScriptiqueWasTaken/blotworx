@@ -253,18 +253,18 @@
       },
       {
         "scope": "EM1 authored ending sequence and title handoff",
-        "state": "UpdatePins captures the 57 original named global bytes. CleanLoadLevel takes the original ending flag and completed slot into a fresh Main_Menu world. PreStartScreenAction selects EndGame:0, and the original opening, nine configured outcomes and closing are queued one at a time.",
+        "state": "UpdatePins captures the 57 original named global bytes. CleanLoadLevel takes the original ending flag and completed slot into a fresh Main_Menu world. PreStartScreenAction selects EndGame:0, and the original opening, nine configured outcomes and closing play on a continuous sample clock. The localized Play_fmv_endgame soundtrack stays active across all eleven clips and mixes with the embedded Bink tracks.",
         "source": "Wii REL353ac and relocated pin table at section 7 +0x1c4, CleanLoadLevel at 2f314, SetEndingGame at 26c944, and frontend movie list builder ba148. Shipped StartScreen.lua and ConfigFiles.ini supply the sequence request and variant movie paths.",
-        "evidence": "target/perf/ending-verified-opening.runtime.json shows the original opening frame and expected mixed-outcome file order. ending-verified-complete.runtime.json records all 11 clips finishing with skip input, no script/runtime errors and the closing clip last. The completed slot retains the staged first pin. The separate Zone S terminal callback probe staged boss flag 25, ran the shipped DoEndGame, wrote LAST-only and opened the original ending movie.",
+        "evidence": "target/perf/ending-verified-opening.runtime.json shows the original opening frame and expected mixed-outcome file order. ending-verified-complete.runtime.json records all 11 clips finishing with skip input, no script/runtime errors and the closing clip last. The completed slot retains the staged first pin. The later ending-mixed-full replay reached closing frame 1186 without skipping, at 252.7455 seconds on the same audio clock. That was 0.565 ms after the authored frame timestamp, with no script or runtime errors. The ending-mixed-gain-skip replay skipped the full ending to credits and returned to the interactive title. The separate Zone S terminal callback probe staged boss flag 25, ran the shipped DoEndGame, wrote LAST-only and opened the original ending movie.",
         "open": [
           "Final encounter played to its terminal callback without staging",
-          "Original ending soundtrack across the eleven ending clips and native Wii skip timing"
+          "Native Wii dissolve, end-to-end mix gain and hold-to-skip timing comparison"
         ]
       },
       {
         "scope": "EM1 campaign credits and return to title",
         "state": "Campaign EndGame proceeds from the closing movie to the original credits video with its Wwise stereo soundtrack, then returns to the title. Credits:0 also works as an explicit sequence command.",
-        "source": "Wii REL398cc..39908 state registration, baaa4 EndGame return to state 13, b8b6c credits presentation and b87b4 return to the title state. Play_music_credits in the imported fmv_endgame_soundtrack bank resolves the streamed source, while fmv_credits.bik contains a silent embedded track.",
+        "source": "Wii REL398cc..39908 state registration, baaa4 EndGame return to state 13, b8b6c credits presentation and b87b4 return to the title state. Play_music_credits in the imported fmv_endgame_soundtrack bank resolves the streamed source and its -1 dB node gain, while fmv_credits.bik contains a silent embedded track.",
         "evidence": "credits-campaign-return.runtime.json records a staged campaign ending with twelve completed movies including a held-input credits skip, the original interactive title visible and no runtime or script errors. credits-art-and-music.runtime.json samples credits frame 600 at device time 20.020964 seconds using 28000 Hz stereo media 448639764, within one millisecond of the frame timestamp.",
         "open": [
           "Full unskipped Wii playback comparison and final gain parity",

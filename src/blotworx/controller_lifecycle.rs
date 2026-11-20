@@ -36,7 +36,15 @@ impl Plan {
                     .nodes
                     .get(&id)
                     .context("Lifecycle AV object missing from hierarchy")?;
-                append(&mut entries, &node.controllers, None);
+                // Texture-map controllers also appear on hierarchy nodes as
+                // render bindings. Start the actual controller at its property.
+                entries.extend(node.controllers.iter().filter(|controller| {
+                    controller.texture_transform.is_none() || controller.target != Some(id)
+                }).map(|controller| Entry {
+                    block: controller.block,
+                    class_name: controller.class_name.clone(),
+                    property: None,
+                }));
                 // Native804bf5f8 bounds by effective size(b6), skips nulls;
                 // unlike the custom START_EMITTERS used-count walk(b8).
                 if super::nif_types::is_a(&node.class_name, "NiNode")? {

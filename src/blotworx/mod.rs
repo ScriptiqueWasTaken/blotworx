@@ -4551,14 +4551,7 @@ impl eframe::App for Engine {
             if self.options_open {self.options_open=false;} else {self.paused = !self.paused;}
         }
         if self.receiver.is_some() {
-            if let Some(screen) = &mut self.loading_screen {
-                screen.paint(ui);
-            } else {
-                let viewport = ui.max_rect();
-                ui.painter().rect_filled(viewport, 0., egui::Color32::BLACK);
-                let indicator = egui::Rect::from_center_size(viewport.center(), egui::vec2(24., 24.));
-                ui.put(indicator, egui::Spinner::new());
-            }
+            self.paint_loading_screen(ui);
             return;
         } else {
             self.loading_screen = None;
@@ -4597,27 +4590,11 @@ impl eframe::App for Engine {
             if self.details {
                 egui::Window::new("Level report").open(&mut self.details).resizable(true).default_width(530.).show(ui.ctx(),|ui|{if let Some(w)=&self.world{egui::ScrollArea::vertical().max_height(550.).show(ui,|ui|{ui.label(format!("{} entities Â· {} meshes Â· {} triangles Â· {} collision triangles",w.report.placed_entities,w.report.meshes,w.report.render_triangles,w.report.collision_triangles));ui.label(format!("Authored spawn: {:?}",w.report.spawn));ui.label(format!("Global definitions applied: {}",w.report.global_overrides));if ui.button("Export reportâ€¦").clicked(){if let Some(path)=rfd::FileDialog::new().set_file_name("blotworx-report.json").save_file(){if let Err(e)=std::fs::write(path,serde_json::to_vec_pretty(&w.report).unwrap_or_default()){self.error=Some(e.to_string())}}}ui.separator();for line in &w.report.unsupported{ui.label(line);}ui.collapsing("Asset / material warnings",|ui|{for line in &w.report.warnings{ui.label(line);}});ui.collapsing("Components",|ui|{for (name,count) in &w.report.components{ui.label(format!("{count} Ã— {name}"));}});});}});
             }
-            // Give the loading screen time to present and animate before a
-            // synchronous scene import takes over the UI thread.
-            if self
-                .stream_loading_screen
-                .as_ref()
-                .is_none_or(loading_screen::Screen::ready_to_dismiss)
-            {
-                self.play(ui);
+            if self.paint_pending_stream(ui, true) {
+                return;
             }
-            if let Some(world) = self.world.as_mut().filter(|world| {
-                self.error.is_none() && world.faded_scene_load_pending()
-            }) {
-                if self.stream_loading_screen.is_none() {
-                    self.simulation_active = false;
-                    world.frame_clock.suspend_for_loading();
-                }
-                let screen = self.stream_loading_screen.get_or_insert_with(|| {
-                    loading_screen::Screen::load(ui.ctx(), world.source_data_root(), Some(&world.report.level))
-                });
-                screen.paint(ui);
-                self.capture_frame(ui, false);
+            self.play(ui);
+            if self.paint_pending_stream(ui, false) {
                 return;
             }
             self.stream_loading_screen = None;
@@ -4713,6 +4690,9 @@ impl eframe::App for Engine {
                 match world.checkpoint.take_restore() {
                     Ok(Some(snapshot)) => {
                         self.resume_snapshot(ui.ctx(), snapshot);
+                        if self.receiver.is_some() {
+                            self.paint_loading_screen(ui);
+                        }
                         ui.ctx().request_repaint();
                         return;
                     }
@@ -4728,6 +4708,9 @@ impl eframe::App for Engine {
                 self.actor_focus = None;
                 self.preview_entry = None;
                 self.load_with_checkpoint(ui.ctx(), None, clean);
+                if self.receiver.is_some() {
+                    self.paint_loading_screen(ui);
+                }
                 ui.ctx().request_repaint();
                 return;
             }
@@ -4762,6 +4745,31 @@ impl eframe::App for Engine {
 }
 
 impl Engine {
+    fn paint_loading_screen(&mut self, ui: &mut egui::Ui) {
+        if let Some(screen) = &mut self.loading_screen {
+            screen.paint(ui);
+        }
+    }
+
+    fn paint_pending_stream(&mut self, ui: &mut egui::Ui, allow_publication: bool) -> bool {
+        let Some(world) = self.world.as_mut().filter(|world| {
+            self.error.is_none() && world.faded_scene_load_pending()
+        }) else {
+            return false;
+        };
+        let screen = self.stream_loading_screen.get_or_insert_with(|| {
+            self.simulation_active = false;
+            world.frame_clock.suspend_for_loading();
+            loading_screen::Screen::load(ui.ctx(), world.source_data_root(), Some(&world.report.level))
+        });
+        if allow_publication && screen.ready_to_dismiss() {
+            return false;
+        }
+        screen.paint(ui);
+        self.capture_frame(ui, false);
+        true
+    }
+
     fn capture_frame(&mut self, ui: &mut egui::Ui, force: bool) {
         if self.capture.is_some()
             && (force

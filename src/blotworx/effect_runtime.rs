@@ -195,6 +195,9 @@ impl Live {
             let mut draw = mesh.draw.clone();
             draw.trans_mat = super::skin::matrix_product(&matrix, &mesh.inverse);
             self.particles.publish_material(mesh.node, &mut draw)?;
+            if let Some(animation) = &self.animation {
+                animation.apply_material(mesh.node, &mut draw)?;
+            }
             draws.push(draw);
         }
         Ok(())

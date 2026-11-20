@@ -22,7 +22,7 @@ struct MaterialController {
 pub struct Instance {
     material_controllers: Vec<MaterialController>,
     colors: BTreeMap<(u32, usize), [f32; 4]>,
-    texture_transforms: BTreeMap<u32, Vec<(bool, u32, u32, f32)>>,
+    texture_transforms: BTreeMap<(u32, bool, u32, u32), f32>,
     indirect_scales: BTreeMap<u32, [[i32; 3]; 6]>,
     pub component_clock: Option<super::nif_sequence::ComponentClock>,
     controllers: Vec<Playback>,
@@ -87,7 +87,8 @@ impl Instance {
         }))
     }
     pub fn owns_controller(&self, block: u32) -> bool {
-        self.controllers.iter().any(|c| c.block == block)
+        self.controller_owners.contains_key(&block)
+            || self.material_controllers.iter().any(|c| c.control.block == block)
     }
     pub fn prepare_effect_template(&mut self, ids: &BTreeSet<u32>) {
         for controller in &mut self.controllers {
@@ -95,29 +96,37 @@ impl Instance {
                 controller.flags = effect_template_flags(controller.flags);
             }
         }
+        for state in &mut self.material_controllers {
+            if ids.contains(&state.control.block) {
+                state.control.flags = effect_template_flags(state.control.flags);
+            }
+        }
     }
     pub fn start_controller(&mut self, block: u32, time: f32) -> Result<()> {
-        let controller = self
-            .controllers
-            .iter_mut()
-            .find(|c| c.block == block)
-            .ok_or_else(|| anyhow::anyhow!("Transform controller {block} has no owner"))?;
-        controller.start_at(time);
+        if let Some(&index) = self.controller_owners.get(&block) {
+            self.controllers[index].start_at(time);
+        } else {
+            self.set_material_controller_active(block, true)?;
+        }
         Ok(())
     }
     pub fn stop_controller(&mut self, block: u32) -> Result<()> {
-        let controller = self
-            .controllers
-            .iter_mut()
-            .find(|c| c.block == block)
-            .ok_or_else(|| anyhow::anyhow!("Transform controller {block} has no owner"))?;
-        controller.stop();
+        if let Some(&index) = self.controller_owners.get(&block) {
+            self.controllers[index].stop();
+        } else {
+            self.set_material_controller_active(block, false)?;
+        }
+        Ok(())
+    }
+    fn set_material_controller_active(&mut self, block: u32, active: bool) -> Result<()> {
+        ensure!(self.owns_controller(block), "Model controller {block} has no owner");
+        for state in self.material_controllers.iter_mut().filter(|state| state.control.block == block) {
+            state.control.flags = (state.control.flags & !8) | (u16::from(active) << 3);
+            state.clock.reset();
+        }
         Ok(())
     }
     pub fn update(&mut self, hierarchy: &Hierarchy, time: f32) -> Result<()> {
-        for transforms in self.texture_transforms.values_mut() {
-            transforms.clear();
-        }
         for state in &mut self.material_controllers {
             let c = &state.control;
             if c.flags & 8 == 0 || c.flags & 0x20 != 0 {
@@ -131,8 +140,8 @@ impl Instance {
                 }
             }
             if let Some(channel) = &c.texture_transform {
-                if let Some(sample) = channel.sample(time)? {
-                    self.texture_transforms.entry(target).or_default().push(sample);
+                if let Some((shader_map, slot, operation, value)) = channel.sample(time)? {
+                    self.texture_transforms.insert((target, shader_map, slot, operation), value);
                 }
             }
             if let Some(channel) = &c.indirect_scale {
@@ -149,9 +158,10 @@ impl Instance {
         self.update_with_writes(hierarchy, time, |_, _| Ok(()))
     }
     pub(super) fn apply_material(&self, mesh: u32, draw: &mut crate::render_support::viewport3d::GpuDrawCommand) -> Result<()> {
-        if let (Some(samples), Some(material)) = (self.texture_transforms.get(&mesh), &draw.material) {
+        if let Some(material) = &draw.material {
             let mut transforms = BTreeMap::new();
-            for &(shader_map, slot, operation, sample) in samples {
+            let samples = self.texture_transforms.range((mesh, false, 0, 0)..=(mesh, true, u32::MAX, u32::MAX));
+            for (&(_, shader_map, slot, operation), &sample) in samples {
                 let map = (shader_map, slot);
                 let Some(Ok(original)) = material.texture_transforms.get(&map) else { continue; };
                 let transform = transforms.entry(map).or_insert_with(|| original.unwrap_or_default());

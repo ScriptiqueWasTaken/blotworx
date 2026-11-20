@@ -29,12 +29,25 @@ pub struct Request {
     pub flags: [bool; 2],
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) frontend_skip: Option<FrontendSkip>,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    credits: bool,
+}
+
+/// REL398cc registers credits as state 13. EndGame returns 13 at baaa4
+/// and campaign credits return to the start-screen state at b87b4.
+#[derive(Default, serde::Serialize)]
+enum EndingTail {
+    #[default]
+    Idle,
+    Credits,
+    Title,
 }
 #[derive(Default)]
 pub struct Requests {
     pub pending: Option<Request>,
     ending: std::collections::VecDeque<String>,
     ending_total: usize,
+    ending_tail: EndingTail,
     startup: Option<std::collections::VecDeque<(String, FrontendSkip)>>,
     title_ready: bool,
     pub submitted: u64,
@@ -75,17 +88,23 @@ impl Requests {
             filename,
             flags: [truth(2), truth(3)],
             frontend_skip: None,
+            credits: false,
         });
         Ok(vec![mlua::Value::Boolean(true)].into())
     }
     pub(super) fn start_ending(&mut self, paths: Vec<String>) {
         self.ending_total = paths.len();
         self.ending = paths.into();
+        self.ending_tail = EndingTail::Credits;
     }
 
     /// Retail RELc4ba8..c4ca0 reads consecutive name/value pairs. StartScreen
     /// is the terminal frontend command, while .bik entries feed playback.
     pub(super) fn start_frontend(&mut self, sequence: &str) -> Result<()> {
+        if sequence == "Credits:0" {
+            self.start_ending(Vec::new());
+            return Ok(());
+        }
         let movies = if sequence == "StartScreen:0" {
             ""
         } else {
@@ -121,18 +140,32 @@ impl Requests {
         if let Some(startup) = &mut self.startup {
             if let Some((filename, skip)) = startup.pop_front() {
                 self.submitted += 1;
-                return Some(Request { serial: self.submitted, filename, flags: [true, true], frontend_skip: Some(skip) });
+                return Some(Request { serial: self.submitted, filename, flags: [true, true], frontend_skip: Some(skip), credits: false });
             }
             self.startup = None;
             self.title_ready = true;
         }
-        let filename = self.ending.pop_front()?;
+        let (filename, credits) = if let Some(filename) = self.ending.pop_front() {
+            (filename, false)
+        } else {
+            match std::mem::take(&mut self.ending_tail) {
+                EndingTail::Idle => return None,
+                EndingTail::Credits => {
+                    self.ending_tail = EndingTail::Title;
+                    ("Movies/fmv_credits.bik".into(), true)
+                }
+                EndingTail::Title => {
+                    self.title_ready = true;
+                    return None;
+                }
+            }
+        };
         self.submitted += 1;
-        Some(Request { serial: self.submitted, filename, flags: [true, true], frontend_skip: None })
+        Some(Request { serial: self.submitted, filename, flags: [true, true], frontend_skip: None, credits })
     }
 
     pub fn summary(&self) -> serde_json::Value {
-        serde_json::json!({"pending":self.pending,"submitted":self.submitted,"completed":self.completed,"last_completed":self.last_completed,"ending_total":self.ending_total,"ending_remaining":self.ending,"startup_remaining":self.startup,"title_ready":self.title_ready})
+        serde_json::json!({"pending":self.pending,"submitted":self.submitted,"completed":self.completed,"last_completed":self.last_completed,"ending_total":self.ending_total,"ending_remaining":self.ending,"ending_tail":self.ending_tail,"startup_remaining":self.startup,"title_ready":self.title_ready})
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
@@ -225,6 +258,10 @@ impl Header {
 }
 pub fn resolve(root: &Path, name: &str) -> Result<PathBuf> {
     let relative = name.replace('\\', "/");
+    let relative = match relative.split_once('/') {
+        Some((prefix, file)) if prefix.eq_ignore_ascii_case("Movies") => file,
+        _ => relative.as_str(),
+    };
     let mut path = root.join("Movies");
     for part in relative.split('/') {
         ensure!(
@@ -292,6 +329,7 @@ enum Audio {
 struct Ready {
     header: Header,
     audio_plan:Option<super::movie_tracks::Plan>,
+    credits_audio: Option<super::audio_codec::Info>,
     video: Receiver<Video>,
     audio: Option<Receiver<Audio>>,
 }
@@ -480,6 +518,42 @@ fn audio_worker(
         let _ = tx.send(Audio::Error(format!("{error:#}")));
     }
 }
+/// RELb8b6c opens the movie and posts Play_music_credits. The movie has a
+/// silent audio track and the Wwise soundtrack matches its duration within
+/// one source sample. Drive presentation with that soundtrack's clock.
+fn credits_audio(root: &Path, header: &Header) -> Result<super::audio_codec::Decoder> {
+    let root = root.join("Audio/Wii");
+    let bytes = std::fs::read(root.join("Localize/English_NTSC/fmv_endgame_soundtrack.bnk"))
+        .context("Read the original credits soundtrack bank")?;
+    let bank = super::audio_bank::Bank::parse(&bytes)?;
+    let actions = bank.named_event_actions("Play_music_credits")?;
+    let [action] = actions.as_slice() else { anyhow::bail!("Unexpected credits music action list"); };
+    let play = bank.objects.get(action).context("Missing credits music action")?.action()?;
+    ensure!(play.kind == 0x4011 && play.delay == [0; 3], "Unexpected credits music Play action");
+    let source = bank.objects.get(&play.target).context("Missing credits music sound")?.source()?;
+    ensure!(source.plugin == 0x40001 && source.stream_type == 1, "Unexpected credits music source");
+    let path = root.join(format!("{}.ogg", source.file_id));
+    let decoder = super::audio_codec::Decoder::open_file(&path, source.media_id)?;
+    ensure!(decoder.info.rate == source.sample_rate, "Credits music rate disagrees with its bank");
+    let frames = header.duration() * f64::from(decoder.info.rate);
+    ensure!((decoder.info.frames as f64 - frames).abs() <= 1., "Credits music and picture durations disagree");
+    Ok(decoder)
+}
+
+fn stream_credits_audio(mut decoder: super::audio_codec::Decoder, tx: SyncSender<Audio>) {
+    loop {
+        let message = match decoder.read_chunk() {
+            Ok(Some(samples)) => Audio::Samples(samples),
+            Ok(None) => Audio::End,
+            Err(error) => Audio::Error(format!("{error:#}")),
+        };
+        let done = !matches!(message, Audio::Samples(_));
+        if tx.send(message).is_err() || done {
+            break;
+        }
+    }
+}
+
 pub struct Player {
     pub request: Request,
     ready: Receiver<Result<Ready, String>>,
@@ -526,10 +600,20 @@ impl Player {
                 );
                 let path = resolve(&root, &worker_request.filename)?;
                 let header = Header::read(&path)?;
-                let audio_plan=super::movie_tracks::Plan::select(&header.audio_streams,&selection)?;
+                let decoder = worker_request.credits.then(|| credits_audio(&root, &header)).transpose()?;
+                let credits_audio = decoder.as_ref().map(|decoder| decoder.info.clone());
+                let audio_plan = if credits_audio.is_none() {
+                    super::movie_tracks::Plan::select(&header.audio_streams, &selection)?
+                } else {
+                    None
+                };
                 let exe = super::movie_codec::provision()?;
                 let (video_tx, video) = mpsc::sync_channel(2);
-                let audio = if let Some(plan) = audio_plan.clone() {
+                let audio = if let Some(decoder) = decoder {
+                    let (tx, audio) = mpsc::sync_channel(8);
+                    std::thread::spawn(move || stream_credits_audio(decoder, tx));
+                    Some(audio)
+                } else if let Some(plan) = audio_plan.clone() {
                     let (audio_tx, audio) = mpsc::sync_channel(8);
                     let (exe, path, cancel) = (
                         exe.clone(),
@@ -546,6 +630,7 @@ impl Player {
                 Ok(Ready {
                     header,
                     audio_plan,
+                    credits_audio,
                     video,
                     audio,
                 })
@@ -578,10 +663,9 @@ impl Player {
             match self.ready.try_recv() {
                 Ok(Ok(ready)) => {
                     ensure!(self.loop_frames.is_none() || ready.audio.is_none(), "UI movie loops must be silent");
-                    self.audio = ready
-                        .audio_plan.as_ref()
-                        .map(|plan| super::movie_audio::Stream::open(plan.rate, plan.channels))
-                        .transpose()?;
+                    let format = ready.credits_audio.as_ref().map(|info| (info.rate, info.channels))
+                        .or_else(|| ready.audio_plan.as_ref().map(|plan| (plan.rate, plan.channels)));
+                    self.audio = format.map(|(rate, channels)| super::movie_audio::Stream::open(rate, channels)).transpose()?;
                     self.audio_end = ready.audio.is_none();
                     self.streams = Some(ready);
                 }
@@ -688,7 +772,7 @@ impl Player {
         Ok(())
     }
     pub(super) fn title_background(root: PathBuf, filename: String, looping: bool) -> Self {
-        let request = Request { serial: 0, filename, flags: [true, true], frontend_skip: None };
+        let request = Request { serial: 0, filename, flags: [true, true], frontend_skip: None, credits: false };
         let mut player = Self::new(root, request, None);
         player.loop_frames = looping.then(Vec::new);
         player
@@ -772,7 +856,7 @@ impl Player {
         ui.ctx().request_repaint();
     }
     pub fn summary(&self) -> serde_json::Value {
-        serde_json::json!({"request":self.request,"header":self.streams.as_ref().map(|ready|&ready.header),"audio_plan":self.streams.as_ref().and_then(|ready|ready.audio_plan.as_ref()),"frame":self.frame,"seconds":self.seconds,"completed":self.completed,"skipped":self.skipped,"skip_hold_seconds":self.skip.as_ref().map(|skip|skip.seconds),"skip_prompt_native_presentation":false,"error":self.error,"clock":if self.audio.is_some(){"audio device samples"}else{"monotonic"},"reference_parity_verified":false})
+        serde_json::json!({"request":self.request,"header":self.streams.as_ref().map(|ready|&ready.header),"audio_plan":self.streams.as_ref().and_then(|ready|ready.audio_plan.as_ref()),"credits_audio":self.streams.as_ref().and_then(|ready|ready.credits_audio.as_ref()),"frame":self.frame,"seconds":self.seconds,"completed":self.completed,"skipped":self.skipped,"skip_hold_seconds":self.skip.as_ref().map(|skip|skip.seconds),"skip_prompt_native_presentation":false,"error":self.error,"clock":if self.audio.is_some(){"audio device samples"}else{"monotonic"},"reference_parity_verified":false})
     }
 }
 impl Drop for Player {

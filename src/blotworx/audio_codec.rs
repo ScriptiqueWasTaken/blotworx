@@ -61,9 +61,25 @@ impl Decoder {
         let metadata:serde_json::Value=serde_json::from_slice(&result.stdout).context("Invalid audio codec metadata")?;
         let media_id=metadata["streamInfo"]["name"].as_str().context("Audio codec omitted media identity")?.parse::<u32>()?;
         ensure!(media_id==source.media_id,"Bank subsong resolved to media {media_id}, expected {}",source.media_id);
+        let mut command = super::movie_codec::command(&executable);
+        command.args(["-i", "-p", "-B", "2048", "-s"]).arg(source.subsong.to_string()).arg(&source.bank);
+        Self::start(command, &metadata, media_id)
+    }
+
+    pub(super) fn open_file(path: &Path, media_id: u32) -> Result<Self> {
+        let executable = provision()?;
+        let result = super::movie_codec::command(&executable).args(["-I", "-m"]).arg(path).output()?;
+        ensure!(result.status.success(), "Audio file codec metadata failed: {}", String::from_utf8_lossy(&result.stderr));
+        let metadata: serde_json::Value = serde_json::from_slice(&result.stdout).context("Invalid audio file codec metadata")?;
+        let mut command = super::movie_codec::command(&executable);
+        command.args(["-i", "-p", "-B", "2048"]).arg(path);
+        Self::start(command, &metadata, media_id)
+    }
+
+    fn start(mut command: std::process::Command, metadata: &serde_json::Value, media_id: u32) -> Result<Self> {
         let info=Info {rate:u32::try_from(metadata["sampleRate"].as_u64().context("Missing sample rate")?)?,channels:u16::try_from(metadata["channels"].as_u64().context("Missing channel count")?)?,frames:metadata["numberOfSamples"].as_u64().context("Missing sample count")?,media_id};
         ensure!(info.rate>0 && info.channels>0,"Invalid decoded audio format");
-        let mut child=super::movie_codec::command(&executable).args(["-i","-p","-B","2048","-s"]).arg(source.subsong.to_string()).arg(&source.bank).stdout(Stdio::piped()).stderr(Stdio::null()).spawn()?;
+        let mut child=command.stdout(Stdio::piped()).stderr(Stdio::null()).spawn()?;
         let output=BufReader::new(child.stdout.take().context("Missing audio codec output")?);
         let mut decoder=Self {info,child,output,remaining:0};
         decoder.read_header()?;

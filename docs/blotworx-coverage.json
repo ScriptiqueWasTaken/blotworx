@@ -258,7 +258,17 @@
         "evidence": "target/perf/ending-verified-opening.runtime.json shows the original opening frame and expected mixed-outcome file order. ending-verified-complete.runtime.json records all 11 clips finishing with skip input, no script/runtime errors and the closing clip last. The completed slot retains the staged first pin. The separate Zone S terminal callback probe staged boss flag 25, ran the shipped DoEndGame, wrote LAST-only and opened the original ending movie.",
         "open": [
           "Final encounter played to its terminal callback without staging",
-          "Original ending soundtrack synchronization, closing menu behavior and standalone credits route"
+          "Original ending soundtrack across the eleven ending clips and native Wii skip timing"
+        ]
+      },
+      {
+        "scope": "EM1 campaign credits and return to title",
+        "state": "Campaign EndGame proceeds from the closing movie to the original credits video with its Wwise stereo soundtrack, then returns to the title. Credits:0 also works as an explicit sequence command.",
+        "source": "Wii REL398cc..39908 state registration, baaa4 EndGame return to state 13, b8b6c credits presentation and b87b4 return to the title state. Play_music_credits in the imported fmv_endgame_soundtrack bank resolves the streamed source, while fmv_credits.bik contains a silent embedded track.",
+        "evidence": "credits-campaign-return.runtime.json records a staged campaign ending with twelve completed movies including a held-input credits skip, the original interactive title visible and no runtime or script errors. credits-art-and-music.runtime.json samples credits frame 600 at device time 20.020964 seconds using 28000 Hz stereo media 448639764, within one millisecond of the frame timestamp.",
+        "open": [
+          "Full unskipped Wii playback comparison and final gain parity",
+          "Extras credits and teaser route and regional soundtrack selection"
         ]
       },
       {

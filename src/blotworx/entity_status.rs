@@ -194,6 +194,26 @@ impl super::assets::World {
                 return Ok(MultiValue::from_vec(vec![Value::Boolean(forced)]));
             }
             if let Some(field) = field {
+                if property == "Is Real"
+                    && matches!(c.class_name.as_str(),
+                        "PhysicsRigidBodyStaticComponent" | "PhysicsRigidBodyDynamicComponent")
+                {
+                    // The shared native setter (37c364 -> 123fd8) writes
+                    // the live Boolean. It does not perform a paint transition.
+                    if let Some(value) = value {
+                        if index == 0 {
+                            c.properties[field].value = value.into();
+                        }
+                        return Ok(MultiValue::new());
+                    }
+                    if index != 0 {
+                        return Err(mlua::Error::external("Indexed boolean getter output is not verified"));
+                    }
+                    let real = c.properties[field].value.as_bool().ok_or_else(|| {
+                        mlua::Error::external("Physics Is Real must be Boolean")
+                    })?;
+                    return Ok(MultiValue::from_vec(vec![Value::Boolean(real)]));
+                }
                 if property == "InvulnerableToPaintThinner"
                     && matches!(c.class_name.as_str(),
                         "PhysicsRigidBodyStaticComponent" | "PhysicsRigidBodyDynamicComponent")

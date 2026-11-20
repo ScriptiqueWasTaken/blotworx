@@ -258,6 +258,15 @@ impl World {
     pub(super) fn change_whole_model_paint(
         &mut self,entity:usize,painted:bool,player_position:[f32;3],hit:bool,
     )->Result<bool> {
+        if self.entities[entity].components.iter().any(|component| {
+            matches!(component.class_name.as_str(),
+                "PhysicsRigidBodyStaticComponent" | "PhysicsRigidBodyDynamicComponent")
+                && component.properties.iter().any(|field| {
+                    field.name == "Is Real" && field.value.as_bool() == Some(true)
+                })
+        }) {
+            return Ok(false);
+        }
         let model = &self.model_paint[&entity];
         let target=Target{node:entity as u64,piece:-1};
         let changed=model.painted!=painted;

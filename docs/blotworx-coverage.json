@@ -548,13 +548,13 @@
     },
     {
       "scope": "EM1 Space Mountain Zone D startup",
-      "state": "The disc reveal can call ToggleLetterbox with the renderer aspect available during map initialization. Static toon models bind their paint state before OnSpawned and OnMapLoad, while dynamic bodies retain their existing later construction phase.",
+      "state": "The disc reveal can call ToggleLetterbox with the renderer aspect available during map initialization. Static toon models bind their paint state before OnSpawned and OnMapLoad. Rigid-body Is Real reads and writes the live Boolean, and whole-model paint commands consult it before admitting a transition.",
       "source": "Wii REL .text 11898..118a0 registers the zero-argument ToggleLetterbox callback at d7c8. The callback calls bad0, which toggles the application byte at +0x10a only when the renderer reports a nonwide aspect. The imported sm_tl_zoned.Toon 22 routes OnSpawned to ForcePainted.",
-      "evidence": "Direct graphical replay of Levels/TL_SpaceMountain_TronPete.Level through tick 120 recorded no fatal runtime error. The earlier ForcePainted and ToggleLetterbox failures were absent, and the original Toon 22 published a painted state with two meshes.",
+      "evidence": "The Zone D graphical replay with tools/blotworx/fixtures/space_mountain_floor_lock.lua reached the authored DiscSpotted conversation and saved TL_SM_ZoneD_CheckpointLoad2 by tick 175. The fixture confirmed Toon 22 was painted, real, and remained painted when sent ForceSketched.",
       "open": [
-        "The disc-reveal Lua reaches SetPropertyBool Is Real, whose shared rigid-body property remains unbound. Its native descriptor is registered at 37bc34 and dispatches through 37c364 to a byte write at 123fd8.",
-        "SetWallPushingEnabled is still unbound. The native wrapper at 9c754 writes motion-controller offset +0x498, which gates the wall-contact movement branch at 97e9c..97eb0.",
-        "The reveal, boss fight and exit still need a player-driven validation run."
+        "The Is Real descriptor at 37bc34 dispatches through 37c364 to the byte write at 123fd8. Later native collision-filter refresh timing remains unverified.",
+        "SetWallPushingEnabled is still unbound. The native wrapper at 9c754 writes motion-controller offset +0x498. The wall-contact branch uses VAR_Direction_Against_Wall and emits EVENT_Start_Wall_Walk and EVENT_Stop_Wall_Walk on its state transitions.",
+        "The boss fight and exit still need a player-driven validation run."
       ]
     },
     {

@@ -3418,6 +3418,7 @@ impl World {
             {
                 self.demo_motion_lua(lua, name, args)
             }
+            "SetRotatorMaxSpeed" => self.rotator_max_speed_lua(lua, args),
             "FireSequence"
             | "ForceSequence"
             | "ClearAllCameraAttributesTimed"
@@ -3426,7 +3427,6 @@ impl World {
             | "ClearAllCameraAttributesTimedSD"
             | "ReleaseCamera"
             | "CameraReset"
-            | "SetRotatorMaxSpeed"
             | "ShowHud"
             | "HideHud"
             | "HideReticleOnly"

@@ -283,11 +283,21 @@
       },
       {
         "scope": "EM1 spline follower speed binding",
-        "state": "SetSplineFollowerInitialSpeed now resolves the original follower and updates InitialSpeed in both runtime modes. The reflected getter and setter share that value. Speed writes preserve the follower's disabled state and the existing preview motion state.",
-        "source": "Wii REL2645a0..264680 resolves the entity and SplineFollowerComponent. REL3b1aa0 -> 123d80 writes only the word at +0x38. REL3b2510..3b2518 bind the generated property accessors to that same field.",
-        "evidence": "Six isolated Wii setter executions each changed only the expected float word. On imported Zone S data, the dbc_zone_s_spline_speed Lua fixture reads the startup speed and round-trips writes at tick 60. The staged first chamber replay also reaches tick 289 with no script or runtime errors in strict mode.",
+        "state": "The current Lua binding writes the reflected InitialSpeed property and updates preview motion. This conflates live speed and configured initial speed.",
+        "source": "The Wii registration at REL .text 267f38 names the callback at 26445c. That callback resolves the follower through 3ddac and calls 3ba5d8. It writes live speed at +0x34 and clears +0x6c when the product of old and new speed is negative.",
+        "evidence": "The imported Zone S replay exercises the existing binding and initial-speed property. Its round trip does not establish equivalence with the original live-speed callback.",
         "open": [
+          "Separate the live-speed callback from InitialSpeed reflection and restore its direction-change side effect.",
           "Native path progression, authored segment times and easing, and player support over moving collision. Motion tests still use the provisional preview follower."
+        ]
+      },
+      {
+        "scope": "EM1 rotator maximum-speed Lua binding",
+        "state": "SetRotatorMaxSpeed is dispatched in both runtime modes. It changes configured speed while retaining current angular velocity and the rotation target.",
+        "source": "Wii REL .text registration 267f88 binds 264580. It resolves an entity's rotator through 5ee8c and calls 3b1aa0, which writes the float at +0x38 through 123d80.",
+        "evidence": "In isolated runs of 264580 with Lua argument and entity lookups stubbed, six speeds each write exactly one float word. The null entity and absent rotator write nothing. All eight calls return zero results. The authored rotator validation checks the Lua handle path, null target, reflected value and unchanged motor velocity.",
+        "open": [
+          "Full mechanical arm attack and cutscene replay."
         ]
       },
       {

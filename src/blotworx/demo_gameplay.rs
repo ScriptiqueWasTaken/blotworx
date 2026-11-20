@@ -281,8 +281,9 @@ impl World {
             }
         }
     }
-    /// REL2645a0 -> 3b1aa0 -> 123d80 changes the follower's speed scalar
-    /// (+0x38). It leaves the current segment, hold, direction and disable bit alone.
+    /// The original wrapper at REL .text 26445c calls the live setter at
+    /// 3ba5d8. This compatibility path still writes InitialSpeed and mirrors
+    /// the value to the provisional mover.
     pub(super) fn spline_initial_speed_lua(
         &mut self,
         lua: &mlua::Lua,

@@ -213,6 +213,27 @@ pub(super) fn accept_physics_pose(
     propagate(root, hierarchy, entities, draws)
 }
 impl World {
+    /// Retail REL .text 264580 resolves the entity and finds its rotator
+    /// before calling 3b1aa0. The call writes the configured speed at +0x38
+    /// and leaves the angular velocity and target state intact.
+    pub(super) fn rotator_max_speed_lua(
+        &mut self,
+        lua: &mlua::Lua,
+        mut args: mlua::MultiValue,
+    ) -> mlua::Result<mlua::MultiValue> {
+        if args.len() != 2 {
+            return Err(mlua::Error::external("SetRotatorMaxSpeed requires entity and speed"));
+        }
+        let speed = lua.coerce_number(args.pop_back().unwrap())?.unwrap_or(0.) as f32;
+        let target = self.scripts.resolve_native_entity_argument(lua, args.pop_back().unwrap())?;
+        if let Some(entity) = target.filter(|entity| !self.removed_entities.contains(entity)) {
+            if self.entities[entity].components.iter().any(|component| component.class_name == "RotatorComponent") {
+                self.set_rotator_speed(entity, speed).map_err(mlua::Error::external)?;
+            }
+        }
+        Ok(mlua::MultiValue::new())
+    }
+
     /// Native3b3854 radians entry, also used by RobotArmGeneral5fa58.
     pub(super) fn instant_rotator_position(&mut self,entity:usize,radians:f32)->Result<()> {
         let Some(component)=self.entities[entity].components.iter().find(|c|c.class_name=="RotatorComponent") else {return Ok(())};
@@ -829,6 +850,14 @@ pub(super) fn validate_original_commands() -> Result<()> {
     }
     world.rotators.get_mut(&(entity, id)).unwrap().disabled = false;
     let name = world.entities[entity].name.clone();
+    let speed_before = world.rotators[&(entity, id)].state.speed;
+    world.run_callback_fixture(&format!(
+        "assert(select('#', SetRotatorMaxSpeed(GetEntity({name:?}), 75)) == 0); \
+         assert(GetPropertyFloat({name:?}, 'Max Speed') == 75); \
+         assert(select('#', SetRotatorMaxSpeed(nil, 10)) == 0); \
+         assert(GetPropertyFloat({name:?}, 'Max Speed') == 75)"
+    ))?;
+    ensure!(world.rotators[&(entity, id)].state.speed == speed_before, "Speed setter reset angular velocity");
     let component = world.entities[entity]
         .components
         .iter_mut()

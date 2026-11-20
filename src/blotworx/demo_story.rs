@@ -968,7 +968,6 @@ impl super::assets::World {
             "FireSequence",
             "ClearAllCameraAttributesTimed",
             "ReleaseCamera",
-            "SetRotatorMaxSpeed",
             "ShowHud",
             "HideReticleOnly",
             "ShowReticleOnly",
@@ -1206,19 +1205,6 @@ impl super::assets::World {
                 )?;
             if self.demo_story.hud {
                 self.screen_fade.hide_gameplay_hud = false;
-            }
-        } else if name == "SetRotatorMaxSpeed" {
-            if args.len() != 2 {
-                return Err(mlua::Error::external(
-                    "Rotator speed requires entity and speed",
-                ));
-            }
-            if let Some(entity) = self.scripts.resolve_world_argument(&args[0])? {
-                self.set_rotator_speed(
-                    entity,
-                    lua.coerce_number(args[1].clone())?.unwrap_or(0.) as f32,
-                )
-                .map_err(mlua::Error::external)?;
             }
         } else if matches!(
             name,

@@ -148,6 +148,10 @@ pub struct UnsynchronizedClock {
     scaled: SequenceTime,
 }
 impl UnsynchronizedClock {
+    pub(super) fn weighted_time(&self) -> Option<f32> {
+        (self.scaled.last_time != -f32::MAX).then_some(self.scaled.weighted_time)
+    }
+
     pub fn new(start_frame: f32, frequency: f32) -> Result<Self> {
         ensure!(
             start_frame.is_finite() && frequency.is_finite() && frequency != 0.,
@@ -263,6 +267,38 @@ pub struct Sequence {
     pub frequency: f32,
     pub accumulation_root: Option<String>,
     pub flags: u32,
+}
+
+impl Sequence {
+    // NiTextKeyExtraData loads its NiExtraData name, count, then time/string
+    // pairs. END_OF_SEQUENCE uses the authored "end" key.
+    pub(super) fn end_key(&self, nif: &NifFile) -> Result<Option<f32>> {
+        let Some(block) = self.text_keys else { return Ok(None) };
+        let Some(NiObject::Unknown(raw)) = nif.blocks.get(block as usize) else {
+            anyhow::bail!("Missing raw animation text keys");
+        };
+        let bytes = &raw.raw_data;
+        ensure!(raw.type_name == "NiTextKeyExtraData" && bytes.len() >= 8,
+            "Invalid animation text keys");
+        let word = |bytes: &[u8]| {
+            let bytes = bytes.try_into().unwrap();
+            if nif.source_is_little_endian { u32::from_le_bytes(bytes) } else { u32::from_be_bytes(bytes) }
+        };
+        let count = word(&bytes[4..8]) as usize;
+        ensure!(count.checked_mul(8) == Some(bytes.len() - 8), "Invalid animation text key count");
+        let mut end = None;
+        for key in bytes[8..].chunks_exact(8) {
+            let time = f32::from_bits(word(&key[..4]));
+            ensure!(time.is_finite(), "Nonfinite animation text key");
+            let index = word(&key[4..]);
+            if index != u32::MAX
+                && nif.string_table.get(index as usize).context("Missing animation text key string")? == "end"
+            {
+                end = Some(end.map_or(time, |previous: f32| previous.min(time)));
+            }
+        }
+        Ok(end)
+    }
 }
 
 /// Sequence-data map ordering recovered from DOL803b54e4 and 803b71f0.

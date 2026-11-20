@@ -844,8 +844,11 @@ impl Scripts {
         lua.globals().set(
             "StimulusEvent_HasStimulusType",
             lua.create_function(|_, (event, kind): (mlua::AnyUserData, u32)| {
-                let event = event.borrow::<super::actor_io::StimulusEvent>()?;
-                Ok(event.0.iter().any(|&(id, _)| id == kind))
+                let event = event.borrow::<super::actor_io::EventPayload>()?;
+                let super::actor_io::EventPayload::Combat(stimuli) = &*event else {
+                    return Err(mlua::Error::external("Expected stimulus event"));
+                };
+                Ok(stimuli.iter().any(|&(id, _)| id == kind))
             })?,
         )?;
         // REL3230f8/32326c search the same ID array. The amount callback reads
@@ -862,8 +865,11 @@ impl Scripts {
                 let mlua::Value::UserData(event) = &args[0] else {
                     return Err(mlua::Error::external("Expected damage event"));
                 };
-                let event = event.borrow::<super::actor_io::StimulusEvent>()?;
-                let matched = event.0.iter().find(|&&(id, _)| id == kind);
+                let event = event.borrow::<super::actor_io::EventPayload>()?;
+                let super::actor_io::EventPayload::Combat(stimuli) = &*event else {
+                    return Err(mlua::Error::external("Expected damage event"));
+                };
+                let matched = stimuli.iter().find(|&&(id, _)| id == kind);
                 Ok(if read_amount {
                     Value::Number(matched.map_or(0., |&(_, amount)| f64::from(amount)))
                 } else {
@@ -871,6 +877,17 @@ impl Scripts {
                 })
             })?)?;
         }
+        // REL2f86b0 reads the completed sequence name from the event.
+        lua.globals().set("AnimGBSequenceEndedName", lua.create_function(|lua, mut args: mlua::MultiValue| {
+            let [Value::UserData(event)] = args.make_contiguous() else {
+                return Err(mlua::Error::external("AnimGBSequenceEndedName requires an animation end event"));
+            };
+            let event = event.borrow::<super::actor_io::EventPayload>()?;
+            let super::actor_io::EventPayload::AnimationEnded(name) = &*event else {
+                return Err(mlua::Error::external("Expected animation end event"));
+            };
+            lua.create_string(name.as_bytes())
+        })?)?;
         let source_files: Arc<Mutex<BTreeMap<String, Arc<[u8]>>>> = Default::default();
         let sources = source_files.clone();
         // Retail REL26cd5c returns the literal FINAL. This is the supported
@@ -1381,9 +1398,9 @@ impl Scripts {
     }
     pub(super) fn queue_io_from(
         &mut self, name: &str, context: CallbackContext, parameter: &str,
-        owner: usize, nil_target: bool, stimulus: Option<&super::actor_io::StimulusEvent>,
+        owner: usize, nil_target: bool, payload: Option<&super::actor_io::EventPayload>,
     ) -> Result<()> {
-        self.queue_io_target(name, context, parameter, nil_target, Some(owner), stimulus)
+        self.queue_io_target(name, context, parameter, nil_target, Some(owner), payload)
     }
     fn queue_io_target(
         &mut self,
@@ -1392,13 +1409,13 @@ impl Scripts {
         parameter: &str,
         nil_target: bool,
         io_owner: Option<usize>,
-        stimulus: Option<&super::actor_io::StimulusEvent>,
+        payload: Option<&super::actor_io::EventPayload>,
     ) -> Result<()> {
         ensure!(
             self.scheduler_detached && context.entity.is_some_and(|entity| self.has_entity(entity)),
             "IO callout requires a live detached owner"
         );
-        let parameters = self.io_parameter_from(context, parameter, io_owner, stimulus)?;
+        let parameters = self.io_parameter_from(context, parameter, io_owner, payload)?;
         self.callouts
             .lock()
             .map_err(|_| anyhow::anyhow!("Callout queue poisoned"))?
@@ -1956,9 +1973,9 @@ impl Scripts {
     }
     pub(super) fn call_io_from(
         &mut self, name: &str, context: CallbackContext, parameter: &str,
-        owner: usize, nil_target: bool, stimulus: Option<&super::actor_io::StimulusEvent>,
+        owner: usize, nil_target: bool, payload: Option<&super::actor_io::EventPayload>,
     ) -> Result<()> {
-        let parameters = self.io_parameter_from(context, parameter, Some(owner), stimulus)?;
+        let parameters = self.io_parameter_from(context, parameter, Some(owner), payload)?;
         self.call_context_target(name, context, parameters, nil_target)
     }
     fn io_parameter(&self, context: CallbackContext, parameter: &str) -> Result<Vec<Value>> {
@@ -1966,7 +1983,7 @@ impl Scripts {
     }
     fn io_parameter_from(
         &self, context: CallbackContext, parameter: &str, owner: Option<usize>,
-        stimulus: Option<&super::actor_io::StimulusEvent>,
+        payload: Option<&super::actor_io::EventPayload>,
     ) -> Result<Vec<Value>> {
         let mut event = None;
         super::actor_io::parameters(parameter).into_iter().map(|parameter| {
@@ -1985,8 +2002,8 @@ impl Scripts {
                 },
                 "_event" => {
                     if event.is_none() {
-                        let stimulus = stimulus.context("IO _event has no supported payload")?;
-                        event = Some(self.lua.create_userdata(stimulus.clone())?);
+                        let payload = payload.context("IO _event has no supported payload")?;
+                        event = Some(self.lua.create_userdata(payload.clone())?);
                     }
                     Value::UserData(event.clone().unwrap())
                 }

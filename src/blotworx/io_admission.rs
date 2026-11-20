@@ -6,7 +6,7 @@ pub(super) fn validate()->anyhow::Result<()> {
     let root=std::env::var_os("BLOTWORX_TEST_DATA").context("Set BLOTWORX_TEST_DATA")?;
     let mut w=super::assets::load(std::path::Path::new(&root),"Levels/GV_ZoneA_Start.level",&egui::Context::default())?;
     let owner=w.player_entity;
-    let row=|input:&str,target:&str|Delivery {connection:Connection {instigator:None,target_guid:None,owner,input:input.into(),output:"OnUser1".into(),target:target.into(),parameters:"_self".into(),delay:0.,flags:0,group:String::new()},activator:None,stimulus:None};
+    let row=|input:&str,target:&str|Delivery {connection:Connection {instigator:None,target_guid:None,owner,input:input.into(),output:"OnUser1".into(),target:target.into(),parameters:"_self".into(),delay:0.,flags:0,group:String::new()},activator:None,payload:None};
     w.run_callback_fixture("IoVisits=0; IoAbsent=nil; IoFalse=false; IoNumber=42; IoText='abc'; IoTable=setmetatable({},{__call=function() error('Native IO must not call tables') end}); function IoValid(target,owner) assert(target==nil); assert(owner==GetPlayer()); IoVisits=IoVisits+1 end; function IoBroken() error('IO_EXECUTION_FAILED') end")?;
     w.run_callback_fixture("assert(type(RemovePhysicsFromWorld)=='function'); assert(select('#',RemovePhysicsFromWorld(nil))==0)")?;
     let errors=w.report.unsupported.len();

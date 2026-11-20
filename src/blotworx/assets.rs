@@ -4160,9 +4160,9 @@ impl World {
                 }
                 let resources = &self.actor_sequences[&entity];
                 let missing = resources.get(resources.find_name(&sequence)).is_none();
-                if dirty || (!missing && (temporary || timing > 0. || duration > 0.)) {
+                if dirty || (!missing && (timing > 0. || duration > 0.)) {
                     let message = format!(
-                        "AnimGBSequence({entity}, {sequence}) requested unsupported temporary/timing/model-dirty modifiers; playing the authored manager sequence with its default transition instead"
+                        "AnimGBSequence({entity}, {sequence}) requested unsupported timing/model-dirty modifiers; playing the authored manager sequence with its default transition instead"
                     );
                     if !self
                         .report
@@ -4173,7 +4173,7 @@ impl World {
                         self.report.unsupported.push(message);
                     }
                 }
-                self.request_actor_sequence(entity, &sequence)
+                self.request_actor_sequence_with_end_event(entity, &sequence, temporary)
                     .map_err(mlua::Error::external)?;
                 Ok(mlua::MultiValue::new())
             }
@@ -6221,7 +6221,7 @@ impl World {
                         name => self.resolve_io_target(connection.owner,name)?,
                     };
                     let result = if let Some(target) = target {
-                        self.dispatch_actor_input(target, delivery.activator, &connection, delivery.stimulus.as_ref())
+                        self.dispatch_actor_input(target, delivery.activator, &connection, delivery.payload.as_ref())
                     } else {
                         // The retail IO dispatcher still calls the function,
                         // with nil as its first argument (REL328e28..328e64).
@@ -6234,14 +6234,14 @@ impl World {
                             self.scripts.queue_io_from(
                                 &connection.input,
                                 context,
-                                &connection.parameters,connection.owner,true,delivery.stimulus.as_ref(),
+                                &connection.parameters,connection.owner,true,delivery.payload.as_ref(),
                             )
                         } else {
                             self.with_script_world_host(Self::script_world_api, |scripts| {
                                 scripts.call_io_from(
                                     &connection.input,
                                     context,
-                                    &connection.parameters,connection.owner,true,delivery.stimulus.as_ref(),
+                                    &connection.parameters,connection.owner,true,delivery.payload.as_ref(),
                                 )
                             })
                         }
@@ -6272,7 +6272,7 @@ impl World {
         target: usize,
         activator: Option<usize>,
         connection: &super::actor_io::Connection,
-        stimulus: Option<&super::actor_io::StimulusEvent>,
+        payload: Option<&super::actor_io::EventPayload>,
     ) -> Result<()> {
         ensure!(
             !self.removed_entities.contains(&target),
@@ -6294,15 +6294,19 @@ impl World {
                 if self.scripts.is_execution_detached() {
                     return self
                         .scripts
-                        .queue_io_from(input, context, &connection.parameters,connection.owner,false,stimulus);
+                        .queue_io_from(input, context, &connection.parameters,connection.owner,false,payload);
                 }
                 self.with_script_world_host(Self::script_world_api, |scripts| {
-                    scripts.call_io_from(input, context, &connection.parameters,connection.owner,false,stimulus)
+                    scripts.call_io_from(input, context, &connection.parameters,connection.owner,false,payload)
                 })
             }
         }
     }
     pub fn request_actor_sequence(&mut self, entity: usize, name: &str) -> Result<()> {
+        self.request_actor_sequence_with_end_event(entity, name, false)
+    }
+
+    fn request_actor_sequence_with_end_event(&mut self, entity: usize, name: &str, notify: bool) -> Result<()> {
         ensure!(
             !self.removed_entities.contains(&entity),
             "Animation requested on a removed entity"
@@ -6318,16 +6322,17 @@ impl World {
         if resources.get(id).is_none() {
             return Ok(());
         }
-        self.actors
+        let actor = self.actors
             .get_mut(&entity)
-            .context("Script target has no supported actor instance")?
-            .request(
+            .context("Script target has no supported actor instance")?;
+        actor.request(
                 id,
                 resources,
                 self.actor_bindings
                     .get(&entity)
                     .context("Missing actor bindings")?,
-            )
+            )?;
+        actor.bind_end_event(id, notify, resources)
     }
     fn reset_actor_sequence(&mut self, entity: usize) -> Result<()> {
         ensure!(
@@ -6576,6 +6581,13 @@ impl World {
                         time,
                         delta,
                     )?;
+                    if let Some(id) = actor.take_ended() {
+                        let (sequence, _) = self.actor_sequences[&entity].get(id)
+                            .context("Missing completed actor sequence")?;
+                        if let Some(name) = &sequence.name {
+                            self.outputs.emit_animation_ended(entity, time, name);
+                        }
+                    }
                 }
                 if let Some(pose) = &actor.pose {
                     let hierarchy = &self.model_bounds[self.entities[entity]
@@ -11824,7 +11836,7 @@ mod tests {
         world.dispatch_actor_deliveries(vec![super::super::actor_io::Delivery {
             connection: connection.clone(),
             activator: Some(1),
-            stimulus: None,
+            payload: None,
         }]);
         world.scripts.ensure_global_module(
             "io-group-count.lua",
@@ -11845,7 +11857,7 @@ mod tests {
         world.dispatch_actor_deliveries(vec![super::super::actor_io::Delivery {
             connection: ordinary,
             activator: Some(1),
-            stimulus: None,
+            payload: None,
         }]);
         world.scripts.ensure_global_module(
             "io-group-final-assert.lua",
@@ -16646,7 +16658,7 @@ mod tests {
             assert(select('#',AnimGBSequence(actor,'Spawn',false,nil,'nonnumeric',false))==0)
             assert(ObservedSequence=={id}, 'Actor request was deferred')
             assert(select('#',AnimGBSequence('ignored',actor,'Spawn',false,-1,-2,false))==0)
-            assert(not pcall(AnimGBSequence,actor,'Spawn',true))
+            assert(select('#',AnimGBSequence(actor,'Spawn',true))==0)
             assert(select('#',AnimGBSequence('missing-actor','Spawn',true,5,5,true))==0)
         "#
         );

@@ -99,7 +99,7 @@
       "state": "Combat IO keeps the grouped stimulus types with delayed deliveries. The original valve's OnDamage callback can identify spin and start the timed fan puzzle.",
       "source": "GV_ZoneD.lua, the authored GV_FanGear01 OnDamage row, and REL32326c.",
       "evidence": "diagnose --validate-io-admission dispatches one grouped spin hit through the original Zone D valve's damage receivers. Its Lua callback recognizes the spin and knockback IDs, rejects physical damage, advances the valve index and starts the timer.",
-      "open": ["Weighted platform trigger 1 requests Down through authored AnimGBSequence, but the run never latches GV_DoorSwitch1. The World currently has no OnAnimGBEnded producer.", "Timeout recovery and continuous traversal"]
+      "open": ["Timeout recovery and continuous traversal"]
     },
     {
       "scope": "Gremlin Village Zone D timed vent and live spin",
@@ -161,6 +161,17 @@
         "open": [
           "Unstaged traversal from the airlock through the full boat ride and into the next area",
           "Original Wii traversal timing"
+        ]
+      },
+      {
+        "scope": "Gremlin Village Zone D weighted platforms and projector handoff",
+        "state": "Authored AnimGBSequence completion requests emit OnAnimGBEnded at the sequence end text key. Both original weighted-platform outputs latch their door switches and activate the Steamboat Willie projector.",
+        "source": "Gremlin Village Zone D scene IO, the two ExitPlatforms keyframe sets, and the original AsiaToSBW projector script",
+        "evidence": "target/perf/gv-zone-d-steamboat-route.runtime.json records both switches, the original projector entry and Steamboat Willie scene publication by tick 1610, with no script or runtime errors. The replay stages player position at the triggers and projector.",
+        "open": [
+          "Continuous traversal from the prior zone",
+          "Other native end-listener registration paths",
+          "Retail transition timing"
         ]
       },
       {

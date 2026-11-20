@@ -419,19 +419,22 @@ mod tests {
 /// One grouped hit. Delayed outputs retain its effective stimulus amounts even
 /// after the combat call that built them has returned.
 #[derive(Clone)]
-pub(super) struct StimulusEvent(pub(super) std::sync::Arc<[(u32, f32)]>);
-impl mlua::UserData for StimulusEvent {}
+pub(super) enum EventPayload {
+    Combat(std::sync::Arc<[(u32, f32)]>),
+    AnimationEnded(std::sync::Arc<str>),
+}
+impl mlua::UserData for EventPayload {}
 
 #[derive(Clone)]
 pub struct Delivery {
     pub connection: Connection,
     pub activator: Option<usize>,
-    pub(super) stimulus: Option<StimulusEvent>,
+    pub(super) payload: Option<EventPayload>,
 }
 struct Pending {
     index: usize,
     activator: Option<usize>,
-    stimulus: Option<StimulusEvent>,
+    payload: Option<EventPayload>,
     due: f32,
 }
 #[derive(Default)]
@@ -604,7 +607,14 @@ impl Outputs {
     ) {
         if self.has_connections(owner, output) {
             self.emit_with_payload(owner, output, activator, time,
-                Some(StimulusEvent(effective.into())));
+                Some(EventPayload::Combat(effective.into())));
+        }
+    }
+
+    pub(super) fn emit_animation_ended(&mut self, owner: usize, time: f32, name: &str) {
+        if self.has_connections(owner, "OnAnimGBEnded") {
+            self.emit_with_payload(owner, "OnAnimGBEnded", Some(owner), time,
+                Some(EventPayload::AnimationEnded(name.into())));
         }
     }
 
@@ -614,7 +624,7 @@ impl Outputs {
         output: &str,
         activator: Option<usize>,
         time: f32,
-        stimulus: Option<StimulusEvent>,
+        payload: Option<EventPayload>,
     ) {
         let Some(indices) = self.order.get_mut(&(owner, output.to_owned())) else {
             return;
@@ -626,7 +636,7 @@ impl Outputs {
             self.pending.push(Pending {
                 index,
                 activator,
-                stimulus: stimulus.clone(),
+                payload: payload.clone(),
                 due: time + connection.delay,
             });
             // REL32859c/3286cc: consume after dispatch admission, swapping the
@@ -652,7 +662,7 @@ impl Outputs {
                 ready.push(Delivery {
                     connection: connection.clone(),
                     activator: pending.activator,
-                    stimulus: pending.stimulus.clone(),
+                    payload: pending.payload.clone(),
                 });
                 false
             } else {

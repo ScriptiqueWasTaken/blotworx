@@ -45,6 +45,8 @@ pub struct Actor {
     /// AnimationComponentGB's retained default sequence (+7c), updated by
     /// REL2f3ecc before manager playback. Reset retains this target.
     requested: Option<u32>,
+    end_event: Option<(u32, f32)>,
+    ended: Option<u32>,
     pub pose: Option<ActorPose>,
     pub world: BTreeMap<u32, epic_mickey_lib_rs::nif_file::NiTransform>,
 }
@@ -59,6 +61,8 @@ impl Actor {
             transition: None,
             pending: None,
             requested: None,
+            end_event: None,
+            ended: None,
             pose: None,
             world: BTreeMap::new(),
         }
@@ -68,6 +72,30 @@ impl Actor {
     }
     pub fn requested_id(&self) -> Option<u32> {
         self.requested
+    }
+    pub(super) fn bind_end_event(&mut self, id: u32, enabled: bool, resources: &SequenceResources) -> Result<()> {
+        self.end_event = None;
+        if !enabled {
+            return Ok(());
+        }
+        let (sequence, nif) = resources.get(id).context("Unknown end-event sequence ID")?;
+        let Some(mut end) = sequence.end_key(nif)? else {return Ok(())};
+        if let Some(weighted) = self.current.as_ref().filter(|clip| clip.id == id)
+            .and_then(|clip| clip.clock.weighted_time())
+        {
+            if weighted > end || (weighted == end && end == sequence.duration) {
+                if sequence.cycle_type != 0 || sequence.duration <= 0. {
+                    return Ok(());
+                }
+                let loops = ((weighted - end) / sequence.duration).floor() + 1.;
+                end += loops * sequence.duration;
+            }
+        }
+        self.end_event = Some((id, end));
+        Ok(())
+    }
+    pub(super) fn take_ended(&mut self) -> Option<u32> {
+        self.ended.take()
     }
     /// AnimationComponentGB retains +7c independently of Start Active.
     /// The property setter REL2f3ecc marks the target dirty; activation
@@ -82,6 +110,9 @@ impl Actor {
         bindings: &ActorBindings,
     ) -> Result<()> {
         bindings.sample(id, 0.)?; // Reject unsupported destination before changing live state.
+        if self.end_event.is_some_and(|(owner, _)| owner != id) {
+            self.end_event = None;
+        }
         self.requested = Some(id);
         if self.active_id() == Some(id) {
             self.pending = None;
@@ -125,6 +156,8 @@ impl Actor {
         self.current = None;
         self.transition = None;
         self.pending = None;
+        self.end_event = None;
+        self.ended = None;
     }
     pub fn update(
         &mut self,
@@ -147,6 +180,12 @@ impl Actor {
             return Ok(());
         };
         let destination = current.sample(resources, bindings, time)?;
+        if let Some((id, end)) = self.end_event {
+            if current.id == id && current.clock.weighted_time().is_some_and(|frame| frame >= end) {
+                self.end_event = None;
+                self.ended = Some(id);
+            }
+        }
         let mut complete = false;
         self.pose = Some(if let Some(transition) = &mut self.transition {
             let outgoing = transition.outgoing.sample(time, FadeDirection::Out)?;

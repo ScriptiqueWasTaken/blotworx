@@ -175,6 +175,17 @@
         ]
       },
       {
+        "scope": "Gremlin Village Zone D quest cleanup and Steamboat Willie exit",
+        "state": "BSQ event 16 marks quest slots with no completed current stage while preserving the authored stage ID. The Steamboat Willie exit takes Mickey to Zone F through the shipped projector script, releases the arrival camera on movement, and carries the quest status into the Zone F checkpoint.",
+        "source": "Wii REL27d980, 245010, 244d94, 244c70 and 2456f8; GV_ZoneD_QuestCleanUp.bsq and the original Steamboat Willie right projector.",
+        "evidence": "target/perf/steamboat-quest-cleanup-live.runtime.json records the cleanup completing with no story, Lua, or runtime errors. target/perf/steamboat-exit-quest.runtime.json records GV_ZoneF_Start, movement after input release, and checkpoint GV_ZoneF_LoadCheckpoint. The resulting QUES section restores quest 36 with status 1.",
+        "open": [
+          "Unstaged traversal and obstacles through Steamboat Willie",
+          "Other quest event types and quest UI",
+          "In-game resume from this checkpoint"
+        ]
+      },
+      {
         "scope": "EM1 loading-screen presentation",
         "state": "Full level loads and scene streams behind an authored fade show original artwork and cycle the authored dot frames. Faded scene imports wait until the loading screen has had a visible presentation window. Level loads use destination artwork, while streams use the current level's artwork.",
         "source": "loading_screen_texture in levels.pak, loose LoadingScreens assets, and src/blotworx/loading_screen.rs",

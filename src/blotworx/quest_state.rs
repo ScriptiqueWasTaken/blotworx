@@ -7,7 +7,24 @@ use anyhow::{ensure, Context, Result};
 #[derive(Clone, Debug)]
 pub struct Definition {
     pub name: String,
-    pub states: Vec<u16>,
+    stages: Vec<Stage>,
+}
+
+#[derive(Clone, Copy, Debug)]
+struct Stage {
+    id: u16,
+    completion_type: u16,
+}
+
+impl Definition {
+    fn stage(&self, state: u16) -> Option<&Stage> {
+        self.stages.iter().find(|stage| stage.id == state)
+    }
+
+    #[cfg(test)]
+    fn state_ids(&self) -> Vec<u16> {
+        self.stages.iter().map(|stage| stage.id).collect()
+    }
 }
 #[derive(Clone, Debug)]
 pub struct Slot {
@@ -68,7 +85,7 @@ impl State {
             || !slot
                 .definition
                 .as_ref()
-                .is_some_and(|definition| definition.states.contains(&state))
+                .is_some_and(|definition| definition.stage(state).is_some())
         {
             return None;
         }
@@ -93,12 +110,27 @@ impl State {
         if slot
             .definition
             .as_ref()
-            .is_some_and(|definition| definition.states.contains(&state))
+            .is_some_and(|definition| definition.stage(state).is_some())
         {
             slot.current = state;
         }
         slot.status = 1;
     }
+    /// BSQ event 16 (REL27d980 -> 245010). Preserve the status of
+    /// quests whose current stage has completion type 1 or 2.
+    pub fn mark_status_if_incomplete(&mut self, quest: u16) {
+        let Some(slot) = self.slots.get_mut(usize::from(quest)) else {
+            return;
+        };
+        let completed = slot.current != u16::MAX
+            && slot.definition.as_ref()
+                .and_then(|definition| definition.stage(slot.current))
+                .is_some_and(|stage| matches!(stage.completion_type, 1 | 2));
+        if !completed {
+            slot.status = 1;
+        }
+    }
+
     /// REL246168..2461dc: resets allocated holes as well as authored quests.
     pub fn reset(&mut self) {
         for slot in &mut self.slots {
@@ -148,7 +180,7 @@ impl State {
                 u16::try_from(stages.len()).is_ok(),
                 "Quest state count exceeds native u16 field"
             );
-            let states = stages
+            let stages = stages
                 .iter()
                 .map(|stage| {
                     //24569c loads this short at stage+0;244c70/245d54 compare it
@@ -159,10 +191,18 @@ impl State {
                         .or_else(|| stage.value("Condition type"))
                         .and_then(|value| value.as_u64())
                         .context("Quest state ID missing")?;
-                    u16::try_from(id).context("Quest state ID exceeds native u16")
+                    let completion_type = stage
+                        .value("Completion type")
+                        .and_then(|value| value.as_u64())
+                        .context("Quest stage completion type missing")?;
+                    Ok(Stage {
+                        id: u16::try_from(id).context("Quest state ID exceeds native u16")?,
+                        completion_type: u16::try_from(completion_type)
+                            .context("Quest completion type exceeds native u16")?,
+                    })
                 })
                 .collect::<Result<Vec<_>>>()?;
-            slot.definition = Some(Definition { name, states });
+            slot.definition = Some(Definition { name, stages });
         }
         Ok(state)
     }
@@ -224,7 +264,7 @@ impl State {
             if slot
                 .definition
                 .as_ref()
-                .is_some_and(|definition| definition.states.contains(&saved))
+                .is_some_and(|definition| definition.stage(saved).is_some())
             {
                 slot.current = saved;
                 matched_states += 1;
@@ -254,7 +294,11 @@ mod tests {
                 Slot {
                     definition: Some(Definition {
                         name: "one".into(),
-                        states: vec![10, 20, 20],
+                        stages: vec![
+                            Stage { id: 10, completion_type: 0 },
+                            Stage { id: 20, completion_type: 1 },
+                            Stage { id: 20, completion_type: 0 },
+                        ],
                     }),
                     current: u16::MAX,
                     status: 0,
@@ -263,7 +307,10 @@ mod tests {
                 Slot {
                     definition: Some(Definition {
                         name: "two".into(),
-                        states: vec![0, 65534],
+                        stages: vec![
+                            Stage { id: 0, completion_type: 2 },
+                            Stage { id: 65534, completion_type: 3 },
+                        ],
                     }),
                     current: u16::MAX,
                     status: 0,
@@ -392,10 +439,25 @@ mod tests {
             .iter()
             .all(|slot| slot.current == 65535 && slot.status == 0));
         assert_eq!(
-            state.slots[0].definition.as_ref().unwrap().states,
+            state.slots[0].definition.as_ref().unwrap().state_ids(),
             [10, 20, 20]
         );
     }
+    #[test]
+    fn event_16_marks_existing_slots_except_completed_stages() {
+        let mut state = state();
+        for (quest, current, expected) in [
+            (0, 10, 1), (0, 20, 0), (0, 99, 1), (0, u16::MAX, 1),
+            (1, u16::MAX, 1), (2, 0, 0), (2, 65534, 1),
+        ] {
+            state.slots[quest].current = current;
+            state.slots[quest].status = 0;
+            state.mark_status_if_incomplete(quest as u16);
+            assert_eq!((state.slots[quest].current, state.slots[quest].status), (current, expected));
+        }
+        state.mark_status_if_incomplete(u16::MAX);
+    }
+
     #[test]
     fn database_constructor_preserves_sparse_ids_and_legacy_labels() -> Result<()> {
         use crate::em1_bsq::Kind;
@@ -409,7 +471,10 @@ mod tests {
         for label in ["State ID", "Condition type"] {
             let stage = Node::Record {
                 name: "Stage".into(),
-                fields: vec![field(label, Kind::Short, serde_json::json!(40))],
+                fields: vec![
+                    field(label, Kind::Short, serde_json::json!(40)),
+                    field("Completion type", Kind::Short, serde_json::json!(2)),
+                ],
             };
             let quest = Node::Record {
                 name: "Quest".into(),
@@ -441,7 +506,7 @@ mod tests {
             assert_eq!(state.slots.len(), 3);
             assert!(state.slots[0].definition.is_none());
             assert!(state.slots[1].definition.is_none());
-            assert_eq!(state.slots[2].definition.as_ref().unwrap().states, [40]);
+            assert_eq!(state.slots[2].definition.as_ref().unwrap().state_ids(), [40]);
             assert!(state
                 .slots
                 .iter()
@@ -519,7 +584,7 @@ mod tests {
             .context("Original quest85 missing")?;
         assert_eq!(authored.name, "Quest_85");
         assert_eq!(
-            authored.states,
+            authored.state_ids(),
             [4, 2, 1],
             "State IDs were replaced by stage ordinals"
         );

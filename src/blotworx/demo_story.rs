@@ -1467,6 +1467,7 @@ impl super::assets::World {
                         bail!("Missing nested sequence {name}");
                     }
                 }
+                16 => self.quests.mark_status_if_incomplete(number(&event, "Quest ID") as u16),
                 tag => bail!(
                     "Demo story event {tag} ({}) needs a gameplay handler",
                     event.name()

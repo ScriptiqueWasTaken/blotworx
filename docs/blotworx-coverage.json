@@ -252,6 +252,17 @@
         ]
       },
       {
+        "scope": "EM1 Zone S tentacle animation",
+        "state": "The shared Gamebryo actor sampler binds compressed cubic float morph weights and compressed transform channels. The seven placed Zone S tentacles bind their original Rest, Idle and Wilt sequences through the usual KFM/actor path.",
+        "source": "Original DBC_ZoneS_Tentacle actor NIF/KFM/KF files, Wii DOL803c0310..803c08a4 cubic fill, and DOL8044f488..8044f64c compact control-point decoding. The authored Lua groups request Wilt through AnimGBSequence.",
+        "evidence": "zones-splines-inspect.json records all seven actors binding three clips and no missing morph target errors. The zones-wilt-rest and zones-wilt-active replays start the original Zone S, invoke the authored group request after two seconds, and record active clip 1 then clip 2 on the first tentacle without script or runtime errors. An isolated original Wii fill routine supplied the weights and control points for 35 synthetic sample checks with tolerance 2e-6. Seven samples of the original Tentacle01A Wilt morph track differed by at most 3e-8.",
+        "open": [
+          "Natural fight and ending callback from player inputs",
+          "Qualified particle channels and mode 6 socket effects",
+          "Frame and blend comparison against the Wii game"
+        ]
+      },
+      {
         "scope": "EM1 authored ending sequence and title handoff",
         "state": "UpdatePins captures the 57 original named global bytes. CleanLoadLevel takes the original ending flag and completed slot into a fresh Main_Menu world. PreStartScreenAction selects EndGame:0, and the original opening, nine configured outcomes and closing play on a continuous sample clock. The localized Play_fmv_endgame soundtrack stays active across all eleven clips and mixes with the embedded Bink tracks.",
         "source": "Wii REL353ac and relocated pin table at section 7 +0x1c4, CleanLoadLevel at 2f314, SetEndingGame at 26c944, and frontend movie list builder ba148. Shipped StartScreen.lua and ConfigFiles.ini supply the sequence request and variant movie paths.",

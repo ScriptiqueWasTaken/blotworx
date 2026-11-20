@@ -2,6 +2,8 @@
 //! Layout checked against NiSequenceData::LoadBinary and original Wii assets.
 use anyhow::{ensure, Context, Result};
 use epic_mickey_lib_rs::nif_file::{NiObject, NifFile};
+#[path = "nif_spline.rs"]
+mod spline;
 
 /// AnimationComponentGB's local clock, separate from NiActorManager playback.
 /// The caller supplies the original owner clock and component update gate;
@@ -956,7 +958,7 @@ impl BoundMorph {
                 .context("Missing sequence evaluator")?;
             if !matches!(
                 block.type_name(),
-                "NiConstFloatEvaluator" | "NiFloatEvaluator"
+                "NiConstFloatEvaluator" | "NiFloatEvaluator" | "NiBSplineCompFloatEvaluator"
             ) {
                 continue;
             }
@@ -1120,6 +1122,7 @@ impl BoundMorph {
                     .sample_scalar(time)?
                     .context("Morph evaluator has no value"),
                 FloatValue::Keys(None) => anyhow::bail!("Morph evaluator has no data"),
+                FloatValue::Spline(track) => Ok(track.sample::<1>(time)?[0]),
             })
             .collect::<Result<Vec<_>>>()?;
         if self.relative {
@@ -1245,6 +1248,7 @@ impl MorphController {
 #[derive(Clone, Debug, serde::Serialize)]
 pub enum FloatValue {
     Constant(f32),
+    Spline(spline::CompactSpline),
     Keys(Option<super::nif_transform::Track>),
 }
 
@@ -1261,6 +1265,7 @@ pub struct TransformEvaluator {
     pub channel_types: [u8; 4],
     /// Retains invalid-channel sentinels; no identity substitution.
     pub transform: super::nif_transform::Interpolator,
+    splines: Option<[Option<spline::CompactSpline>; 3]>,
 }
 
 /// Default manager palette. EM1 DOL 0x8045353c checks exact-name aliases first,
@@ -1429,7 +1434,7 @@ impl ActorBindings {
                     .blocks
                     .get(block as usize)
                     .context("Missing actor evaluator")?;
-                if evaluator.type_name() == "NiTransformEvaluator" {
+                if matches!(evaluator.type_name(), "NiTransformEvaluator" | "NiBSplineCompTransformEvaluator") {
                     continue;
                 }
                 // Gamebryo also uses property evaluators for non-render
@@ -1472,7 +1477,7 @@ impl ActorBindings {
                 }
                 if matches!(
                     evaluator.type_name(),
-                    "NiConstFloatEvaluator" | "NiFloatEvaluator"
+                    "NiConstFloatEvaluator" | "NiFloatEvaluator" | "NiBSplineCompFloatEvaluator"
                 ) {
                     let channel = FloatEvaluator::load(keyframes, block)?;
                     if channel.binding.controller.as_deref() == Some("NiMorphWeightsController") {
@@ -1560,8 +1565,7 @@ impl ActorBindings {
     /// dispatch events, apply cumulative motion or blend concurrent sequences.
     pub fn sample(&self, id: u32, time: f32) -> Result<ActorPose> {
         // Apply every evaluator this runtime understands. An unsupported
-        // channel (for example NiBSplineCompTransformEvaluator on GV Zone I's
-        // boats) remains visible through `other_evaluators`, but must not
+        // channel remains visible through `other_evaluators`, but must not
         // cancel the whole authored sequence and strand its Lua coroutine.
         let transforms = self
             .sequences
@@ -1626,7 +1630,7 @@ impl BoundTransforms {
                 .blocks
                 .get(id as usize)
                 .context("Missing sequence evaluator")?;
-            if block.type_name() != "NiTransformEvaluator" {
+            if !matches!(block.type_name(), "NiTransformEvaluator" | "NiBSplineCompTransformEvaluator") {
                 continue;
             }
             let evaluator = TransformEvaluator::load(keyframes, id)?;
@@ -1715,6 +1719,20 @@ impl TransformEvaluator {
             active[index] = state != 0;
             animated[index] = state == kind;
         }
+        if let Some(splines) = &self.splines {
+            let posed = std::array::from_fn(|i| active[i] && !animated[i]);
+            let mut pose = self.transform.sample_channels(time, posed, [false; 3])?;
+            if let Some(translation) = &splines[0] {
+                pose.translation = Some(translation.sample(time)?);
+            }
+            if let Some(rotation) = &splines[1] {
+                pose.rotation = Some(super::nif_quaternion::normalize(rotation.sample(time)?)?);
+            }
+            if let Some(scale) = &splines[2] {
+                pose.scale = Some(scale.sample::<1>(time)?[0]);
+            }
+            return Ok(pose);
+        }
         if animated.iter().any(|v| *v) {
             let channels = self
                 .transform
@@ -1765,10 +1783,10 @@ impl TransformEvaluator {
         else {
             anyhow::bail!("Expected raw transform evaluator")
         };
-        ensure!(
-            raw.type_name == "NiTransformEvaluator" && raw.raw_data.len() == 60,
-            "Unexpected transform evaluator layout"
-        );
+        let compact = raw.type_name == "NiBSplineCompTransformEvaluator";
+        ensure!(matches!((raw.type_name.as_str(), raw.raw_data.len()),
+            ("NiTransformEvaluator", 60) | ("NiBSplineCompTransformEvaluator", 108)),
+            "Unexpected transform evaluator layout");
         let word = |at: usize| {
             let b = raw.raw_data[at..at + 4].try_into().unwrap();
             if nif.source_is_little_endian {
@@ -1797,10 +1815,12 @@ impl TransformEvaluator {
             controller_id: string(12)?,
             evaluator_id: string(16)?,
         };
-        let channel_types = raw.raw_data[20..24].try_into()?;
-        let translation = std::array::from_fn(|i| f32::from_bits(word(24 + 4 * i)));
-        let rotation = std::array::from_fn(|i| f32::from_bits(word(36 + 4 * i)));
-        let scale = f32::from_bits(word(52));
+        let channel_types: [u8; 4] = raw.raw_data[20..24].try_into()?;
+        let value = |at| f32::from_bits(word(at));
+        let pose_at = if compact { 40 } else { 24 };
+        let translation = std::array::from_fn(|i| value(pose_at + 4 * i));
+        let rotation = std::array::from_fn(|i| value(pose_at + 12 + 4 * i));
+        let scale = value(pose_at + 28);
         ensure!(
             translation
                 .iter()
@@ -1809,8 +1829,20 @@ impl TransformEvaluator {
                 .all(|v| v.is_finite()),
             "Nonfinite transform evaluator value"
         );
+        let splines = if compact {
+            let mut tracks = [None, None, None];
+            let mut animated = [4, 5, 3].into_iter().enumerate()
+                .filter(|&(i, kind)| channel_types[i] == kind).peekable();
+            if animated.peek().is_some() {
+                let source = spline::Source::load(nif, [value(24), value(28)], word(32), word(36))?;
+                for (i, _) in animated {
+                    tracks[i] = Some(source.channel(word(72 + i * 4), [3, 4, 1][i], value(84 + i * 8), value(88 + i * 8))?);
+                }
+            }
+            Some(tracks)
+        } else { None };
         let link = word(56);
-        let data = (link != u32::MAX).then_some(link);
+        let data = (!compact && link != u32::MAX).then_some(link);
         let channels = data
             .map(|id| super::nif_transform::Channels::load(nif, id))
             .transpose()?;
@@ -1824,6 +1856,7 @@ impl TransformEvaluator {
                 data,
                 channels,
             },
+            splines,
         })
     }
 }
@@ -1844,13 +1877,13 @@ impl FloatEvaluator {
         ensure!(
             matches!(
                 raw.type_name.as_str(),
-                "NiConstFloatEvaluator" | "NiFloatEvaluator"
+                "NiConstFloatEvaluator" | "NiFloatEvaluator" | "NiBSplineCompFloatEvaluator"
             ),
             "Unsupported float evaluator {}",
             raw.type_name
         );
         ensure!(
-            raw.raw_data.len() == 28,
+            raw.raw_data.len() == if raw.type_name == "NiBSplineCompFloatEvaluator" { 52 } else { 28 },
             "Unexpected float evaluator layout"
         );
         let word = |at: usize| {
@@ -1886,6 +1919,10 @@ impl FloatEvaluator {
             let value = f32::from_bits(word(24));
             ensure!(value.is_finite(), "Nonfinite constant evaluator");
             FloatValue::Constant(value)
+        } else if raw.type_name == "NiBSplineCompFloatEvaluator" {
+            let value = |at| f32::from_bits(word(at));
+            FloatValue::Spline(spline::Source::load(nif, [value(24), value(28)], word(32), word(36))?
+                .channel(word(40), 1, value(44), value(48))?)
         } else {
             let link = word(24);
             FloatValue::Keys(if link == u32::MAX {

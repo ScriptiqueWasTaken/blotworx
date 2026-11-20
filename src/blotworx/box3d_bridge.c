@@ -1146,6 +1146,57 @@ static void hull_contacts_with_distance(BwCollision* c,b3Vec3 p,float query_dist
  }
 }
 static void hull_contacts(BwCollision* c,b3Vec3 p){hull_contacts_with_distance(c,p,0.001f);}
+int bw_collision_capsule_half_extents(void* handle,int shape,float* half){
+ BwCollision* c=handle;
+ if(!live_mesh(c,shape) || !c->meshes[shape].is_capsule)return 0;
+ BwStaticMesh* capsule=&c->meshes[shape];
+ b3AABB bounds=b3ComputeCapsuleAABB(&capsule->capsule,capsule->transform);
+ b3Vec3 h=b3MulSV(0.5f,b3Sub(bounds.upperBound,bounds.lowerBound));
+ half[0]=h.x;
+ half[1]=h.y;
+ half[2]=h.z;
+ return 1;
+}
+// Query a temporary rounded box against one admitted shape, with no changes
+// to world membership, controller contacts, or the shared mover hull.
+int bw_collision_box_contact_height(void* handle,int shape,const float* center,
+ const float* half,float radius,float* height){
+ BwCollision* original=handle;
+ if(query_ignores_index(original,shape))return 0;
+ b3BoxHull box=b3MakeBoxHull(half[0],half[1],half[2]);
+ BwCollision query=*original;
+ query.mover=&box.base;
+ query.margin=radius;
+ query.contacts=(BwPlanes){0};
+ query.character_contact=NULL;
+ b3Vec3 p={center[0],center[1],center[2]};
+ BwStaticMesh* target=&query.meshes[shape];
+ if(target->hull || target->is_capsule){
+  convex_contacts(&query,shape,p,0);
+ }else{
+  float margin=radius+target->radius;
+  b3Vec3 pad={margin,margin,margin};
+  b3AABB bounds={b3Sub(b3Add(box.base.aabb.lowerBound,p),pad),b3Add(b3Add(box.base.aabb.upperBound,p),pad)};
+  b3Mesh mesh={target->data,{1,1,1}};
+  BwHullQuery contacts={&query,p,target,margin,0,NULL,NULL};
+  bounds=b3AABB_Transform(b3InvertTransform(target->transform),bounds);
+  b3QueryMesh(&mesh,bounds,hull_triangle,&contacts);
+ }
+ bool hit=false;
+ for(int i=0;i<query.contacts.count;i++){
+  if(query.contacts.planes[i].plane.offset<=0)continue;
+  float y=query.contacts.points[i].y;
+  if(!hit || y>*height)*height=y;
+  hit=true;
+ }
+ free(query.contacts.planes);
+ free(query.contacts.points);
+ free(query.contacts.mesh_indices);
+ free(query.contacts.source_triangles);
+ free(query.contacts.simplexes);
+ free(query.contacts.saved_offsets);
+ return hit;
+}
 int bw_collision_shape_penetrations(void* handle,int shape,const float* position,BwPenetrationSink sink,void* context){
  BwCollision* original=handle;
  if(!original || !original->mover || !sink || shape<0 || shape>=original->mesh_count)return 0;

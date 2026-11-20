@@ -208,6 +208,11 @@ unsafe extern "C" {
         rotation: *const f32,
     ) -> i32;
     fn bw_collision_shape_min_y(handle: *mut c_void, index: i32) -> f32;
+    fn bw_collision_capsule_half_extents(handle: *mut c_void, shape: i32, half: *mut f32) -> i32;
+    fn bw_collision_box_contact_height(
+        handle: *mut c_void, shape: i32, center: *const f32, half: *const f32,
+        radius: f32, height: *mut f32,
+    ) -> i32;
     #[cfg(test)]
     fn bw_collision_hull_edges(handle: *mut c_void, index: i32) -> i32;
     fn bw_collision_set_solid(handle: *mut c_void, index: i32, solid: i32) -> i32;
@@ -2790,6 +2795,41 @@ impl Collision {
         );
         Ok(result.values)
     }
+    pub(super) fn capsule_half_extents(&self, shape: usize) -> anyhow::Result<V> {
+        let _guard = BOX3D.lock().unwrap_or_else(|e| e.into_inner());
+        let mut half = [0.; 3];
+        anyhow::ensure!(unsafe {
+            bw_collision_capsule_half_extents(self.handle.as_ptr(), i32::try_from(shape)?, half.as_mut_ptr())
+        } != 0 && half.iter().all(|x: &f32| x.is_finite()), "Invalid spawn body bounds");
+        Ok(half)
+    }
+
+    pub(super) fn box_contact_height(
+        &self,
+        center: V,
+        half: V,
+        radius: f32,
+        mut admits: impl FnMut(usize) -> bool,
+    ) -> anyhow::Result<Option<f32>> {
+        anyhow::ensure!(half.iter().all(|&v| v.is_finite() && v > 0.) && radius.is_finite() && radius >= 0.,
+            "Invalid placement box");
+        let lower = std::array::from_fn(|i| center[i] - half[i] - radius);
+        let upper = std::array::from_fn(|i| center[i] + half[i] + radius);
+        let candidates = self.overlap_candidates(lower, upper)?;
+        let _guard = BOX3D.lock().unwrap_or_else(|e| e.into_inner());
+        let mut highest: Option<f32> = None;
+        for hit in candidates.into_iter().filter(|hit| admits(hit.shape)) {
+            let mut height = 0.;
+            if self.with_query_policy(|| unsafe {
+                bw_collision_box_contact_height(self.handle.as_ptr(), hit.shape as i32,
+                    center.as_ptr(), half.as_ptr(), radius, &mut height)
+            }) != 0 {
+                highest = Some(highest.map_or(height, |prior| prior.max(height)));
+            }
+        }
+        Ok(highest)
+    }
+
     /// Box3D mover-hull penetration for a single shape, including erased shapes.
     /// Uses the mover's existing one-sided triangle policy. This is not yet
     /// the native restoration collector (per-child keys/filters and ray veto).

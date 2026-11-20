@@ -162,11 +162,10 @@ impl World {
             self.spawners.entry(owner).or_default().disabled = Some(true);
             return Ok(vec![None; count as usize]);
         };
-        ensure!(
-            field(component, "TSPSpawnAboveGround")
-                .is_none_or(|v| v == &serde_json::Value::Bool(false)),
-            "Above-ground spawning requires native physics queries"
-        );
+        let above_ground = field(component, "TSPSpawnAboveGround")
+            .map(|value| value.as_bool().context("Invalid TSPSpawnAboveGround flag"))
+            .transpose()?
+            .unwrap_or(false);
         let group = field(component, "Spawn Group")
             .map(|v| v.as_str().context("Invalid spawn group"))
             .transpose()?
@@ -267,6 +266,12 @@ impl World {
                     Prototype::Object(prototype) => self.clone_render_entity(*prototype, position, rotation, &group)?,
                     Prototype::Template(name) => self.spawn_palette_root(owner, name, position, rotation, &group)?,
                 };
+                if above_ground {
+                    if let Err(error) = self.place_spawn_above_ground(entity, position, rotation) {
+                        self.retire_entity(entity)?;
+                        return Err(error);
+                    }
+                }
                 let state = self.spawners.entry(owner).or_default();
                 state.live.push(entity);
                 state.destinations.insert(entity, slot);
@@ -281,7 +286,7 @@ impl World {
             }
             output.push(last);
         }
-        let limitation="Object clones retain reflected gameplay components, fresh Havok/Gamebryo animation instances and generated character bodies through the common lifecycle. Prefab template member graphs, above-ground placement, dynamic/static collision cloning and full child/prefab lifecycle remain incomplete; AI and physics retain their placed-actor compatibility limitations.";
+        let limitation="Object clones retain reflected gameplay components, fresh Havok/Gamebryo animation instances and generated character bodies through the common lifecycle. Prefab template member graphs, dynamic/static collision cloning and full child/prefab lifecycle remain incomplete; AI and physics retain their placed-actor compatibility limitations.";
         if !self
             .report
             .unsupported
@@ -291,6 +296,44 @@ impl World {
             self.report.unsupported.push(limitation.into());
         }
         Ok(output)
+    }
+
+    fn place_spawn_above_ground(&mut self, entity: usize, position: V, rotation: [f32; 9]) -> Result<()> {
+        let body = self.character_physics.get(&entity).and_then(|body| body.as_ref().ok());
+        let half = if let Some(phantom) = self.size_phantoms.get(&entity) {
+            phantom.size.map(|extent| extent * 0.5)
+        } else if let Some(body) = body {
+            self.collision.capsule_half_extents(body.shape)?.map(|extent| extent + 0.01)
+        } else {
+            [1.; 3]
+        };
+        ensure!(half.iter().all(|extent| extent.is_finite() && *extent > 0.),
+            "Invalid spawn placement box");
+        // REL3cc768..3cc870 uses a rounded box and raises Y to the maximum
+        // contact height plus half its height. A blocked retry keeps the
+        // authored pose. Box3D supplies the contact witnesses.
+        let flags = super::super::physics_filter::QueryFlags {
+            bytes: [1, 1, 1, 0, 1],
+            excluded_group: 0,
+        };
+        let shape = body.map(|body| body.shape);
+        let collision = &self.collision;
+        let adjusted = self.dynamic_runtime_filter.query(Some(flags), |filter| {
+            let contacts = |center| collision.box_contact_height(center, half, 0.05, |candidate| {
+                Some(candidate) != shape && collision.simulation_filter(candidate)
+                    .is_some_and(|word| filter.collision_info(0x600001, word) != 0)
+            });
+            let Some(height) = contacts(position)? else { return Ok(None) };
+            let raised = [position[0], height.max(0.) + half[1], position[2]];
+            Ok(contacts(raised)?.is_none().then_some(raised))
+        })?;
+        if let Some(raised) = adjusted {
+            self.relocate_entity(entity, raised, rotation)?;
+        }
+        self.report.geometry.push(serde_json::json!({
+            "kind": "spawn_above_ground", "entity": entity, "origin": position, "adjusted": adjusted,
+        }));
+        Ok(())
     }
     fn preflight_render_clone(&self, source: usize) -> Result<()> {
         let entity = &self.entities[source];

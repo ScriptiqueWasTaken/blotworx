@@ -9,6 +9,12 @@ pub(super) struct Plates {
     entries: BTreeMap<usize, Plate>,
 }
 
+impl Plates {
+    pub(super) fn displacement(&self, entity: usize) -> f32 {
+        self.entries.get(&entity).map_or(0., |plate| -plate.depth)
+    }
+}
+
 struct Plate {
     component: usize,
     weight: f32,

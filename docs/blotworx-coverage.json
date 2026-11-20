@@ -528,6 +528,25 @@
       ]
     },
     {
+      "scope": "EM1 Space Mountain lift spline reversal",
+      "state": "Reverse clears the terminal traversal latch and previous OnPass knot. The current spline retains both authored endpoints when its arrival cursor changes. Pressure-plate displacement combines with the spline pose so it survives the next motion update.",
+      "source": "Wii REL .text 267e40..267e48 registers Reverse at 26358c. The spline branch at 263768..26378c toggles direction at +0x68 and clears +0x6c and +0x7b. The authored Space Mountain TL_SM_Gear1 03 pressure plate routes OnStop to Reverse and has a spline from SplineKnot 90 to SplineKnot 89.",
+      "evidence": "Passed blotworx diagnose --validate-spline-events using the imported Wii game. The Space Mountain check advanced the original platform to the lower knot, sent the authored OnStop output, and verified continuous travel back to its original upper knot. A scripted boarding replay in the graphical runtime moved both the lift and Mickey down through tick 175.",
+      "open": [
+        "Retail comparison of player boarding, pressure thresholds, and moving-platform support.",
+        "Natural arrival at the lift and progression through Zone D still need validation."
+      ]
+    },
+    {
+      "scope": "EM1 Space Mountain lift outro camera",
+      "state": "GrabCamera accepts an entity with a bound transform parent. It samples the live composed translation and unscaled rotation used by the transform hierarchy, including changes while its parent moves.",
+      "source": "The imported SMB_Gus_ToPete BSQ calls DBGrabCamera with cameraOutroShot2. The corresponding CameraControlPointParented_outroShot2 01 is a normal transform child of TL_SM_Gear1 03 with no bone socket. Wii REL .text cb90 passes the generic-camera flag to 1e4888. The generic update at 1e4718..1e4754 reads two reflected transform properties before publishing the camera at 1e4798..1e47a8.",
+      "evidence": "Run blotworx diagnose --level Levels/TL_SpaceMountain.Level --run-script tools/blotworx/fixtures/space_mountain_lift.lua --capture <image> --capture-tick 175. The live replay selected the lift outro through the original pressure-plate output and BSQ. At tick 175 SMB_Gus_ToPete was active, the camera eye was [384.86761, 27.25350, 141.44879] below its authored resting Y of 38.20808, and the replay recorded zero Lua or runtime errors.",
+      "open": [
+        "Original Wii frame comparison for the moving cutscene camera and natural progression through the rest of Space Mountain."
+      ]
+    },
+    {
       "scope": "Authored preview spline segment timing",
       "state": "Preview traversal uses Hermite handles on linked edges. Without an authored duration it divides route length by live speed. Explicit times above the native epsilon are bounded below by route length divided by 200. Main and branch paths measure 200 cubic chords with the Wii distance arithmetic. Main paths use the chord table to map phase to distance. Branch paths sample cubic phase directly. The follower easing flag and knot overrides control a speed ramp over the first and last 10% of each linked segment. On a linked edge the signed phase step carries unused frame time through knot crossings and holds. An expiring hold queues OnHoldEnd from the canonical source knot to its authored output rows. The chord measurement also applies to zero-handle paths. Explicit fractional stops retain their existing behavior.",
       "source": "REL .text 3bc7dc..3bc8a4 supplies the duration and phase arithmetic. 3c06dc assembles the endpoint and handle vectors, 3c0f98 evaluates their cubic, afe4..b068 measures each chord with the paired reduction and reciprocal-root estimate; 3c10bc remaps main-path phase by cached lengths from 3c177c..3c1824, and 3c11f0 applies the authored endpoint easing. Main and branch knot preparation apply the duration bounds at 3c1828 and 3c197c. 3bc84c..3bc9fc advances phase, applies the short-edge rule and returns the residual after a strict crossing. The caller at 3bc534 repeats while time remains and the residual or phase changes. 3bc680..3bc74c queues event 0x1e when a positive hold expires with a source knot.",

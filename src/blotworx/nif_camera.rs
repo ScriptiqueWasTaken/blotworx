@@ -340,7 +340,7 @@ impl World {
         self.nif_camera_completed_frame = None;
         Ok(())
     }
-    /// Lua f804/f7a4 ->cbe4 passes use-NIF=false to1e49cc. This is a
+    /// Lua f7a4 -> cb90 passes use-NIF=false to 1e4888. This is a
     /// transform-property camera, distinct from the NiCamera resource path.
     pub(super) fn select_entity_camera(
         &mut self,
@@ -447,10 +447,15 @@ impl World {
             !self.removed_entities.contains(&entity),
             "Entity camera source was retired"
         );
-        ensure!(
-            source.transform_parent_id()?.is_none(),
-            "Parented entity-camera getters require native composition integration"
-        );
+        if source.transform_parent_id()?.is_some() {
+            ensure!(
+                self.transform_hierarchy
+                    .get(&entity)
+                    .is_some_and(|link| !self.removed_entities.contains(&link.parent)),
+                "Entity camera {} has an unresolved transform parent",
+                source.name
+            );
+        }
         ensure!(
             source
                 .components
@@ -551,6 +556,8 @@ impl World {
         let mut frame = if let Some(projection) = selection.entity_projection {
             self.validate_entity_camera(selection.entity)?;
             let source = &self.entities[selection.entity];
+            // The transform hierarchy publishes the composed world pose into
+            // these fields whenever the parent moves.
             Frame::from_entity(
                 source.runtime_rotation,
                 source.transform[12..15].try_into()?,

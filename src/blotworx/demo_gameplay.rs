@@ -30,10 +30,10 @@ struct Mover {
 }
 
 struct Segment {
-    origin: usize,
+    start: usize,
+    end: usize,
     authored_duration: f32,
     phase: f32,
-    reversed: bool,
     path: spline_curve::Path,
 }
 
@@ -397,6 +397,10 @@ impl World {
         if name == "Reverse" {
             if let Some(m) = self.demo_story.motion.movers.get_mut(&owner) {
                 m.reverse = !m.reverse;
+                // Retail Reverse (REL 263774..26378c) also clears the
+                // previous OnPass knot and the terminal traversal latch.
+                m.passes = Default::default();
+                m.stopped = false;
             }
             for ((entity, _), rotator) in &mut self.rotators {
                 if *entity == owner {
@@ -423,9 +427,10 @@ impl World {
             let Some(knot) = self.scripts.resolve_world_argument(&args[1])? else {
                 return Ok(mlua::MultiValue::new());
             };
-            let position = self.entities[knot].transform[12..15]
+            let mut position: [f32; 3] = self.entities[knot].transform[12..15]
                 .try_into()
                 .map_err(mlua::Error::external)?;
+            position[1] += self.pressure_plates.displacement(owner);
             self.move_demo_spline_owner(owner, position, self.entities[owner].runtime_rotation)
                 .map_err(mlua::Error::external)?;
             let speed = self.live_spline_speed(owner).unwrap_or_else(|| property(
@@ -451,6 +456,7 @@ impl World {
             mover.hold = 0.;
             mover.stop = None;
             mover.segment = None;
+            mover.stopped = false;
         } else if name == "SetSpeed" {
             let speed = lua
                 .coerce_number(args[1].clone())?
@@ -580,7 +586,7 @@ impl World {
                         // REL 3bc6ac..3bc74c sends from the canonical start
                         // (+0x70), including reverse traversal and zero remainder.
                         let knot = if let Some(segment) = &m.segment {
-                            Some(if segment.reversed { m.target } else { segment.origin })
+                            Some(segment.start)
                         } else {
                             m.stop.is_none().then_some(m.target)
                         };
@@ -593,7 +599,9 @@ impl World {
                         }
                     }
                     let source = &self.entities[owner];
-                    let position: [f32; 3] = source.transform[12..15].try_into()?;
+                    let plate_displacement = self.pressure_plates.displacement(owner);
+                    let mut position: [f32; 3] = source.transform[12..15].try_into()?;
+                    position[1] -= plate_displacement;
                     let rotation = source.runtime_rotation;
                     // Explicit stops still use the supplied, unclamped coordinate.
                     let target: [f32; 3] = if let Some(stop) = m.stop {
@@ -604,17 +612,20 @@ impl World {
                     } else {
                         self.entities[m.target].transform[12..15].try_into()?
                     };
-                    if m.segment.as_ref().is_some_and(|segment| self.removed_entities.contains(&segment.origin)) {
+                    if m.segment.as_ref().is_some_and(|segment| {
+                        self.removed_entities.contains(&segment.start)
+                            || self.removed_entities.contains(&segment.end)
+                    }) {
                         m.segment = None;
                     }
                     let previous_phase = m.segment.as_ref().map(|segment| segment.phase);
-                    let (destination, arrived, reverse, residual) = if let Some(segment) = &mut m.segment {
-                        let origin = self.entities[segment.origin].transform[12..15].try_into()?;
-                        let (start, end, start_pos, end_pos) = if segment.reversed {
-                            (m.target, segment.origin, target, origin)
-                        } else {
-                            (segment.origin, m.target, origin, target)
-                        };
+                    let (mut destination, arrived, reverse, residual) = if let Some(segment) = &mut m.segment {
+                        // The arrival cursor can change at a terminal knot.
+                        // Keep both authored knots on the segment so Reverse
+                        // can traverse the same geometry from either endpoint.
+                        let (start, end) = (segment.start, segment.end);
+                        let start_pos = self.entities[start].transform[12..15].try_into()?;
+                        let end_pos = self.entities[end].transform[12..15].try_into()?;
                         segment.path.update_endpoints(start_pos, end_pos)?;
                         let previous = segment.phase;
                         let length = segment.path.length();
@@ -658,6 +669,9 @@ impl World {
                         };
                         (destination, fraction == 1., m.reverse, 0.)
                     };
+                    // Retain plate travel when the spline publishes a new base
+                    // pose. The plate advances its own depth later this tick.
+                    destination[1] += plate_displacement;
                     self.move_demo_spline_owner(owner, destination, rotation)?;
                     if arrived {
                         self.emit_entity_output(owner, "OnReachedPosition", owner);
@@ -726,10 +740,10 @@ impl World {
                                 !branched,
                             )?;
                             m.segment = Some(Segment {
-                                origin: m.target,
+                                start,
+                                end,
                                 authored_duration: duration,
                                 phase: if reverse { 1. } else { 0. },
-                                reversed: reverse,
                                 path,
                             });
                             m.target = next;
@@ -819,7 +833,40 @@ pub(super) fn validate_spline_events()->Result<()> {
     ensure!(world.deferred_event_runtime.spline_io_deliveries>0,"Spline IO receiver was not used");
     println!("PASS: original door arrival queues native OnPass context, posts its enabled authored audio row and preserves the disabled cleanup row and source knot");
     drop(world);
-    validate_spline_residual(std::path::Path::new(&root))
+    let root = std::path::Path::new(&root);
+    validate_spline_residual(root)?;
+    validate_space_mountain_lift_reverse(root)
+}
+
+#[cfg(debug_assertions)]
+fn validate_space_mountain_lift_reverse(root: &std::path::Path) -> Result<()> {
+    let mut world = super::assets::load(root, "Levels/TL_SpaceMountain.Level", &egui::Context::default())?;
+    world.enable_demo_story()?;
+    let lift = "sm_tl_zonebvisit1only.TL_SM_Gear1 03";
+    let owner = world.scripts.resolve_name(lift).context("Space Mountain lift missing")?;
+    let scene = world.entities[owner].scene.clone();
+    world.activate_streamed_scene(&scene)?;
+    world.demo_story.motion.movers.retain(|&entity, _| entity == owner);
+    world.run_callback_fixture(&format!("SplineFollower_SetDisabled('{lift}',false)"))?;
+    let position = |w: &World| w.entities[owner].transform[13];
+    let initial = position(&world);
+    for _ in 0..600 {
+        world.advance_demo_motion(super::STEP)?;
+    }
+    let bottom = position(&world);
+    ensure!(bottom < initial - 55., "Space Mountain lift did not descend to the lower knot: {initial} to {bottom}");
+    ensure!(world.demo_story.motion.movers[&owner].stopped, "Lift did not stop at the lower terminal knot");
+    world.emit_entity_output(owner, "OnStop", owner);
+    world.dispatch_actor_inputs(world.animation_time + 10.);
+    world.advance_demo_motion(super::STEP)?;
+    let rising = position(&world);
+    ensure!(rising > bottom && rising < bottom + 1., "Authored OnStop did not move the lift continuously back up: {bottom} to {rising}");
+    for _ in 0..600 {
+        world.advance_demo_motion(super::STEP)?;
+    }
+    ensure!((position(&world) - initial).abs() < 0.01, "Lift did not return to the original upper knot");
+    println!("PASS: Space Mountain lift descends, stops and returns along the same authored spline after OnStop");
+    Ok(())
 }
 
 #[cfg(debug_assertions)]

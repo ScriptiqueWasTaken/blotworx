@@ -87,14 +87,14 @@ impl World {
         let p=self.entities[self.player_entity].transform;
         self.demo_npc_turn_toward(owner,[p[12],p[13],p[14]],self.demo_story.npc_fallback.delta)?;Ok(())
     }
-    fn drive_demo_npc_move(&mut self,owner:usize,movement:Move,delta:f32)->Result<bool> {
+    fn drive_demo_npc_move(&mut self,owner:usize,movement:Move,delta:f32,prefer_patrol_target:bool)->Result<bool> {
         if movement.turn {return self.demo_npc_turn_toward(owner,movement.destination,delta)}
         let body=self.character_physics.get(&owner).and_then(|b|b.as_ref().ok()).context("Fallback navigation body missing")?;
         let shape=body.shape;let pose=self.collision.simulation_pose(shape)?;
         let dx=movement.destination[0]-pose.position[0];let dz=movement.destination[2]-pose.position[2];
         if dx*dx+dz*dz<=movement.radius*movement.radius {self.stop_demo_npc_motion(owner,false)?;self.demo_npc_walking(owner,0.)?;return Ok(true)}
         if self.basic_motion_suspended(owner)==Some(true)||self.ai_component_disabled(owner,"BasicAIControllerComponent"){self.stop_demo_npc_motion(owner,false)?;return Ok(false)}
-        let direction=self.demo_steer(owner,shape,pose.position,movement.destination)?;
+        let direction=self.demo_steer(owner,shape,pose.position,movement.destination,prefer_patrol_target)?;
         let speed=self.entities[owner].components.iter().find(|c|c.class_name=="BasicMotionControllerComponent")
             .and_then(|c|c.properties.iter().find(|p|p.name=="Max Move Speed")).and_then(|p|p.value.as_f64()).unwrap_or(2.) as f32;
         ensure!(speed.is_finite() && speed>=0.,"Invalid fallback NPC movement speed");
@@ -133,7 +133,7 @@ impl World {
         let number=|name:&str,default:f32|properties.and_then(|p|p.iter().find(|p|p.name==name)).and_then(|p|p.value.as_f64()).map(|v|v as f32).unwrap_or(default);
         let radius=number("GotoTolerance",0.5).max(0.05);let low=number("HoldTimeMin",0.);let high=number("HoldTimeMax",low);
         let p=self.entities[target].transform;let movement=Move{destination:[p[12],p[13],p[14]],radius,turn:false};
-        if self.drive_demo_npc_move(owner,movement,delta)? {
+        if self.drive_demo_npc_move(owner,movement,delta,true)? {
             let wait=if high>low{low+(high-low)*(self.game_random.draw() as f32/32767.)}else{low};
             self.demo_story.npc_fallback.patrol_wait.insert(owner,(target,self.animation_time+wait.max(0.)));
             self.demo_patrol_notice(owner,target,0x8d)?;
@@ -218,7 +218,7 @@ fn update(w:&mut World,b:usize,c:Context)->Result<u32>{
         "Conversation"=>w.update_selected_ai_conversation(c.owner),
         "Patrol"=>w.update_demo_npc_patrol(c.owner,b,c.delta),
         "ScriptedMove"=>{
-            if let Some(movement)=w.demo_story.npc_fallback.moves.get(&c.owner).copied(){if !w.drive_demo_npc_move(c.owner,movement,c.delta)?{return Ok(1)}}
+            if let Some(movement)=w.demo_story.npc_fallback.moves.get(&c.owner).copied(){if !w.drive_demo_npc_move(c.owner,movement,c.delta,false)?{return Ok(1)}}
             w.demo_story.npc_fallback.moves.remove(&c.owner);super::ai_scripted_move::CompletionHost::reached_position(w,c.owner)?;Ok(2)
         },
         _=>anyhow::bail!("Unknown temporary NPC behavior"),

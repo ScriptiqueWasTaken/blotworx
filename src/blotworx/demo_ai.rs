@@ -108,10 +108,13 @@ impl World {
         shape: usize,
         source: [f32; 3],
         destination: [f32; 3],
+        prefer_patrol_target: bool,
     ) -> Result<[f32; 2]> {
+        const LOOKAHEAD: f32 = 1.1;
         let previous = self.demo_story.ai.steering.get(&entity).copied();
         if let Some(cached) = previous {
             if cached.until > self.animation_time
+                && (source[0] - cached.source[0]).hypot(source[2] - cached.source[2]) < LOOKAHEAD * 0.5
                 && super::physics::length(super::physics::sub(cached.destination, destination))
                     < 0.8
             {
@@ -132,10 +135,19 @@ impl World {
             return Ok([0.; 2]);
         }
         let forward = [dx / length, dz / length];
+        let to_goal = [destination[0] - source[0], destination[2] - source[2]];
+        let goal_distance = to_goal[0].hypot(to_goal[1]);
+        let direct = (prefer_patrol_target && goal_distance > 0.001)
+            .then(|| [to_goal[0] / goal_distance, to_goal[1] / goal_distance]);
         let stuck = previous.is_some_and(|old| {
             old.direction != [0.; 2]
                 && super::physics::length(super::physics::sub(source, old.source)) < 0.035
         });
+        let steering_trace = log::log_enabled!(target: "blotworx_ai_steering", log::Level::Trace);
+        if steering_trace {
+            log::trace!(target: "blotworx_ai_steering", "{} t={:.2} source={source:?} waypoint={route_target:?} goal={destination:?} stuck={stuck}",
+                self.entities[entity].name, self.animation_time);
+        }
         let mut best = ([0.; 2], f32::NEG_INFINITY);
         let collision = &self.collision;
         let actor_filter = collision
@@ -149,18 +161,30 @@ impl World {
         if let Some(player) = &self.player_physics {
             characters.insert(player.owner);
         }
+        let mut steering_hits = Vec::new();
+        let dynamic_sources = &self.dynamic_runtime_sources;
+        let constructions = &self.dynamic_constructions;
         self.dynamic_runtime_filter.query(None, |filter| {
             collision.with_query_body_excluded(shape, |collision| -> Result<()> {
-                for degrees in [0f32, 45., -45., 90., -90., 135., -135.] {
+                // A discrete patrol target can remain locally reachable even
+                // when a nearby graph node points into the swept path of a
+                // moving door. Test the direct heading with the same clearance
+                // and floor checks, then retain graph steering around obstacles.
+                let candidates = direct.filter(|_| !stuck)
+                    .map(|heading| (heading, 0., goal_distance.min(LOOKAHEAD), true)).into_iter()
+                    .chain([0f32, 45., -45., 90., -90., 135., -135.]
+                        .map(|angle| (forward, angle, LOOKAHEAD, false)));
+                let mut direct_obstruction = None;
+                'headings: for (heading, degrees, distance, toward_goal) in candidates {
                     if stuck && degrees == 0. {
                         continue;
                     }
                     let (sin, cos) = degrees.to_radians().sin_cos();
                     let direction = [
-                        forward[0] * cos - forward[1] * sin,
-                        forward[0] * sin + forward[1] * cos,
+                        heading[0] * cos - heading[1] * sin,
+                        heading[0] * sin + heading[1] * cos,
                     ];
-                    let travel = [direction[0] * 1.1, 0., direction[1] * 1.1];
+                    let travel = [direction[0] * distance, 0., direction[1] * distance];
                     let origin = [source[0], source[1] + 0.7, source[2]];
                     let mut blocked = false;
                     for side in [-0.27f32, 0., 0.27] {
@@ -169,12 +193,30 @@ impl World {
                             origin[1],
                             origin[2] + direction[0] * side,
                         ];
-                        if collision.ray_hits(start, travel)?.iter().any(|hit| {
+                        if let Some(hit) = collision.ray_hits(start, travel)?.into_iter().find(|hit| {
                             collision.owner_is_solid(hit.owner)
                                 && collision.simulation_filter(hit.shape).is_some_and(|word| {
                                     filter.collision_info(actor_filter, word) >> 24 != 0
                                 })
                         }) {
+                            if steering_trace {
+                                steering_hits.push((degrees, hit.owner, hit.position));
+                            }
+                            if toward_goal {
+                                direct_obstruction = Some(hit.owner);
+                            } else if degrees == 0. && direct_obstruction == Some(hit.owner)
+                                && dynamic_sources.iter().any(|(source, owner)| {
+                                    *owner == hit.owner && constructions[source].bodies.iter()
+                                        .zip(&constructions[source].node_bindings).any(|(body, binding)| {
+                                            binding.is_some() && body.motion.current.motion_type() == 4
+                                                && body.shapes.contains(&hit.shape)
+                                        })
+                                })
+                            {
+                                // Both approaches reach the same animated
+                                // collision. Hold at the gate until it clears.
+                                break 'headings;
+                            }
                             blocked = true;
                             break;
                         }
@@ -202,6 +244,9 @@ impl World {
                         .filter(|height| *height - source[1] <= 0.45 && source[1] - *height <= 0.65)
                         .max_by(f32::total_cmp);
                     let Some(height) = ground else {
+                        if steering_trace {
+                            log::trace!(target: "blotworx_ai_steering", "angle={degrees} no walkable support at {probe:?}");
+                        }
                         continue;
                     };
                     let persistence = previous.map_or(0., |old| {
@@ -218,6 +263,13 @@ impl World {
                 Ok(())
             })?
         })?;
+        if steering_trace {
+            for (angle, owner, point) in steering_hits {
+                let name = self.collision_entity(owner).map(|entity| entity.name.as_str());
+                log::trace!(target: "blotworx_ai_steering", "angle={angle} blocked by {owner} {name:?} at {point:?}");
+            }
+            log::trace!(target: "blotworx_ai_steering", "selected direction {:?}", best.0);
+        }
         self.demo_story.ai.steering.insert(
             entity,
             Steering {
@@ -723,7 +775,7 @@ impl World {
                 && distance > if hostile { 1.3 } else { 0.25 }
                 && (status != 1 || target != self.player_entity);
             let direction = if wants_move {
-                self.demo_steer(entity, shape, source, destination)?
+                self.demo_steer(entity, shape, source, destination, false)?
             } else {
                 [0.; 2]
             };

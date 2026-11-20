@@ -44,3 +44,21 @@ Wait(4)
 if GetEntity(pete_name) == spawned_pete then
     Print("ASIA_AIRLOCK_PETE_PATROL_DISTANCE " .. tostring(GetDistanceBetweenEntities(spawned_pete, patrol_node)))
 end
+-- The authored conversation starts Pete's departure and eventually retires him.
+-- The replay advances dialogue while leaving Pete's movement to the engine.
+Wait(12)
+assert(GetEntityGroupSize(pete_name) == 0, "Pete did not complete his patrol and departure")
+Print("ASIA_AIRLOCK_PETE_DEPARTED")
+
+-- Stage Mickey at the authored Zone D entrance to check the trigger and cleanup.
+local player = GetPlayer()
+local gate = assert(GetEntity("gremlinvillage_zoned.Trigger_PeteIntro"))
+local contact = GetPosition(gate) - vector4(0, 2.5, 0)
+local facing = GetFacing(player)
+SetTransformation(player, contact + vector4(0, 0, 2), facing)
+Wait(0.2)
+SetTransformation(player, contact, facing)
+Wait(4)
+assert(GetGlobal("GV_Pete_Intro_Played") == 1, "Zone D entrance trigger did not fire")
+assert(Cleanup_GV_JungleToAsiaAirlock == nil, "Zone D kept the airlock's scripts alive")
+Print("ASIA_AIRLOCK_EXIT_TO_ZONE_D")

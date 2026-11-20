@@ -75,6 +75,16 @@ pub struct Service {
     last_error: Option<String>,
 }
 impl Service {
+    pub fn read_checkpoint(root: &Path, selected: usize) -> Result<Arc<Snapshot>> {
+        ensure!(selected < 3, "Save slot must be 0, 1 or 2");
+        let path = root.join(format!("save{selected}.dat"));
+        let bytes = std::fs::read(&path)
+            .with_context(|| format!("Read checkpoint {}", path.display()))?;
+        ensure!(bytes.len() == 0x10000, "Invalid checkpoint storage size");
+        let logical_size = save_game::Archive::parse(&bytes)?.logical_size;
+        Ok(Arc::new(Snapshot { bytes, logical_size }))
+    }
+
     pub fn open(root: PathBuf, selected: usize, initial_tick: u64) -> Result<Self> {
         ensure!(selected < 3, "Save slot must be0,1 or2");
         std::fs::create_dir_all(&root)

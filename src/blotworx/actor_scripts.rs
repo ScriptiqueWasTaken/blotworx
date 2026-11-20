@@ -1806,6 +1806,12 @@ impl Scripts {
             .push(format!("BSQ Lua: {error:#}"));
         Ok(())
     }
+    pub(super) fn schedule_checkpoint_callback(&mut self, callback: &str, entity: usize) -> Result<()> {
+        self.lua.globals().get::<mlua::Function>(callback)
+            .with_context(|| format!("Checkpoint callback {callback} is missing"))?;
+        let quoted = serde_json::to_string(callback)?;
+        self.schedule_entity_source(&format!("_G[{quoted}]()"), entity, "checkpoint")
+    }
     fn schedule_entity_source(&mut self, source: &str, entity: usize, origin: &str) -> Result<()> {
         ensure!(
             self.has_entity(entity),

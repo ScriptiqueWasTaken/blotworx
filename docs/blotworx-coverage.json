@@ -186,6 +186,18 @@
         ]
       },
       {
+        "scope": "Continue a committed EM1 checkpoint",
+        "state": "Continue opens the selected save slot and bootstraps the saved level from its saved part descriptors and ordered WRLD scenes. Globals, quest slots, player scalars, spawn, playtime and other established save owners are installed before level scripts. The saved callback runs once.",
+        "source": "GAME v16 header, GLOB1, QUES4, AISS2, MICK3 and WRLD1, and the shipped GV_ZoneF_LoadCheckpoint callback",
+        "evidence": "target/perf/gv-zone-f-checkpoint-resumed.runtime.json matches the prior Zone F save's scene order, spawn, quest status, playtime, health, inventory and raw ammo words. The copied save remains byte-identical. target/perf/gv-zone-f-checkpoint-resumed-motion.ticks.json records 3.39 units of player movement after fresh-session resume, with no script, story, or runtime errors.",
+        "open": [
+          "Ability grant and sketch capacity restoration",
+          "Death and in-memory restart",
+          "Additional save-owner callbacks and Wii ordering parity",
+          "Cross-campaign checkpoint coverage"
+        ]
+      },
+      {
         "scope": "EM1 loading-screen presentation",
         "state": "Full level loads and scene streams behind an authored fade show original artwork and cycle the authored dot frames. Faded scene imports wait until the loading screen has had a visible presentation window. Level loads use destination artwork, while streams use the current level's artwork.",
         "source": "loading_screen_texture in levels.pak, loose LoadingScreens assets, and src/blotworx/loading_screen.rs",

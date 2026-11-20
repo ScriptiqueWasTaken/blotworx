@@ -8865,7 +8865,21 @@ pub(super) fn load_with_bootstrap_mode(
         .push(serde_json::json!({"kind":"quest_state","state":quest_state.summary()}));
     report.unsupported.push("Native quest slots and QUES save/restore are owned by this world; evaluation, global-change notifications, stage transitions and quest UI remain unimplemented.".into());
     let bytes = read_descriptor(&root, &files, level)?;
-    let values = descriptor_bytes(&bytes).with_context(|| format!("Level descriptor {level}"))?;
+    let mut values = descriptor_bytes(&bytes).with_context(|| format!("Level descriptor {level}"))?;
+    let restore_snapshot = scores.checkpoint.latest.as_ref().filter(|_| scores.restore_checkpoint).cloned();
+    let restore = restore_snapshot.as_ref()
+        .map(|snapshot| super::save_game::Archive::parse(&snapshot.bytes))
+        .transpose()?;
+    if let Some(archive) = &restore {
+        for (field, offset) in [("initial", 0x4c), ("interior", 0x88)] {
+            let part = archive.header_string(offset, 60)?;
+            if part.is_empty() {
+                values.remove(field);
+            } else {
+                values.insert(field.into(), part.into());
+            }
+        }
+    }
     let level_resource = super::checkpoint_metadata::Level::bootstrap(
         level,
         values.get("initial").map(String::as_str),
@@ -8873,6 +8887,13 @@ pub(super) fn load_with_bootstrap_mode(
     );
     let (mut scene_paths, part_text, part_groups, missing_parts) =
         startup_scene_paths(&root, &files, &values)?;
+    if let Some(archive) = &restore {
+        ensure!(missing_parts.is_empty(), "Saved level parts are missing: {}", missing_parts.join(", "));
+        let section = archive.section(*b"WRLD")?;
+        ensure!(section.version == 1, "Unsupported WRLD save version");
+        scene_paths = initial_scenes(None, &super::save_world::decode(&section.payload)?.join("\n"))?;
+        ensure!(!scene_paths.is_empty(), "Checkpoint has no active scenes");
+    }
     report.warnings.extend(missing_parts);
     let mut scene_resources = super::scene_resources::State::bootstrap(
         values.get("shared").map(String::as_str),
@@ -9850,6 +9871,9 @@ pub(super) fn load_with_bootstrap_mode(
         report,
     };
     world.initialize_countdown()?;
+    if let (Some(archive), Some(snapshot)) = (&restore, &restore_snapshot) {
+        world.restore_checkpoint_owners(archive, &snapshot.bytes)?;
+    }
     if let Some(session) = scores.session {
         session.install(&mut world)?;
     }
@@ -9873,6 +9897,9 @@ pub(super) fn load_with_bootstrap_mode(
         world.enable_demo_story()?;
         // Apply before the initial frame and map-load callbacks can select AI.
         world.demo_story.npc_fallback.enabled = !strict_npc_ai;
+    }
+    if let Some(archive) = &restore {
+        world.schedule_checkpoint_callback(archive)?;
     }
     world.advance_models(0.)?;
     for entity in 0..world.entities.len() {

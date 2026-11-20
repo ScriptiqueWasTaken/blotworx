@@ -11,6 +11,7 @@ pub struct Playthrough {
 #[derive(Clone, Debug, Default)]
 pub struct InitialState {
     pub session: Option<super::level_session::Session>,
+    pub restore_checkpoint: bool,
     pub playthrough: Playthrough,
     pub playstyle_points: super::playstyle_points::State,
     pub playtime: super::checkpoint_time::Playtime,

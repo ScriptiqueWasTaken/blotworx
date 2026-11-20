@@ -744,6 +744,7 @@ use std::{path::PathBuf, sync::mpsc, time::Instant};
 // VillageTest reference capture. Render interpolation remains independent.
 const STEP: f32 = 1.0 / 30.0;
 struct Options {
+    continue_checkpoint: bool,
     shared_playtest: bool,
     save_directory: Option<PathBuf>,
     save_slot: usize,
@@ -800,6 +801,7 @@ struct Options {
 }
 fn options() -> Result<Options> {
     let mut o = Options {
+        continue_checkpoint: false,
         shared_playtest: false,
         save_directory: None,
         save_slot: 0,
@@ -857,6 +859,7 @@ fn options() -> Result<Options> {
     let mut args = std::env::args().skip(1);
     while let Some(a) = args.next() {
         match a.as_str() {
+            "--continue" => o.continue_checkpoint = true,
             "--save-dir" => {
                 o.save_directory = Some(PathBuf::from(
                     args.next().context("--save-dir needs a directory")?,
@@ -2620,11 +2623,52 @@ impl Engine {
             }
         }
         if !s.root.is_empty() {
-            s.load(&cc.egui_ctx)
+            if o.continue_checkpoint {
+                s.continue_checkpoint(&cc.egui_ctx);
+            } else {
+                s.load(&cc.egui_ctx);
+            }
         }
         s
     }
+    fn continue_checkpoint(&mut self, ctx: &egui::Context) {
+        let result = (|| -> Result<_> {
+            let directory = self.save_directory.clone()
+                .map(Ok).unwrap_or_else(save_service::default_directory)?;
+            if let Some(world) = self.world.as_mut() {
+                if let Some(service) = &mut world.checkpoint.service {
+                    service.flush_on_exit(
+                        world.checkpoint.latest.as_ref(),
+                        world.frame_clock.hardware_sample(),
+                        world.frame_clock.clock.rate.ticks_per_second.get(),
+                    )?;
+                }
+            }
+            let snapshot = save_service::Service::read_checkpoint(&directory, self.save_slot)?;
+            let archive = save_game::Archive::parse(&snapshot.bytes)?;
+            let level = archive.header_string(0x10, 60)?.to_owned();
+            anyhow::ensure!(!level.is_empty(), "Checkpoint slot has no saved level");
+            Ok((level, snapshot))
+        })();
+        match result {
+            Ok((level, snapshot)) => {
+                self.level = level;
+                self.preview_entry = None;
+                self.actor_focus = None;
+                self.options_open = false;
+                self.load_with_checkpoint(ctx, Some(snapshot));
+            }
+            Err(error) => self.error = Some(format!("Continue game: {error:#}")),
+        }
+    }
     fn load(&mut self, ctx: &egui::Context) {
+        self.load_with_checkpoint(ctx, None);
+    }
+    fn load_with_checkpoint(
+        &mut self,
+        ctx: &egui::Context,
+        snapshot: Option<std::sync::Arc<checkpoint::Snapshot>>,
+    ) {
         self.root = assets::files_root(std::path::Path::new(&self.root))
             .to_string_lossy()
             .into_owned();
@@ -2658,13 +2702,14 @@ impl Engine {
         if let Some(world) = &mut self.world {
             world.frame_clock.suspend_for_loading();
         }
-        let mut scores = if let Some(world) = self.world.as_mut() {
+        let mut scores = if let Some(world) = self.world.as_mut().filter(|_| snapshot.is_none()) {
             let session=match level_session::Session::capture(world) {
                 Ok(session)=>session,
                 Err(error)=> { self.error=Some(format!("Lua session transfer: {error:#}")); return; }
             };
             score_state::InitialState {
                 session: Some(session),
+                restore_checkpoint: false,
                 playstyle_points: world.playstyle_points,
                 playthrough: world.playthrough,
                 playtime: world.playtime,
@@ -2707,6 +2752,10 @@ impl Engine {
                 ..Default::default()
             }
         };
+        if let Some(snapshot) = snapshot {
+            scores.restore_checkpoint = true;
+            scores.checkpoint.latest = Some(snapshot);
+        }
         if let Some(clock) = &mut scores.frame_clock {
             clock.suspend_for_loading();
         }
@@ -4032,6 +4081,9 @@ impl Engine {
             ui.horizontal(|ui| {
                 ui.label("Level");
                 ui.add_enabled_ui(self.receiver.is_none(), |ui| {
+                    if ui.button("Continue checkpoint").clicked() {
+                        self.continue_checkpoint(ui.ctx());
+                    }
                     if ui.button("Open levelâ€¦").clicked() {
                         if let Some(path) = rfd::FileDialog::new()
                             .add_filter("Epic Mickey level", &["level"])
@@ -4484,6 +4536,9 @@ impl eframe::App for Engine {
             ui.label("Game data stays in your BlueThinner installation. This runtime does not launch Dolphin.");
             ui.horizontal(|ui| {
                 ui.text_edit_singleline(&mut self.root);
+                if ui.button("Continue checkpoint").clicked() {
+                    self.continue_checkpoint(ui.ctx());
+                }
                 if ui.button("Choose game folder").clicked() {
                     if let Some(p) = rfd::FileDialog::new().pick_folder() {
                         self.root = p.to_string_lossy().into_owned();

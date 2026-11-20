@@ -133,6 +133,91 @@ impl Request {
 }
 
 impl super::assets::World {
+    /// Seed the persisted owners before the level's script modules execute.
+    pub(super) fn restore_checkpoint_owners(&mut self, archive: &Archive<'_>, bytes: &[u8]) -> Result<()> {
+        let section = |tag, version| -> Result<&[u8]> {
+            let section = archive.section(tag)?;
+            ensure!(section.version == version, "Unsupported checkpoint section {:?} version {}", tag, section.version);
+            Ok(&section.payload)
+        };
+        self.globals.restore_save_payload(section(*b"GLOB", 1)?)?;
+        self.quests.restore_payload(section(*b"QUES", 4)?)?;
+        self.instance_changes.restore_payload(section(*b"AISS", 2)?)?;
+        self.extras.restore_save_header(bytes)?;
+        self.collectibles.restore_save_header(bytes, true)?;
+        self.game_options = super::save_options::State::from_header(bytes)?;
+        self.playthrough = super::score_state::Playthrough::from_header(bytes)?;
+        self.playtime.restore_header(bytes, &self.frame_clock.clock)?;
+
+        let player = section(*b"MICK", 3)?;
+        self.playstyle_points.restore_record(player)?;
+        self.player_spawn.restore(player)?;
+        let health = super::save_player::Health::decode(player)?;
+        let items = super::save_player::Inventory::decode(player)?;
+        let ammo = super::save_player::Ammo::decode(player)?;
+        let amounts = ammo.amount_bits.map(f32::from_bits);
+        let maxima = ammo.maximum_bits.map(f32::from_bits);
+        let ceilings = ammo.recharge_ceiling_bits.map(f32::from_bits);
+        let segments = ammo.segment_amount_bits.map(f32::from_bits);
+        ensure!(amounts.into_iter().chain(maxima).chain(ceilings).chain(segments).all(f32::is_finite),
+            "Nonfinite checkpoint ammunition");
+        self.ammo.inventory = Some(super::ammo::Inventory { amounts, maxima: maxima.map(Some) });
+        for (setting, value) in self.ammo.settings.channels.iter_mut().zip(ceilings) {
+            setting.recharge_max = value;
+        }
+
+        let components = &mut self.entities[self.player_entity].components;
+        let health_component = components.iter_mut().find(|c| c.class_name == "HealthComponent")
+            .context("Checkpoint player has no health component")?;
+        for (name, value) in [("Health", health.current), ("MaxHealth", health.maximum)] {
+            health_component.properties.iter_mut().find(|p| p.name == name)
+                .with_context(|| format!("Checkpoint health property {name} is missing"))?
+                .value = serde_json::json!(value);
+        }
+        let inventory = components.iter_mut().find(|c| c.class_name == "InventoryComponent")
+            .context("Checkpoint player has no inventory component")?;
+        let mut state = super::inventory_state::Authored::from_component(inventory)?;
+        for (name, count) in super::save_player::INVENTORY_NAMES[2..].iter().zip(items.sketch_counts) {
+            if let Some(index) = state.sketches.iter()
+                .position(|sketch| sketch.split('\0').next() == Some(*name))
+            {
+                if let Some(value) = state.counts.get_mut(index) {
+                    *value = count;
+                }
+            }
+        }
+        for property in &mut inventory.properties {
+            property.value = match property.name.as_str() {
+                "ETicket" => serde_json::json!(items.tickets as f32),
+                "ETicketMax" => serde_json::json!(items.maximum_tickets as f32),
+                "Paint" => serde_json::json!(amounts[0]),
+                "Thinner" => serde_json::json!(amounts[1]),
+                "PaintAmmoSegmentAmount" => serde_json::json!(segments[0]),
+                "ThinnerAmmoSegmentAmount" => serde_json::json!(segments[1]),
+                "SketchCount" => serde_json::json!(state.counts),
+                _ => continue,
+            };
+        }
+        Ok(())
+    }
+
+    pub(super) fn schedule_checkpoint_callback(&mut self, archive: &Archive<'_>) -> Result<()> {
+        if let Some(spawn) = self.player_spawn.override_transform {
+            self.relocate_player_pose(spawn.position, spawn.rotation, true)?;
+            self.script_player.spawn = spawn.position;
+        }
+        let callback = archive.header_string(0xc4, 60)?;
+        if !callback.is_empty() {
+            self.scripts.schedule_checkpoint_callback(callback, self.player_entity)?;
+        }
+        self.report.geometry.push(serde_json::json!({
+            "kind":"disk_checkpoint_restore",
+            "callback":callback, "spawn":self.player_spawn.override_transform,
+            "quests":self.quests.summary(), "restoration_complete":false
+        }));
+        Ok(())
+    }
+
     /// Capture current live owners, not records copied from an original save.
     /// A complete stream does not establish complete native owner initialization
     /// or a usable restoration path. Never write to the original game/save tree.

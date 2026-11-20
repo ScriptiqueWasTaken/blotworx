@@ -1077,6 +1077,7 @@ impl World {
             sources,
             &mut batch.textures,
             &mut effects,
+            false,
         )?;
         self.bind_spherical_properties(range.clone(), sources, files, &mut batch.textures)?;
         let contacts = self.report.collision_parts[part_base..]

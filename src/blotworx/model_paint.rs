@@ -28,9 +28,10 @@ pub fn initialize(
     sources: &material::Sources,
     textures: &mut HashMap<String, Option<DecodedImage>>,
     templates: &mut HashMap<String, Arc<super::jigsaw_effects::Template>>,
+    static_only: bool,
 ) -> Result<()> {
     let range = 0..world.entities.len();
-    initialize_range(world, range, files, shaders, sources, textures, templates)
+    initialize_range(world, range, files, shaders, sources, textures, templates, static_only)
 }
 pub(super) fn initialize_range(
     world: &mut World,
@@ -40,6 +41,7 @@ pub(super) fn initialize_range(
     sources: &material::Sources,
     textures: &mut HashMap<String, Option<DecodedImage>>,
     templates: &mut HashMap<String, Arc<super::jigsaw_effects::Template>>,
+    static_only: bool,
 ) -> Result<()> {
     ensure!(
         range.start <= range.end && range.end <= world.entities.len(),
@@ -47,7 +49,7 @@ pub(super) fn initialize_range(
     );
     for entity in range {
         let owner = &world.entities[entity];
-        if owner.jigsaw_asset.is_some() {
+        if owner.jigsaw_asset.is_some() || world.model_paint.contains_key(&entity) {
             continue;
         }
         let body_class = if owner
@@ -55,6 +57,9 @@ pub(super) fn initialize_range(
             .iter()
             .any(|c| c.class_name == "PhysicsRigidBodyDynamicComponent")
         {
+            if static_only {
+                continue;
+            }
             "PhysicsRigidBodyDynamicComponent"
         } else {
             "PhysicsRigidBodyStaticComponent"
@@ -175,8 +180,9 @@ pub(super) fn initialize_range(
             "native_filter_and_event_parity":false}));
         world.model_paint.insert(entity, model);
     }
-    if !world.model_paint.is_empty() {
-        world.report.unsupported.push("Whole toon models retain authored paint state and accept brush transitions, including admitted single-body dynamic models. Native child filtering, restoration queries, stimulus thresholds, state events/persistence and material composition remain incomplete.".into());
+    let limitation = "Whole toon models retain authored paint state and accept brush transitions, including admitted single-body dynamic models. Native child filtering, restoration queries, stimulus thresholds, state events/persistence and material composition remain incomplete.";
+    if !world.model_paint.is_empty() && !world.report.unsupported.iter().any(|text| text == limitation) {
+        world.report.unsupported.push(limitation.into());
     }
     Ok(())
 }

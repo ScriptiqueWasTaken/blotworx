@@ -1074,6 +1074,7 @@ impl Scripts {
         scripts.bind_world_api("GrabCameraNif")?;
         scripts.bind_world_api("GrabCamera")?;
         scripts.bind_world_api("SetLetterbox")?;
+        scripts.bind_world_api("ToggleLetterbox")?;
         scripts.bind_world_api("DestroyEntity")?;
         scripts.bind_world_api("Enable")?;
         scripts.bind_world_api("Disable")?;

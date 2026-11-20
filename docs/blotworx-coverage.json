@@ -547,6 +547,17 @@
       ]
     },
     {
+      "scope": "EM1 Space Mountain Zone D startup",
+      "state": "The disc reveal can call ToggleLetterbox with the renderer aspect available during map initialization. Static toon models bind their paint state before OnSpawned and OnMapLoad, while dynamic bodies retain their existing later construction phase.",
+      "source": "Wii REL .text 11898..118a0 registers the zero-argument ToggleLetterbox callback at d7c8. The callback calls bad0, which toggles the application byte at +0x10a only when the renderer reports a nonwide aspect. The imported sm_tl_zoned.Toon 22 routes OnSpawned to ForcePainted.",
+      "evidence": "Direct graphical replay of Levels/TL_SpaceMountain_TronPete.Level through tick 120 recorded no fatal runtime error. The earlier ForcePainted and ToggleLetterbox failures were absent, and the original Toon 22 published a painted state with two meshes.",
+      "open": [
+        "The disc-reveal Lua reaches SetPropertyBool Is Real, whose shared rigid-body property remains unbound. Its native descriptor is registered at 37bc34 and dispatches through 37c364 to a byte write at 123fd8.",
+        "SetWallPushingEnabled is still unbound. The native wrapper at 9c754 writes motion-controller offset +0x498, which gates the wall-contact movement branch at 97e9c..97eb0.",
+        "The reveal, boss fight and exit still need a player-driven validation run."
+      ]
+    },
+    {
       "scope": "Authored preview spline segment timing",
       "state": "Preview traversal uses Hermite handles on linked edges. Without an authored duration it divides route length by live speed. Explicit times above the native epsilon are bounded below by route length divided by 200. Main and branch paths measure 200 cubic chords with the Wii distance arithmetic. Main paths use the chord table to map phase to distance. Branch paths sample cubic phase directly. The follower easing flag and knot overrides control a speed ramp over the first and last 10% of each linked segment. On a linked edge the signed phase step carries unused frame time through knot crossings and holds. An expiring hold queues OnHoldEnd from the canonical source knot to its authored output rows. The chord measurement also applies to zero-handle paths. Explicit fractional stops retain their existing behavior.",
       "source": "REL .text 3bc7dc..3bc8a4 supplies the duration and phase arithmetic. 3c06dc assembles the endpoint and handle vectors, 3c0f98 evaluates their cubic, afe4..b068 measures each chord with the paired reduction and reciprocal-root estimate; 3c10bc remaps main-path phase by cached lengths from 3c177c..3c1824, and 3c11f0 applies the authored endpoint easing. Main and branch knot preparation apply the duration bounds at 3c1828 and 3c197c. 3bc84c..3bc9fc advances phase, applies the short-edge rule and returns the residual after a strict crossing. The caller at 3bc534 repeats while time remains and the residual or phase changes. 3bc680..3bc74c queues event 0x1e when a positive hold expires with a source knot.",

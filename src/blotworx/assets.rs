@@ -3808,6 +3808,13 @@ impl World {
                 self.script_feedback.shake(values).map_err(mlua::Error::external)?;
                 Ok(mlua::MultiValue::new())
             }
+            "ToggleLetterbox" => {
+                if !args.is_empty() {
+                    return Err(mlua::Error::external("ToggleLetterbox takes no arguments"));
+                }
+                self.camera_lens.toggle_letterbox().map_err(mlua::Error::external)?;
+                Ok(mlua::MultiValue::new())
+            }
             "SetLetterbox" => {
                 if args.len() != 1 {
                     return Err(mlua::Error::external(
@@ -9825,13 +9832,20 @@ pub(super) fn load_with_bootstrap_mode(
         .context("Missing defaultcamera prefab")?;
     let camera_components =
         scene::get_effective_components(camera_definition, &globals.as_ref().unwrap().objects);
-    let camera_lens = super::camera_lens::Application::load(
+    let mut camera_lens = super::camera_lens::Application::load(
         camera_components
             .iter()
             .find(|component| component.class_name == "JPSCameraComponent")
             .context("Default camera has no lens component")?,
         &runtime_settings,
     )?;
+    // The host viewport exists before level scripts run. Publish its aspect
+    // for initial callbacks as well as for the per-frame renderer updates.
+    if let Some(viewport) = ctx.input(|input| input.viewport().inner_rect) {
+        if viewport.width() > 0. && viewport.height() > 0. {
+            camera_lens.set_renderer_aspect(viewport.width() / viewport.height())?;
+        }
+    }
     report.geometry.push(serde_json::json!({"kind":"application_camera_lens","prefab":camera_definition.name,
         "source":"Palettes/_Dynamic.bin","initial":camera_lens,"native_renderer_lifecycle_validated":false}));
     let named_fx = super::effect_runtime::Library::load(&root, &report, &files, &entities)?;
@@ -10155,6 +10169,17 @@ pub(super) fn load_with_bootstrap_mode(
     if let Some(archive) = &restore {
         world.schedule_checkpoint_callback(archive)?;
     }
+    // Static toon bodies and draws are already admitted. Bind their paint state
+    // before authored spawn and map-load callbacks can send paint commands.
+    super::model_paint::initialize(
+        &mut world,
+        &files,
+        &sketch_shaders,
+        &sources,
+        &mut textures,
+        &mut effect_templates,
+        true,
+    )?;
     world.advance_models(0.)?;
     for entity in 0..world.entities.len() {
         // Placed objects are constructed entities too. Restricting this to
@@ -10179,6 +10204,7 @@ pub(super) fn load_with_bootstrap_mode(
         &sources,
         &mut textures,
         &mut effect_templates,
+        false,
     )?;
     world.bind_spherical_properties(0..world.entities.len(), &sources, &files, &mut textures)?;
     let released_archive_bytes = files

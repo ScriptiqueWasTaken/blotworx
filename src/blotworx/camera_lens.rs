@@ -179,16 +179,19 @@ impl Application {
         self.renderer_supplied = true;
         Ok(())
     }
-    /// RELbc74 compares first;bc14 toggles only when the renderer's wide
+    /// REL bb30 compares first; bad0 toggles only when the renderer's wide
     /// predicate is false. DOL8048f164 uses strict aspect>1.6f32. In
     /// particular, a wide resize does not automatically clear an active mode.
     pub fn set_letterbox(&mut self, requested: bool) -> Result<()> {
         if self.letterbox == requested {
             return Ok(());
         }
+        self.toggle_letterbox()
+    }
+    pub(super) fn toggle_letterbox(&mut self) -> Result<()> {
         ensure!(
             self.renderer_supplied,
-            "SetLetterbox needs the initialized renderer aspect"
+            "Letterbox requires an initialized renderer aspect"
         );
         if self.properties.renderer_aspect <= f32::from_bits(0x3fcccccd) {
             self.letterbox = !self.letterbox;
@@ -251,6 +254,10 @@ mod tests {
             app.set_letterbox(true)?;
             assert_eq!(app.letterbox, allowed, "Repeated request toggled mode");
             app.set_letterbox(false)?;
+            assert!(!app.letterbox);
+            app.toggle_letterbox()?;
+            assert_eq!(app.letterbox, allowed);
+            app.toggle_letterbox()?;
             assert!(!app.letterbox);
         }
         let mut app = application(4. / 3.);

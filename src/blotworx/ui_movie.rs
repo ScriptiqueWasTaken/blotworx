@@ -449,7 +449,14 @@ impl NavigatorBackend for Files {
         let popup_icon = relative.strip_suffix(POPUP_ICON_SUFFIX);
         if let Some(texture) = popup_icon.or_else(|| relative.strip_suffix(PORTRAIT_SUFFIX)) {
             let bytes = (|| -> Result<Vec<u8>> {
-                let file = self.resources.borrow_mut().read(texture)?;
+                let mut resources = self.resources.borrow_mut();
+                let file = resources.read(texture).or_else(|error| {
+                    if popup_icon.is_some() {
+                        resources.read("HUDElements/Icons/ui_icon_quest_generic_tex.nif")
+                    } else {
+                        Err(error)
+                    }
+                })?;
                 let (rgba, width, height) = crate::render_support::nif::decode_image_bytes(&file.data)
                     .with_context(|| format!("Decode authored portrait {}", file.path))?;
                 let buffer = image::RgbaImage::from_raw(width, height, rgba)
@@ -637,6 +644,12 @@ fn bridge_with_methods(version: u8, methods: &[&str]) -> Result<Vec<u8>> {
             variable(&mut child, slot)?;
             string(&mut child, axis)?;
             push(&mut child, StackValue::Int(100))?;
+            child.write_action(&Action::SetMember)?;
+        }
+        if name == LOAD_POPUP_ICON {
+            variable(&mut child, slot)?;
+            string(&mut child, "_visible")?;
+            push(&mut child, StackValue::Bool(true))?;
             child.write_action(&Action::SetMember)?;
         }
         variable(&mut child, "url")?;

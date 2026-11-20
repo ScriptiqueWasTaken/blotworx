@@ -27,6 +27,7 @@ pub struct Gameplay {
     popups: std::collections::VecDeque<super::collectibles::Notification>,
     popup_active: bool,
     popup_icon: Option<url::Url>,
+    popup_icon_attempt: Option<u64>,
     values:std::collections::BTreeMap<String,f64>,texture:Option<egui::TextureHandle>,
     pub errors:BTreeSet<String>,pub frames:u64,pub delivered_ability_messages:u64,
     timings:std::collections::BTreeMap<&'static str,HudTiming>,
@@ -177,7 +178,32 @@ pub(super) fn validate_pause_menu() -> Result<()> {
                 "A linear dialogue showed a choice button at {path}");
         }
     }
+    input.dialogue.as_mut().unwrap().text =
+        "The next machine controls the upper gate. Before you start it, check the room behind the lift for the missing gear. ".repeat(5);
+    for tick in 27..=40 {
+        input.tick = tick;
+        hud.render_frame(&input, &mut Vec::new())?;
+    }
+    ensure!(hud.scroll_dialogue()?, "A did not scroll a long line");
+    {
+        let mut player = lock(&hud.handle)?;
+        ensure!(matches!(read(&mut player, "_root.GENERIC_DIALOG.dialogBox.scroll"), Value::Number(line) if line >= 2.),
+            "A consumed the dialogue without moving the text");
+    }
     input.dialogue = None;
+    input.popups.push(super::collectibles::Notification::new(
+        super::collectibles::Route::UiEventManager, "UI_QuestAdded", "UI_QuestAdded", "quest_generic",
+    )?);
+    for tick in 41..=60 {
+        input.tick = tick;
+        hud.render_frame(&input, &mut Vec::new())?;
+        input.popups.clear();
+    }
+    {
+        let mut player = lock(&hud.handle)?;
+        ensure!(matches!(read(&mut player, "_root.POPUP.Popup.icon._width"), Value::Number(width) if width > 4.),
+            "The quest popup did not display its icon");
+    }
     input.visible = false;
     let mut last_frame = None;
     {
@@ -456,16 +482,27 @@ impl Gameplay {
             // Start at the movie's reference raster until the first frame arrives.
             player.set_viewport_dimensions(ruffle_render::backend::ViewportDimensions{width:853,height:480,scale_factor:1.});
         }
-        Ok(Self{handle,executor,host,root,resources,images,initialized:false,last_tick:0,aspect:0.,visible:None,raster_height:480,movie_time:None,skip_duration:None,pause_time:None,pause_page:PausePage::Main,pause_map_shown:false,pause_options:PauseOptions::Closed,cursor:None,ticket_hud_gain:None,ticket_dropdown_updates:0,ticket_hide_tick:None,dialogue:None,dialogue_updates:0,dialogue_reveal_tick:None,portrait_anchor:None,popups:Default::default(),popup_active:false,popup_icon:None,values:Default::default(),texture:None,errors:Default::default(),frames:0,delivered_ability_messages:0,timings:Default::default(),graphics})
+        Ok(Self{handle,executor,host,root,resources,images,initialized:false,last_tick:0,aspect:0.,visible:None,raster_height:480,movie_time:None,skip_duration:None,pause_time:None,pause_page:PausePage::Main,pause_map_shown:false,pause_options:PauseOptions::Closed,cursor:None,ticket_hud_gain:None,ticket_dropdown_updates:0,ticket_hide_tick:None,dialogue:None,dialogue_updates:0,dialogue_reveal_tick:None,portrait_anchor:None,popups:Default::default(),popup_active:false,popup_icon:None,popup_icon_attempt:None,values:Default::default(),texture:None,errors:Default::default(),frames:0,delivered_ability_messages:0,timings:Default::default(),graphics})
     }
     fn scroll_dialogue(&mut self) -> Result<bool> {
         let mut player = lock(&self.handle)?;
+        let path = "_root.GENERIC_DIALOG.dialogBox.scroll";
+        let position = read(&mut player, path);
         let can_scroll = player.call_internal_interface(&format!("__bwx_{CAN_SCROLL_DIALOGUE}"), []);
         if matches!(can_scroll, Value::Bool(true) | Value::Number(1.)) {
             player.call_internal_interface(&format!("__bwx_{SCROLL_DIALOGUE}"), []);
-            return Ok(true);
         }
-        Ok(false)
+        if let (Value::Number(current), Value::Number(end)) = (position, read(&mut player, "_root.GENERIC_DIALOG.dialogBox.maxscroll")) {
+            if current < end {
+                // The movie's hasShifted flag can reject another shift even
+                // while the actual text field still has unread lines.
+                if read(&mut player, path) == Value::Number(current) {
+                    write(&mut player, path, Value::Number((current + 2.).min(end)));
+                }
+                return Ok(true);
+            }
+        }
+        Ok(matches!(can_scroll, Value::Bool(true) | Value::Number(1.)))
     }
     fn render_frame(&mut self,input:&HudFrameInput,messages:&mut Vec<HudMessage>)->Result<Option<egui::ColorImage>> {
         self.render_frame_acknowledged(input,messages,|_,_,_|{})
@@ -479,6 +516,9 @@ impl Gameplay {
         let mut dirty=false;
         if !input.popups.is_empty() {
             self.resources.borrow_mut().admit_packs(&input.portrait_packs)?;
+            for pack in ["pausemenu_quests.pak", "pausemenu_pins.pak"] {
+                let _ = self.resources.borrow_mut().admit_packs(&[pack.into()]);
+            }
         }
         self.popups.extend(input.popups.iter().cloned());
         self.host.0.lock().unwrap().player=Some(data.clone());
@@ -513,12 +553,16 @@ impl Gameplay {
                 dirty = true;
             }
             let popup_visible = visible && input.dialogue.is_none();
-            if popup_visible && self.popup_icon.is_some()
+            if popup_visible && self.popup_icon_attempt.is_none_or(|previous| tick >= previous.saturating_add(6))
                 && matches!(read(&mut player, "_root.POPUP.Popup.icon._x"), Value::Number(_))
             {
-                let url = self.popup_icon.take().unwrap();
-                player.call_internal_interface(&format!("__bwx_{LOAD_POPUP_ICON}"), [Value::String(url.to_string())]);
-                dirty = true;
+                if let Some(url) = &self.popup_icon {
+                    if read(&mut player, "_root.POPUP.Popup.icon._url") != Value::String(url.to_string()) {
+                        player.call_internal_interface(&format!("__bwx_{LOAD_POPUP_ICON}"), [Value::String(url.to_string())]);
+                        self.popup_icon_attempt = Some(tick);
+                        dirty = true;
+                    }
+                }
             }
             if self.popup_active
                 && matches!(read(&mut player, "_root.POPUP._visible"), Value::Bool(value) if value != popup_visible)
@@ -542,6 +586,7 @@ impl Gameplay {
                 // The PopUp_In keyframe instantiates the authored icon slot.
                 // Apply the image on the following movie update.
                 self.popup_icon = hud_icon_url(&self.root, icon, POPUP_ICON_SUFFIX);
+                self.popup_icon_attempt = None;
                 use super::ui_calls::Value as V;
                 let mut view = NativeView { player: &mut player, host: &self.host };
                 super::ui_calls::call("SetPopupText", title, V::String(description), &mut view)?;

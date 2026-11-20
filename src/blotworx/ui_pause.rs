@@ -253,7 +253,11 @@ fn hud_icon_url(root: &Path, name: &str, suffix: &str) -> Option<url::Url> {
     let path = if name.contains(['/', '\\']) {
         name.replace('\\', "/")
     } else {
-        format!("HUDElements/Icons/ui_icon_{name}_tex.nif_wii")
+        let name = name.to_ascii_lowercase();
+        let name = name.trim_start_matches("ui_icon_");
+        let name = name.strip_suffix(".nif_wii").or_else(|| name.strip_suffix(".nif")).unwrap_or(name);
+        let name = name.strip_suffix("_tex").unwrap_or(name);
+        format!("HUDElements/Icons/ui_icon_{name}_tex.nif")
     };
     let path = super::resource_path::canonical(&path).ok()?;
     url::Url::from_file_path(root.join(format!("{path}{suffix}"))).ok()

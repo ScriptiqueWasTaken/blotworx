@@ -319,10 +319,14 @@ impl super::assets::World {
             &self.scene_resources.save_payload(&self.scene_requests)?,
         )?;
         let built = writer.finish()?;
-        self.checkpoint.latest = Some(Arc::new(Snapshot {
+        let snapshot = Arc::new(Snapshot {
             bytes: built.bytes,
             logical_size: built.logical_size,
-        }));
+        });
+        if let Some(service) = &self.checkpoint.service {
+            service.record_memory_checkpoint(&snapshot);
+        }
+        self.checkpoint.latest = Some(snapshot);
         self.checkpoint.persistent_requested = false;
         Ok(())
     }
@@ -334,13 +338,11 @@ impl super::assets::World {
         let request = Request::from_lua(lua, args)?;
         //2bb3c declines frontend states4/5/6 before touching the marker,
         // live owners or the memory buffer; Lua returns zero values on decline.
-        if self
-            .checkpoint
-            .service
-            .as_ref()
-            .is_some_and(|service| service.blocks_memory_capture())
-        {
-            return Ok(mlua::MultiValue::new());
+        if let Some(service) = &self.checkpoint.service {
+            service.poll().map_err(mlua::Error::external)?;
+            if service.blocks_memory_capture() {
+                return Ok(mlua::MultiValue::new());
+            }
         }
         let spawn = if request.resolve_spawn {
             let entity = request
@@ -366,7 +368,7 @@ impl super::assets::World {
             let service=self.checkpoint.service.as_mut().ok_or_else(||mlua::Error::external(
                 "SaveGameToMemory captured all live section owners; the requested persistent save-slot/frontend job has no initialized storage backend"))?;
             service
-                .request(&snapshot, sample, frequency, false)
+                .request(&snapshot, sample, frequency)
                 .map_err(mlua::Error::external)?;
         }
         //1f86ac calls20b60c with ShowCheckpoint, empty argument, and the

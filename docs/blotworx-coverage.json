@@ -232,6 +232,16 @@
         ]
       },
       {
+        "scope": "EM1 save ownership through asynchronous level loading",
+        "state": "The application and loading world share save-slot state and in-flight jobs. Shutdown retains access to that service if the current world has been dropped or the incoming load fails. The forced write uses the latest attached memory buffer, including a later memory-only capture, and waits for the existing job before retrying pending work.",
+        "source": "Wii REL2bae0 -> 25fb00 -> 25ddc8 attaches the save service buffer at +988. REL2c104 gates the disk request only. REL239c0 forces a pending write on shutdown; 25ffb4 -> 2612c0 passes the attached buffer to the disk job.",
+        "evidence": "Five targeted save-service tests passed. In target/perf/save-shutdown-live.err, a Gremlin Village Zone F replay committed health 3, queued another save, captured health 2 to memory, and requested an intentionally absent level. After the reported loading error and normal shutdown, the scratch slot contained health 2 and its previous committed backup contained health 3.",
+        "open": [
+          "Native save-device timing and frontend behavior",
+          "Shutdown on additional campaign transitions"
+        ]
+      },
+      {
         "scope": "EM1 loading-screen presentation",
         "state": "Full level loads and scene streams behind an authored fade show original artwork and cycle the authored dot frames. Faded scene imports wait until the loading screen has had a visible presentation window. Level loads use destination artwork, while streams use the current level's artwork.",
         "source": "loading_screen_texture in levels.pak, loose LoadingScreens assets, and src/blotworx/loading_screen.rs",

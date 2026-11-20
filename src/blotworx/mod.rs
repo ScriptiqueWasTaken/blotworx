@@ -2430,6 +2430,7 @@ struct Engine {
     level_filter: String,
     show_unavailable_levels: bool,
     receiver: Option<mpsc::Receiver<Result<World>>>,
+    loading_save: Option<(save_service::Service, u64, u32)>,
     loading_screen: Option<loading_screen::Screen>,
     stream_loading_screen: Option<loading_screen::Screen>,
     world: Option<World>,
@@ -2556,6 +2557,7 @@ impl Engine {
             level_filter: String::new(),
             show_unavailable_levels: false,
             receiver: None,
+            loading_save: None,
             loading_screen: None,
             stream_loading_screen: None,
             world: None,
@@ -2637,12 +2639,13 @@ impl Engine {
                 .map(Ok).unwrap_or_else(save_service::default_directory)?;
             if let Some(world) = self.world.as_mut() {
                 if let Some(service) = &mut world.checkpoint.service {
-                    service.flush_on_exit(
-                        world.checkpoint.latest.as_ref(),
+                    service.flush(
                         world.frame_clock.hardware_sample(),
                         world.frame_clock.clock.rate.ticks_per_second.get(),
                     )?;
                 }
+            } else if let Some((service, sample, frequency)) = &self.loading_save {
+                service.flush(*sample, *frequency)?;
             }
             let snapshot = save_service::Service::read_checkpoint(&directory, self.save_slot)?;
             Ok(snapshot)
@@ -2734,18 +2737,17 @@ impl Engine {
             // Explicit fresh demo session, matching the native new-game
             // playtime reset. Native frontend/menu boot remains incomplete.
             playtime.set(0, &frame_clock.clock);
-            let service = self
-                .save_directory
-                .clone()
-                .map(Ok)
-                .unwrap_or_else(save_service::default_directory)
-                .and_then(|directory| {
-                    save_service::Service::open(
-                        directory,
-                        self.save_slot,
-                        frame_clock.hardware_sample(),
-                    )
-                });
+            let service = match &self.loading_save {
+                Some((service, _, _)) => Ok(service.clone()),
+                None => self
+                    .save_directory
+                    .clone()
+                    .map(Ok)
+                    .unwrap_or_else(save_service::default_directory)
+                    .and_then(|directory| {
+                        save_service::Service::open(directory, self.save_slot, frame_clock.hardware_sample())
+                    }),
+            };
             let service = match service {
                 Ok(service) => service,
                 Err(error) => {
@@ -2765,6 +2767,9 @@ impl Engine {
             }
         };
         if let Some(snapshot) = snapshot {
+            if let Some(service) = &scores.checkpoint.service {
+                service.record_memory_checkpoint(&snapshot);
+            }
             scores.restore_checkpoint = true;
             scores.checkpoint.latest = Some(snapshot);
         }
@@ -2787,6 +2792,9 @@ impl Engine {
         let runtime_script = self.runtime_script.take();
         self.loading_screen = Some(loading_screen::Screen::load(ctx, &root, Some(&level)));
         self.stream_loading_screen = None;
+        self.loading_save = scores.checkpoint.service.clone().zip(scores.frame_clock.as_ref()).map(|(service, clock)| {
+            (service, clock.hardware_sample(), clock.clock.rate.ticks_per_second.get())
+        });
         let (tx, rx) = mpsc::channel();
         self.receiver = Some(rx);
         drop(self.world.take());
@@ -4194,15 +4202,16 @@ impl eframe::App for Engine {
             }
             ui_movie::GameplayWorker::destroy_retired_graphics();
         }
-        if let Some(world) = &mut self.world {
-            let sample = world.frame_clock.hardware_sample();
-            let frequency = world.frame_clock.clock.rate.ticks_per_second.get();
-            if let Some(service) = &mut world.checkpoint.service {
-                if let Err(error) =
-                    service.flush_on_exit(world.checkpoint.latest.as_ref(), sample, frequency)
-                {
-                    eprintln!("Blotworx checkpoint exit flush failed: {error:#}");
-                }
+        let save = if let Some(world) = &self.world {
+            world.checkpoint.service.as_ref().map(|service| {
+                (service, world.frame_clock.hardware_sample(), world.frame_clock.clock.rate.ticks_per_second.get())
+            })
+        } else {
+            self.loading_save.as_ref().map(|(service, sample, frequency)| (service, *sample, *frequency))
+        };
+        if let Some((service, sample, frequency)) = save {
+            if let Err(error) = service.shutdown(sample, frequency) {
+                eprintln!("Blotworx checkpoint exit flush failed: {error:#}");
             }
         }
     }
@@ -4393,6 +4402,7 @@ impl eframe::App for Engine {
                         self.movie = None;
                         self.last_movie = None;
                         self.world = Some(world);
+                        self.loading_save = None;
                         log::debug!(target:"blotworx_phase", "level ready for playback");
                         self.last = Instant::now();
                     }

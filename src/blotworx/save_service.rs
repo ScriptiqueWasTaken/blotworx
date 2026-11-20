@@ -58,10 +58,71 @@ impl Job {
         Ok(())
     }
 }
-/// Immutable job completion is shared across a staged level replacement. The
-/// incoming World cannot cancel or launch a duplicate of an outgoing disk job.
+/// Save slots belong to the application. A level import and shutdown can
+/// observe the same frontend state and in-flight job while no world is active.
 #[derive(Clone, Debug)]
-pub struct Service {
+pub struct Service(Arc<Mutex<Writer>>);
+
+impl Service {
+    pub fn open(root: PathBuf, selected: usize, initial_tick: u64) -> Result<Self> {
+        Ok(Self(Arc::new(Mutex::new(Writer::open(root, selected, initial_tick)?))))
+    }
+
+    fn writer(&self) -> std::sync::MutexGuard<'_, Writer> {
+        // Only a level loader can unwind through a save operation. Its staged
+        // world is discarded, but the application must still finish the job.
+        self.0.lock().unwrap_or_else(|error| error.into_inner())
+    }
+
+    pub fn read_checkpoint(root: &Path, selected: usize) -> Result<Arc<Snapshot>> {
+        Writer::read_checkpoint(root, selected)
+    }
+
+    pub(super) fn read_selected_checkpoint(&self) -> Result<Option<Arc<Snapshot>>> {
+        self.writer().read_selected_checkpoint()
+    }
+
+    pub fn blocks_memory_capture(&self) -> bool {
+        let writer = self.writer();
+        writer.closed || writer.blocks_memory_capture()
+    }
+
+    pub fn pending(&self) -> bool { self.writer().pending() }
+    pub fn writes(&self) -> u64 { self.writer().writes() }
+    pub fn summary(&self) -> serde_json::Value { self.writer().summary() }
+
+    pub fn record_memory_checkpoint(&self, snapshot: &Arc<Snapshot>) {
+        let mut writer = self.writer();
+        if !writer.closed {
+            // REL25fb00/25ddc8 attach the common allocation at +988 even
+            // for memory-only captures. A later forced job uses that buffer.
+            writer.memory_checkpoint = Some(snapshot.clone());
+        }
+    }
+
+    pub fn request(&self, snapshot: &Arc<Snapshot>, now: u64, frequency: u32) -> Result<Admission> {
+        let mut writer = self.writer();
+        if writer.closed {
+            return Ok(Admission::Declined);
+        }
+        writer.request(snapshot, now, frequency, false)
+    }
+
+    pub fn poll(&self) -> Result<()> { self.writer().poll() }
+
+    pub fn flush(&self, now: u64, frequency: u32) -> Result<()> {
+        self.writer().flush_on_exit(now, frequency)
+    }
+
+    pub fn shutdown(&self, now: u64, frequency: u32) -> Result<()> {
+        let mut writer = self.writer();
+        writer.closed = true;
+        writer.flush_on_exit(now, frequency)
+    }
+}
+
+#[derive(Debug)]
+struct Writer {
     root: PathBuf,
     selected: usize,
     slots: [Slot; 3],
@@ -73,8 +134,10 @@ pub struct Service {
     job: Option<Arc<Job>>,
     writes: u64,
     last_error: Option<String>,
+    memory_checkpoint: Option<Arc<Snapshot>>,
+    closed: bool,
 }
-impl Service {
+impl Writer {
     pub fn read_checkpoint(root: &Path, selected: usize) -> Result<Arc<Snapshot>> {
         ensure!(selected < 3, "Save slot must be 0, 1 or 2");
         let path = root.join(format!("save{selected}.dat"));
@@ -129,6 +192,8 @@ impl Service {
             job: None,
             writes: 0,
             last_error: None,
+            memory_checkpoint: None,
+            closed: false,
         })
     }
     pub fn blocks_memory_capture(&self) -> bool {
@@ -169,6 +234,7 @@ impl Service {
         //26013c copies the header BEFORE testing the240-second throttle.
         if !force {
             self.slots[self.selected].capture(&snapshot.bytes)?;
+            self.memory_checkpoint = Some(snapshot.clone());
         }
         if force {
             if !self.pending {
@@ -233,7 +299,6 @@ impl Service {
     }
     pub fn flush_on_exit(
         &mut self,
-        snapshot: Option<&Arc<Snapshot>>,
         now: u64,
         frequency: u32,
     ) -> Result<()> {
@@ -242,8 +307,8 @@ impl Service {
             self.poll()?;
         }
         if self.pending {
-            let snapshot = snapshot.context("Pending save has no memory checkpoint")?;
-            self.request(snapshot, now, frequency, true)?;
+            let snapshot = self.memory_checkpoint.clone().context("Pending save has no memory checkpoint")?;
+            self.request(&snapshot, now, frequency, true)?;
             if let Some(job) = &self.job {
                 job.wait()?;
                 self.poll()?;
@@ -362,7 +427,7 @@ mod tests {
             .context("Missing native admission cases")?
         {
             let directory = Directory::new();
-            let mut service = Service::open(directory.0.clone(), 0, 0)?;
+            let mut service = Writer::open(directory.0.clone(), 0, 0)?;
             service.last_write_tick = case["last"].as_u64().unwrap();
             service.pending = case["pending"].as_bool().unwrap();
             service.frontend = case["frontend"].as_u64().unwrap() as u32;
@@ -417,7 +482,7 @@ mod tests {
     {
         let directory = Directory::new();
         let tick = 600_000_000_000u64;
-        let mut service = Service::open(directory.0.clone(), 0, tick)?;
+        let mut service = Writer::open(directory.0.clone(), 0, tick)?;
         let first = snapshot(b'A')?;
         assert_eq!(service.last_write_tick, u64::from(tick as u32));
         assert_eq!(
@@ -429,12 +494,8 @@ mod tests {
             service.request(&first, tick, 1000, true)?,
             Admission::Declined
         );
-        // A staged world observes the same actual job, with no duplicated I/O.
-        let mut staged = service.clone();
-        service.flush_on_exit(Some(&first), tick, 1000)?;
-        staged.poll()?;
+        service.flush_on_exit(tick, 1000)?;
         assert_eq!(service.writes(), 1);
-        assert_eq!(staged.writes(), 1);
         assert_eq!(std::fs::read(directory.0.join("save0.dat"))?, first.bytes);
         service.slots[0].header[0xc] = 0xa5;
         let second = snapshot(b'B')?;
@@ -446,7 +507,7 @@ mod tests {
         assert_eq!(service.slots[0].header[0x10], b'B');
         assert_eq!(service.slots[0].header[0xc], 0xa5);
         assert_eq!(std::fs::read(directory.0.join("save0.dat"))?, first.bytes);
-        service.flush_on_exit(Some(&second), tick + 239999, 1000)?;
+        service.flush_on_exit(tick + 239999, 1000)?;
         assert_eq!(service.writes(), 2);
         assert!(!service.pending());
         assert_eq!(std::fs::read(directory.0.join("save0.dat"))?, second.bytes);
@@ -458,14 +519,14 @@ mod tests {
             service.request(&second, tick + 500000, 1000, true)?,
             Admission::Declined
         );
-        let reopened = Service::open(directory.0.clone(), 0, tick)?;
+        let reopened = Writer::open(directory.0.clone(), 0, tick)?;
         assert_eq!(reopened.slots[0].header[0x10], b'B');
         Ok(())
     }
     #[test]
     fn throttle_uses_signed_low_quotient_word_and_exact_boundary() -> Result<()> {
         let directory = Directory::new();
-        let mut service = Service::open(directory.0.clone(), 2, 0)?;
+        let mut service = Writer::open(directory.0.clone(), 2, 0)?;
         let snapshot = snapshot(b'C')?;
         assert_eq!(
             service.request(&snapshot, 239999, 1000, false)?,
@@ -475,7 +536,7 @@ mod tests {
             service.request(&snapshot, 240000, 1000, false)?,
             Admission::Started
         );
-        service.flush_on_exit(Some(&snapshot), 240000, 1000)?;
+        service.flush_on_exit(240000, 1000)?;
         assert!(!directory.0.join("save0.dat").exists());
         assert!(directory.0.join("save2.dat").is_file());
         service.last_write_tick = 0;
@@ -487,7 +548,7 @@ mod tests {
     #[test]
     fn failed_host_job_reports_error_and_preserves_committed_file() -> Result<()> {
         let directory = Directory::new();
-        let mut service = Service::open(directory.0.clone(), 0, 0)?;
+        let mut service = Writer::open(directory.0.clone(), 0, 0)?;
         let snapshot = snapshot(b'D')?;
         std::fs::write(
             directory.0.join("save0.dat"),
@@ -501,7 +562,7 @@ mod tests {
             service.request(&snapshot, 240000, 1000, false)?,
             Admission::Started
         );
-        let result = service.flush_on_exit(Some(&snapshot), 240000, 1000);
+        let result = service.flush_on_exit(240000, 1000);
         assert!(result.is_err());
         assert!(service.last_error.is_some());
         assert!(service.pending());
@@ -513,6 +574,30 @@ mod tests {
         std::fs::remove_file(collision)?;
         Ok(())
     }
+    #[test]
+    fn shutdown_during_level_import_commits_the_live_memory_buffer_once() -> Result<()> {
+        let directory = Directory::new();
+        let application = Service::open(directory.0.clone(), 2, 0)?;
+        let departing_world = application.clone();
+        let incoming_world = departing_world.clone();
+        assert_eq!(departing_world.request(&snapshot(b'A')?, 1000, 1000)?, Admission::Deferred);
+        drop(departing_world);
+        let latest = snapshot(b'B')?;
+        incoming_world.record_memory_checkpoint(&latest);
+        assert!(application.pending());
+        assert!(application.read_selected_checkpoint()?.is_none());
+
+        application.shutdown(1000, 1000)?;
+        assert_eq!(incoming_world.writes(), 1);
+        assert!(incoming_world.blocks_memory_capture());
+        assert_eq!(incoming_world.request(&snapshot(b'C')?, 250000, 1000)?, Admission::Declined);
+        incoming_world.record_memory_checkpoint(&snapshot(b'C')?);
+        application.shutdown(250000, 1000)?;
+        assert_eq!(application.writes(), 1);
+        assert_eq!(std::fs::read(directory.0.join("save2.dat"))?, latest.bytes);
+        Ok(())
+    }
+
     #[test]
     #[ignore = "requires original EM1 files in BLOTWORX_TEST_DATA"]
     fn original_gv_entrance_dispatches_real_persistent_checkpoint_without_replacing_script(
@@ -563,8 +648,7 @@ mod tests {
             world.report.unsupported
         );
         let service = world.checkpoint.service.as_mut().unwrap();
-        service.flush_on_exit(
-            Some(&snapshot),
+        service.flush(
             world.frame_clock.hardware_sample(),
             world.frame_clock.clock.rate.ticks_per_second.get(),
         )?;

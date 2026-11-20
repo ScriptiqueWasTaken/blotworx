@@ -287,7 +287,16 @@
         "source": "Wii REL .text 267f38 registers callback 26445c, which calls 3ba5d8. The InitialSpeed descriptor registers accessors at 3ba910..3ba928. Its getter at 3bb200 resolves the same float at +0x34, and setter 3bb204 calls 3ba5d8. The latter clears +0x6c on a negative speed product. 3bb614 compares that slot before dispatching OnPass.",
         "evidence": "The imported Zone S fixture covers both Lua entry points, signed speed and zero coercion. The headless spline event validation checks that a reversal re-enables OnPass, zero preserves its previous knot, and live writes leave the authored property intact.",
         "open": [
-          "Native path progression, authored segment times and easing, and player support over moving collision. The 48 isolated timing cases at 3bc7dc..3bc8a4 verify the main and branch time override when above 2^-23, the length/speed fallback, and signed normalized motion. These timing rules are not yet connected to the preview follower."
+          "Native curved path progression, easing, and player support over moving collision."
+        ]
+      },
+      {
+        "scope": "Authored preview spline segment timing",
+        "state": "Preview knot traversal advances normalized time from the authored MainPathTime or BranchPathTime when it exceeds 2^-23. It uses the part of the timestep left after a hold and preserves the existing distance-based path when no duration is supplied. Explicit fractional stops keep their existing behavior.",
+        "source": "REL .text 3bc7dc..3bc8a4 selects the corresponding authored duration or divides the cached edge length by live speed. An isolated run verified 48 cases for main and branch times, the threshold, signed speed, and the normalized increment.",
+        "evidence": "The dbc_zone_s_spline_timing Lua fixture runs the imported mover with a deliberately low speed and samples both authored edges and waits. The headless spline event check covers the existing OnPass route.",
+        "open": [
+          "Curved geometry and original easing, reverse branch topology, elapsed time carried across a knot arrival and traversal outside preview mode. The decoded paired-single kernel at 3c0f98 evaluates four Hermite vectors. The native sampler at 3c10bc remaps main-path phase using cached segment lengths before evaluating the curve."
         ]
       },
       {

@@ -1,4 +1,4 @@
-//! Functional demo routes use authored spline knots with linear interpolation.
+//! Preview routes use authored knot links and segment times with linear geometry.
 use super::assets::{RuntimeEntity, World};
 use anyhow::{ensure, Context, Result};
 use std::collections::BTreeMap;
@@ -21,10 +21,27 @@ struct Mover {
     speed: f32,
     hold: f32,
     stop: Option<Stop>,
+    timed: Option<TimedSegment>,
     reverse: bool,
     disabled: bool,
     stopped: bool,
 }
+
+struct TimedSegment {
+    origin: usize,
+    duration: f32,
+    phase: f32,
+}
+
+impl TimedSegment {
+    fn advance(&mut self, delta: f32) -> f32 {
+        // REL .text 3bc884..3bc8a0 forms the reciprocal before scaling dt.
+        // Preview phase runs from the departure knot to the arrival knot.
+        self.phase = (self.phase + delta * self.duration.recip()).min(1.);
+        self.phase
+    }
+}
+
 #[derive(Clone, Copy)]
 struct Stop {
     start: usize,
@@ -288,6 +305,7 @@ impl World {
                         speed,
                         hold,
                         stop: None,
+                        timed: None,
                         reverse,
                         disabled,
                         stopped: false,
@@ -429,6 +447,7 @@ impl World {
                 speed,
                 hold: 0.,
                 stop: None,
+                timed: None,
                 reverse: false,
                 disabled: false,
                 stopped: false,
@@ -436,6 +455,7 @@ impl World {
             mover.target = knot;
             mover.hold = 0.;
             mover.stop = None;
+            mover.timed = None;
         } else if name == "SetSpeed" {
             let speed = lua
                 .coerce_number(args[1].clone())?
@@ -465,6 +485,7 @@ impl World {
                             speed,
                             hold: 0.,
                             stop: None,
+                            timed: None,
                             reverse: false,
                             disabled: false,
                             stopped: false,
@@ -498,6 +519,7 @@ impl World {
                     position,
                 });
                 m.target = if position == 0. { start } else { end };
+                m.timed = None;
                 true
             } else {
                 false
@@ -517,6 +539,7 @@ impl World {
         if !self.demo_story.enabled {
             return Ok(());
         }
+        ensure!(delta.is_finite() && delta >= 0., "Invalid spline preview timestep");
         let mut movers = std::mem::take(&mut self.demo_story.motion.movers);
         let result = (|| -> Result<()> {
             for (&owner, m) in &mut movers {
@@ -547,6 +570,7 @@ impl World {
                 {
                     continue;
                 }
+                let travel_delta = (delta - m.hold.max(0.)).max(0.);
                 m.hold = (m.hold - delta).max(0.);
                 if m.hold > 0. {
                     continue;
@@ -564,14 +588,27 @@ impl World {
                 } else {
                     self.entities[m.target].transform[12..15].try_into()?
                 };
-                let difference = std::array::from_fn::<_, 3, _>(|i| target[i] - position[i]);
-                let distance = difference.iter().map(|v| v * v).sum::<f32>().sqrt();
-                ensure!(distance.is_finite(), "Nonfinite demo platform route");
-                let step = m.speed.abs() * delta;
-                let fraction = if distance > step { step / distance } else { 1. };
+                if m.timed.as_ref().is_some_and(|segment| self.removed_entities.contains(&segment.origin)) {
+                    m.timed = None;
+                }
+                let (origin, fraction) = if let Some(segment) = &mut m.timed {
+                    let origin = &self.entities[segment.origin].transform[12..15];
+                    (origin.try_into()?, segment.advance(travel_delta))
+                } else {
+                    let difference = std::array::from_fn::<_, 3, _>(|i| target[i] - position[i]);
+                    let distance = difference.iter().map(|v| v * v).sum::<f32>().sqrt();
+                    ensure!(distance.is_finite(), "Nonfinite demo platform route");
+                    let step = m.speed.abs() * travel_delta;
+                    let fraction = if distance > step { step / distance } else { 1. };
+                    (position, fraction)
+                };
                 self.move_demo_spline_owner(
                     owner,
-                    std::array::from_fn(|i| position[i] + difference[i] * fraction),
+                    if fraction == 1. {
+                        target
+                    } else {
+                        std::array::from_fn(|i| origin[i] + (target[i] - origin[i]) * fraction)
+                    },
                     rotation,
                 )?;
                 if fraction == 1. {
@@ -593,7 +630,7 @@ impl World {
                                 "NextStopTarget",
                                 "NextStopEntity",
                             ) == Some(m.target)
-                        })
+                        }).map(|target| (target, false))
                     } else {
                         let normal=self.demo_link(m.target,"SplineKnotComponent","NextStopTarget","NextStopEntity");
                         if self.entities[m.target].components.iter().any(|c|c.class_name=="SplineKnotComponent") {
@@ -601,9 +638,11 @@ impl World {
                             let chance=property(&self.entities[m.target],"SplineKnotComponent","BranchPathChance").and_then(|v|v.as_f64()).unwrap_or(0.) as f32;
                             // Native consumes rand even with a null branch/zero
                             // chance. Select self means no further segment.
-                            let (selected,_)=super::spline_branch::select(m.target,normal,branch,chance,self.game_random.draw());
-                            (selected!=m.target).then_some(selected)
-                        } else {normal}
+                            let (selected, branched)=super::spline_branch::select(m.target,normal,branch,chance,self.game_random.draw());
+                            (selected != m.target).then_some((selected, branched))
+                        } else {
+                            normal.map(|target| (target, false))
+                        }
                     };
                     // Native terminal traversal returns before reading HoldTime
                     // or emitting OnHold. Keep the arrived knot until its hold
@@ -614,7 +653,16 @@ impl World {
                     }) {
                         self.queue_spline_knot_event(owner,m.target,0x1d)?;
                     }
-                    if let Some(next) = next {
+                    if let Some((next, branched)) = next {
+                        // Main and branch durations live on the departure
+                        // knot of the authored edge, even in reverse.
+                        let time_owner = if m.reverse { next } else { m.target };
+                        let key = if branched { "BranchPathTime" } else { "MainPathTime" };
+                        m.timed = property(&self.entities[time_owner], "SplineKnotComponent", key)
+                            .and_then(|value| value.as_f64())
+                            .map(|value| value as f32)
+                            .filter(|&duration| duration.is_finite() && duration > f32::EPSILON)
+                            .map(|duration| TimedSegment { origin: m.target, duration, phase: 0. });
                         m.target = next;
                     } else {
                         m.stopped = true;
@@ -668,7 +716,7 @@ pub(super) fn validate_spline_events()->Result<()> {
     world.run_callback_fixture("SplineFollower_SetDisabled('gv_zonea_airlock.GV_ZoneA_Door02 01',false)")?;
     world.move_demo_spline_owner(owner,world.entities[knot].transform[12..15].try_into()?,world.entities[owner].runtime_rotation)?;
     let mover=world.demo_story.motion.movers.get_mut(&owner).context("Door spline missing")?;
-    mover.target=knot;mover.speed=10.;mover.hold=0.;mover.stop=None;
+    mover.target=knot;mover.speed=10.;mover.hold=0.;mover.stop=None;mover.timed=None;
     let authored = property(&world.entities[owner], "SplineFollowerComponent", "InitialSpeed").cloned();
     mover.passes.pass(Some(knot));
     world.set_live_spline_speed(owner, 0.)?;

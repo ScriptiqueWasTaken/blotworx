@@ -4128,6 +4128,12 @@ impl eframe::App for Engine {
         }
     }
     fn ui(&mut self, ui: &mut egui::Ui, _: &mut eframe::Frame) {
+        if self.receiver.is_some() {
+            if let Some(screen) = self.loading_screen.as_mut().filter(|screen| !screen.presented) {
+                screen.paint(ui);
+                return;
+            }
+        }
         if let Some(rx) = &self.receiver {
             let result=match rx.try_recv() {
                 Ok(result)=>Some(result),
@@ -4448,7 +4454,7 @@ impl eframe::App for Engine {
             if self.options_open {self.options_open=false;} else {self.paused = !self.paused;}
         }
         if self.receiver.is_some() {
-            if let Some(screen) = &self.loading_screen {
+            if let Some(screen) = &mut self.loading_screen {
                 screen.paint(ui);
                 return;
             }

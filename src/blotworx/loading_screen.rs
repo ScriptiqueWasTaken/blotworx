@@ -1,24 +1,51 @@
 use egui::{Color32, ColorImage, Rect, TextureHandle, TextureOptions, Ui, Vec2};
-use std::{path::Path, time::{Duration, Instant}};
+use std::{
+    path::Path,
+    time::{Duration, Instant},
+};
+
+const DEFAULT_ART: &str = "LoadingScreens/MickeyInitialScreen.dds";
 
 pub(super) struct Screen {
     background: TextureHandle,
     dots: Vec<TextureHandle>,
     started: Instant,
+    pub(super) presented: bool,
 }
 
 impl Screen {
-    pub(super) fn load(ctx: &egui::Context, root: &Path, destination: Option<&str>) -> anyhow::Result<Self> {
-        let directory = root.join("LoadingScreens");
-        let background = texture(ctx, &directory.join(artwork(destination)))?;
+    pub(super) fn load(
+        ctx: &egui::Context,
+        root: &Path,
+        destination: Option<&str>,
+    ) -> anyhow::Result<Self> {
+        let mut store = super::resource_store::Store::new(root, &[])?;
+        let requested = destination
+            .and_then(|level| super::assets::loading_artwork(root, level)
+                .inspect_err(|error| log::warn!("Level loading artwork: {error:#}"))
+                .ok()
+                .flatten());
+        let background = if let Some(art) = requested {
+            let path = localized_path(&art);
+            texture(ctx, &mut store, &path).or_else(|error| {
+                log::warn!("Loading artwork {path}: {error:#}");
+                texture(ctx, &mut store, DEFAULT_ART)
+            })?
+        } else {
+            texture(ctx, &mut store, DEFAULT_ART)?
+        };
         let mut dots = Vec::with_capacity(8);
         for index in 1..=8 {
-            dots.push(texture(ctx, &directory.join(format!("LoadingDots_{index:02}.tga")))?);
+            dots.push(texture(
+                ctx,
+                &mut store,
+                &format!("LoadingScreens/LoadingDots_{index:02}.tga"),
+            )?);
         }
-        Ok(Self { background, dots, started: Instant::now() })
+        Ok(Self { background, dots, started: Instant::now(), presented: false })
     }
 
-    pub(super) fn paint(&self, ui: &mut Ui) {
+    pub(super) fn paint(&mut self, ui: &mut Ui) {
         let viewport = ui.max_rect();
         let size = self.background.size_vec2();
         let scale = (viewport.width() / size.x).min(viewport.height() / size.y);
@@ -33,42 +60,45 @@ impl Screen {
         let corner = image.right_bottom() - Vec2::splat(18. * scale);
         let marker = Rect::from_min_max(corner - dot.size_vec2() * scale, corner);
         painter.image(dot.id(), marker, uv, Color32::WHITE);
-        ui.ctx().request_repaint_after(frame_time);
-    }
-}
-
-// Temporary area selection until the retail loading-screen policy is recovered.
-// Images come from the imported installation, including the generic fallback.
-fn artwork(destination: Option<&str>) -> &'static str {
-    let Some(level) = destination else { return "MickeyInitialScreen.dds"; };
-    let name = level.rsplit(['/', '\\']).next().unwrap_or(level).to_ascii_lowercase();
-    for (prefix, filename) in [
-        ("dbc_", "Postcard_DBC_Rocket_Down.dds"),
-        ("gv_", "Postcard_GV_ClockTower.dds"),
-        ("meanstreet", "Postcard_Mean_Streets.dds"),
-        ("toontown", "Postcard_HUB_Ostown_V3.dds"),
-        ("ventureland", "Postcard_Ventureland.dds"),
-        ("potw_", "Postcard_POTW_Tortooga.dds"),
-        ("hauntedmansion", "Postcard_LM_Manor_House.dds"),
-        ("hm_", "Postcard_LM_Manor_House.dds"),
-        ("mjm_", "Postcard_MJM_Osmore_Caverns.dds"),
-        ("shadowblot", "Postcard_ShadowBlot_Mickey_Fight.dds"),
-    ] {
-        if name.starts_with(prefix) {
-            return filename;
+        if self.presented {
+            ui.ctx().request_repaint_after(frame_time);
+        } else {
+            self.presented = true;
+            ui.ctx().request_repaint();
         }
     }
-    "MickeyInitialScreen.dds"
 }
 
-fn texture(ctx: &egui::Context, path: &Path) -> anyhow::Result<TextureHandle> {
+fn localized_path(path: &str) -> String {
+    let normalized = path.replace('\\', "/");
+    if let Some((directory, name)) = normalized.rsplit_once('/') {
+        if directory.eq_ignore_ascii_case("LoadingScreens")
+            && ["GuardianSplashScreen.dds", "MickeySplashScreen.dds"]
+                .iter()
+                .any(|splash| splash.eq_ignore_ascii_case(name))
+        {
+            return format!("{directory}/Localize/English_NTSC/{name}");
+        }
+    }
+    normalized
+}
+
+fn texture(
+    ctx: &egui::Context,
+    store: &mut super::resource_store::Store,
+    path: &str,
+) -> anyhow::Result<TextureHandle> {
     use anyhow::Context as _;
-    let image = image::ImageReader::open(path)
-        .with_context(|| format!("Open {}", path.display()))?
+    let bytes = store.read(path)?.data;
+    let format = match path.rsplit_once('.') {
+        Some((_, extension)) if extension.eq_ignore_ascii_case("tga") => image::ImageFormat::Tga,
+        _ => image::ImageFormat::Dds,
+    };
+    let image = image::ImageReader::with_format(std::io::Cursor::new(bytes), format)
         .decode()
-        .with_context(|| format!("Decode {}", path.display()))?
+        .with_context(|| format!("Decode {path}"))?
         .into_rgba8();
     let size = [image.width() as usize, image.height() as usize];
-    Ok(ctx.load_texture(path.to_string_lossy(), ColorImage::from_rgba_unmultiplied(size, &image),
+    Ok(ctx.load_texture(path, ColorImage::from_rgba_unmultiplied(size, &image),
         TextureOptions::LINEAR))
 }

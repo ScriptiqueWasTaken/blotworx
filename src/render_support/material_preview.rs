@@ -17,6 +17,7 @@ pub struct Program {
     pub(crate) linear_clip_source: Option<std::sync::Weak<str>>,
     pub uv_sets: [u8; 8],
     pub pinned_projection: bool,
+    pub(crate) scene_color_slot: Option<u8>,
     /// R3MT ImageName by map index (not texture-coordinate index). Native
     /// REL 0x176044 fills absent shader maps from these template resources.
     pub texture_names: Vec<String>,
@@ -570,6 +571,15 @@ fn compile_register_mode(
         };
         (rgb, alpha)
     };
+    let scene_color_slot = if native_vertex.is_some() && material.descendants().any(|node| {
+        node.has_tag_name("StringUserData")
+            && node.attribute("Name") == Some("BindColorBuffer_0")
+            && node.children().any(|value| value.text() == Some("true"))
+    }) {
+        Some(0)
+    } else {
+        None
+    };
     let mut body = String::from("ivec2 bw_ind_coord=ivec2(0);\n");
     let stages = material
         .descendants()
@@ -589,9 +599,15 @@ fn compile_register_mode(
                 .filter(|n| n.has_tag_name("TextureMap"))
                 .nth(coordinate as usize)
                 .context("Missing texture coordinate generator")?;
-            let generated = coordinate_expression(map, slot, &mut uv_textures)?;
+            let generated = if scene_color_slot == Some(slot) {
+                "vec3((gl_FragCoord.xy-bw_scene_rect.xy)/bw_scene_rect.zw,1.0)".into()
+            } else {
+                coordinate_expression(map, slot, &mut uv_textures)?
+            };
             textured = true;
-            texture_slots.insert(slot);
+            if scene_color_slot != Some(slot) {
+                texture_slots.insert(slot);
+            }
             if input.indirect {
                 indirect_code = Some(
                     indirect::texture(
@@ -678,6 +694,7 @@ fn compile_register_mode(
             if attr(coord,"Method")?=="UV" {sets[i]=attr(coord,"UVNumber")?.parse()?;ensure!(sets[i]<8,"Invalid GX UV channel");}
         }sets},
         pinned_projection:body.contains("bw_projection_bound"),
+        scene_color_slot,
         template_samplers:maps.children().filter(|n|n.has_tag_name("TextureMap"))
             .map(|n|n.children().find(|n|n.has_tag_name("ImageAttr")).map(template_sampler).transpose())
             .collect::<Result<Vec<_>>>()?,
@@ -685,7 +702,7 @@ fn compile_register_mode(
             .map(|n|attr(n,"ImageName").map(str::to_owned)).collect::<Result<_>>()?,
         register_defaults:dynamic.then_some(combiner.register_values),
         pass_constants:[None;4],
-        fragment:format!("#version 330 core\nin vec2 v_uv;in vec2 v_environment;in vec3 v_projection;in vec4 v_color;in vec2 v_toon;out vec4 frag_color;uniform sampler2D u_tex[8];uniform mat3 u_tex_uv[8];uniform bool bw_indirect_override;uniform ivec3 bw_indirect[6];uniform vec3 bw_projection_bound;uniform int u_tex_uv_set[8];in vec2 v_extra_uv[7];vec2 bw_uv(int slot){{int channel=u_tex_uv_set[slot];return channel==0?v_uv:v_extra_uv[channel-1];}}\n{}\nvoid main(){{vec4 stage_tex[16];vec4 stage_ras[16];{body}vec4 result=bt_combiner(stage_tex,stage_ras,vec4(0.0));float alpha=floor(clamp(result.a,0.0,1.0)*255.0+0.5);if(!(({a}) {op} ({b})))discard;frag_color=clamp(result,0.0,1.0);}}",combiner.glsl),
+        fragment:format!("#version 330 core\nin vec2 v_uv;in vec2 v_environment;in vec3 v_projection;in vec4 v_color;in vec2 v_toon;out vec4 frag_color;uniform sampler2D u_tex[8];uniform mat3 u_tex_uv[8];uniform bool bw_indirect_override;uniform ivec3 bw_indirect[6];uniform vec3 bw_projection_bound;uniform vec4 bw_scene_rect;uniform int u_tex_uv_set[8];in vec2 v_extra_uv[7];vec2 bw_uv(int slot){{int channel=u_tex_uv_set[slot];return channel==0?v_uv:v_extra_uv[channel-1];}}\n{}\nvoid main(){{vec4 stage_tex[16];vec4 stage_ras[16];{body}vec4 result=bt_combiner(stage_tex,stage_ras,vec4(0.0));float alpha=floor(clamp(result.a,0.0,1.0)*255.0+0.5);if(!(({a}) {op} ({b})))discard;frag_color=clamp(result,0.0,1.0);}}",combiner.glsl),
         uv_textures:uv_textures.into_iter().collect(),
         texture_slots:texture_slots.into_iter().collect(),
         textured,depth_test:attr(z,"Enable")?=="true",depth_write:attr(z,"Update")?=="true",depth_func:comparison(attr(z,"Func")?)?,blend,cull,

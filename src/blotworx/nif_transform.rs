@@ -567,6 +567,7 @@ mod tests {
             block: 1,
             class_name: "NiTransformController".into(),
             color: None,
+            indirect_scale: None,
             flags: 0xcc,
             frequency: 1.,
             phase: 0.,

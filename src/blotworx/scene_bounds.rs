@@ -25,6 +25,7 @@ pub struct Controller {
     pub target: Option<u32>,
     pub transform: Option<Result<super::nif_transform::Interpolator, String>>,
     pub(super) color: Option<super::nif_properties::DirectColor>,
+    pub(super) indirect_scale: Option<super::nif_properties::DirectIndirectScale>,
 }
 impl Controller {
     /// EM1 Vis update80425124 changes only NiAVObject flags18 bit0;
@@ -107,6 +108,17 @@ pub(super) fn controllers(nif: &NifFile, mut next: Option<u32>) -> Result<Vec<Co
         } else {
             None
         };
+        let indirect_scale = if raw.type_name == "NiFloatExtraDataController" && bytes.len() == 34 {
+            match super::nif_properties::DirectIndirectScale::load(nif, uint(30), uint(26)) {
+                Ok(channel) => channel,
+                Err(error) => {
+                    log::warn!("Direct indirect scale controller {id}: {error:#}");
+                    None
+                }
+            }
+        } else {
+            None
+        };
         result.push(Controller {
             block: id,
             class_name: raw.type_name.clone(),
@@ -118,6 +130,7 @@ pub(super) fn controllers(nif: &NifFile, mut next: Option<u32>) -> Result<Vec<Co
             target: link(22)?,
             transform,
             color,
+            indirect_scale,
         });
     }
     Ok(result)
@@ -1392,6 +1405,7 @@ mod tests {
             block: 9,
             class_name: "NiTransformController".into(),
             color: None,
+            indirect_scale: None,
             flags: 108,
             frequency: 1.,
             phase: 0.,
@@ -1481,6 +1495,7 @@ mod tests {
             block: 2,
             class_name: "NiTransformController".into(),
             color: None,
+            indirect_scale: None,
             flags: 0x20,
             frequency: 1.,
             phase: 0.,

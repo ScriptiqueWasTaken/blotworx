@@ -8285,6 +8285,22 @@ fn read_descriptor(root: &Path, files: &[VirtualFile], path: &str) -> Result<Vec
         .data
         .clone())
 }
+
+pub(super) fn loading_artwork(root: &Path, requested: &str) -> Result<Option<String>> {
+    let archive = std::fs::read_dir(root.join("packfiles"))?
+        .filter_map(Result::ok)
+        .find(|entry| entry.file_name().eq_ignore_ascii_case("levels.pak"))
+        .context("Missing levels.pak")?
+        .path();
+    let levels = crate::pack_io::read_filtered(std::fs::read(archive)?, |_, path| {
+        key(path).ends_with(".level")
+    })?;
+    let path = resolve_level_path(root, &levels.pak.files, requested)?;
+    let bytes = read_descriptor(root, &levels.pak.files, &path)?;
+    let mut fields = descriptor(&String::from_utf8_lossy(&bytes));
+    Ok(fields.remove("loading_screen_texture").filter(|path| !path.is_empty()))
+}
+
 /// Resolve user input to an asset path before descriptor parsing. A filename is
 /// a selector, not a root-relative resource name; never choose an ambiguous one.
 fn resolve_level_path(root: &Path, files: &[VirtualFile], requested: &str) -> Result<String> {

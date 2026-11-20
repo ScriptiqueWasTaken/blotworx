@@ -78,6 +78,27 @@
     }
   ],
   "validated_connections": [
+      {
+        "scope": "EM1 loading-screen presentation",
+        "state": "Full level loads show original imported artwork and cycle eight authored dot frames. The loading screen is shown for at least one UI frame. Level descriptors select destination artwork, while boot and missing or unspecified artwork use the opening screen.",
+        "source": "loading_screen_texture in levels.pak, loose LoadingScreens assets, and src/blotworx/loading_screen.rs",
+        "evidence": "All 54 authored loading-screen paths in the BlueThinner import resolve to 640x480 DDS resources, including the English NTSC Guardian splash. All eight 64x16 dot assets resolve.",
+        "open": [
+          "Regional splash selection follows the English NTSC assets currently",
+          "Retail timing and placement",
+          "In-level streaming presentation"
+        ]
+      },
+      {
+        "scope": "DBC projector screen material animation",
+        "state": "The cloned projector screen plays its authored fade and flicker. The warp material samples current scene color with the projector's keyed IndirectScale, using a screen-space copy and an absolute two-axis strength for the authored single warp matrix.",
+        "source": "screen_mickey.nif_wii, GEN_Portal_Screen_Distortion.nif_wii, and SFX_projectionWarp.r3mt",
+        "evidence": "target/perf/dbc-refraction-staged.runtime.json records the original Dark Beauty Castle screen and a deliberately staged distortion spawn. SFX_projectionWarp contributes to the probed pixel with no fallback or script/runtime errors. The earlier paired color probes record Constant_Color_1 alpha changing from 0 to 0.098.",
+        "open": [
+          "Reference distortion amplitude and framebuffer capture order",
+          "Full Wii transition animation comparison"
+        ]
+      },
     {
       "scope": "Blotworx clean-build compiler memory and parallelism",
       "state": "A non-incremental engine rebuild completed in 7m27s with Cargo limited to two jobs and 16 codegen units for the bluethinner crate. The largest observed bluethinner rustc process was 3,632.5 MiB private / about 3,024 MiB working set; available system RAM recovered from 3.3 GiB during the peak to 5.2 GiB after codegen. Only one rustc process was active during the app-crate peak. The earlier four-job/eight-unit attempt reached about 3.8 GiB for bluethinner while a Ruffle compiler also reached about 2.2 GiB, and did not produce a fresh executable. The lower-concurrency settings are now the package defaults; runtime behavior is unchanged.",

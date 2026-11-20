@@ -728,6 +728,7 @@ struct MaterialGpuProgram {
     clip_image: Option<glow::UniformLocation>,
     uv_sets: Option<glow::UniformLocation>,
     projection_bound: Option<glow::UniformLocation>,
+    scene_rect: Option<glow::UniformLocation>,
     indirect: Option<glow::UniformLocation>,
     indirect_override: Option<glow::UniformLocation>,
     colors: Option<glow::UniformLocation>,
@@ -798,6 +799,7 @@ pub struct GpuViewportCache {
     surfaces: super::surface_lighting::State,
     contact_pass:Option<Result<super::contact_occlusion::Pass,String>>,
     finish_pass: Option<Result<super::scene_finish::Pass,String>>,
+    scene_color: Option<(glow::Texture, [i32; 2])>,
     gpu_timing: super::gpu_timing::Pool,
     model_shadow_pass: Option<Result<super::model_shadow::Pass, String>>,
     volume_shadow_pass: Option<Result<super::volume_shadow::Pass, String>>,
@@ -1442,6 +1444,7 @@ impl GpuViewportCache {
                     projection_bound: gl.get_uniform_location(program, "bw_projection_bound"),
                     indirect: gl.get_uniform_location(program, "bw_indirect[0]"),
                     indirect_override: gl.get_uniform_location(program, "bw_indirect_override"),
+                    scene_rect: gl.get_uniform_location(program, "bw_scene_rect"),
                     colors: gl.get_uniform_location(program, "bt_colors[0]"),
                     constants: gl.get_uniform_location(program, "bt_constants[0]"),
                     program,
@@ -1602,6 +1605,41 @@ impl GpuViewportCache {
             extra_uv_buffers,
         } = prepared;
         gl.use_program(Some(program.program));
+        let mut count = 0;
+        if let Some(slot) = source.scene_color_slot {
+            let unit = u32::from(slot);
+            let mut rect = [0; 4];
+            gl.get_parameter_i32_slice(glow::VIEWPORT, &mut rect);
+            let [x, y, w, h] = rect;
+            if w <= 0 || h <= 0 {
+                return;
+            }
+            gl.active_texture(glow::TEXTURE0 + unit);
+            gl.bind_sampler(unit, None);
+            if self.scene_color.is_none() {
+                let Ok(texture) = gl.create_texture() else { return };
+                gl.bind_texture(glow::TEXTURE_2D, Some(texture));
+                for (parameter, value) in [
+                    (glow::TEXTURE_MIN_FILTER, glow::LINEAR),
+                    (glow::TEXTURE_MAG_FILTER, glow::LINEAR),
+                    (glow::TEXTURE_WRAP_S, glow::CLAMP_TO_EDGE),
+                    (glow::TEXTURE_WRAP_T, glow::CLAMP_TO_EDGE),
+                ] {
+                    gl.tex_parameter_i32(glow::TEXTURE_2D, parameter, value as i32);
+                }
+                self.scene_color = Some((texture, [0, 0]));
+            }
+            let (texture, size) = self.scene_color.as_mut().unwrap();
+            gl.bind_texture(glow::TEXTURE_2D, Some(*texture));
+            if *size == [w, h] {
+                gl.copy_tex_sub_image_2d(glow::TEXTURE_2D, 0, 0, 0, x, y, w, h);
+            } else {
+                gl.copy_tex_image_2d(glow::TEXTURE_2D, 0, glow::RGBA, x, y, w, h, 0);
+                *size = [w, h];
+            }
+            gl.uniform_4_f32(program.scene_rect.as_ref(), x as f32, y as f32, w as f32, h as f32);
+            count = usize::from(slot) + 1;
+        }
         if let Some((matrices, images)) = projector {
             gl.uniform_matrix_4_f32_slice(program.shadow_matrix.as_ref(), false, &matrices[0]);
             gl.uniform_matrix_4_f32_slice(program.clip_matrix.as_ref(), false, &matrices[1]);
@@ -1637,7 +1675,6 @@ impl GpuViewportCache {
             &mat4_mul(view, &cmd.trans_mat),
         );
         let mut matrices = [0f32; 72];
-        let mut count = 0;
         for &(slot, texture, sampler, matrix) in textures {
             gl.active_texture(glow::TEXTURE0 + slot as u32);
             gl.bind_texture(glow::TEXTURE_2D, Some(texture));
@@ -2059,6 +2096,7 @@ impl GpuViewportCache {
             surfaces: Default::default(),
             contact_pass:None,
             finish_pass: None,
+            scene_color: None,
             gpu_timing: Default::default(),
             model_shadow_pass: None,
             volume_shadow_pass: None,
@@ -2815,6 +2853,11 @@ pub(crate) fn render_viewport(
                             if cmd.indices.is_empty() || cmd.v_data.is_empty() {
                                 continue;
                             }
+                            if cmd.preview.as_ref().and_then(|p| p.as_ref().ok())
+                                .is_some_and(|program| program.scene_color_slot.is_some())
+                            {
+                                continue;
+                            }
                             if enhanced_shadow {
                                 if let Some(Ok(source))=&cmd.preview {
                                     if !super::surface_lighting::eligible(source,cmd){continue;}
@@ -2941,12 +2984,18 @@ pub(crate) fn render_viewport(
                     // draws have populated depth, as NiAlphaAccumulator does.
                     let mut immediate = Vec::with_capacity(draw_commands.len());
                     let mut blended = Vec::new();
+                    let mut scene_color = Vec::new();
                     for (index, cmd) in draw_commands.iter().enumerate() {
                         if rejected[index] || cmd.indices.is_empty() || cmd.v_data.is_empty() {
                             continue;
                         }
                         let managed = native_managed.as_ref().is_some_and(|values| values[index].0);
-                        if cmd.needs_alpha_sort(prepared_materials[index].is_some(), managed) {
+                        if cmd.preview.as_ref().and_then(|p| p.as_ref().ok())
+                            .is_some_and(|program| program.scene_color_slot.is_some())
+                            && prepared_materials[index].is_some()
+                        {
+                            scene_color.push(index);
+                        } else if cmd.needs_alpha_sort(prepared_materials[index].is_some(), managed) {
                             blended.push((index, cmd.alpha_depth(&view_mat)));
                         } else {
                             immediate.push(index);
@@ -2955,7 +3004,7 @@ pub(crate) fn render_viewport(
                     blended.sort_unstable_by(|&(left_index, left_depth), &(right_index, right_depth)| {
                         right_depth.total_cmp(&left_depth).then(left_index.cmp(&right_index))
                     });
-                    for draw_index in immediate.into_iter().chain(blended.into_iter().map(|(index, _)| index)) {
+                    for draw_index in immediate.into_iter().chain(scene_color).chain(blended.into_iter().map(|(index, _)| index)) {
                         let cmd = &draw_commands[draw_index];
                         let prepared = &prepared_materials[draw_index];
 

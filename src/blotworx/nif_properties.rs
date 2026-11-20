@@ -212,6 +212,40 @@ impl DirectColor {
     }
 }
 
+#[derive(Clone, Debug, serde::Serialize)]
+pub(super) struct DirectIndirectScale {
+    track: Option<super::nif_transform::Track>,
+    value: f32,
+}
+
+impl DirectIndirectScale {
+    pub(super) fn load(nif: &NifFile, name: u32, interpolator: u32) -> Result<Option<Self>> {
+        if nif.string_table.get(name as usize).map(String::as_str) != Some("IndirectScale") {
+            return Ok(None);
+        }
+        let Some(NiObject::Unknown(raw)) = nif.blocks.get(interpolator as usize) else {
+            anyhow::bail!("Indirect scale controller is missing its interpolator");
+        };
+        ensure!(raw.type_name == "NiFloatInterpolator" && raw.raw_data.len() == 8,
+            "Unsupported indirect scale interpolator");
+        let word = |offset| {
+            let bytes = raw.raw_data[offset..offset + 4].try_into().unwrap();
+            if nif.source_is_little_endian { u32::from_le_bytes(bytes) } else { u32::from_be_bytes(bytes) }
+        };
+        let data = word(4);
+        let track = (data != u32::MAX).then(|| super::nif_transform::Track::load_float_data(nif, data)).transpose()?;
+        Ok(Some(Self { track, value: f32::from_bits(word(0)) }))
+    }
+
+    pub(super) fn sample(&self, time: f32) -> Result<Option<f32>> {
+        if let Some(track) = &self.track {
+            track.sample_scalar(time)
+        } else {
+            Ok((self.value != -f32::MAX).then_some(self.value))
+        }
+    }
+}
+
 pub fn packed_color(color: [f32; 4]) -> Result<[f32; 4]> {
     let mut result = [0.; 4];
     for (out, value) in result.iter_mut().zip(color) {

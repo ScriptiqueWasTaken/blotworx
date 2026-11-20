@@ -163,17 +163,25 @@ impl Instance {
             let samples = self.texture_transforms.range((mesh, false, 0, 0)..=(mesh, true, u32::MAX, u32::MAX));
             for (&(_, shader_map, slot, operation), &sample) in samples {
                 let map = (shader_map, slot);
-                let original = match material.texture_transforms.get(&map) {
-                    Some(Err(_)) => continue,
-                    Some(Ok(transform)) => *transform,
-                    None if shader_map && draw.material_images.iter().any(|image| u32::from(image.slot) == slot) => None,
-                    None => continue,
+                let Some(Ok(original)) = material.texture_transforms.get(&map) else {
+                    continue;
                 };
-                let transform = transforms.entry(map).or_insert_with(|| original.unwrap_or_default());
+                let transform = transforms.entry(map).or_insert_with(|| {
+                    original.unwrap_or(crate::nif_textures::UvTransform {
+                        method: 2, // NiTextureTransformController creates a Maya transform.
+                        center: [0.5; 2],
+                        ..Default::default()
+                    })
+                });
                 super::nif_properties::DirectTextureTransform::apply(operation, sample, transform);
             }
             for ((shader_map, slot), transform) in transforms {
-                if shader_map && draw.material_images.iter().any(|image| u32::from(image.slot) == slot) {
+                // The generated material resolves each slot from the last binding.
+                // Standard maps can supply that slot when no shader map does.
+                let supplies_shader_slot = material.textures.iter().rev()
+                    .find(|binding| binding.slot == slot)
+                    .is_some_and(|binding| binding.shader_id.is_some() == shader_map);
+                if supplies_shader_slot && draw.material_images.iter().any(|image| u32::from(image.slot) == slot) {
                     let matrix = transform.matrix().context("Invalid animated texture transform")?;
                     for image in std::sync::Arc::make_mut(&mut draw.material_images) {
                         if u32::from(image.slot) == slot {

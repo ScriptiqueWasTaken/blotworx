@@ -173,7 +173,7 @@ impl World {
             .get(entity)
             .is_some_and(|entity| self.scene_resources.is_active(&entity.scene))
     }
-    pub(super) fn process_scene_request(&mut self) -> Result<()> {
+    pub(in crate::blotworx) fn process_scene_request(&mut self) -> Result<()> {
         let Some(Some(requested)) = self.scene_requests.consume(false) else {
             return Ok(());
         };

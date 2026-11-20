@@ -615,7 +615,7 @@ impl World {
                         } else {
                             (segment.origin, m.target, origin, target)
                         };
-                        segment.path.update_endpoints(start_pos, end_pos);
+                        segment.path.update_endpoints(start_pos, end_pos)?;
                         let previous = segment.phase;
                         let length = segment.path.length();
                         let duration = segment.path.duration(segment.authored_duration, m.speed);
@@ -724,7 +724,7 @@ impl World {
                                 handle(end, "IncomingHandle")?,
                                 self.entities[end].transform[12..15].try_into()?,
                                 !branched,
-                            );
+                            )?;
                             m.segment = Some(Segment {
                                 origin: m.target,
                                 authored_duration: duration,

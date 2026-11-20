@@ -1,4 +1,6 @@
-//! Cubic position kernel and the main-path distance lookup.
+//! Wii spline position, phase, and arc-length kernels.
+
+use anyhow::{Context, Result};
 
 type Point = [f32; 3];
 const ARC_STEPS: usize = 200;
@@ -92,51 +94,45 @@ pub(super) fn phase_step(phase: f32, dt: f32, length: f32, duration: f32, revers
 
 pub(super) struct Path {
     curve: Hermite,
-    main_path: bool,
     lengths: Option<Box<[f32; ARC_STEPS]>>,
     total: f32,
 }
 
 impl Path {
-    pub(super) fn new(start: Point, outgoing: Point, incoming: Point, end: Point, main_path: bool) -> Self {
+    pub(super) fn new(start: Point, outgoing: Point, incoming: Point, end: Point, main_path: bool) -> Result<Self> {
         let mut path = Self {
             curve: Hermite { start, outgoing, incoming, end },
-            main_path,
-            lengths: None,
+            lengths: main_path.then(|| Box::new([0.; ARC_STEPS])),
             total: 0.,
         };
-        path.rebuild_lengths();
-        path
+        path.rebuild_lengths()?;
+        Ok(path)
     }
 
-    fn rebuild_lengths(&mut self) {
-        // Both paths measure 200 chords (REL 3c177c and 3c18d0). Only
-        // the main path keeps them for distance-to-parameter lookup.
-        let straight = self.curve.incoming == [0.; 3] && self.curve.outgoing == [0.; 3];
-        if straight {
-            self.total = distance(self.curve.start, self.curve.end);
-            return;
-        }
-        let mut lengths = self.main_path.then(|| self.lengths.get_or_insert_with(|| Box::new([0.; ARC_STEPS])));
-        let mut previous = self.curve.start;
+    fn rebuild_lengths(&mut self) -> Result<()> {
+        // REL 3c177c and 3c18d0 sample the full cubic, including zero-handle
+        // segments. Only the main path keeps the individual chord lengths.
+        let mut previous = self.curve.sample(0.);
         self.total = 0.;
         for i in 0..ARC_STEPS {
             let next = self.curve.sample((i + 1) as f32 / ARC_STEPS as f32);
-            let length = distance(previous, next);
+            let length = distance(previous, next)?;
             self.total += length;
-            if let Some(entries) = &mut lengths {
+            if let Some(entries) = &mut self.lengths {
                 entries[i] = length;
             }
             previous = next;
         }
+        Ok(())
     }
 
-    pub(super) fn update_endpoints(&mut self, start: Point, end: Point) {
+    pub(super) fn update_endpoints(&mut self, start: Point, end: Point) -> Result<()> {
         if self.curve.start != start || self.curve.end != end {
             self.curve.start = start;
             self.curve.end = end;
-            self.rebuild_lengths();
+            self.rebuild_lengths()?;
         }
+        Ok(())
     }
 
     pub(super) fn length(&self) -> f32 { self.total }
@@ -152,10 +148,6 @@ impl Path {
     }
 
     pub(super) fn sample(&self, phase: f32) -> Point {
-        if self.main_path && self.lengths.is_none() {
-            let [start, end] = [self.curve.start, self.curve.end];
-            return std::array::from_fn(|axis| start[axis] + (end[axis] - start[axis]) * phase);
-        }
         self.curve.sample(self.parameter(phase))
     }
 
@@ -174,9 +166,16 @@ impl Path {
     }
 }
 
-fn distance(start: Point, end: Point) -> f32 {
+fn distance(start: Point, end: Point) -> Result<f32> {
+    // REL afe4..b068 reduces the paired squares, narrows frsqrte,
+    // performs one fused Newton step, then multiplies by the squared length.
     let [x, y, z] = std::array::from_fn(|axis| end[axis] - start[axis]);
-    (z.mul_add(z, x * x) + y * y).sqrt()
+    let squared = z.mul_add(z, x * x) + y * y;
+    if squared == 0. {
+        return Ok(0.);
+    }
+    let inverse = super::super::native_hk_transform::inverse_root(squared).context("Invalid spline chord")?;
+    Ok(squared * inverse)
 }
 
 #[cfg(debug_assertions)]
@@ -201,14 +200,8 @@ pub(super) fn validate() -> anyhow::Result<()> {
     let start = [0.; 3];
     let end = [6., 0., 0.];
     let outgoing = [10., 12., 0.];
-    let main = Path::new(start, outgoing, [0.; 3], end, true);
-    let branch = Path::new(start, outgoing, [0.; 3], end, false);
-    let point = main.sample(0.25);
-    anyhow::ensure!(point.into_iter().zip([1.3209865, 1.2202563, 0.]).all(|(actual, reference)| {
-        (actual - reference).abs() <= 1e-6
-    }), "Main spline did not use the chord-length table: {point:?}");
-    anyhow::ensure!(branch.sample(0.25) == [2.34375, 1.6875, 0.],
-        "Branch spline remapped the cubic phase");
+    let main = Path::new(start, outgoing, [0.; 3], end, true)?;
+    let branch = Path::new(start, outgoing, [0.; 3], end, false)?;
     for path in [&main, &branch] {
         let full = path.duration(0., 1.);
         anyhow::ensure!(full > 6. && full == path.duration(0., 2.) * 2.,
@@ -236,6 +229,31 @@ pub(super) fn validate() -> anyhow::Result<()> {
         anyhow::ensure!(actual == PhaseStep { phase: sampled, boundary, residual },
             "Spline phase step differs at {phase}, dt {dt}, length {length}, duration {duration}, reverse {reversed}: {actual:?}");
     }
-    println!("PASS: Wii spline position, easing and phase step fixtures match");
+    #[derive(serde::Deserialize)]
+    struct ArcSample {
+        controls: [Point; 4],
+        length: String,
+        positions: Vec<(f32, [String; 3], [String; 3])>,
+    }
+    let samples: Vec<ArcSample> = serde_json::from_str(include_str!(
+        "../../tools/blotworx/fixtures/spline_arc_kernel.json"
+    ))?;
+    for sample in samples {
+        let [start, outgoing, incoming, end] = sample.controls;
+        let main = Path::new(start, outgoing, incoming, end, true)?;
+        let branch = Path::new(start, outgoing, incoming, end, false)?;
+        let length = u32::from_str_radix(&sample.length, 16)?;
+        anyhow::ensure!(main.length().to_bits() == length && branch.length().to_bits() == length,
+            "Wii spline arc length differs for {start:?} to {end:?}");
+        for (phase, main_bits, branch_bits) in sample.positions {
+            for (path, bits) in [(&main, main_bits), (&branch, branch_bits)] {
+                for (actual, expected) in path.sample(phase).into_iter().zip(bits) {
+                    anyhow::ensure!(actual.to_bits() == u32::from_str_radix(&expected, 16)?,
+                        "Wii spline arc position differs at phase {phase} for {start:?} to {end:?}");
+                }
+            }
+        }
+    }
+    println!("PASS: Wii spline position, easing, phase and arc fixtures match");
     Ok(())
 }

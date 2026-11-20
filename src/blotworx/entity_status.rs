@@ -79,8 +79,7 @@ pub fn write(components: &mut [Component], value: bool) -> Result<bool> {
     Ok(true)
 }
 impl super::assets::World {
-    /// Retail Lua265798/2666bc. Verified Status.Invisible and Animation's
-    /// IgnoreAudioEvents storage are connected; other owners fail explicitly.
+    /// Retail Lua265798/2666bc. Unsupported reflected owners fail explicitly.
     pub(super) fn bool_property_lua(
         &mut self,
         lua: &mlua::Lua,
@@ -165,11 +164,35 @@ impl super::assets::World {
         //Native type admission precedes getter/setter invocation. Do not fall
         //through a wrong type, or ignore a declared but omitted earlier field.
         let mut supported = false;
-        for c in &self.entities[owner].components {
-            if let Some(field) = c.properties.iter().find(|p| p.name == property) {
-                if field.class_name != "Boolean" {
+        for c in &mut self.entities[owner].components {
+            let field = c.properties.iter().position(|p| p.name == property);
+            if field.is_some_and(|i| c.properties[i].class_name != "Boolean") {
+                return Ok(MultiValue::new());
+            }
+            if c.class_name == "HealthComponent" && property == "ForceInvulnerable" {
+                // REL321904..321988 registers the Boolean descriptor.
+                // Its runtime value is consumed directly by health acceptance.
+                if let Some(value) = value {
+                    if index == 0 {
+                        if let Some(i) = field {
+                            c.properties[i].value = value.into();
+                        } else {
+                            c.properties.push(Property::new(
+                                "Boolean".into(), property.into(), false, false, false, value.into(),
+                            ));
+                        }
+                    }
                     return Ok(MultiValue::new());
                 }
+                if index != 0 {
+                    return Err(mlua::Error::external("Indexed boolean getter output is not verified"));
+                }
+                let forced = field.map(|i| c.properties[i].value.as_bool()
+                    .ok_or_else(|| mlua::Error::external("ForceInvulnerable is not Boolean")))
+                    .transpose()?.unwrap_or(false);
+                return Ok(MultiValue::from_vec(vec![Value::Boolean(forced)]));
+            }
+            if field.is_some() {
                 if (c.class_name == "StatusComponent" && property == "Invisible")
                     || (c.class_name == "AnimationComponent" && property == "IgnoreAudioEvents")
                 {

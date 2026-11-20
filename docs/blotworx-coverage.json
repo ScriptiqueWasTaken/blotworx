@@ -268,8 +268,17 @@
         "source": "DBC_TentacleSore_01 NIF/KFM/KF, Wii DOL804d12d4..804d1568 (paired update and activation ID) and DOL804d1dfc (key-driven emission). Gamebryo NiPoseBlender selects referenced evaluators by weight.",
         "evidence": "Run blotworx diagnose --strict-runtime --level Levels/DBC_Start_ZoneS.level --run-script tools/blotworx/fixtures/dbc_zone_s_sore_pop.lua --capture <image> --capture-tick <tick> with imported EM1 data. The first placed blister has 0, 31 and 0 live particles at ticks 24, 49 and 161, with zero runtime errors. Only three NiPSCurveEmitter admissions still fail in this scene, down from 49 total particle admission errors in the baseline.",
         "open": [
-          "The original damage callback still stops at SetPropertyFloat Target Value before removing the next blister's invulnerability. Zone S initialization also reports a missing SetSplineFollowerInitialSpeed binding.",
+          "Zone S initialization reports a missing SetSplineFollowerInitialSpeed binding.",
           "Curve emitters, the animated emitter rotation-speed variance, dynamic particle bounds, and Wii visual and birth-by-birth parity."
+        ]
+      },
+      {
+        "scope": "EM1 Zone S first chamber damage chain",
+        "state": "The Lua reflection API writes the live TargetableComponent.Target Value and HealthComponent.ForceInvulnerable fields. The health receiver uses the reflected Boolean when accepting damage, and the original callbacks advance the blister counter and open the chamber door.",
+        "source": "Wii REL3c75b4..3c7658 registers Target Value, 3c7c44..3c7c68 resolves its scalar read and write, and 321904..321988 registers ForceInvulnerable. The imported Zone S scene supplies the OnDamage routing and the door KFM names Open as sequence 1.",
+        "evidence": "With original EM1 data, run blotworx diagnose --strict-runtime --level Levels/DBC_Start_ZoneS.level --run-script tools/blotworx/fixtures/dbc_zone_s_first_chamber.lua --capture <image> --capture-tick 289 --focus-actor \"dbc_zones_static.DBC_ZoneS_Door01_Inert 01\". The replay sends thinner stimuli through the health receiver, verifies forced invulnerability, unlocks blisters 2 and 3 in order, and finishes with the door playing Open and blister 4 still gated.",
+        "open": [
+          "Player-driven traversal and brush aiming through both chambers. The separate startup spline-speed script call remains unsupported."
         ]
       },
       {

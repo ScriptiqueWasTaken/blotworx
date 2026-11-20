@@ -1591,12 +1591,18 @@ impl World {
         if self.demo_story.enabled && name == "Acceleration" {
             return self.set_demo_rotator_acceleration(entity, value);
         }
-        if matches!(name, "Spawn Delay" | "Spawn Radius") {
+        let scalar_owner = match name {
+            "Spawn Delay" | "Spawn Radius" => Some("TemplateSpawnerComponent"),
+            // REL3c764c/3c7818 -> 3c7c64 -> 123d80 stores the target value.
+            "Target Value" => Some("TargetableComponent"),
+            _ => None,
+        };
+        if let Some(owner) = scalar_owner {
             let component = self.entities[entity]
                 .components
                 .iter_mut()
-                .find(|component| component.class_name == "TemplateSpawnerComponent")
-                .context("Spawner float target has no spawner component")?;
+                .find(|component| component.class_name == owner)
+                .with_context(|| format!("Missing {owner} owner for {name}"))?;
             // REL3ca6a0/3ca760 construct ordinary float descriptors using
             // 6e804. Value virtual+4c ->123da0 ->descriptor+18 ->6e854
             // ->123ec4 stores the scalar only; it does not reset countdown+48.
@@ -1607,7 +1613,7 @@ impl World {
             {
                 ensure!(
                     property.class_name == "Float" && !property.value.is_array(),
-                    "Unsupported spawner float type"
+                    "Invalid {owner}.{name} float type"
                 );
                 property.value = serde_json::json!(value);
             } else {
@@ -4515,13 +4521,13 @@ impl World {
                 if self.removed_entities.contains(&entity) {
                     return Ok(mlua::MultiValue::new());
                 }
-                let spawner_float = matches!(property.as_str(), "Spawn Delay" | "Spawn Radius");
-                if property == "UsableRadius" || spawner_float {
-                    let owner = if spawner_float {
-                        "TemplateSpawnerComponent"
-                    } else {
-                        "UsableComponent"
-                    };
+                let scalar_owner = match property.as_str() {
+                    "Spawn Delay" | "Spawn Radius" => Some("TemplateSpawnerComponent"),
+                    "UsableRadius" => Some("UsableComponent"),
+                    "Target Value" => Some("TargetableComponent"),
+                    _ => None,
+                };
+                if let Some(owner) = scalar_owner {
                     let first = self.entities[entity]
                         .components
                         .iter()
@@ -4532,8 +4538,8 @@ impl World {
                                 .find(|candidate| candidate.name == property)
                                 .map(|candidate| (component, candidate))
                         });
-                    // Preserve native first-property admission. Only a real usable
-                    // component supplies this reflected scalar when omitted.
+                    // Preserve native first-property type admission before supplying
+                    // a declared scalar absent from the cooked property list.
                     if let Some((component, candidate)) = first {
                         if candidate.class_name != "Float" {
                             return Ok(mlua::MultiValue::new());
@@ -4558,7 +4564,7 @@ impl World {
                             .map_err(mlua::Error::external)?;
                         return Ok(mlua::MultiValue::new());
                     }
-                    let radius = first
+                    let scalar = first
                         .map(|(_, candidate)| {
                             candidate.value.as_f64().ok_or_else(|| {
                                 mlua::Error::external(format!("Invalid {property} scalar"))
@@ -4567,7 +4573,7 @@ impl World {
                         .transpose()?
                         .unwrap_or(0.);
                     return Ok(mlua::MultiValue::from_vec(vec![mlua::Value::Number(
-                        radius,
+                        scalar,
                     )]));
                 }
                 // REL2656c8/266600 returns no Lua values for a missing property

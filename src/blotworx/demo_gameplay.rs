@@ -23,25 +23,30 @@ struct Mover {
     speed: f32,
     hold: f32,
     stop: Option<Stop>,
-    timed: Option<TimedSegment>,
+    segment: Option<Segment>,
     reverse: bool,
     disabled: bool,
     stopped: bool,
 }
 
-struct TimedSegment {
+struct Segment {
     origin: usize,
-    duration: f32,
+    authored_duration: f32,
     phase: f32,
     reversed: bool,
     path: spline_curve::Path,
 }
 
-impl TimedSegment {
-    fn advance(&mut self, delta: f32) -> f32 {
+impl Segment {
+    fn advance(&mut self, delta: f32, speed: f32) -> f32 {
+        let duration = self.path.duration(self.authored_duration, speed);
+        if duration == 0. {
+            self.phase = 1.;
+            return 1.;
+        }
         // REL .text 3bc884..3bc8a0 forms the reciprocal before scaling dt.
         // Preview phase runs from the departure knot to the arrival knot.
-        self.phase = (self.phase + delta * self.duration.recip()).min(1.);
+        self.phase = (self.phase + delta * duration.recip()).min(1.);
         self.phase
     }
 }
@@ -309,7 +314,7 @@ impl World {
                         speed,
                         hold,
                         stop: None,
-                        timed: None,
+                        segment: None,
                         reverse,
                         disabled,
                         stopped: false,
@@ -451,7 +456,7 @@ impl World {
                 speed,
                 hold: 0.,
                 stop: None,
-                timed: None,
+                segment: None,
                 reverse: false,
                 disabled: false,
                 stopped: false,
@@ -459,7 +464,7 @@ impl World {
             mover.target = knot;
             mover.hold = 0.;
             mover.stop = None;
-            mover.timed = None;
+            mover.segment = None;
         } else if name == "SetSpeed" {
             let speed = lua
                 .coerce_number(args[1].clone())?
@@ -489,7 +494,7 @@ impl World {
                             speed,
                             hold: 0.,
                             stop: None,
-                            timed: None,
+                            segment: None,
                             reverse: false,
                             disabled: false,
                             stopped: false,
@@ -523,7 +528,7 @@ impl World {
                     position,
                 });
                 m.target = if position == 0. { start } else { end };
-                m.timed = None;
+                m.segment = None;
                 true
             } else {
                 false
@@ -591,20 +596,22 @@ impl World {
                 } else {
                     self.entities[m.target].transform[12..15].try_into()?
                 };
-                if m.timed.as_ref().is_some_and(|segment| self.removed_entities.contains(&segment.origin)) {
-                    m.timed = None;
+                if m.segment.as_ref().is_some_and(|segment| self.removed_entities.contains(&segment.origin)) {
+                    m.segment = None;
                 }
-                let (destination, fraction) = if let Some(segment) = &mut m.timed {
+                let (destination, fraction) = if let Some(segment) = &mut m.segment {
                     let origin = self.entities[segment.origin].transform[12..15].try_into()?;
-                    let fraction = segment.advance(travel_delta);
+                    let (start, end, start_pos, end_pos) = if segment.reversed {
+                        (m.target, segment.origin, target, origin)
+                    } else {
+                        (segment.origin, m.target, origin, target)
+                    };
+                    segment.path.update_endpoints(start_pos, end_pos);
+                    let fraction = segment.advance(travel_delta, m.speed.abs());
                     let destination = if fraction == 1. {
                         target
                     } else {
-                        let (start, end, start_pos, end_pos, phase) = if segment.reversed {
-                            (m.target, segment.origin, target, origin, 1. - fraction)
-                        } else {
-                            (segment.origin, m.target, origin, target, fraction)
-                        };
+                        let phase = if segment.reversed { 1. - fraction } else { fraction };
                         let phase = if property(&self.entities[owner], "SplineFollowerComponent", "EaseInOut")
                             .and_then(serde_json::Value::as_bool).unwrap_or(false)
                         {
@@ -616,7 +623,7 @@ impl World {
                         } else {
                             phase
                         };
-                        segment.path.sample(start_pos, end_pos, phase)
+                        segment.path.sample(phase)
                     };
                     (destination, fraction)
                 } else {
@@ -683,26 +690,29 @@ impl World {
                         let duration = property(&self.entities[start], "SplineKnotComponent", key)
                             .and_then(|value| value.as_f64())
                             .map(|value| value as f32)
-                            .filter(|&duration| duration.is_finite() && duration > f32::EPSILON);
-                        m.timed = if let Some(duration) = duration {
-                            let handle = |knot: usize, name: &str| {
-                                property(&self.entities[knot], "SplineKnotComponent", name)
-                                    .map(|value| crate::render_support::scene::parse_point3(value)
-                                        .with_context(|| format!("Invalid spline {name} on {}", self.entities[knot].name)))
-                                    .transpose()
-                                    .map(|value| value.unwrap_or([0.; 3]))
-                            };
-                            let path = spline_curve::Path::new(
-                                self.entities[start].transform[12..15].try_into()?,
-                                handle(start, "OutgoingHandle")?,
-                                handle(end, "IncomingHandle")?,
-                                self.entities[end].transform[12..15].try_into()?,
-                                !branched,
-                            );
-                            Some(TimedSegment { origin: m.target, duration, phase: 0., reversed: m.reverse, path })
-                        } else {
-                            None
+                            .filter(|&duration| duration.is_finite())
+                            .unwrap_or(0.);
+                        let handle = |knot: usize, name: &str| {
+                            property(&self.entities[knot], "SplineKnotComponent", name)
+                                .map(|value| crate::render_support::scene::parse_point3(value)
+                                    .with_context(|| format!("Invalid spline {name} on {}", self.entities[knot].name)))
+                                .transpose()
+                                .map(|value| value.unwrap_or([0.; 3]))
                         };
+                        let path = spline_curve::Path::new(
+                            self.entities[start].transform[12..15].try_into()?,
+                            handle(start, "OutgoingHandle")?,
+                            handle(end, "IncomingHandle")?,
+                            self.entities[end].transform[12..15].try_into()?,
+                            !branched,
+                        );
+                        m.segment = Some(Segment {
+                            origin: m.target,
+                            authored_duration: duration,
+                            phase: 0.,
+                            reversed: m.reverse,
+                            path,
+                        });
                         m.target = next;
                     } else {
                         m.stopped = true;
@@ -757,7 +767,7 @@ pub(super) fn validate_spline_events()->Result<()> {
     world.run_callback_fixture("SplineFollower_SetDisabled('gv_zonea_airlock.GV_ZoneA_Door02 01',false)")?;
     world.move_demo_spline_owner(owner,world.entities[knot].transform[12..15].try_into()?,world.entities[owner].runtime_rotation)?;
     let mover=world.demo_story.motion.movers.get_mut(&owner).context("Door spline missing")?;
-    mover.target=knot;mover.speed=10.;mover.hold=0.;mover.stop=None;mover.timed=None;
+    mover.target=knot;mover.speed=10.;mover.hold=0.;mover.stop=None;mover.segment=None;
     let authored = property(&world.entities[owner], "SplineFollowerComponent", "InitialSpeed").cloned();
     mover.passes.pass(Some(knot));
     world.set_live_spline_speed(owner, 0.)?;

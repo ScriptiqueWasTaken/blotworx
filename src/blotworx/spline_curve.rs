@@ -80,35 +80,51 @@ impl Path {
     }
 
     fn rebuild_lengths(&mut self) {
-        // The main path sampler 3c10bc uses 200 chord lengths built at
-        // 3c177c..3c1824. Branch paths go directly through the cubic phase.
-        // With zero tangents, distance sampling just follows the straight line.
-        if !self.main_path || (self.curve.incoming == [0.; 3] && self.curve.outgoing == [0.; 3]) {
+        // Both paths measure 200 chords (REL 3c177c and 3c18d0). Only
+        // the main path keeps them for distance-to-parameter lookup.
+        let straight = self.curve.incoming == [0.; 3] && self.curve.outgoing == [0.; 3];
+        if straight {
+            self.total = distance(self.curve.start, self.curve.end);
             return;
         }
-        let lengths = self.lengths.get_or_insert_with(|| Box::new([0.; ARC_STEPS]));
+        let mut lengths = self.main_path.then(|| self.lengths.get_or_insert_with(|| Box::new([0.; ARC_STEPS])));
         let mut previous = self.curve.start;
         self.total = 0.;
-        for (i, length) in lengths.iter_mut().enumerate() {
+        for i in 0..ARC_STEPS {
             let next = self.curve.sample((i + 1) as f32 / ARC_STEPS as f32);
-            let [x, y, z] = std::array::from_fn(|axis| next[axis] - previous[axis]);
-            *length = (x * x + y * y + z * z).sqrt();
-            self.total += *length;
+            let length = distance(previous, next);
+            self.total += length;
+            if let Some(entries) = &mut lengths {
+                entries[i] = length;
+            }
             previous = next;
         }
     }
 
-    pub(super) fn sample(&mut self, start: Point, end: Point, phase: f32) -> Point {
+    pub(super) fn update_endpoints(&mut self, start: Point, end: Point) {
         if self.curve.start != start || self.curve.end != end {
             self.curve.start = start;
             self.curve.end = end;
             self.rebuild_lengths();
         }
+    }
+
+    pub(super) fn duration(&self, authored: f32, speed: f32) -> f32 {
+        // Knot preparation clamps explicit times at length / 200. Omitted
+        // time divides the cached route length by the current speed.
+        if authored > f32::EPSILON {
+            authored.max(self.total / ARC_STEPS as f32)
+        } else {
+            self.total / speed
+        }
+    }
+
+    pub(super) fn sample(&self, phase: f32) -> Point {
         if self.main_path && self.lengths.is_none() {
+            let [start, end] = [self.curve.start, self.curve.end];
             return std::array::from_fn(|axis| start[axis] + (end[axis] - start[axis]) * phase);
         }
-        let parameter = self.parameter(phase);
-        self.curve.sample(parameter)
+        self.curve.sample(self.parameter(phase))
     }
 
     fn parameter(&self, phase: f32) -> f32 {
@@ -124,6 +140,11 @@ impl Path {
         }
         phase
     }
+}
+
+fn distance(start: Point, end: Point) -> f32 {
+    let [x, y, z] = std::array::from_fn(|axis| end[axis] - start[axis]);
+    (z.mul_add(z, x * x) + y * y).sqrt()
 }
 
 #[cfg(debug_assertions)]
@@ -148,14 +169,23 @@ pub(super) fn validate() -> anyhow::Result<()> {
     let start = [0.; 3];
     let end = [6., 0., 0.];
     let outgoing = [10., 12., 0.];
-    let mut main = Path::new(start, outgoing, [0.; 3], end, true);
-    let mut branch = Path::new(start, outgoing, [0.; 3], end, false);
-    let point = main.sample(start, end, 0.25);
+    let main = Path::new(start, outgoing, [0.; 3], end, true);
+    let branch = Path::new(start, outgoing, [0.; 3], end, false);
+    let point = main.sample(0.25);
     anyhow::ensure!(point.into_iter().zip([1.3209865, 1.2202563, 0.]).all(|(actual, reference)| {
         (actual - reference).abs() <= 1e-6
     }), "Main spline did not use the chord-length table: {point:?}");
-    anyhow::ensure!(branch.sample(start, end, 0.25) == [2.34375, 1.6875, 0.],
+    anyhow::ensure!(branch.sample(0.25) == [2.34375, 1.6875, 0.],
         "Branch spline remapped the cubic phase");
+    for path in [&main, &branch] {
+        let full = path.duration(0., 1.);
+        anyhow::ensure!(full > 6. && full == path.duration(0., 2.) * 2.,
+            "Spline duration did not follow the curve length and live speed");
+        anyhow::ensure!(path.duration(f32::EPSILON, 1.) == full
+            && path.duration(2. * f32::EPSILON, 1.) == full / 200.
+            && path.duration(8., 1.) == 8.,
+            "Wrong authored spline time threshold or minimum");
+    }
     let samples: Vec<(bool, bool, Vec<(f32, String)>)> = serde_json::from_str(include_str!(
         "../../tools/blotworx/fixtures/spline_easing_kernel.json"
     ))?;

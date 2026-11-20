@@ -26,7 +26,11 @@ impl World {
     pub(super) fn demo_npc_active(&self,owner:usize)->bool {
         self.demo_story.enabled && self.demo_story.npc_fallback.enabled
             && !self.removed_entities.contains(&owner)
-            && self.ai_brains.get(&owner).is_some_and(|b|b.ai_type.to_ascii_lowercase().starts_with("gremlin"))
+            && !self.spawner_sources.contains(&owner)
+            && self.ai_brains.get(&owner).is_some_and(|brain| {
+                brain.ai_type.eq_ignore_ascii_case("Pete:SmallWorld")
+                    || brain.ai_type.to_ascii_lowercase().starts_with("gremlin")
+            })
             && self.authored_havok.contains(owner)
             && self.character_physics.get(&owner).is_some_and(|b|b.is_ok())
     }

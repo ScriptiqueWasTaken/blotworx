@@ -414,7 +414,7 @@ impl Scripts {
     pub(super) fn suppress_source_groups(&mut self,entity:usize)->Result<()> {
         let mut bindings=self.entities.lock().map_err(|_|anyhow::anyhow!("Entity registry lock poisoned"))?;
         let primary=bindings.names.get(&entity).context("Template source is not registered")?.clone();
-        bindings.registry.remove_aliases(entity,&primary);
+        bindings.registry.mark_factory_source(entity,&primary);
         Ok(())
     }
     /// Retire name/alias lookup and invalidate cached opaque handles. External
@@ -695,7 +695,7 @@ impl Scripts {
             let group=lua.coerce_string(args[1].clone())?
                 .ok_or_else(||mlua::Error::external("Invalid entity group name"))?;
             let group=group.to_str()?.split('\0').next().unwrap_or("").to_owned();
-            let mut current=group_entities.lock().map_err(|_|mlua::Error::external("Entity registry lock poisoned"))?.registry.first(&group);
+            let mut current=group_entities.lock().map_err(|_|mlua::Error::external("Entity registry lock poisoned"))?.registry.first_live(&group);
             while let Some(entity)=current {
                 let Value::Function(callback)=&args[0] else{return Err(mlua::Error::external("Group callback must be a function"));};
                 let mut call=mlua::MultiValue::new();
@@ -893,7 +893,7 @@ impl Scripts {
             let count = if let Some(name) = name {
                 let name = name.to_str()?;
                 group_bindings.lock().map_err(|_|mlua::Error::external("Entity registry lock poisoned"))?
-                    .registry.members(name.split('\0').next().unwrap_or("")).len()
+                    .registry.live_members(name.split('\0').next().unwrap_or("")).count()
             } else { 0 };
             Ok(count)
         })?)?;
@@ -1529,12 +1529,11 @@ impl Scripts {
             .map_err(|_| anyhow::anyhow!("Entity registry lock poisoned"))?;
         bindings
             .registry
-            .members(group)
-            .iter()
+            .live_members(group)
             .map(|entity| {
                 bindings
                     .names
-                    .get(entity)
+                    .get(&entity)
                     .cloned()
                     .context("Group member has no entity name")
             })

@@ -78,6 +78,16 @@
     }
   ],
   "validated_connections": [
+    {
+      "scope": "Asia airlock Pete spawn and patrol targeting",
+      "state": "When a factory source's canonical name is reused as a clone's group, direct lookups prefer the live actor and group traversal excludes the source. Pete uses the temporary shared NPC patrol driver.",
+      "source": "GV_JungleToAsiaAirlock.lua, the Pete spawner and PatrolNode 02 in gv_jungletoasiaairlock.bin, and src/blotworx/entity_registry.rs",
+      "evidence": "The staged valve replay fails a live-handle assertion on the previous build. On the updated build, direct lookup, group count and group iteration pass. The original camera callback opens the gate and the patrol action reaches the spawned actor, who plays pete_mov_walk_pos.hkx. The 1110-tick replay records zero Lua or runtime errors. In a separate 1070-tick replay, staging the actor with TeleportToEntity(spawned_pete, patrol_node) fires the authored patrol-arrival event and completes GV_Pete_Intro with input released and zero Lua or runtime errors.",
+      "open": [
+        "Pete veers away before reaching PatrolNode 02 in the unstaged movement phase",
+        "Original Wii patrol timing and path parity"
+      ]
+    },
       {
         "scope": "Zone C entry, maintenance chest spline, and Asia airlock",
         "state": "The original Zone C maintenance-room call can clear a spline stop. Restarting motion remains a separate authored action. Completing the preceding Zone B cutscene before staging the transfer lets the following Zone C intro release its own input restrictions.",

@@ -99,7 +99,14 @@
       "state": "Combat IO keeps the grouped stimulus types with delayed deliveries. The original valve's OnDamage callback can identify spin and start the timed fan puzzle.",
       "source": "GV_ZoneD.lua, the authored GV_FanGear01 OnDamage row, and REL32326c.",
       "evidence": "diagnose --validate-io-admission dispatches one grouped spin hit through the original Zone D valve's damage receivers. Its Lua callback recognizes the spin and knockback IDs, rejects physical damage, advances the valve index and starts the timer.",
-      "open": ["The staged controller replay reaches the first valve but fails to establish spin contact. Retail RELb7fec calls REL2969f0 for the overlap origin, while the current spin query uses the player controller position.", "All four valves, timeout recovery and vent gate progression through normal gameplay"]
+      "open": ["Weighted platform trigger 1 requests Down through authored AnimGBSequence, but the run never latches GV_DoorSwitch1. The World currently has no OnAnimGBEnded producer.", "Timeout recovery and continuous traversal"]
+    },
+    {
+      "scope": "Gremlin Village Zone D timed vent and live spin",
+      "state": "The active spin uses the authored model root world-bound center for the overlap, matching the RELb7fec call to REL2969f0.",
+      "source": "RELb7fec, the shared bound-center query, and tools/blotworx/fixtures/gv_zone_d_vent.lua.",
+      "evidence": "Paired 1240-tick runs finish all four authored valve callbacks, stop the timer and reach GV_ZoneD_GusBigWallFixed without script or runtime errors. A separate controlled gameplay hit invokes the original Mickey_Damage_Audio callback and posts both authored physical-damage cues after implementing the REL3230f8 effective-amount getter. The fixture stages Mickey by the valves and grants the Spin ability that was absent on direct level boot. Both builds pass with those setup conditions. Runtime query logging on the updated build shows the bound-center attack and the admitted FanGear bodies.",
+      "open": ["Wii collision visibility endpoint parity", "Normal traversal to every valve and timed failure recovery"]
     },
     {
       "scope": "Zone C entry, maintenance chest spline, and Asia airlock",

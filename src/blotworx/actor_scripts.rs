@@ -837,32 +837,40 @@ impl Scripts {
         }
         // Verified stimulus registration: REL28a5bc..28a818. Keep these
         // original IDs rather than conflating health damage with knockback.
-        for (name, value) in [("ST_PHYSICAL", 2), ("ST_KNOCKBACK", 3), ("ST_BREAKABLE", 5), ("ST_SPIN", 8)] {
+        for (name, value) in [("ST_THINNER", 0), ("ST_PAINT", 1), ("ST_PHYSICAL", 2),
+            ("ST_KNOCKBACK", 3), ("ST_BREAKABLE", 5), ("ST_SPIN", 8)] {
             lua.globals().set(name, value)?;
         }
         lua.globals().set(
             "StimulusEvent_HasStimulusType",
             lua.create_function(|_, (event, kind): (mlua::AnyUserData, u32)| {
                 let event = event.borrow::<super::actor_io::StimulusEvent>()?;
-                Ok(event.0.contains(&kind))
+                Ok(event.0.iter().any(|&(id, _)| id == kind))
             })?,
         )?;
-        // REL32326c accepts an event and an integer/global stimulus ID, then
-        // searches the stimulus vector carried by the damage event.
-        lua.globals().set(
-            "DamageEvent_HasStimulusType",
-            lua.create_function(|lua, args: mlua::MultiValue| {
+        // REL3230f8/32326c search the same ID array. The amount callback reads
+        // the first matching effective value, or zero if the ID is absent.
+        for (name, read_amount) in [
+            ("DamageEvent_HasStimulusType", false),
+            ("DamageEvent_EffectiveAmount", true),
+        ] {
+            lua.globals().set(name, lua.create_function(move |lua, args: mlua::MultiValue| {
                 if args.len() != 2 {
-                    return Err(mlua::Error::external("DamageEvent_HasStimulusType requires an event and stimulus type"));
+                    return Err(mlua::Error::external(format!("{name} requires an event and stimulus type")));
                 }
                 let kind = super::score_state::integer_argument(lua, args[1].clone())? as u32;
                 let mlua::Value::UserData(event) = &args[0] else {
                     return Err(mlua::Error::external("Expected damage event"));
                 };
                 let event = event.borrow::<super::actor_io::StimulusEvent>()?;
-                Ok(event.0.contains(&kind))
-            })?,
-        )?;
+                let matched = event.0.iter().find(|&&(id, _)| id == kind);
+                Ok(if read_amount {
+                    Value::Number(matched.map_or(0., |&(_, amount)| f64::from(amount)))
+                } else {
+                    Value::Boolean(matched.is_some())
+                })
+            })?)?;
+        }
         let source_files: Arc<Mutex<BTreeMap<String, Arc<[u8]>>>> = Default::default();
         let sources = source_files.clone();
         // Retail REL26cd5c returns the literal FINAL. This is the supported

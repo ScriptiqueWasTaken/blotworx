@@ -3283,7 +3283,7 @@ impl Engine {
                     world.synchronize_player_knockback(player);
                     world.update_skeletal_children(Some(&preview.playback.pose))?;
                     for _ in 0..std::mem::take(&mut preview.pending_combat_queries) {
-                        world.dispatch_spin(player.position,&mut preview.spin_hits)?;
+                        world.dispatch_live_spin(&mut preview.spin_hits)?;
                     }
                     if let Some(ears)=&mut self.ear_pose {
                         ears.animation_events(&world.player_behavior,&preview.delivered_events)?;

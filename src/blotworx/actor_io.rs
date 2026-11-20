@@ -416,10 +416,10 @@ mod tests {
         assert!(outputs.ready(3.).is_empty());
     }
 }
-/// One grouped hit. Delayed outputs retain the same stimulus types even
+/// One grouped hit. Delayed outputs retain its effective stimulus amounts even
 /// after the combat call that built them has returned.
 #[derive(Clone)]
-pub(super) struct StimulusEvent(pub(super) std::sync::Arc<[u32]>);
+pub(super) struct StimulusEvent(pub(super) std::sync::Arc<[(u32, f32)]>);
 impl mlua::UserData for StimulusEvent {}
 
 #[derive(Clone)]
@@ -600,11 +600,11 @@ impl Outputs {
         output: &str,
         activator: Option<usize>,
         time: f32,
-        types: &[u32],
+        effective: &[(u32, f32)],
     ) {
         if self.has_connections(owner, output) {
             self.emit_with_payload(owner, output, activator, time,
-                Some(StimulusEvent(types.into())));
+                Some(StimulusEvent(effective.into())));
         }
     }
 

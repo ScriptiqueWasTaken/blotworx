@@ -2141,7 +2141,7 @@ impl World {
                 }
                 // Infinite-health targets can accept damage without changing
                 // their health value. Their authored outputs still have to fire.
-                self.outputs.emit_combat(target, "OnDamage", activator.or(Some(target)), self.animation_time, &ids);
+                self.outputs.emit_combat(target, "OnDamage", activator.or(Some(target)), self.animation_time, &effective);
                 let actions = self
                     .component_events
                     .receive_damage(target, self.animation_time)?;
@@ -2151,7 +2151,7 @@ impl World {
         if let Some((direction, amount)) = character_impulse {
             self.demo_character_knockback(target, direction, amount)?;
         }
-        self.outputs.emit_combat(target, "OnStimulus", activator, self.animation_time, &ids);
+        self.outputs.emit_combat(target, "OnStimulus", activator, self.animation_time, &effective);
         if self.demo_story.enabled {
             self.demo_counter_stimulus(target, &effective, first.owner == Some(target as u64))?;
         }
@@ -2160,6 +2160,14 @@ impl World {
                 .receive_stimuli(target, &ids, &first.tag, self.animation_time)?;
         self.execute_component_events(actions)
     }
+    pub(super) fn dispatch_live_spin(&mut self, hit_set: &mut HashSet<usize>) -> Result<()> {
+        // RELb7fec calls REL2969f0 for the attack center. This is the
+        // SceneGraph root's world-bound center when one is available.
+        let center = self.entity_position_or_bound_center(self.player_entity)?
+            .context("Missing live spin source")?;
+        self.dispatch_spin(center, hit_set)
+    }
+
     pub fn dispatch_spin(&mut self, position: V, hit_set: &mut HashSet<usize>) -> Result<()> {
         use super::physics_filter::QueryFlags;
         let settings = self
@@ -2173,6 +2181,8 @@ impl World {
             settings.preview_value("SpinStim"),
         );
         let overlaps = self.collision.overlap_sphere(position, range)?;
+        log::debug!(target: "blotworx_spin", "spin center {position:?}, radius {range}, raw overlaps {}",
+            overlaps.len());
         let flags = QueryFlags {
             bytes: [1, 1, 1, 0, 1],
             excluded_group: 0,
@@ -2233,8 +2243,12 @@ impl World {
                 }).collect::<Vec<_>>())
             })?;
             if !self.ordered_entity_visibility(self.player_entity, target, &hits)? {
+                log::debug!(target: "blotworx_spin", "blocked spin target {} from {ray_origin:?} to {ray_target:?}, first collision {:?}",
+                    entity.name, hits.first().and_then(|&(owner, _)| self.collision_entity_index(owner))
+                        .map(|entity| self.entities[entity].name.as_str()));
                 continue;
             }
+            log::debug!(target: "blotworx_spin", "admitted spin target {}", entity.name);
             super::spin::dispatch_target(
                 self.player_entity as u64,
                 target as u64,

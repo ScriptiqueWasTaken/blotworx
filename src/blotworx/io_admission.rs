@@ -47,6 +47,8 @@ pub(super) fn validate()->anyhow::Result<()> {
             assert(DamageEvent_HasStimulusType(event, "ST_SPIN"))
             assert(DamageEvent_HasStimulusType(event, ST_KNOCKBACK))
             assert(not DamageEvent_HasStimulusType(event, ST_PHYSICAL))
+            assert(DamageEvent_EffectiveAmount(event, "ST_SPIN") > 0)
+            assert(DamageEvent_EffectiveAmount(event, ST_PHYSICAL) == 0)
             turn(valve, event, index)
         end
     "#)?;

@@ -265,10 +265,10 @@
         "scope": "EM1 campaign credits and return to title",
         "state": "Campaign EndGame proceeds from the closing movie to the original credits video with its Wwise stereo soundtrack, then returns to the title. Credits:0 also works as an explicit sequence command.",
         "source": "Wii REL398cc..39908 state registration, baaa4 EndGame return to state 13, b8b6c credits presentation and b87b4 return to the title state. Play_music_credits in the imported fmv_endgame_soundtrack bank resolves the streamed source and its -1 dB node gain, while fmv_credits.bik contains a silent embedded track.",
-        "evidence": "credits-campaign-return.runtime.json records a staged campaign ending with twelve completed movies including a held-input credits skip, the original interactive title visible and no runtime or script errors. credits-art-and-music.runtime.json samples credits frame 600 at device time 20.020964 seconds using 28000 Hz stereo media 448639764, within one millisecond of the frame timestamp.",
+        "evidence": "credits-campaign-return.runtime.json records a staged campaign ending with twelve completed movies including a held-input credits skip, the original interactive title visible and no runtime or script errors. credits-art-and-music.runtime.json samples credits frame 600 at device time 20.020964 seconds using 28000 Hz stereo media 448639764, within one millisecond of the frame timestamp. The frontend-extras-credits replays opened the original reel through the Credits card, sampled picture and its native Wwise track, and used QuickExit to return to the same Extras slot. campaign-credits-teaser.runtime.json consumed the credits and teaser in that order using held skips, recorded 32000 Hz media 411479065 for the teaser, and reached the title.",
         "open": [
           "Full unskipped Wii playback comparison and final gain parity",
-          "Extras credits and teaser route and regional soundtrack selection"
+          "Natural credits-to-teaser completion, standalone Extras teaser selection and regional soundtrack parity"
         ]
       },
       {
@@ -307,7 +307,7 @@
         "source": "Wii REL1fd328..1fd360 slot selection, bc610 category tables, bc008..bc234 count publication, and extrasmenu.gfx Initialize, DelayedInit and the EditText layout. English_NTSC.pak contains the shipped text.",
         "evidence": "frontend-extras-final.runtime.json captures ExtrasMenuLoad Slot1 and the authored Extras display with counts 0/50, 4/39, 0/2 and 1/1. An independent parse of the two scratch saves and collectibles.pak predicts 4/39 for the selected save and 5/39 if combined. Both save hashes are unchanged. The frontend-extras-localization replay reads the localized text directly from the four authored cards. The frontend-extras-back replay routes Escape through the authored B handler, then plays FE_Extras_to_Main and resumes FE_MainMenu_Loop with both scratch saves unchanged.",
         "open": [
-          "Extras credits/teaser and remaining category validation",
+          "Standalone Extras teaser selection and remaining category validation",
           "Frame and timing comparison with the original Wii UI"
         ]
       },
@@ -315,9 +315,9 @@
         "scope": "EM1 Extras category browsing and movie playback",
         "state": "The authored category transitions, six-card pages and thumbnail slots use the chosen save. The host publishes the original lock array, puts unlocked entries first and opens only unlocked movie and Concept Art records. Rollover passes the saved item’s English dictionary title and description into the authored text fields.",
         "source": "Wii RELbc4cc/bc740/bc8f4, bd2f0..bd418, 113794..113870, collectibles.pak and extrasmenu.gfx UpdateSubMenu, RestoreMovieMenu and RestoreCartoonMenu. RELbcc4c binds the selected art to Map_Placeholder, and RELbdcd8 routes the unlocked item’s _Name and _Desc to SetExtrasInformation.",
-        "evidence": "The frontend-extras-thumbnails replay enters the Movies category, renders four original thumbnails from the selected save and shows page 1/7. The frontend-extras-media replay selects the first item and plays AL_visit1_Cyrano_for_Pirate_Happy.bik. The frontend-extras-paging replay stops the movie with one Back press and advances to page 2 using the authored arrow. The frontend-extras-concept replays use a scratch save with Mickey Faces I unlocked, show the authored image and dictionary text, then return to the grid with one Back press. These replays preserve the scratch saves and report no runtime or script errors.",
+        "evidence": "The frontend-extras-thumbnails replay enters the Movies category, renders four original thumbnails from the selected save and shows page 1/7. The frontend-extras-media replay selects the first item and plays AL_visit1_Cyrano_for_Pirate_Happy.bik. The frontend-extras-paging replay stops the movie with one Back press and advances to page 2 using the authored arrow. The frontend-extras-concept replays use a scratch save with Mickey Faces I unlocked, show the authored image and dictionary text, then return to the grid with one Back press. The Extras Credits card reuses the credits player and QuickExit returns to the same slot without starting the campaign teaser. These replays preserve the scratch saves and report no runtime or script errors.",
         "open": [
-          "Full Wii visual and timing comparison, additional regional dictionaries and Extras credits/teaser",
+          "Full Wii visual and timing comparison, additional regional dictionaries and standalone Extras teaser selection",
           "Playback and pagination validation across the remaining categories"
         ]
       },

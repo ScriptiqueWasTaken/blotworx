@@ -192,7 +192,7 @@ pub(super) fn prepare(root: &Path, names: &[String], cancel: Arc<Cancellation>) 
     Ok(Ready {
         header,
         audio_plan: None,
-        credits_audio: None,
+        reel_audio: None,
         ending: Some(Sequence {
             clips,
             duration,

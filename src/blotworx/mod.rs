@@ -4872,8 +4872,9 @@ impl Engine {
         let replay = self.input_playback.as_ref().and_then(|playback| playback.frames.get(tick as usize)).copied();
         let buttons = input::poll().buttons;
         let edges = buttons & !self.previous_buttons;
+        let released = self.previous_buttons & !buttons;
         self.previous_buttons = buttons;
-        match menu.show(ui, edges, replay) {
+        match menu.show(ui, edges, released, replay) {
             Ok(Some(slot)) => {
                 if let Err(error) = self.open_menu_slot(ui.ctx(), slot) {
                     self.error = Some(format!("Open save slot: {error:#}"));

@@ -543,6 +543,7 @@ enum ExtrasPage {
     Leaving,
     Watching(ExtrasCategory),
     ViewingArt(usize),
+    Credits,
 }
 
 struct ExtrasMenu {
@@ -557,6 +558,7 @@ struct ExtrasMenu {
     assets: super::super::resource_store::Store,
     locked_thumbnail: Vec<u8>,
     concept_art: Option<String>,
+    last_credits: Option<serde_json::Value>,
 }
 
 impl ExtrasMenu {
@@ -614,6 +616,7 @@ impl ExtrasMenu {
             assets,
             locked_thumbnail,
             concept_art: None,
+            last_credits: None,
         })
     }
 
@@ -753,7 +756,7 @@ impl ExtrasMenu {
             "initialized": self.initialized, "fade_started": self.fade_started,
             "slot": self.slot, "counts": self.counts, "labels": labels,
             "page": self.page, "offset": self.offset, "details": details,
-            "concept_art": self.concept_art,
+            "concept_art": self.concept_art, "last_credits": self.last_credits,
             "visible_entries": match self.page {
                 ExtrasPage::Browsing(category) | ExtrasPage::Watching(category) => self.items[category.index()]
                     .iter().skip(self.offset).take(Self::PAGE_SIZE).collect::<Vec<_>>(),
@@ -897,6 +900,7 @@ impl Menu {
         &mut self,
         ui: &mut egui::Ui,
         pad_edges: u16,
+        pad_released: u16,
         replay: Option<super::super::input_playback::Frame>,
     ) -> Result<Option<usize>> {
         use ruffle_core::events::{
@@ -909,6 +913,18 @@ impl Menu {
         let replay_back = replay.is_some_and(|frame| frame.spin_pressed);
         let replay_back_pressed = replay_back && !self.replay_back_down;
         self.replay_back_down = replay_back;
+        if self.extras.as_ref().is_some_and(|extras| extras.page == ExtrasPage::Credits) {
+            let quick_exit = if replay.is_some() {
+                replay_back_pressed
+            } else {
+                pad_released & 0x2000 != 0 || ui.input(|input| {
+                    input.key_released(egui::Key::Escape) || input.key_released(egui::Key::Backspace)
+                })
+            };
+            self.present_extras_credits(ui, quick_exit)?;
+            return Ok(None);
+        }
+
         let stage = self.extras.as_mut().map_or(&mut self.stage, |extras| &mut extras.stage);
         {
             let rect = ui.max_rect();
@@ -1093,6 +1109,10 @@ impl Menu {
             }
             self.commands.push((command, args));
         }
+        if self.extras.as_ref().is_some_and(|extras| extras.page == ExtrasPage::Credits) {
+            self.present_extras_credits(ui, false)?;
+            return Ok(None);
+        }
         if let Some(background) = &mut self.background {
             background.show_title_background(ui);
             ensure!(
@@ -1160,9 +1180,9 @@ impl Menu {
                 }
                 extras.stage.call("EnableScroll")?;
             }
-        } else if command == "Credits" {
-            extras.stage.call("RestoreMenu")?;
-            self.notice = Some("Extras credits playback is unavailable.".into());
+        } else if command == "Credits" && extras.page == ExtrasPage::Landing {
+            extras.page = ExtrasPage::Credits;
+            self.background = Some(super::super::movie::Player::extras_credits(self.root.clone()));
         }
         Ok(())
     }
@@ -1180,6 +1200,24 @@ impl Menu {
         ensure!(!file.is_empty(), "Unlocked Extras movie has no asset");
         extras.page = ExtrasPage::Watching(category);
         self.extras_movie(file, false);
+        Ok(())
+    }
+
+    fn present_extras_credits(&mut self, ui: &mut egui::Ui, quick_exit: bool) -> Result<()> {
+        let movie = self.background.as_mut().context("Missing Extras credits reel")?;
+        if quick_exit {
+            movie.quick_exit();
+        }
+        movie.show_title_background(ui);
+        ensure!(movie.error.is_none(), "Extras credits: {}", movie.error.as_deref().unwrap_or(""));
+        if movie.completed {
+            let extras = self.extras.as_mut().context("Missing Extras return state")?;
+            extras.last_credits = Some(movie.summary());
+            extras.stage.call("RestoreMenu")?;
+            extras.stage.call("FadeIn")?;
+            extras.page = ExtrasPage::Landing;
+            self.extras_movie("FE_Extras_Loop.bik".into(), true);
+        }
         Ok(())
     }
 
@@ -1208,7 +1246,7 @@ impl Menu {
                 extras.page = ExtrasPage::Browsing(category);
                 self.extras_movie(format!("FE_Extras_Sub{}_Loop.bik", category.index() + 1), true);
             }
-            ExtrasPage::Landing | ExtrasPage::Browsing(_) | ExtrasPage::ViewingArt(_) => {}
+            ExtrasPage::Landing | ExtrasPage::Browsing(_) | ExtrasPage::ViewingArt(_) | ExtrasPage::Credits => {}
         }
         Ok(())
     }

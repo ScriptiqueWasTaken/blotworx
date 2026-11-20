@@ -113,6 +113,17 @@ impl SizeVolume {
         );
         Ok(bounds)
     }
+
+    /// Rigid phantom boxes retain their orientation. Keep the separate
+    /// size-based hkpAabbPhantom path axis aligned.
+    pub(super) fn overlaps_rigid_box(&self, pose: [f32; 16], position: [f32; 3]) -> Result<bool> {
+        ensure!(self.size.iter().all(|size| *size >= 0.), "Invalid rigid phantom dimensions");
+        let half = self.size.map(|size| size * 0.5);
+        let corners: [[f32; 3]; 8] = std::array::from_fn(|corner| {
+            std::array::from_fn(|axis| if corner & (1 << axis) == 0 { -half[axis] } else { half[axis] })
+        });
+        capsule_overlaps_convex(&corners, 0., &pose, position)
+    }
     /// REL37788c initializes all four half-extent lanes to zero;23b970 sets
     /// position W to zero. Both padded result lanes are therefore zero.
     pub fn padded_bounds(
@@ -145,6 +156,23 @@ unsafe extern "C" {
         end: *const f32,
         capsule_radius: f32,
     ) -> i32;
+}
+
+fn capsule_overlaps_convex(vertices: &[[f32; 3]], radius: f32, pose: &[f32; 16], position: [f32; 3]) -> Result<bool> {
+    let local_endpoint = |height: f32| {
+        let delta = [position[0] - pose[12], position[1] + height - pose[13], position[2] - pose[14]];
+        std::array::from_fn::<_, 3, _>(|axis| {
+            (0..3).map(|i| pose[axis * 4 + i] * delta[i]).sum::<f32>()
+        })
+    };
+    let lower = local_endpoint(TRIGGER_PLAYER_RADIUS);
+    let upper = local_endpoint(TRIGGER_PLAYER_HEIGHT - TRIGGER_PLAYER_RADIUS);
+    let result = unsafe {
+        bw_trigger_capsule_overlaps_convex(vertices.as_ptr(), vertices.len().try_into()?, radius,
+            lower.as_ptr(), upper.as_ptr(), TRIGGER_PLAYER_RADIUS)
+    };
+    ensure!(result >= 0, "Trigger hull exceeds the collision query vertex limit");
+    Ok(result != 0)
 }
 
 /// Placement of a trigger volume defined by rigid bodies in a cooked Havok file.
@@ -207,27 +235,7 @@ impl RigidTriggerHull {
         }
         for part in self.parts.iter() {
             let pose = super::native_hk_transform::compose(&placement, &part.body_transform);
-            let local_endpoint = |height: f32| {
-                let delta = [
-                    position[0] - pose[12],
-                    position[1] + height - pose[13],
-                    position[2] - pose[14],
-                ];
-                std::array::from_fn::<_, 3, _>(|axis| {
-                    let start = axis * 4;
-                    (0..3).map(|i| pose[start + i] * delta[i]).sum::<f32>()
-                })
-            };
-            let lower = local_endpoint(TRIGGER_PLAYER_RADIUS);
-            let upper = local_endpoint(TRIGGER_PLAYER_HEIGHT - TRIGGER_PLAYER_RADIUS);
-            let result = unsafe {
-                bw_trigger_capsule_overlaps_convex(
-                    part.vertices.as_ptr(), part.vertices.len().try_into()?,
-                    part.triangle_radius, lower.as_ptr(), upper.as_ptr(), TRIGGER_PLAYER_RADIUS,
-                )
-            };
-            ensure!(result >= 0, "Trigger hull exceeds the collision query vertex limit");
-            if result != 0 {
+            if capsule_overlaps_convex(&part.vertices, part.triangle_radius, &pose, position)? {
                 return Ok(true);
             }
         }

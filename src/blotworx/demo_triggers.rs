@@ -274,9 +274,9 @@ impl World {
             })
         {
             let owner = &self.entities[entity];
-            super::phantom_bounds::SizeVolume::from_size_property(component)?
-                .map(|volume| volume.bounds(owner.transform[12..15].try_into().unwrap(), owner.runtime_rotation))
-                .transpose()?
+            return super::phantom_bounds::SizeVolume::from_size_property(component)?
+                .map(|volume| volume.overlaps_rigid_box(owner.physics_transform(), position))
+                .transpose();
         } else {
             None
         };

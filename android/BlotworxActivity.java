@@ -20,6 +20,7 @@ public final class BlotworxActivity extends NativeActivity {
 
     private static final int IMPORT = 1;
     private boolean importing;
+    private AndroidUpdater updater;
 
     @Override protected void onCreate(android.os.Bundle savedState) {
         try {
@@ -28,6 +29,8 @@ public final class BlotworxActivity extends NativeActivity {
             android.util.Log.e("Blotworx", "Cannot initialize codec directory", error);
         }
         super.onCreate(savedState);
+        updater = new AndroidUpdater(this);
+        updater.check();
     }
 
     private int gamepadKeys;
@@ -120,6 +123,7 @@ public final class BlotworxActivity extends NativeActivity {
 
     @Override protected void onActivityResult(int request, int result, Intent data) {
         super.onActivityResult(request, result, data);
+        if (updater != null) updater.permissionResult(request);
         if (request != IMPORT) return;
         Uri uri = result == RESULT_OK && data != null ? data.getData() : null;
         if (uri == null) {

@@ -4,6 +4,8 @@ This experimental build targets Vulkan-capable ARM64 devices running Android 8.0
 
 The APK includes FFmpeg for Bink cinematics and uses Android's AAudio for PCM output. The external Wwise media decoder has not been ported, so some sounds and music may be missing. Android gameplay, import and media playback still need an on-device check.
 
+Blotworx checks GitHub for updates at startup. It verifies the download and asks Android to open its installer after you choose **Install**. Keep the application ID and signing key, increment the Android `versionCode` for each APK, and label its GitHub release asset `android-version-code=N`.
+
 ## Build
 
 Use Rust with the `aarch64-linux-android` target, Android NDK `27.3.13750724`, Android SDK platform 35 and Build Tools `35.0.0`. On Windows set `CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER`, `CC_aarch64_linux_android`, `CXX_aarch64_linux_android` and `AR_aarch64_linux_android` to the corresponding API 26 NDK compiler and archiver. Run `cargo build --locked --lib --target aarch64-linux-android`.

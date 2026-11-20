@@ -37,8 +37,10 @@ $symbols = & "$ndk/bin/llvm-readelf.exe" --wide --dyn-syms "$work/libblotworx.so
 foreach ($symbol in 'ANativeActivity_onCreate','Java_dev_bloticle_blotworx_BlotworxActivity_updateGamepad') {
     if (!(($symbols -join "`n") -match "\b$symbol\b")) { throw "Missing native entry point $symbol" }
 }
-Invoke-Tool "$env:JAVA_HOME/bin/javac.exe" @('-Xlint:-options','--release','8','-cp',$api,'-d',$classes,"$PSScriptRoot/BlotworxActivity.java")
-Invoke-Tool "$build/d8.bat" @('--min-api','26','--lib',$api,'--output',$payload,"$classes/dev/bloticle/blotworx/BlotworxActivity.class")
+$sources = @(Get-ChildItem -LiteralPath $PSScriptRoot -Filter '*.java' -File | Select-Object -ExpandProperty FullName)
+Invoke-Tool "$env:JAVA_HOME/bin/javac.exe" (@('-Xlint:-options','--release','8','-cp',$api,'-d',$classes) + $sources)
+$bytecode = @(Get-ChildItem -LiteralPath $classes -Recurse -Filter '*.class' -File | Select-Object -ExpandProperty FullName)
+Invoke-Tool "$build/d8.bat" (@('--min-api','26','--lib',$api,'--output',$payload) + $bytecode)
 Invoke-Tool "$build/aapt2.exe" @('link','-I',$api,'--manifest',"$PSScriptRoot/AndroidManifest.xml",'-o',"$work/unsigned.apk")
 Copy-Item -LiteralPath "$PSScriptRoot/../LICENSE" -Destination "$work/Blotworx-GPL-3.txt" -Force
 Copy-Item -LiteralPath $CodecLicense -Destination "$work/FFmpeg-LGPL-2.1.txt" -Force

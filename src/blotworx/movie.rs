@@ -16,17 +16,27 @@ use std::{
     time::Instant,
 };
 
+#[derive(Clone, Copy, Debug, serde::Serialize)]
+pub(super) enum FrontendSkip {
+    Unskippable,
+    AcceptAfter(u32),
+}
+
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct Request {
     pub serial: u64,
     pub filename: String,
     pub flags: [bool; 2],
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(super) frontend_skip: Option<FrontendSkip>,
 }
 #[derive(Default)]
 pub struct Requests {
     pub pending: Option<Request>,
     ending: std::collections::VecDeque<String>,
     ending_total: usize,
+    startup: Option<std::collections::VecDeque<(String, FrontendSkip)>>,
+    title_ready: bool,
     pub submitted: u64,
     pub completed: u64,
     pub last_completed: Option<String>,
@@ -64,6 +74,7 @@ impl Requests {
             serial: self.submitted,
             filename,
             flags: [truth(2), truth(3)],
+            frontend_skip: None,
         });
         Ok(vec![mlua::Value::Boolean(true)].into())
     }
@@ -72,17 +83,52 @@ impl Requests {
         self.ending = paths.into();
     }
 
+    /// Retail RELc4ba8..c4ca0 reads consecutive name/value pairs. StartScreen
+    /// is the terminal frontend command, while .bik entries feed playback.
+    pub(super) fn start_frontend(&mut self, sequence: &str) -> Result<()> {
+        let movies = if sequence == "StartScreen:0" {
+            ""
+        } else {
+            sequence.strip_suffix(":StartScreen:0")
+                .context("Frontend sequence has no supported title-screen command")?
+        };
+        let mut tokens = movies.split_terminator(':');
+        let mut clips = std::collections::VecDeque::new();
+        while let Some(filename) = tokens.next() {
+            ensure!(filename.to_ascii_lowercase().ends_with(".bik"),
+                "Unsupported frontend sequence entry {filename:?}");
+            let control = tokens.next().context("Missing frontend movie control word")?.parse::<i32>()?;
+            let skip = match control {
+                -1 => FrontendSkip::Unskippable,
+                0.. => FrontendSkip::AcceptAfter(control as u32),
+                _ => anyhow::bail!("Unsupported frontend movie control word {control}"),
+            };
+            clips.push_back((filename.to_owned(), skip));
+        }
+        self.startup = Some(clips);
+        self.title_ready = false;
+        Ok(())
+    }
+
     pub(super) fn take_next(&mut self) -> Option<Request> {
         if let Some(pending) = self.pending.take() {
             return Some(pending);
         }
+        if let Some(startup) = &mut self.startup {
+            if let Some((filename, skip)) = startup.pop_front() {
+                self.submitted += 1;
+                return Some(Request { serial: self.submitted, filename, flags: [true, true], frontend_skip: Some(skip) });
+            }
+            self.startup = None;
+            self.title_ready = true;
+        }
         let filename = self.ending.pop_front()?;
         self.submitted += 1;
-        Some(Request { serial: self.submitted, filename, flags: [true, true] })
+        Some(Request { serial: self.submitted, filename, flags: [true, true], frontend_skip: None })
     }
 
     pub fn summary(&self) -> serde_json::Value {
-        serde_json::json!({"pending":self.pending,"submitted":self.submitted,"completed":self.completed,"last_completed":self.last_completed,"ending_total":self.ending_total,"ending_remaining":self.ending})
+        serde_json::json!({"pending":self.pending,"submitted":self.submitted,"completed":self.completed,"last_completed":self.last_completed,"ending_total":self.ending_total,"ending_remaining":self.ending,"startup_remaining":self.startup,"title_ready":self.title_ready})
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
@@ -451,7 +497,12 @@ pub struct Player {
 }
 impl Player {
     pub fn new(root: PathBuf, request: Request, skip_seconds: Option<f32>) -> Self {
-        Self::with_audio_selection(root,request,skip_seconds,super::movie_tracks::Selection::SingleTrack)
+        let audio = if request.frontend_skip.is_some() {
+            super::movie_tracks::Selection::WiiTrackZero
+        } else {
+            super::movie_tracks::Selection::SingleTrack
+        };
+        Self::with_audio_selection(root,request,skip_seconds,audio)
     }
     pub fn with_audio_selection(root:PathBuf,request:Request,skip_seconds:Option<f32>,selection:super::movie_tracks::Selection)->Self {
         let cancel = Arc::new(Cancellation {
@@ -627,6 +678,21 @@ impl Player {
         Ok(())
     }
     pub fn show(&mut self, ui: &mut egui::Ui, skip_held: bool) {self.show_frame(ui,skip_held,true);}
+
+    /// RELc58a0 consumes an Accept event after the clip's minimum time.
+    /// Frontend playback has its own control word, independent of gameplay skip.
+    pub(super) fn show_frontend(&mut self, ui: &mut egui::Ui, accept: bool) {
+        self.show_frame(ui, false, true);
+        if accept && !self.completed && self.error.is_none() && self.frame.is_some()
+            && matches!(self.request.frontend_skip, Some(FrontendSkip::AcceptAfter(seconds))
+                if self.seconds > f64::from(seconds))
+        {
+            self.skipped = true;
+            self.completed = true;
+            self.cancel.cancel();
+            self.audio = None;
+        }
+    }
     pub fn show_frozen(&mut self,ui:&mut egui::Ui) {self.show_frame(ui,false,false);}
     fn show_frame(&mut self, ui: &mut egui::Ui, skip_held: bool, advance:bool) {
         if advance && self.error.is_none() && !self.completed && self.frame.is_some() {

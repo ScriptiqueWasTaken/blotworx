@@ -3511,7 +3511,7 @@ impl World {
                         .map_err(mlua::Error::external)?;
                     self.movies.start_ending(movies);
                 } else {
-                    return Err(mlua::Error::external(format!("Unsupported frontend sequence: {sequence}")));
+                    self.movies.start_frontend(&sequence).map_err(mlua::Error::external)?;
                 }
                 Ok(mlua::MultiValue::new())
             }

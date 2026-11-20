@@ -4,6 +4,9 @@ use anyhow::{ensure, Context, Result};
 #[derive(Clone, Debug)]
 pub enum Selection {
     SingleTrack,
+    /// Default track for the imported Wii frontend. Other region mappings
+    /// require verification against the Wii movie host.
+    WiiTrackZero,
     PcLanguage(String),
 }
 #[derive(Clone, Debug, serde::Serialize)]
@@ -38,6 +41,16 @@ impl Plan {
                 channels: tracks[0].channels,
                 source_channels: tracks[0].channels,
                 output_policy: "native single stream",
+            }));
+        }
+        if matches!(selection, Selection::WiiTrackZero) {
+            let mut choices = tracks.iter().enumerate().filter(|(_, track)| track.id == 0);
+            let (index, track) = choices.next().context("Wii frontend movie has no track ID 0")?;
+            ensure!(choices.next().is_none(), "Wii frontend movie has duplicate track ID 0");
+            return Ok(Some(Self {
+                streams: vec![index], track_ids: vec![0], rate: track.rate,
+                channels: track.channels, source_channels: track.channels,
+                output_policy: "Wii frontend default track",
             }));
         }
         let Selection::PcLanguage(language) = selection else {

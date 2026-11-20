@@ -262,6 +262,17 @@
         ]
       },
       {
+        "scope": "EM1 authored frontend boot sequence",
+        "state": "PreStartScreenAction queues the shipped logo and attract clips and reaches the StartScreen handoff. The logo ignores Accept. The attract clip accepts input after its authored two-second threshold and plays the default Wii audio track.",
+        "source": "Shipped StartScreen.lua, retail RELc4ba8..c4ca0 sequence pair parser, c5650 item classification, and c58a0..c5950 Accept receiver.",
+        "evidence": "The native renderer captured the original startup logo at frame 80. The recorded frontend run completed both movies, accepted the attract skip after two seconds and reached the title handoff with no script or runtime errors.",
+        "open": [
+          "Original startscreen.gfx rendering and PlayStartScreenMovie / StartScreenEnd callbacks",
+          "Main-menu actions and slot selection",
+          "Wii regional movie audio track selection and playback timing comparison"
+        ]
+      },
+      {
         "scope": "EM1 completed slot to next playthrough",
         "state": "Continuing from a completed slot loads the configured first level with a fresh world, quests and player state. The native carryover owners are populated before scripts run, and the first new checkpoint replaces the completed save stream.",
         "source": "Retail REL2b030..2b0a4 and its extras, selective collectibles, options, pin and metadata readers. The start level comes from MainMenu gamestart in the imported game configuration.",

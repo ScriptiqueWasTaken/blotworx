@@ -4460,7 +4460,20 @@ impl eframe::App for Engine {
                 self.controller.as_ref().and_then(|controller|self.input_playback.as_ref()?.frames.get(controller.ticks as usize))
                     .is_some_and(|frame|frame.movie_skip_held)
             }else {ui.input(|input|input.key_down(egui::Key::Space)) || input::poll().buttons&0x1000!=0};
-            movie.show(ui,skip_held);
+            let frontend = movie.request.frontend_skip.is_some();
+            if frontend {
+                let accept = if self.capture.is_some() {
+                    skip_held
+                } else {
+                    let buttons = input::poll().buttons;
+                    let pressed = buttons & !self.previous_buttons & 0x1000 != 0;
+                    self.previous_buttons = buttons;
+                    pressed || ui.input(|input| input.key_pressed(egui::Key::Space) || input.key_pressed(egui::Key::Enter))
+                };
+                movie.show_frontend(ui, accept);
+            } else {
+                movie.show(ui, skip_held);
+            }
             self.last = Instant::now();
             self.simulation_active = false;
             let capture = self

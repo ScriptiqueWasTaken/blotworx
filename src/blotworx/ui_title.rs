@@ -6,7 +6,7 @@ use ruffle_render_wgpu::{backend::WgpuRenderBackend, target::TextureTarget};
 mod extras_images;
 
 type Renderer = WgpuRenderBackend<TextureTarget>;
-type Labels = BTreeMap<&'static str, String>;
+type Labels = BTreeMap<String, String>;
 
 const EXTRAS_CARDS: [&str; 4] = ["Concept", "Cartoons", "Movies", "Credits"];
 const EXTRAS_LABEL_FIELDS: [&str; 3] = ["textField", "textField3", "textField3_static"];
@@ -36,7 +36,8 @@ impl FsCommandProvider for Events {
             | "MainMenuDelete"
             | "ExtrasMenuLoad"
             | "Extras"
-            | "ExtrasSub" => {
+            | "ExtrasSub"
+            | "ExtrasRollover" => {
                 self.0
                     .lock()
                     .unwrap()
@@ -51,6 +52,7 @@ impl FsCommandProvider for Events {
 fn localize_frontend_labels(
     movie: &mut crate::gfx::GfxFile,
     resources: &mut super::super::resource_store::Store,
+    extra_keys: impl Iterator<Item = String>,
 ) -> Result<Labels> {
     use epic_mickey_lib_rs::dct::{epic_mickey_hash, DCT};
     resources.admit_packs(&["English_NTSC.pak".into()])?;
@@ -94,7 +96,7 @@ fn localize_frontend_labels(
     Ok([
         "UI_StartGame", "UI_Extras", "UI_NewGame", "UI_ExtrasConcept", "UI_ExtrasCartoons",
         "UI_ExtrasMovies", "UI_ExtrasCredits", "UI_Unlocked", "UI_Unlocked_Singular",
-    ].into_iter().filter_map(|key| {
+    ].into_iter().map(str::to_owned).chain(extra_keys).filter_map(|key| {
         let hash = epic_mickey_hash(key.as_bytes(), locale.hash_seed);
         locale.dialog_entries.iter()
             .find(|entry| entry.hashed_key == hash)
@@ -113,17 +115,26 @@ struct Stage {
 
 impl Stage {
     fn load(root: &Path, path_name: &str, methods: &[&str]) -> Result<Self> {
+        Self::load_with_labels(root, path_name, methods, std::iter::empty())
+    }
+
+    fn load_with_labels(
+        root: &Path,
+        path_name: &str,
+        methods: &[&str],
+        extra_keys: impl Iterator<Item = String>,
+    ) -> Result<Self> {
         let mut resources = super::super::resource_store::Store::new(
             root,
             &["MainMenuTextures.pak".into(), "HUDTextures.pak".into()],
         )?;
         let file = resources.read(path_name)?;
         let mut movie = crate::gfx::GfxFile::load(&file.data)?;
-        let labels = localize_frontend_labels(&mut movie, &mut resources)?;
+        let labels = localize_frontend_labels(&mut movie, &mut resources, extra_keys)?;
         let mut images = super::super::ui_images::Images::default();
         images.adapt(&mut movie, &file.path, &mut resources)?;
         if path_name.ends_with("/extrasmenu.gfx") {
-            extras_images::prepare(&mut movie)?;
+            extras_images::prepare(&mut movie, &mut resources)?;
         }
         let first = movie
             .tags
@@ -531,6 +542,7 @@ enum ExtrasPage {
     Browsing(ExtrasCategory),
     Leaving,
     Watching(ExtrasCategory),
+    ViewingArt(usize),
 }
 
 struct ExtrasMenu {
@@ -544,6 +556,7 @@ struct ExtrasMenu {
     offset: usize,
     assets: super::super::resource_store::Store,
     locked_thumbnail: Vec<u8>,
+    concept_art: Option<String>,
 }
 
 impl ExtrasMenu {
@@ -577,14 +590,18 @@ impl ExtrasMenu {
             let unlocked = entries.iter().take_while(|entry| entry.unlocked).count();
             format!("{unlocked}/{}", entries.len())
         });
-        let stage = Stage::load(
+        let extra_keys = items.iter().flatten().filter(|item| item.unlocked).flat_map(|item| {
+            [format!("{}_Name", item.name), format!("{}_Desc", item.name)]
+        });
+        let stage = Stage::load_with_labels(
             root,
             "HUDElements/Flash/cooked/extrasmenu.gfx",
             &["Initialize", "FadeIn", "UpdateSubMenu", "EnableScroll", "RestoreMenu",
-                "RestoreMovieMenu", "RestoreCartoonMenu"],
+                "RestoreMovieMenu", "RestoreCartoonMenu", "SetExtrasInformation"],
+            extra_keys,
         )?;
         let mut assets = super::super::resource_store::Store::new(root, &[])?;
-        let locked_thumbnail = extras_images::read_texture(&mut assets, extras_images::LOCKED)?;
+        let locked_thumbnail = extras_images::read_texture(&mut assets, extras_images::LOCKED, extras_images::THUMBNAIL_SIZE)?;
         Ok(Self {
             stage,
             initialized: false,
@@ -596,6 +613,7 @@ impl ExtrasMenu {
             offset: 0,
             assets,
             locked_thumbnail,
+            concept_art: None,
         })
     }
 
@@ -666,7 +684,7 @@ impl ExtrasMenu {
         for (index, texture) in extras_images::PLACES.into_iter().enumerate() {
             let image = items.get(offset + index)
                 .filter(|item| item.unlocked && !item.thumbnail.is_empty())
-                .map(|item| extras_images::read_texture(&mut self.assets, &item.thumbnail))
+                .map(|item| extras_images::read_texture(&mut self.assets, &item.thumbnail, extras_images::THUMBNAIL_SIZE))
                 .transpose()?;
             extras_images::publish(
                 &mut player, texture, image.as_deref().unwrap_or(&self.locked_thumbnail),
@@ -676,17 +694,66 @@ impl ExtrasMenu {
         Ok(())
     }
 
+    fn item_index(&self, command: &str) -> Option<usize> {
+        let slot = command.strip_prefix("thumbitem").unwrap_or(command).parse::<usize>().ok()?;
+        (1..=Self::PAGE_SIZE).contains(&slot).then(|| self.offset + slot - 1)
+    }
+
+    fn show_details(&self, category: ExtrasCategory, index: Option<usize>) -> Result<()> {
+        use super::super::ui_calls::Value as Argument;
+        let item = index.and_then(|index| self.items[category.index()].get(index))
+            .filter(|item| item.unlocked);
+        let lookup = |suffix| item.and_then(|item| {
+            self.stage.labels.get(&format!("{}{suffix}", item.name)).map(String::as_str)
+        }).unwrap_or("");
+        self.stage.call_with("SetExtrasInformation", &[
+            Argument::String(lookup("_Name")),
+            Argument::String(lookup("_Desc")),
+        ])?;
+        Ok(())
+    }
+
+    fn show_concept_art(&mut self, index: usize) -> Result<()> {
+        let item = &self.items[ExtrasCategory::Concept.index()][index];
+        let pixels = extras_images::read_texture(&mut self.assets, &item.asset, extras_images::CONCEPT_SIZE)?;
+        let mut player = lock(&self.stage.handle)?;
+        extras_images::publish(&mut player, extras_images::CONCEPT_ART, &pixels)?;
+        self.concept_art = Some(item.asset.clone());
+        self.page = ExtrasPage::ViewingArt(index);
+        Ok(())
+    }
+
+    fn sync_concept_viewer(&mut self) -> Result<()> {
+        if let ExtrasPage::ViewingArt(_) = self.page {
+            let mut player = lock(&self.stage.handle)?;
+            // The authored Back handler closes the viewer locally with no FSCommand.
+            if read(&mut player, "_root.currentSubMenuIndex") == Value::Number(0.) {
+                self.page = ExtrasPage::Browsing(ExtrasCategory::Concept);
+                self.concept_art = None;
+            }
+        }
+        Ok(())
+    }
+
     fn summary(&self) -> serde_json::Value {
-        let labels = lock(&self.stage.handle).map(|mut player| {
-            extras_label_paths().filter_map(|path| match read(&mut player, &path) {
+        let (labels, details) = lock(&self.stage.handle).map(|mut player| {
+            let labels = extras_label_paths().filter_map(|path| match read(&mut player, &path) {
                 Value::String(value) => Some((path, value)),
                 _ => None,
-            }).collect::<BTreeMap<_, _>>()
-        }).ok();
+            }).collect::<BTreeMap<_, _>>();
+            let details = ["TitleInfo", "DescText"].map(|field| {
+                match read(&mut player, &format!("_root.ExtrasMC.Thumbs.{field}.text")) {
+                    Value::String(value) => Some(value),
+                    _ => None,
+                }
+            });
+            (labels, details)
+        }).unwrap_or_default();
         serde_json::json!({
             "initialized": self.initialized, "fade_started": self.fade_started,
             "slot": self.slot, "counts": self.counts, "labels": labels,
-            "page": self.page, "offset": self.offset,
+            "page": self.page, "offset": self.offset, "details": details,
+            "concept_art": self.concept_art,
             "visible_entries": match self.page {
                 ExtrasPage::Browsing(category) | ExtrasPage::Watching(category) => self.items[category.index()]
                     .iter().skip(self.offset).take(Self::PAGE_SIZE).collect::<Vec<_>>(),
@@ -954,6 +1021,7 @@ impl Menu {
         stage.executor.run();
         if let Some(extras) = &mut self.extras {
             extras.initialize()?;
+            extras.sync_concept_viewer()?;
             if extras.fade_started {
                 extras.stage.refresh_extras_labels()?;
             }
@@ -1013,6 +1081,13 @@ impl Menu {
                 }
                 "Extras" if self.extras.is_some() => self.handle_extras_command(&args)?,
                 "ExtrasSub" if self.extras.is_some() => self.open_extra(&args)?,
+                "ExtrasRollover" => {
+                    if let Some(extras) = &self.extras {
+                        if let ExtrasPage::Browsing(category) = extras.page {
+                            extras.show_details(category, extras.item_index(&args))?;
+                        }
+                    }
+                }
                 "MainMenuDelete" => self.notice = Some("Delete is unavailable.".into()),
                 _ => {}
             }
@@ -1095,15 +1170,11 @@ impl Menu {
     fn open_extra(&mut self, command: &str) -> Result<()> {
         let extras = self.extras.as_mut().context("Extras menu is closed")?;
         let ExtrasPage::Browsing(category) = extras.page else { return Ok(()); };
-        let Some(index) = command.strip_prefix("thumbitem")
-            .and_then(|number| number.parse::<usize>().ok())
-            .filter(|index| (1..=ExtrasMenu::PAGE_SIZE).contains(index))
-        else { return Ok(()); };
-        let Some(item) = extras.items[category.index()].get(extras.offset + index - 1)
+        let Some(index) = extras.item_index(command) else { return Ok(()); };
+        let Some(item) = extras.items[category.index()].get(index)
             .filter(|item| item.unlocked) else { return Ok(()); };
         if category == ExtrasCategory::Concept {
-            self.notice = Some("Concept art preview is unavailable.".into());
-            return Ok(());
+            return extras.show_concept_art(index);
         }
         let file = item.asset.replace('\\', "/");
         ensure!(!file.is_empty(), "Unlocked Extras movie has no asset");
@@ -1137,7 +1208,7 @@ impl Menu {
                 extras.page = ExtrasPage::Browsing(category);
                 self.extras_movie(format!("FE_Extras_Sub{}_Loop.bik", category.index() + 1), true);
             }
-            ExtrasPage::Landing | ExtrasPage::Browsing(_) => {}
+            ExtrasPage::Landing | ExtrasPage::Browsing(_) | ExtrasPage::ViewingArt(_) => {}
         }
         Ok(())
     }

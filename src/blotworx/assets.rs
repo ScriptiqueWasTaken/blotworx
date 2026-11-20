@@ -5611,7 +5611,14 @@ impl World {
             .get(name)
             .context("Ability restore owner is not reconstructed")?;
         if let Some(grant) = super::ability_persistence::grant(&records, name, state)? {
-            self.player_grant_ability(name, grant.selector, grant.level)?;
+            if matches!(name, "Blast" | "Brush" | "Spin") {
+                self.player_grant_ability(name, grant.selector, grant.level)?;
+            } else {
+                self.player_abilities.get_mut(name).unwrap().give(grant.selector, grant.level);
+                self.report.unsupported.push(format!(
+                    "Checkpoint restored {name} ownership; ability-specific grant side effects remain unverified."
+                ));
+            }
         }
         Ok(())
     }

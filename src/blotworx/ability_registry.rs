@@ -6,6 +6,15 @@ use std::collections::BTreeMap;
 pub const PRIMARY: [&str; 3] = ["Blast", "Invisible", "Indelible"];
 pub const SECONDARY: [&str; 4] = ["Brush", "Slide", "Spin", "Slash"];
 
+fn sketch_maximum_key(name: &str, index: usize) -> Result<String> {
+    // REL21454..2146c snprintf size 0x63 includes the final NUL.
+    let mut key = format!("{name}_{index}");
+    let length = key.len().min(98);
+    ensure!(key.is_char_boundary(length), "Native sketch save-key truncation splits a UTF-8 codepoint");
+    key.truncate(length);
+    Ok(key)
+}
+
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct Sketch {
     pub name: String,
@@ -39,6 +48,29 @@ impl Registry {
             .map(|name| (name.to_owned(), Ownership::default()))
             .collect()
     }
+    /// REL21480..214c4 restores each sketch's ownership and indexed capacity.
+    pub(super) fn restore_sketches(&mut self, payload: &[u8], maxima: &mut [f32]) -> Result<()> {
+        ensure!(maxima.len() >= self.sketches.len(), "Checkpoint player is missing registered SketchMax entries");
+        let records = save_game::records(payload)?;
+        for (index, (sketch, maximum)) in self.sketches.iter_mut().zip(maxima).enumerate() {
+            if let Some(grant) = ability_persistence::grant(&records, &sketch.name, &sketch.ownership)? {
+                sketch.ownership.give(grant.selector, grant.level);
+            }
+            let key = sketch_maximum_key(&sketch.name, index)?.to_ascii_uppercase();
+            // 25e590 writes the provided default (Wii REL4ac3e8, zero)
+            // even when the named record is absent.
+            let value = match records.iter().find(|record| record.name == key) {
+                Some(record) => f32::from_be_bytes(record.data.get(..4)
+                    .with_context(|| format!("Truncated saved sketch capacity {key}"))?
+                    .try_into()?),
+                None => 0.,
+            };
+            ensure!(value.is_finite(), "Nonfinite saved sketch capacity {key}");
+            *maximum = value;
+        }
+        Ok(())
+    }
+
     /// Native stack float destination is uninitialized if an indexed SketchMax
     /// getter fails. Diagnose that condition instead of inventing a capacity.
     pub fn records(&self, base: &BTreeMap<String, Ownership>, maxima: &[f32]) -> Result<Vec<u8>> {
@@ -65,11 +97,8 @@ impl Registry {
         }
         for (index, sketch) in self.sketches.iter().enumerate() {
             ability_persistence::append(output, &sketch.name, &sketch.ownership)?;
-            let key = format!("{}_{index}", sketch.name);
-            //21454..2146c snprintf size0x63 includes the final NUL.
-            let key = std::str::from_utf8(&key.as_bytes()[..key.len().min(98)])
-                .context("Native sketch save-key truncation splits a UTF-8 codepoint")?;
-            save_game::append_record(output, key, &maxima[index].to_bits().to_be_bytes(), 4)?;
+            let key = sketch_maximum_key(&sketch.name, index)?;
+            save_game::append_record(output, &key, &maxima[index].to_bits().to_be_bytes(), 4)?;
         }
         Ok(())
     }
@@ -120,6 +149,29 @@ impl super::assets::World {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn saved_sketch_capacities_are_indexed_and_missing_records_default_to_zero() -> Result<()> {
+        let mut registry = Registry {
+            sketches: ["Sketch_TV", "Sketch_TV", "Sketch_Anvil"]
+                .into_iter()
+                .map(|name| Sketch { name: name.into(), ownership: Ownership::default() })
+                .collect(),
+        };
+        let mut payload = Vec::new();
+        save_game::append_record(&mut payload, "Sketch_TV:2", &2i32.to_be_bytes(), 4)?;
+        save_game::append_record(&mut payload, "Sketch_TV_0", &8.25f32.to_be_bytes(), 4)?;
+        save_game::append_record(&mut payload, "Sketch_TV_1", &3.5f32.to_be_bytes(), 4)?;
+        let mut maxima = [10., 10., 10., 20.];
+        registry.restore_sketches(&payload, &mut maxima)?;
+        assert_eq!(maxima, [8.25, 3.5, 0., 20.]);
+        for sketch in &registry.sketches[..2] {
+            assert_eq!(sketch.ownership.owned, [false, true]);
+            assert_eq!(sketch.ownership.upgrades, [0, 0]);
+        }
+        assert_eq!(registry.sketches[2].ownership.owned, [false, false]);
+        Ok(())
+    }
+
     #[test]
     fn numbered_registry_preserves_slots_gaps_duplicates_and_native_limit() -> Result<()> {
         let mut settings = BTreeMap::new();

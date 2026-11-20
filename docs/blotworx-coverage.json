@@ -191,10 +191,22 @@
         "source": "GAME v16 header, GLOB1, QUES4, AISS2, MICK3 and WRLD1, and the shipped GV_ZoneF_LoadCheckpoint callback",
         "evidence": "target/perf/gv-zone-f-checkpoint-resumed.runtime.json matches the prior Zone F save's scene order, spawn, quest status, playtime, health, inventory and raw ammo words. The copied save remains byte-identical. target/perf/gv-zone-f-checkpoint-resumed-motion.ticks.json records 3.39 units of player movement after fresh-session resume, with no script, story, or runtime errors.",
         "open": [
-          "Ability grant and sketch capacity restoration",
+          "Remaining derived ability grant effects and sketch use after reload",
           "Death and in-memory restart",
           "Additional save-owner callbacks and Wii ordering parity",
           "Cross-campaign checkpoint coverage"
+        ]
+      },
+      {
+        "scope": "EM1 checkpoint ability and sketch restoration",
+        "state": "Checkpoint startup visits the primary, secondary and registered sketch abilities in native order. Ownership uses the native suffix probes and current grant level. The loader restores each indexed capacity and clamps each saved named count to its live capacity.",
+        "source": "Wii REL21098, 212b4, 21480..214c4, 25e590 and 344868. The save fixture is a changed copy of the Zone F checkpoint.",
+        "evidence": "target/perf/checkpoint-sketch-count-live.runtime.json and its tick trace compare against the pre-change replay of the same slot. The restored paint-only brush emits 11 shots and declines thinner. Spin plays its original clip. The three saved capacities and two anvil items are present in the live owners.",
+        "open": [
+          "Native initialization timing for sparse SketchCount arrays",
+          "Derived grant side effects outside Blast, Brush and Spin",
+          "Sketch placement and consumption after reload",
+          "Restart after death"
         ]
       },
       {

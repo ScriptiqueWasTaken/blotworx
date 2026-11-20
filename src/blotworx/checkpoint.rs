@@ -152,6 +152,9 @@ impl super::assets::World {
         let player = section(*b"MICK", 3)?;
         self.playstyle_points.restore_record(player)?;
         self.player_spawn.restore(player)?;
+        for name in super::ability_registry::PRIMARY.into_iter().chain(super::ability_registry::SECONDARY) {
+            self.restore_player_ability_record(name, player)?;
+        }
         let health = super::save_player::Health::decode(player)?;
         let items = super::save_player::Inventory::decode(player)?;
         let ammo = super::save_player::Ammo::decode(player)?;
@@ -177,13 +180,22 @@ impl super::assets::World {
         let inventory = components.iter_mut().find(|c| c.class_name == "InventoryComponent")
             .context("Checkpoint player has no inventory component")?;
         let mut state = super::inventory_state::Authored::from_component(inventory)?;
+        self.player_ability_registry.restore_sketches(player, &mut state.maxima)?;
         for (name, count) in super::save_player::INVENTORY_NAMES[2..].iter().zip(items.sketch_counts) {
             if let Some(index) = state.sketches.iter()
                 .position(|sketch| sketch.split('\0').next() == Some(*name))
             {
-                if let Some(value) = state.counts.get_mut(index) {
-                    *value = count;
+                // Some scene palettes supply names and capacities with an
+                // empty count array. Materialize each restored named slot.
+                if state.counts.len() <= index {
+                    state.counts.resize(index + 1, 0);
                 }
+                let maximum = state.maxima.get(index).copied().unwrap_or(0.);
+                // REL344868 clamps the f32 request to the indexed maximum
+                // before converting it with the Wii integer conversion.
+                state.counts[index] = super::inventory_commands::checked_fctiwz(
+                    (count as f32).min(maximum),
+                )?;
             }
         }
         for property in &mut inventory.properties {
@@ -195,6 +207,7 @@ impl super::assets::World {
                 "PaintAmmoSegmentAmount" => serde_json::json!(segments[0]),
                 "ThinnerAmmoSegmentAmount" => serde_json::json!(segments[1]),
                 "SketchCount" => serde_json::json!(state.counts),
+                "SketchMax" => serde_json::json!(state.maxima),
                 _ => continue,
             };
         }

@@ -26,6 +26,20 @@ impl Snapshot {
         self.bytes.get(0x2c4) == Some(&0)
     }
 
+    pub(super) fn completed_playthrough(&self) -> Result<bool> {
+        let archive = Archive::parse(&self.bytes)?;
+        if self.has_active_campaign() {
+            return Ok(false);
+        }
+        ensure!(
+            super::score_state::Playthrough::from_header(&self.bytes)?.value > 0
+                && archive.sections.len() == 1
+                && archive.sections[0].tag == save_game::LAST,
+            "Invalid completed campaign slot"
+        );
+        Ok(true)
+    }
+
     pub(super) fn level(&self) -> Result<String> {
         let archive = Archive::parse(&self.bytes)?;
         ensure!(self.has_active_campaign(), "This slot completed the campaign and has no active checkpoint");
@@ -167,6 +181,24 @@ impl Request {
 }
 
 impl super::assets::World {
+    /// The native main-menu branch at REL2b030..2b0a4 restores the
+    /// completed slot's header owners before it starts a fresh campaign.
+    pub(super) fn seed_completed_playthrough(&mut self, bytes: &[u8]) -> Result<()> {
+        self.playthrough = super::score_state::Playthrough::from_header(bytes)?;
+        self.extras.restore_save_header(bytes)?;
+        self.collectibles.restore_save_header(bytes, false)?;
+        self.game_options = super::save_options::State::from_header(bytes)?;
+        for (name, &byte) in super::endgame::PIN_GLOBALS.into_iter().zip(&bytes[0x2ce..]) {
+            self.globals.set(name, i32::from((byte as i8).min(1)));
+        }
+        let carried = super::checkpoint_metadata::Globals::from_header(bytes)?;
+        for (name, byte) in super::checkpoint_metadata::GLOBAL_NAMES.into_iter().zip(carried.0) {
+            self.globals.set(name, i32::from(byte as i8));
+        }
+        self.playtime.set(0, &self.frame_clock.clock);
+        Ok(())
+    }
+
     /// Seed the persisted owners before the level's script modules execute.
     pub(super) fn restore_checkpoint_owners(&mut self, archive: &Archive<'_>, bytes: &[u8]) -> Result<()> {
         let section = |tag, version| -> Result<&[u8]> {

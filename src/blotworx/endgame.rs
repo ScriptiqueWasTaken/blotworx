@@ -62,6 +62,18 @@ pub(super) const PIN_GLOBALS: [&str; 57] = [
     "TL_Square_red_Chest2",
 ];
 
+pub(super) fn campaign_start(root: &std::path::Path) -> Result<String> {
+    let ini = std::fs::read_to_string(root.join("ConfigFiles.ini"))?;
+    let mut settings = crate::render_support::game_config::runtime_settings(&ini, false);
+    match std::fs::read_to_string(root.join("cmdline.txt")) {
+        Ok(command) => settings.extend(crate::render_support::game_config::runtime_settings(&command, true)),
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => {},
+        Err(error) => return Err(error.into()),
+    }
+    settings.remove("MainMenu_gamestart").filter(|level| !level.is_empty())
+        .context("Missing MainMenu gamestart level in the game configuration")
+}
+
 /// RELba148 visits the slot's ending bytes in presentation order, which
 /// differs from the order in which StoreEndgameData captures them.
 pub(super) fn movies(outcomes: [u8; 9], settings: &BTreeMap<String, String>) -> Result<Vec<String>> {

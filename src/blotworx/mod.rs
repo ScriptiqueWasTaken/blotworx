@@ -2652,21 +2652,38 @@ impl Engine {
             Ok(snapshot)
         })();
         match result {
-            Ok(snapshot) => self.resume_snapshot(ctx, snapshot),
+            Ok(snapshot) => match snapshot.completed_playthrough() {
+                Ok(true) => {
+                    let root = assets::files_root(std::path::Path::new(&self.root));
+                    match endgame::campaign_start(&root) {
+                        Ok(level) => self.load_campaign_slot(ctx, snapshot, level, score_state::CampaignResume::NextPlaythrough),
+                        Err(error) => self.error = Some(format!("Start next playthrough: {error:#}")),
+                    }
+                }
+                Ok(false) => self.resume_snapshot(ctx, snapshot),
+                Err(error) => self.error = Some(format!("Continue game: {error:#}")),
+            },
             Err(error) => self.error = Some(format!("Continue game: {error:#}")),
         }
     }
     fn resume_snapshot(&mut self, ctx: &egui::Context, snapshot: std::sync::Arc<checkpoint::Snapshot>) {
         match snapshot.level() {
-            Ok(level) => {
-                self.level = level;
-                self.preview_entry = None;
-                self.actor_focus = None;
-                self.options_open = false;
-                self.load_with_checkpoint(ctx, Some(snapshot), false);
-            }
+            Ok(level) => self.load_campaign_slot(ctx, snapshot, level, score_state::CampaignResume::Checkpoint),
             Err(error) => self.error = Some(format!("Restore checkpoint: {error:#}")),
         }
+    }
+    fn load_campaign_slot(
+        &mut self,
+        ctx: &egui::Context,
+        snapshot: std::sync::Arc<checkpoint::Snapshot>,
+        level: String,
+        resume: score_state::CampaignResume,
+    ) {
+        self.level = level;
+        self.preview_entry = None;
+        self.actor_focus = None;
+        self.options_open = false;
+        self.load_with_checkpoint(ctx, Some((snapshot, resume)), false);
     }
     fn load(&mut self, ctx: &egui::Context) {
         self.load_with_checkpoint(ctx, None, false);
@@ -2674,7 +2691,7 @@ impl Engine {
     fn load_with_checkpoint(
         &mut self,
         ctx: &egui::Context,
-        snapshot: Option<std::sync::Arc<checkpoint::Snapshot>>,
+        snapshot: Option<(std::sync::Arc<checkpoint::Snapshot>, score_state::CampaignResume)>,
         clean: bool,
     ) {
         self.root = assets::files_root(std::path::Path::new(&self.root))
@@ -2732,7 +2749,7 @@ impl Engine {
             };
             score_state::InitialState {
                 session: Some(session),
-                restore_checkpoint: false,
+                resume: None,
                 playstyle_points: world.playstyle_points,
                 playthrough: world.playthrough,
                 playtime: world.playtime,
@@ -2774,11 +2791,11 @@ impl Engine {
                 ..Default::default()
             }
         };
-        if let Some(snapshot) = snapshot {
+        if let Some((snapshot, resume)) = snapshot {
             if let Some(service) = &scores.checkpoint.service {
                 service.record_memory_checkpoint(&snapshot);
             }
-            scores.restore_checkpoint = true;
+            scores.resume = Some(resume);
             scores.checkpoint.latest = Some(snapshot);
         }
         if let Some(clock) = &mut scores.frame_clock {

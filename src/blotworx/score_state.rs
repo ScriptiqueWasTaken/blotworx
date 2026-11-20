@@ -8,10 +8,16 @@ pub struct Playthrough {
 }
 /// Seed existing singleton fields before a new world's script initialization;
 /// applying them afterwards could erase incoming callback changes.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub(super) enum CampaignResume {
+    Checkpoint,
+    NextPlaythrough,
+}
+
 #[derive(Clone, Debug, Default)]
 pub struct InitialState {
     pub session: Option<super::level_session::Session>,
-    pub restore_checkpoint: bool,
+    pub(super) resume: Option<CampaignResume>,
     pub playthrough: Playthrough,
     pub playstyle_points: super::playstyle_points::State,
     pub playtime: super::checkpoint_time::Playtime,

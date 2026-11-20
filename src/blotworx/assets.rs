@@ -8953,7 +8953,9 @@ pub(super) fn load_with_bootstrap_mode(
     report.unsupported.push("Native quest slots and QUES save/restore are owned by this world; evaluation, global-change notifications, stage transitions and quest UI remain unimplemented.".into());
     let bytes = read_descriptor(&root, &files, level)?;
     let mut values = descriptor_bytes(&bytes).with_context(|| format!("Level descriptor {level}"))?;
-    let restore_snapshot = scores.checkpoint.latest.as_ref().filter(|_| scores.restore_checkpoint).cloned();
+    let restore_snapshot = scores.checkpoint.latest.as_ref()
+        .filter(|_| scores.resume == Some(super::score_state::CampaignResume::Checkpoint))
+        .cloned();
     let restore = restore_snapshot.as_ref()
         .map(|snapshot| super::save_game::Archive::parse(&snapshot.bytes))
         .transpose()?;
@@ -9960,6 +9962,10 @@ pub(super) fn load_with_bootstrap_mode(
     world.initialize_countdown()?;
     if let (Some(archive), Some(snapshot)) = (&restore, &restore_snapshot) {
         world.restore_checkpoint_owners(archive, &snapshot.bytes)?;
+    } else if scores.resume == Some(super::score_state::CampaignResume::NextPlaythrough) {
+        let snapshot = world.checkpoint.latest.as_ref()
+            .context("Next playthrough requires a completed slot")?.clone();
+        world.seed_completed_playthrough(&snapshot.bytes)?;
     }
     if let Some(session) = scores.session {
         session.install(&mut world)?;

@@ -570,10 +570,27 @@ impl World {
                     if self.removed_entities.contains(&m.target) {
                         break;
                     }
+                    let was_held = m.hold > 0.;
                     let travel_delta = (remaining - m.hold.max(0.)).max(0.);
                     m.hold = (m.hold - remaining).max(0.);
                     if m.hold > 0. {
                         break;
+                    }
+                    if was_held {
+                        // REL 3bc6ac..3bc74c sends from the canonical start
+                        // (+0x70), including reverse traversal and zero remainder.
+                        let knot = if let Some(segment) = &m.segment {
+                            Some(if segment.reversed { m.target } else { segment.origin })
+                        } else {
+                            m.stop.is_none().then_some(m.target)
+                        };
+                        if let Some(knot) = knot.filter(|&knot| {
+                            !self.removed_entities.contains(&knot)
+                                && self.entities[knot].components.iter()
+                                    .any(|c| c.class_name == "SplineKnotComponent")
+                        }) {
+                            self.queue_spline_knot_event(owner, knot, 0x1e)?;
+                        }
                     }
                     let source = &self.entities[owner];
                     let position: [f32; 3] = source.transform[12..15].try_into()?;
@@ -822,24 +839,57 @@ fn validate_spline_residual(root: &std::path::Path) -> Result<()> {
         SplineFollower_TeleportToKnot(cloud, GetEntity("gv_zonei_dynamic.CloudSK 01"))
         SplineFollower_SetDisabled(cloud, false)
     "#)?;
+    world.demo_story.motion.movers.retain(|&entity, _| entity == owner);
     world.advance_demo_motion(0.)?;
+    world.process_deferred_entity_events()?;
+    world.audio_playback.poll()?;
 
-    // One second of departure hold, eight seconds outbound, four seconds
-    // at the next knot, then two seconds along the eight-second return.
-    world.advance_demo_motion(15.)?;
+    // Split the first hold to exercise the exact-zero boundary with no
+    // time remaining for movement. This tick should post only OnHoldEnd.
+    world.advance_demo_motion(0.5)?;
+    ensure!(spline_events_for(&world, owner).is_empty(), "Hold ended early");
+    world.advance_demo_motion(0.5)?;
+    ensure!(spline_events_for(&world, owner) == [(0x1e, departure)]
+        && world.demo_story.motion.movers[&owner].segment.as_ref().is_some_and(|s| s.phase == 0.),
+        "Hold expiration must enqueue exactly once before movement");
+    let audio = &world.audio_playback;
+    let audio_before = audio.game_post_requests;
+    let submitted_before = audio.submitted;
+    world.process_deferred_entity_events()?;
+    world.audio_playback.poll()?;
+    let audio = &world.audio_playback;
+    let cue = "Play_sfx_GV_EBR_Cloud_Move_OnHoldEnd";
+    ensure!(audio.game_post_requests == audio_before + 1,
+        "Hold end did not post the authored cloud cue exactly once");
+    ensure!(!audio.rejected_posts.contains_key(&(owner, cue.into())) && audio.submitted > submitted_before,
+        "Cloud departure cue did not submit audio: {:?}", audio.rejected_posts.get(&(owner, cue.into())));
+    world.advance_demo_motion(0.)?;
+    ensure!(spline_events_for(&world, owner).is_empty(), "Expired hold fired again at zero delta");
+
+    // Eight seconds outbound, four seconds at the next knot, then two
+    // seconds along the eight-second return in the same update.
+    world.advance_demo_motion(14.)?;
     let mover = &world.demo_story.motion.movers[&owner];
     ensure!(mover.target == departure && mover.hold == 0.
         && mover.segment.as_ref().is_some_and(|segment| segment.phase == 0.25),
         "Spline did not carry two seconds onto the return edge");
-    let passes: Vec<_> = world.entity_event_queue.entries().iter().filter_map(|entry| match &entry.event {
-        super::entity_events::Event::Basic(e) if e.event_kind == 0x1c && e.header == Some(owner) => e.source,
-        _ => None,
-    }).collect();
-    ensure!(passes == [departure, arrival], "Spline pass events were out of order: {passes:?}");
+    let events = spline_events_for(&world, owner);
+    ensure!(events == [(0x1c, arrival), (0x1d, arrival), (0x1e, arrival)],
+        "Spline crossing and hold events were out of order: {events:?}");
     let position = &world.entities[owner].transform[12..15];
     ensure!(position.iter().zip([117.32754, 49.47174, -290.47675])
         .all(|(actual, expected)| (actual - expected).abs() < 0.001),
         "Spline return position after carrying time is wrong: {position:?}");
-    println!("PASS: imported cloud carried two residual seconds onto its return edge and queued OnPass in order");
+    println!("PASS: imported cloud posted {cue}, carried two residual seconds onto its return edge and queued its knot events in order");
     Ok(())
+}
+
+#[cfg(debug_assertions)]
+fn spline_events_for(world: &World, owner: usize) -> Vec<(u16, usize)> {
+    world.entity_event_queue.entries().iter().filter_map(|entry| match &entry.event {
+        super::entity_events::Event::Basic(e)
+            if (0x1c..=0x1e).contains(&e.event_kind) && e.header == Some(owner) =>
+                e.source.map(|source| (e.event_kind, source)),
+        _ => None,
+    }).collect()
 }

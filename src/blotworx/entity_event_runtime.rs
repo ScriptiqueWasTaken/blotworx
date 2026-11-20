@@ -72,7 +72,7 @@ impl Receivers<'_> {
                 if self.entities.get(owner).is_some_and(|entity|event.event_kind==0x3d || self.resources.is_active(&entity.scene)) {
                     if let Some(name)=deferred_output(event.event_kind) {
                         self.outputs.emit_optional(owner,name,event.header,self.time);
-                        if event.event_kind==0x3d {*self.spawn_deliveries=self.spawn_deliveries.wrapping_add(1);} else if matches!(event.event_kind,0x1c|0x1d) {*self.spline_deliveries=self.spline_deliveries.wrapping_add(1);} else if event.event_kind==0x0e {*self.use_deliveries=self.use_deliveries.wrapping_add(1);} else if event.event_kind==0x4e {*self.relay_deliveries=self.relay_deliveries.wrapping_add(1);} else {*self.io_deliveries=self.io_deliveries.wrapping_add(1);}
+                        if event.event_kind==0x3d {*self.spawn_deliveries=self.spawn_deliveries.wrapping_add(1);} else if matches!(event.event_kind,0x1c..=0x1e) {*self.spline_deliveries=self.spline_deliveries.wrapping_add(1);} else if event.event_kind==0x0e {*self.use_deliveries=self.use_deliveries.wrapping_add(1);} else if event.event_kind==0x4e {*self.relay_deliveries=self.relay_deliveries.wrapping_add(1);} else {*self.io_deliveries=self.io_deliveries.wrapping_add(1);}
                     }
                 }
             }
@@ -115,9 +115,13 @@ impl QueueHost<Event> for Pump<'_> {
         Ok(())
     }
 }
+const DEFERRED_OUTPUT_KINDS: [u16; 13] = [
+    0x0d, 0x0e, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x3d, 0x4e, 0x8d, 0x8e,
+];
+
 impl super::assets::World {
     pub(super) fn bind_deferred_output_events(&mut self,owner:usize)->Result<()> {
-        let kinds=[0x0d,0x0e,0x18,0x19,0x1a,0x1b,0x1c,0x1d,0x3d,0x4e,0x8d,0x8e].into_iter().filter(|kind|self.outputs.has_connections(owner,deferred_output(*kind).unwrap())).collect::<Vec<_>>();
+        let kinds=DEFERRED_OUTPUT_KINDS.into_iter().filter(|kind|self.outputs.has_connections(owner,deferred_output(*kind).unwrap())).collect::<Vec<_>>();
         if kinds.is_empty() {return Ok(())}
         let existing=self.deferred_event_runtime.io_listeners.iter()
             .find_map(|(&listener,&value)|(value==owner).then_some(listener));
@@ -140,7 +144,7 @@ impl super::assets::World {
         let registry=&mut self.entity_event_registry;
         self.deferred_event_runtime.io_listeners.retain(|&listener,value| {
             if *value!=owner {return true}
-            for kind in [0x0d,0x0e,0x18,0x19,0x1a,0x1b,0x1c,0x1d,0x3d,0x4e,0x8d,0x8e] {registry.deactivate_for(kind,listener);}
+            for kind in DEFERRED_OUTPUT_KINDS {registry.deactivate_for(kind,listener);}
             false
         });
     }
@@ -171,7 +175,7 @@ impl super::assets::World {
 /// these numeric event kinds from its authored Output names.
 fn deferred_output(kind:u16)->Option<&'static str> {
     //273eb0..273f94 registers the exact Patrol output names and IDs.
-    match kind {0x0d=>Some("OnReachedPosition"),0x0e=>Some("OnUse"),0x1c=>Some("OnPass"),0x1d=>Some("OnHold"),0x18=>Some("OnSpawnerSpawned"),0x19=>Some("OnSpawnerAllSpawned"),0x1a=>Some("OnSpawnerAllDead"),0x1b=>Some("OnSpawnerAllDeadForever"),0x3d=>Some("OnSpawned"),0x4e=>Some("OnRelayTrigger"),0x8d=>Some("OnReachedPatrolNode"),0x8e=>Some("OnLeftPatrolNode"),_=>None}
+    match kind {0x0d=>Some("OnReachedPosition"),0x0e=>Some("OnUse"),0x1c=>Some("OnPass"),0x1d=>Some("OnHold"),0x1e=>Some("OnHoldEnd"),0x18=>Some("OnSpawnerSpawned"),0x19=>Some("OnSpawnerAllSpawned"),0x1a=>Some("OnSpawnerAllDead"),0x1b=>Some("OnSpawnerAllDeadForever"),0x3d=>Some("OnSpawned"),0x4e=>Some("OnRelayTrigger"),0x8d=>Some("OnReachedPatrolNode"),0x8e=>Some("OnLeftPatrolNode"),_=>None}
 }
 
 ///5d020: an own-source reached-position event releases only phase4's timer.

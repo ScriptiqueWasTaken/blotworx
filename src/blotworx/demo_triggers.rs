@@ -245,6 +245,10 @@ impl World {
             .collect()
     }
     pub(super) fn demo_contains(&self, entity: usize, position: [f32; 3]) -> Result<Option<bool>> {
+        if let Some(hull) = self.rigid_trigger_hulls.get(&entity) {
+            return hull.overlaps_player(self.entities[entity].physics_transform(), position)
+                .map(Some);
+        }
         let bounds = if let Some(bounds) = self.phantom_bounds(entity)? {
             Some(bounds)
         } else if self.resource_phantom_shapes.contains_key(&entity) {
@@ -253,15 +257,24 @@ impl World {
                 min: aabb[0][..3].try_into()?,
                 max: aabb[1][..3].try_into()?,
             })
+        } else if let Some(component) = self.entities[entity].components.iter()
+            .find(|component| {
+                component.class_name == "PhysicsRigidBodyPhantomShapeComponent"
+                    && component.properties.iter().any(|property| property.name == "Phantom Size")
+                    && !component.properties.iter().any(|property| {
+                        property.name == "RB Hull File Path"
+                            && property.value.as_str().is_some_and(|path| !path.is_empty())
+                    })
+            })
+        {
+            let owner = &self.entities[entity];
+            super::phantom_bounds::SizeVolume::from_size_property(component)?
+                .map(|volume| volume.bounds(owner.transform[12..15].try_into().unwrap(), owner.runtime_rotation))
+                .transpose()?
         } else {
             None
         };
-        Ok(bounds.map(|b| {
-            (0..3).all(|i| {
-                position[i] + if i == 1 { 1.1 } else { 0.3 } >= b.min[i]
-                    && position[i] - if i == 1 { 0. } else { 0.3 } <= b.max[i]
-            })
-        }))
+        Ok(bounds.map(|bounds| bounds.overlaps_player(position)))
     }
     pub(super) fn suspend_inactive_trigger_overlaps(&mut self) {
         let entities = &self.entities;
@@ -1154,5 +1167,36 @@ pub(super) fn validate_streamed_triggers() -> Result<()> {
         world.entities[steam].name
     );
     println!("PASS: inactive original GV steam scene causes no player damage/output; overlap history resets while count survives; reactivation restores damage and held delivery; same-class damage components use independent properties; disabled triggers re-query entry without resetting lifetime limits");
+    Ok(())
+}
+
+#[cfg(debug_assertions)]
+pub(super) fn validate_dbc_arm_trigger() -> Result<()> {
+    use anyhow::Context as _;
+    let root = std::env::var_os("BLOTWORX_TEST_DATA").context("Set BLOTWORX_TEST_DATA")?;
+    let mut world = super::assets::load(
+        std::path::Path::new(&root),
+        "Levels/DBC_Start_1st.Level",
+        &egui::Context::default(),
+    )?;
+    world.enable_demo_story()?;
+    let trigger = world.scripts.resolve_name("dbc_1st_zonea_clawstages.ArmTriggerZone0 01")
+        .context("Missing authored DBC arm trigger")?;
+    let arm = world.scripts.resolve_name("dbc_1st_zonea_dynamic.Robot_Arm")
+        .context("Missing authored DBC mechanical arm")?;
+    let center = world.rigid_trigger_hulls.get(&trigger)
+        .with_context(|| format!("Missing arm trigger hull: {:?}", world.report.unsupported.iter()
+            .filter(|line| line.contains("ArmTriggerZone0 01")).collect::<Vec<_>>()))?
+        .interior_player_position();
+    let outside = [center[0], center[1] + 100., center[2]];
+    let bit = 1 << 6; // Authored OnStartTouch/OnEndTouch both pass attack type 6.
+    for (position, enabled) in [(outside, false), (center, true), (outside, false)] {
+        world.advance_demo_triggers(position, super::STEP)?;
+        world.advance_demo_triggers(position, super::STEP)?;
+        world.advance_models_with_delta(world.animation_time + super::STEP, super::STEP)?;
+        anyhow::ensure!((world.robot_arm_controls[&arm].enabled_mask & bit != 0) == enabled,
+            "Authored arm trigger did not set attack 6 to {enabled} at {position:?}");
+    }
+    println!("PASS: entering and leaving the authored DBC arm hull enables and disables attack 6; center {center:?}");
     Ok(())
 }

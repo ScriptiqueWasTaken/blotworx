@@ -44,6 +44,14 @@ impl SizeVolume {
             paths[0],
             paths[1]
         );
+        let volume = Self::from_size_property(component)?;
+        // REL3781dc..378238 checks a native sentinel whose value is unverified.
+        ensure!(volume.is_some(), "Zero-size phantom sentinel is unverified; fallback activation requires native initialization evidence");
+        Ok(volume)
+    }
+    /// Box-shaped rigid body sensors expose the same size field, but are
+    /// queried by trigger overlap without registering an hkpAabbPhantom.
+    pub(super) fn from_size_property(component: &Component) -> Result<Option<Self>> {
         let value = &component
             .properties
             .iter()
@@ -62,10 +70,8 @@ impl SizeVolume {
             size.iter().all(|v| v.is_finite()),
             "Invalid phantom dimensions"
         );
-        // REL3781dc..378238 compares against DOL80767140. Its initialized
-        // contents are not yet verified, so do not silently drop zero volumes.
-        ensure!(size!=[0.;3],"Zero-size phantom sentinel is unverified; fallback activation requires native initialization evidence");
-        Ok(Some(Self { size }))
+        // A zero box has no volume for the rigid-body preview query.
+        Ok((size != [0.; 3]).then_some(Self { size }))
     }
     pub fn bounds(&self, position: [f32; 3], rotation: [f32; 9]) -> Result<Bounds> {
         ensure!(
@@ -127,6 +133,117 @@ impl SizeVolume {
         ])
     }
 }
+const TRIGGER_PLAYER_RADIUS: f32 = 0.3;
+const TRIGGER_PLAYER_HEIGHT: f32 = 1.1;
+
+unsafe extern "C" {
+    fn bw_trigger_capsule_overlaps_convex(
+        vertices: *const [f32; 3],
+        count: i32,
+        hull_radius: f32,
+        start: *const f32,
+        end: *const f32,
+        capsule_radius: f32,
+    ) -> i32;
+}
+
+/// Placement of a trigger volume defined by rigid bodies in a cooked Havok file.
+pub(super) struct RigidTriggerHull {
+    parts: std::sync::Arc<Vec<super::collision::StaticMesh>>,
+    placement: [f32; 16],
+    bounds: Vec<Bounds>,
+}
+impl RigidTriggerHull {
+    pub(super) fn new(
+        parts: std::sync::Arc<Vec<super::collision::StaticMesh>>,
+        placement: [f32; 16],
+    ) -> Result<Self> {
+        ensure!(parts.iter().all(|part| part.convex), "Non-convex trigger hull is unsupported");
+        let bounds = Self::placed_bounds(&parts, &placement)?;
+        Ok(Self { parts, placement, bounds })
+    }
+
+    fn placed_bounds(
+        parts: &[super::collision::StaticMesh],
+        placement: &[f32; 16],
+    ) -> Result<Vec<Bounds>> {
+        let mut bodies = std::collections::BTreeSet::new();
+        let mut bounds = Vec::new();
+        for part in parts.iter().filter(|part| bodies.insert(part.body_offset)) {
+            let pose = super::native_hk_transform::compose(placement, &part.body_transform);
+            let [min, max] = (*part.bounds_graph).clone().aabb(part.bounds_root, &pose, 0.)?;
+            bounds.push(Bounds { min: min[..3].try_into()?, max: max[..3].try_into()? });
+        }
+        ensure!(!bounds.is_empty(), "Trigger hull has no rigid bodies");
+        Ok(bounds)
+    }
+
+    #[cfg(debug_assertions)]
+    pub(super) fn interior_player_position(&self) -> [f32; 3] {
+        let part = &self.parts[0];
+        let pose = super::native_hk_transform::compose(&self.placement, &part.body_transform);
+        let local = std::array::from_fn(|axis| {
+            part.vertices.iter().map(|point| point[axis]).sum::<f32>() / part.vertices.len() as f32
+        });
+        let mut center = super::physics::point(&pose, local);
+        center[1] -= TRIGGER_PLAYER_HEIGHT * 0.5;
+        center
+    }
+
+    pub(super) fn overlaps_player(
+        &self,
+        placement: [f32; 16],
+        position: [f32; 3],
+    ) -> Result<bool> {
+        let moved;
+        let bounds = if placement == self.placement {
+            &self.bounds
+        } else {
+            moved = Self::placed_bounds(&self.parts, &placement)?;
+            &moved
+        };
+        if !bounds.iter().any(|bounds| bounds.overlaps_player(position)) {
+            return Ok(false);
+        }
+        for part in self.parts.iter() {
+            let pose = super::native_hk_transform::compose(&placement, &part.body_transform);
+            let local_endpoint = |height: f32| {
+                let delta = [
+                    position[0] - pose[12],
+                    position[1] + height - pose[13],
+                    position[2] - pose[14],
+                ];
+                std::array::from_fn::<_, 3, _>(|axis| {
+                    let start = axis * 4;
+                    (0..3).map(|i| pose[start + i] * delta[i]).sum::<f32>()
+                })
+            };
+            let lower = local_endpoint(TRIGGER_PLAYER_RADIUS);
+            let upper = local_endpoint(TRIGGER_PLAYER_HEIGHT - TRIGGER_PLAYER_RADIUS);
+            let result = unsafe {
+                bw_trigger_capsule_overlaps_convex(
+                    part.vertices.as_ptr(), part.vertices.len().try_into()?,
+                    part.triangle_radius, lower.as_ptr(), upper.as_ptr(), TRIGGER_PLAYER_RADIUS,
+                )
+            };
+            ensure!(result >= 0, "Trigger hull exceeds the collision query vertex limit");
+            if result != 0 {
+                return Ok(true);
+            }
+        }
+        Ok(false)
+    }
+}
+
+impl Bounds {
+    pub(super) fn overlaps_player(&self, position: [f32; 3]) -> bool {
+        (0..3).all(|i| {
+            position[i] + if i == 1 { TRIGGER_PLAYER_HEIGHT } else { TRIGGER_PLAYER_RADIUS } >= self.min[i]
+                && position[i] - if i == 1 { 0. } else { TRIGGER_PLAYER_RADIUS } <= self.max[i]
+        })
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

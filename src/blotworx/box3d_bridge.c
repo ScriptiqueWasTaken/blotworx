@@ -954,6 +954,19 @@ static bool overlap_all_triangle(b3Vec3 a,b3Vec3 b,b3Vec3 d,int index,void* cont
  if(result.distance<B3_OVERLAP_SLOP && q->sink(q->index,q->mesh->source_triangles[index],q->context)<=0){q->failed=1;return false;}
  return true;
 }
+int bw_trigger_capsule_overlaps_convex(const float* vertices,int count,float hull_radius,
+    const float* start,const float* end,float capsule_radius)
+{
+    if(count<1 || count>B3_MAX_SHAPE_CAST_POINTS)return -1;
+    b3Vec3 segment[2]={{start[0],start[1],start[2]},{end[0],end[1],end[2]}};
+    b3DistanceInput input={0};
+    input.proxyA=(b3ShapeProxy){(const b3Vec3*)vertices,count,hull_radius};
+    input.proxyB=(b3ShapeProxy){segment,2,capsule_radius};
+    input.transform=b3Transform_identity;
+    input.useRadii=true;
+    b3SimplexCache cache={0};
+    return b3ShapeDistance(&input,&cache,NULL,0).distance<B3_OVERLAP_SLOP;
+}
 int bw_collision_overlap_sphere_all(void* handle,const float* center,float radius,BwSphereFilter sink,void* context){
  BwCollision* c=handle;if(!c || !center || !sink || !isfinite(radius) || radius<0)return 0;
  b3Vec3 world_center={center[0],center[1],center[2]};if(!b3IsValidVec3(world_center))return 0;

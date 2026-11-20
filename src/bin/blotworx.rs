@@ -22,6 +22,10 @@ fn main() -> anyhow::Result<()> {
     if std::env::args().any(|arg|arg=="--validate-animation-payloads") {return blotworx::blotworx::validate_animation_payloads();}
     #[cfg(debug_assertions)]
     if std::env::args().any(|arg|arg=="--validate-conversation-clones") {return blotworx::blotworx::validate_conversation_clones();}
+    #[cfg(debug_assertions)]
+    if std::env::args().any(|arg| arg == "--validate-dbc-arm-trigger") {
+        return blotworx::blotworx::validate_dbc_arm_trigger();
+    }
     let _ = env_logger::try_init();
     #[cfg(debug_assertions)]
     if std::env::args().any(|arg|arg=="--validate-story-rewards") {return blotworx::blotworx::validate_story_rewards();}

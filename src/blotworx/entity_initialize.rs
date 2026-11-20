@@ -69,6 +69,49 @@ impl World {
         (released_bytes, released_models)
     }
 
+    fn initialize_rigid_trigger_hulls(
+        &mut self,
+        range: std::ops::Range<usize>,
+        files: &[VirtualFile],
+    ) {
+        let mut resources: BTreeMap<&str, Arc<Vec<super::super::collision::StaticMesh>>> = BTreeMap::new();
+        for index in range {
+            let entity = &self.entities[index];
+            if !entity.components.iter().any(|component| {
+                matches!(component.class_name.as_str(), "TriggerVolumeComponent" | "TriggerDamageComponent")
+            }) {
+                continue;
+            }
+            let Some(path) = entity.components.iter()
+                .filter(|component| component.class_name == "PhysicsRigidBodyPhantomShapeComponent")
+                .flat_map(|component| &component.properties)
+                .find(|property| property.name == "RB Hull File Path")
+                .and_then(|property| property.value.as_str())
+                .filter(|path| !path.is_empty())
+            else {
+                continue;
+            };
+            let result = (|| -> Result<_> {
+                let file = lookup(files, path)
+                    .with_context(|| format!("Missing trigger hull {path}"))?;
+                let parts = match resources.entry(file.path.as_str()) {
+                    std::collections::btree_map::Entry::Occupied(entry) => entry.get().clone(),
+                    std::collections::btree_map::Entry::Vacant(entry) => {
+                        let hkx = HkxFile::load_bytes(&file.data).map_err(anyhow::Error::msg)?;
+                        entry.insert(std::sync::Arc::new(
+                            super::super::collision::body_local_meshes(&hkx)?
+                        )).clone()
+                    }
+                };
+                super::super::phantom_bounds::RigidTriggerHull::new(parts, entity.physics_transform())
+            })();
+            match result {
+                Ok(hull) => { self.rigid_trigger_hulls.insert(index, hull); }
+                Err(error) => self.report.unsupported.push(format!("Trigger hull {}: {error:#}", entity.name)),
+            }
+        }
+    }
+
     pub(super) fn initialize_component_range(
         &mut self,
         range: std::ops::Range<usize>,
@@ -105,6 +148,7 @@ impl World {
         self.initialize_logic_timers(range.clone())?;
         self.initialize_character_bodies(range.clone());
         self.initialize_multi_position_audio(range.clone());
+        self.initialize_rigid_trigger_hulls(range.clone(), files);
         for (index, entity) in self
             .entities
             .iter()

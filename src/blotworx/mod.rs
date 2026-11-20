@@ -629,6 +629,10 @@ mod robot_arm_spotlight;
 mod robot_arm_turn;
 mod robot_arm_behavior;
 mod robot_arm_behavior_world;
+#[cfg(debug_assertions)]
+pub fn validate_dbc_arm_trigger() -> anyhow::Result<()> {
+    demo_triggers::validate_dbc_arm_trigger()
+}
 mod robot_arm_target;
 mod rotator;
 mod rotator_runtime;

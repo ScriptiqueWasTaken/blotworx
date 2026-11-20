@@ -409,6 +409,7 @@ pub struct World {
     pub diagnostic_pickup_commands: bool,
     pub pickup_receivers: BTreeMap<usize, super::pickup::Receiver>,
     pub size_phantoms: BTreeMap<usize, super::phantom_bounds::SizeVolume>,
+    pub(super) rigid_trigger_hulls: BTreeMap<usize, super::phantom_bounds::RigidTriggerHull>,
     /// Imported resource geometry is retained separately from size phantoms.
     /// It must not be installed as solid/static collision or a shapeless AABB.
     pub resource_phantom_shapes: BTreeMap<usize, Arc<Vec<super::collision::StaticMesh>>>,
@@ -1828,6 +1829,7 @@ impl World {
         self.resource_phantom_shapes.remove(&entity);
         self.resource_phantom_motion.remove(&entity);
         self.resource_phantom_bounds.remove(&entity);
+        self.rigid_trigger_hulls.remove(&entity);
         self.size_phantom_filters.remove(&entity);
         self.size_phantom_handles.remove(&entity);
         self.resource_phantom_handles.remove(&entity);
@@ -9632,6 +9634,7 @@ pub(super) fn load_with_bootstrap_mode(
         pickup_physics_leases: BTreeMap::new(),
         pickup_reference_monitor: std::sync::Mutex::new(()),
         size_phantoms: BTreeMap::new(),
+        rigid_trigger_hulls: BTreeMap::new(),
         resource_phantom_shapes: BTreeMap::new(),
         resource_phantom_motion: BTreeMap::new(),
         lod_states: BTreeMap::new(),

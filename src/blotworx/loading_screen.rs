@@ -9,7 +9,7 @@ const MINIMUM_PRESENTATION: Duration = Duration::from_millis(330);
 const DOT_FRAME: Duration = Duration::from_millis(110);
 
 pub(super) struct Screen {
-    background: TextureHandle,
+    background: Option<TextureHandle>,
     dots: Vec<TextureHandle>,
     first_paint: Option<Instant>,
 }
@@ -19,34 +19,46 @@ impl Screen {
         ctx: &egui::Context,
         root: &Path,
         destination: Option<&str>,
-    ) -> anyhow::Result<Self> {
-        let mut store = super::resource_store::Store::new(root, &[])?;
+    ) -> Self {
+        let mut screen = Self {
+            background: None,
+            dots: Vec::new(),
+            first_paint: None,
+        };
+        let mut store = match super::resource_store::Store::new(root, &[]) {
+            Ok(store) => store,
+            Err(error) => {
+                log::warn!("Loading screens: {error:#}");
+                return screen;
+            }
+        };
         let requested = destination
             .and_then(|level| super::assets::loading_artwork(root, level)
                 .inspect_err(|error| log::warn!("Level loading artwork: {error:#}"))
                 .ok()
                 .flatten());
-        let background = if let Some(art) = requested {
+        let background = requested.and_then(|art| {
             let path = localized_path(&art);
-            texture(ctx, &mut store, &path).or_else(|error| {
-                log::warn!("Loading artwork {path}: {error:#}");
-                texture(ctx, &mut store, DEFAULT_ART)
-            })?
-        } else {
-            texture(ctx, &mut store, DEFAULT_ART)?
-        };
-        let mut dots = Vec::with_capacity(8);
+            texture(ctx, &mut store, &path)
+                .inspect_err(|error| log::warn!("Loading artwork {path}: {error:#}"))
+                .ok()
+        });
+        screen.background = background.or_else(|| {
+            texture(ctx, &mut store, DEFAULT_ART)
+                .inspect_err(|error| log::warn!("Loading artwork {DEFAULT_ART}: {error:#}"))
+                .ok()
+        });
         for index in 1..=8 {
             match texture(
                 ctx,
                 &mut store,
                 &format!("LoadingScreens/LoadingDots_{index:02}.tga"),
             ) {
-                Ok(frame) => dots.push(frame),
+                Ok(frame) => screen.dots.push(frame),
                 Err(error) => log::warn!("Loading indicator frame {index}: {error:#}"),
             }
         }
-        Ok(Self { background, dots, first_paint: None })
+        screen
     }
 
     pub(super) fn ready_to_dismiss(&self) -> bool {
@@ -57,19 +69,24 @@ impl Screen {
     pub(super) fn paint(&mut self, ui: &mut Ui) {
         let elapsed = self.first_paint.get_or_insert_with(Instant::now).elapsed();
         let viewport = ui.max_rect();
-        let size = self.background.size_vec2();
+        let size = self.background.as_ref().map_or(Vec2::new(640., 480.), TextureHandle::size_vec2);
         let scale = (viewport.width() / size.x).min(viewport.height() / size.y);
         let image = Rect::from_center_size(viewport.center(), size * scale);
         let uv = Rect::from_min_max(egui::Pos2::ZERO, egui::pos2(1., 1.));
         let painter = ui.painter();
         painter.rect_filled(viewport, 0., Color32::BLACK);
-        painter.image(self.background.id(), image, uv, Color32::WHITE);
+        if let Some(background) = &self.background {
+            painter.image(background.id(), image, uv, Color32::WHITE);
+        }
         if !self.dots.is_empty() {
             let frame = (elapsed.as_millis() / DOT_FRAME.as_millis()) as usize;
             let dot = &self.dots[frame % self.dots.len()];
             let corner = image.right_bottom() - Vec2::splat(18. * scale);
             let marker = Rect::from_min_max(corner - dot.size_vec2() * scale, corner);
             painter.image(dot.id(), marker, uv, Color32::WHITE);
+        } else {
+            let indicator = Rect::from_center_size(viewport.center(), Vec2::splat(24.));
+            ui.put(indicator, egui::Spinner::new());
         }
         ui.ctx().request_repaint_after(DOT_FRAME);
     }

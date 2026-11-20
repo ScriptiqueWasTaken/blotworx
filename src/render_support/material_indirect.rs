@@ -75,6 +75,7 @@ pub(super) fn texture(
     maps: Node<'_, '_>,
     slot: u8,
     coordinate: &str,
+    scene_color: bool,
     uv: &mut BTreeSet<u8>,
     slots: &mut BTreeSet<u8>,
 ) -> Result<String> {
@@ -87,7 +88,14 @@ pub(super) fn texture(
         .children()
         .filter(|n| n.has_tag_name("IndirectMap"))
         .collect::<Vec<_>>();
-    let mut code=format!("{{vec3 bw_coord={coordinate};ivec2 bw_base=ivec2(round((bw_coord.xy/bw_coord.z)*vec2(textureSize(u_tex[{slot}],0))*128.0));ivec2 bw_offset=ivec2(0);\n");
+    // Framebuffer copy coordinates use Wii pixels. Scaling the host render
+    // target must not shrink the authored warp or invert its vertical motion.
+    let extent = if scene_color {
+        "vec2(640.0,480.0)".to_owned()
+    } else {
+        format!("vec2(textureSize(u_tex[{slot}],0))")
+    };
+    let mut code=format!("{{vec3 bw_coord={coordinate};vec2 bw_extent={extent}*128.0;ivec2 bw_base=ivec2(round((bw_coord.xy/bw_coord.z)*bw_extent));ivec2 bw_offset=ivec2(0);\n");
     if attr(ind, "MatrixSel")? != "ItmOff" {
         let index = match attr(ind, "MatrixSel")? {
             "Itm0" => 0,
@@ -158,7 +166,11 @@ pub(super) fn texture(
         attr(ind, "UtcLod")? == "false",
         "Unmodified indirect LOD derivatives are not yet reproduced"
     );
-    code.push_str(&format!("stage_tex[BW_STAGE]=texture(u_tex[{slot}],vec2(bw_ind_coord)/(vec2(textureSize(u_tex[{slot}],0))*128.0));}}\n"));
+    code.push_str("vec2 bw_uv=vec2(bw_ind_coord)/bw_extent;\n");
+    if scene_color {
+        code.push_str("bw_uv.y=1.0-bw_uv.y;\n");
+    }
+    code.push_str(&format!("stage_tex[BW_STAGE]=texture(u_tex[{slot}],bw_uv);}}\n"));
     Ok(code)
 }
 

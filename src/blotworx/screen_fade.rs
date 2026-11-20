@@ -11,6 +11,7 @@ pub struct State {
     /// REL733c stores byte6c before checking whether a fade is active.
     /// REL71e4 uses it to gate restoration of the previous mapping contexts.
     pub suppress_mapping_restore: bool,
+    pub hide_gameplay_hud: bool,
     pub held: bool,
     pub deferred_updates: i32,
     guard: f32,
@@ -24,6 +25,7 @@ impl Default for State {
             duration: 0.,
             opacity: 0.,
             suppress_mapping_restore: false,
+            hide_gameplay_hud: false,
             held: false,
             deferred_updates: 0,
             guard: 0.,
@@ -55,6 +57,7 @@ impl State {
         suppress_mapping_restore: bool,
     ) -> Result<()> {
         self.suppress_mapping_restore = suppress_mapping_restore;
+        self.hide_gameplay_hud = suppress_mapping_restore;
         if !self.out {
             return Ok(());
         }
@@ -168,6 +171,12 @@ impl State {
     }
 }
 impl super::assets::World {
+    pub(super) fn faded_scene_load_pending(&self) -> bool {
+        self.screen_fade.out
+            && self.screen_fade.opacity >= 1.
+            && self.scene_requests.names().next().is_some()
+    }
+
     pub(super) fn advance_screen_fade_frame(&mut self) -> Result<()> {
         ensure!(
             self.frame_clock.is_published(),
@@ -208,6 +217,7 @@ mod tests {
                 duration: i["duration"].as_f64().unwrap() as f32,
                 opacity: i["opacity"].as_f64().unwrap() as f32,
                 suppress_mapping_restore: i["suppress"].as_bool().unwrap(),
+                hide_gameplay_hud: false,
                 held: i["held"].as_bool().unwrap(),
                 deferred_updates: i["deferred"].as_i64().unwrap() as i32,
                 guard: i["guard"].as_f64().unwrap() as f32,

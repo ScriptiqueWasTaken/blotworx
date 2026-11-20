@@ -1204,6 +1204,9 @@ impl super::assets::World {
                     lua,
                     args.front().cloned().unwrap_or(mlua::Value::Boolean(true)),
                 )?;
+            if self.demo_story.hud {
+                self.screen_fade.hide_gameplay_hud = false;
+            }
         } else if name == "SetRotatorMaxSpeed" {
             if args.len() != 2 {
                 return Err(mlua::Error::external(

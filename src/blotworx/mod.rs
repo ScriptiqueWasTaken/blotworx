@@ -2428,6 +2428,7 @@ struct Engine {
     show_unavailable_levels: bool,
     receiver: Option<mpsc::Receiver<Result<World>>>,
     loading_screen: Option<loading_screen::Screen>,
+    stream_loading_screen: Option<loading_screen::Screen>,
     world: Option<World>,
     demo_hud: demo_hud::State,
     movie: Option<movie::Player>,
@@ -2553,6 +2554,7 @@ impl Engine {
             show_unavailable_levels: false,
             receiver: None,
             loading_screen: None,
+            stream_loading_screen: None,
             world: None,
             #[cfg(feature = "blotworx-ui-render")]
             hud: None,
@@ -2722,8 +2724,8 @@ impl Engine {
             .unwrap_or_default();
         // A diagnostic script belongs to the level the run started in.
         let runtime_script = self.runtime_script.take();
-        self.loading_screen = loading_screen::Screen::load(ctx, &root, self.world.as_ref().map(|_| level.as_str()))
-            .inspect_err(|error| log::warn!("Loading screen: {error:#}")).ok();
+        self.loading_screen = Some(loading_screen::Screen::load(ctx, &root, Some(&level)));
+        self.stream_loading_screen = None;
         let (tx, rx) = mpsc::channel();
         self.receiver = Some(rx);
         drop(self.world.take());
@@ -3125,6 +3127,7 @@ impl Engine {
         let mut aim_target = None;
         let mut aim_ray = None;
         let simulation_started = Instant::now();
+        let stream_screen_presented = self.stream_loading_screen.is_some();
         {log::debug!(target:"blotworx_phase", "simulation begin ticks={} active={active}",controller.ticks);}
         let result=controller.advance_with_tick_phases_and_camera(world,|world|&world.collision,elapsed,active,input,
             |world|world.published_camera_frame().map(|frame|frame.map(|frame|frame.direction)),
@@ -3135,7 +3138,13 @@ impl Engine {
                 return Ok(());
             }
             if phase==controller::TickPhase::BeforeMovement {
-                world.with_live_player(player,|world|world.prepare_gameplay_scene_requests())?;
+                // Scene publication can block the render thread. Defer it
+                // until a fully faded handoff has painted its loading artwork.
+                if !stream_screen_presented && world.faded_scene_load_pending() {
+                    world.scene_requests_prepared_for_models = true;
+                } else {
+                    world.with_live_player(player,|world|world.prepare_gameplay_scene_requests())?;
+                }
                 world.advance_demo_motion(STEP)?;
                 world.with_live_player(player,|world|world.advance_demo_ai(STEP))?;
                 let trigger_position=player.position;
@@ -3860,11 +3869,12 @@ impl Engine {
                 self.error = Some(format!("Gameplay HUD: {error:#}"));
             }
         }
-        if !self.original_movie_hud && self.preferences.hud {
+        if !self.original_movie_hud && self.preferences.hud && !world.screen_fade.hide_gameplay_hud {
             self.demo_hud.draw(ui, rect, world);
         }
         if requested_hose.is_some()
             && (!world.demo_story.enabled || world.demo_story.reticle_visible)
+            && !world.screen_fade.hide_gameplay_hud
         {
             let color = if requested_hose == Some(0) {
                 egui::Color32::from_rgb(90, 160, 255)
@@ -4498,6 +4508,18 @@ impl eframe::App for Engine {
                 egui::Window::new("Level report").open(&mut self.details).resizable(true).default_width(530.).show(ui.ctx(),|ui|{if let Some(w)=&self.world{egui::ScrollArea::vertical().max_height(550.).show(ui,|ui|{ui.label(format!("{} entities Â· {} meshes Â· {} triangles Â· {} collision triangles",w.report.placed_entities,w.report.meshes,w.report.render_triangles,w.report.collision_triangles));ui.label(format!("Authored spawn: {:?}",w.report.spawn));ui.label(format!("Global definitions applied: {}",w.report.global_overrides));if ui.button("Export reportâ€¦").clicked(){if let Some(path)=rfd::FileDialog::new().set_file_name("blotworx-report.json").save_file(){if let Err(e)=std::fs::write(path,serde_json::to_vec_pretty(&w.report).unwrap_or_default()){self.error=Some(e.to_string())}}}ui.separator();for line in &w.report.unsupported{ui.label(line);}ui.collapsing("Asset / material warnings",|ui|{for line in &w.report.warnings{ui.label(line);}});ui.collapsing("Components",|ui|{for (name,count) in &w.report.components{ui.label(format!("{count} Ã— {name}"));}});});}});
             }
             self.play(ui);
+            // Ordinary streaming continues behind gameplay. When an authored
+            // handoff has already faded to black, present the level's loading
+            // art while the pending scene queue is being published.
+            if let Some(world) = self.world.as_ref().filter(|world| world.faded_scene_load_pending()) {
+                let screen = self.stream_loading_screen.get_or_insert_with(|| {
+                    loading_screen::Screen::load(ui.ctx(), world.source_data_root(), Some(&world.report.level))
+                });
+                screen.paint(ui);
+                ui.ctx().request_repaint();
+            } else {
+                self.stream_loading_screen = None;
+            }
             if let Some(world) = &mut self.world {
                 if let Some(dialogue) = &world.demo_story.dialogue {
                     let speaker = dialogue.speaker.clone();

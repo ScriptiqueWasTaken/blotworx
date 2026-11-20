@@ -599,22 +599,29 @@ fn compile_register_mode(
                 .filter(|n| n.has_tag_name("TextureMap"))
                 .nth(coordinate as usize)
                 .context("Missing texture coordinate generator")?;
-            let generated = if scene_color_slot == Some(slot) {
+            let scene_color = scene_color_slot == Some(slot);
+            let generated = if scene_color {
                 "vec3((gl_FragCoord.xy-bw_scene_rect.xy)/bw_scene_rect.zw,1.0)".into()
             } else {
                 coordinate_expression(map, slot, &mut uv_textures)?
             };
             textured = true;
-            if scene_color_slot != Some(slot) {
+            if !scene_color {
                 texture_slots.insert(slot);
             }
             if input.indirect {
+                let indirect_coordinate = if scene_color {
+                    "vec3((gl_FragCoord.x-bw_scene_rect.x)/bw_scene_rect.z,1.0-(gl_FragCoord.y-bw_scene_rect.y)/bw_scene_rect.w,1.0)"
+                } else {
+                    &generated
+                };
                 indirect_code = Some(
                     indirect::texture(
                         stages[i],
                         maps,
                         slot,
-                        &generated,
+                        indirect_coordinate,
+                        scene_color,
                         &mut uv_textures,
                         &mut texture_slots,
                     )?

@@ -28,7 +28,9 @@ struct HudFrameInput {data:Arc<PlayerData>,visible:bool,tick:u64,rect:egui::Rect
 #[cfg(feature="blotworx-ui-render")]
 impl HudFrameInput {
     fn from_world(rect:egui::Rect,world:&super::assets::World,tick:u64)->Result<Self> {
-        Ok(Self{data:Arc::new(PlayerData::gameplay(world)?),visible:!world.demo_story.enabled||world.demo_story.hud,
+        let visible = (!world.demo_story.enabled || world.demo_story.hud)
+            && !world.screen_fade.hide_gameplay_hud;
+        Ok(Self{data:Arc::new(PlayerData::gameplay(world)?),visible,
             tick,rect,messages:world.ability_hud_requests.clone()})
     }
 }

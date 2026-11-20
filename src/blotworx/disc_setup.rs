@@ -235,7 +235,11 @@ impl Setup {
         }
     }
 
-    pub(super) fn show(&mut self, ui: &mut egui::Ui) -> Option<PathBuf> {
+    pub(super) fn show(
+        &mut self,
+        ui: &mut egui::Ui,
+        launch_error: Option<&str>,
+    ) -> Option<PathBuf> {
         if let Some((_, rx)) = self.job.as_ref() {
             match rx.try_recv() {
                 Ok(Ok(root)) => {
@@ -269,61 +273,52 @@ impl Setup {
                 self.start(image);
             }
         }
-        ui.centered_and_justified(|ui| {
-            egui::Frame::new()
-                .fill(egui::Color32::from_rgb(25, 30, 40))
-                .stroke(egui::Stroke::new(1., egui::Color32::from_rgb(51, 61, 78)))
-                .corner_radius(16)
-                .inner_margin(32)
-                .show(ui, |ui| {
-                    ui.set_width(430_f32.min((ui.ctx().viewport_rect().width() - 96.).max(180.)));
-                    ui.label(egui::RichText::new("Blotworx").size(34.).strong());
+        layout_setup(ui, |ui| {
+            ui.label(egui::RichText::new("Blotworx").size(34.).strong());
+            ui.add_space(5.);
+            ui.heading("Set up Epic Mickey");
+            ui.add_space(12.);
+            if let Some((progress, _)) = &self.job {
+                let total = progress.total.load(Ordering::Relaxed);
+                if total == 0 {
+                    ui.horizontal_wrapped(|ui| {
+                        ui.spinner();
+                        ui.label("Reading the disc image…");
+                    });
+                } else {
+                    let done = progress.copied.load(Ordering::Relaxed);
+                    ui.label(format!(
+                        "Importing game files  {:.1} / {:.1} GB",
+                        done as f64 / 1e9,
+                        total as f64 / 1e9
+                    ));
+                    ui.add(egui::ProgressBar::new(done as f32 / total as f32));
+                }
+            } else {
+                ui.label("Choose or drop your Epic Mickey Wii disc image here.");
+                ui.weak("ISO, RVZ, WBFS, WIA, CISO, GCZ, NFS or ZIP");
+                ui.add_space(12.);
+                if ui
+                    .add_sized(
+                        [ui.available_width(), 38.],
+                        egui::Button::new("Choose disc image"),
+                    )
+                    .clicked()
+                {
+                    selected = rfd::FileDialog::new()
+                        .add_filter("Wii disc images", FORMATS)
+                        .add_filter("ZIP archives", &["zip"])
+                        .pick_file()
+                        .map(Event::Image);
+                }
+                if ui.link("Use an extracted game folder").clicked() {
+                    selected = rfd::FileDialog::new().pick_folder().map(Event::Folder);
+                }
+                if let Some(error) = self.error.as_deref().or(launch_error) {
                     ui.add_space(8.);
-                    ui.heading("Set up Epic Mickey");
-                    ui.add_space(12.);
-                    if let Some((progress, _)) = &self.job {
-                        let total = progress.total.load(Ordering::Relaxed);
-                        if total == 0 {
-                            ui.horizontal(|ui| {
-                                ui.spinner();
-                                ui.label("Reading the disc image…");
-                            });
-                        } else {
-                            let done = progress.copied.load(Ordering::Relaxed);
-                            ui.add(egui::ProgressBar::new(done as f32 / total as f32).text(
-                                format!(
-                                    "Importing game files  {:.1} / {:.1} GB",
-                                    done as f64 / 1e9,
-                                    total as f64 / 1e9
-                                ),
-                            ));
-                        }
-                    } else {
-                        ui.label("Choose or drop your Epic Mickey Wii disc image here.");
-                        ui.weak("ISO, RVZ, WBFS, WIA, CISO, GCZ, NFS or ZIP");
-                        ui.add_space(16.);
-                        if ui
-                            .add(
-                                egui::Button::new("Choose disc image")
-                                    .min_size(egui::vec2(170., 38.)),
-                            )
-                            .clicked()
-                        {
-                            selected = rfd::FileDialog::new()
-                                .add_filter("Wii disc images", FORMATS)
-                                .add_filter("ZIP archives", &["zip"])
-                                .pick_file()
-                                .map(Event::Image);
-                        }
-                        if ui.link("Use an extracted game folder").clicked() {
-                            selected = rfd::FileDialog::new().pick_folder().map(Event::Folder);
-                        }
-                    }
-                    if let Some(error) = &self.error {
-                        ui.add_space(12.);
-                        ui.colored_label(egui::Color32::LIGHT_RED, error);
-                    }
-                });
+                    ui.colored_label(egui::Color32::LIGHT_RED, error);
+                }
+            }
         });
         match selected {
             Some(Event::Image(image)) => self.start(image),
@@ -339,6 +334,36 @@ impl Setup {
         }
         None
     }
+}
+
+fn layout_setup(ui: &mut egui::Ui, draw: impl FnOnce(&mut egui::Ui)) {
+    let top = (ui.available_height() * 0.14).clamp(8., 96.);
+    egui::ScrollArea::vertical()
+        .auto_shrink([false, false])
+        .show(ui, |ui| {
+            let available = ui.available_width();
+            let outer_width = (available - 24.).clamp(1., 500.);
+            let padding = (outer_width * 0.065).clamp(2., 28.);
+            let width = (outer_width - 2. * padding - 2.).max(1.);
+            ui.add_space(top);
+            ui.horizontal_top(|ui| {
+                ui.spacing_mut().item_spacing.x = 0.;
+                ui.add_space(((available - outer_width) * 0.5).max(0.));
+                egui::Frame::new()
+                    .fill(egui::Color32::from_rgb(25, 30, 40))
+                    .stroke(egui::Stroke::new(1., egui::Color32::from_rgb(51, 61, 78)))
+                    .corner_radius(16)
+                    .inner_margin(padding)
+                    .show(ui, |ui| {
+                        ui.vertical(|ui| {
+                            ui.set_width(width);
+                            ui.spacing_mut().item_spacing.y = 7.;
+                            draw(ui);
+                        });
+                    });
+            });
+            ui.add_space(12.);
+        });
 }
 
 #[cfg(debug_assertions)]

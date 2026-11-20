@@ -4771,12 +4771,9 @@ impl eframe::App for Engine {
             self.loading_screen = None;
         }
         if self.world.is_none() {
-            if let Some(root) = self.setup.show(ui) {
+            if let Some(root) = self.setup.show(ui, self.error.as_deref()) {
                 self.root = root.to_string_lossy().into_owned();
                 self.load(ui.ctx());
-            }
-            if let Some(error) = &self.error {
-                ui.colored_label(egui::Color32::LIGHT_RED, error);
             }
         } else {
             self.draw_options(ui.ctx());

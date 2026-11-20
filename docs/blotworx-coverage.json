@@ -263,12 +263,12 @@
       },
       {
         "scope": "EM1 campaign credits and return to title",
-        "state": "Campaign EndGame proceeds from the closing movie to the original credits video with its Wwise stereo soundtrack, then returns to the title. Credits:0 also works as an explicit sequence command.",
+        "state": "Campaign EndGame proceeds from the closing movie to the original credits video with its Wwise stereo soundtrack, plays the original teaser, then returns to the interactive title. Credits:0 also works as an explicit sequence command.",
         "source": "Wii REL398cc..39908 state registration, baaa4 EndGame return to state 13, b8b6c credits presentation and b87b4 return to the title state. Play_music_credits in the imported fmv_endgame_soundtrack bank resolves the streamed source and its -1 dB node gain, while fmv_credits.bik contains a silent embedded track.",
-        "evidence": "credits-campaign-return.runtime.json records a staged campaign ending with twelve completed movies including a held-input credits skip, the original interactive title visible and no runtime or script errors. credits-art-and-music.runtime.json samples credits frame 600 at device time 20.020964 seconds using 28000 Hz stereo media 448639764, within one millisecond of the frame timestamp. The frontend-extras-credits replays opened the original reel through the Credits card, sampled picture and its native Wwise track, and used QuickExit to return to the same Extras slot. campaign-credits-teaser.runtime.json consumed the credits and teaser in that order using held skips, recorded 32000 Hz media 411479065 for the teaser, and reached the title.",
+        "evidence": "credits-campaign-return.runtime.json records a staged campaign ending with twelve completed movies including a held-input credits skip, the original interactive title visible and no runtime or script errors. credits-art-and-music.runtime.json samples credits frame 600 at device time 20.020964 seconds using 28000 Hz stereo media 448639764, within one millisecond of the frame timestamp. The frontend-extras-credits replays opened the original reel through the Credits card, sampled picture and its native Wwise track, and used QuickExit to return to the same Extras slot. campaign-credits-teaser.runtime.json consumed the credits and teaser in that order using held skips, recorded 32000 Hz media 411479065 for the teaser, and reached the title. The campaign-credits-natural replay completed both requests with zero skip input and reached teaser frame 849 and the interactive title. The frontend-extras-credits-natural-10450 replay reached credits frame 9622 without skipping, resumed the same Extras slot and preserved both scratch saves. Replay with tools/blotworx/verify_credits_flow.py.",
         "open": [
           "Full unskipped Wii playback comparison and final gain parity",
-          "Natural credits-to-teaser completion, standalone Extras teaser selection and regional soundtrack parity"
+          "Regional soundtrack parity and the standalone teaser branch in builds with a matching collectible"
         ]
       },
       {

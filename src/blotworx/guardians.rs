@@ -168,6 +168,7 @@ pub struct State {
     pub selected_id: i32,
     pub hero_terminal: i32,
     pub scrapper_terminal: i32,
+    pub pending_points: f32,
     pending_presentation: Option<bool>,
 }
 impl Default for State {
@@ -180,11 +181,23 @@ impl Default for State {
             selected_id: 50,
             hero_terminal: 50,
             scrapper_terminal: 50,
+            pending_points: 0.,
             pending_presentation: None,
         }
     }
 }
 impl State {
+    /// REL18d38..18d64 adds signed single-precision points while enabled.
+    /// The guardian update consumes this balance separately.
+    pub fn add_points(&mut self, hero: bool, amount: f32) -> Result<()> {
+        let delta = if hero { amount } else { -amount };
+        if self.enabled {
+            let next = self.pending_points + delta;
+            ensure!(next.is_finite(), "Guardian point balance is not finite");
+            self.pending_points = next;
+        }
+        Ok(())
+    }
     pub fn drain_presentation(&mut self, effects:&mut impl Effects)->Result<()> {
         if let Some(visible)=self.pending_presentation {
             effects.present(visible)?;

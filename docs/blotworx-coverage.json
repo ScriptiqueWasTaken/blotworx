@@ -79,6 +79,18 @@
   ],
   "validated_connections": [
       {
+        "scope": "Zone B Tim dismissal, guardian award intake, and first boat ride",
+        "state": "Tim's thinner outcome can release the scripted guardian from its animated socket. The authored hero and scrapper award callbacks publish signed pending points with the retail enable gate.",
+        "source": "GuardianPrefab_StartNextGuardian, GV_ZoneB_GuardianExplaination, and EM1 REL 1ca48, 1cb60, 18d38–18d64",
+        "evidence": "target/perf/gv-tim-thin-fixed.runtime.json records a completed dismissal and -15 pending points at tick 760. The earlier attachment and award errors are absent. The separate boarding replay carries Mickey 26.175 m to the dock, with 671 grounded ticks and zero respawns after boarding.",
+        "open": [
+          "Pending point consumption, guardian population changes and save serialization",
+          "Painted Spatter dismissal",
+          "Direct Zone B launch lacks Zone A's cleanup function",
+          "Completion of the boat-transfer exit sequence"
+        ]
+      },
+      {
         "scope": "Gremlin Village airlock entry and Zone B boat junction",
         "state": "The staged airlock approach reaches the authored Zone B intro, which calls the original Zone A cleanup. Zone B's boat handoff can now set the live spline junction probability through its native Lua API.",
         "source": "GV_ZoneA.lua, GV_ZoneB2.lua, and the authored SK_BoatPath08 junction in gv_zoneb.pak",

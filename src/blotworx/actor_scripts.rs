@@ -1015,6 +1015,8 @@ impl Scripts {
         scripts.bind_world_api("UnrestrictCutSceneInput")?;
         scripts.bind_world_api("EnableGuardianSystem")?;
         scripts.bind_world_api("GetHeroPercent")?;
+        scripts.bind_world_api("AddHeroPoints")?;
+        scripts.bind_world_api("AddScrapperPoints")?;
         scripts.bind_world_api("GetScrapperPercent")?;
         scripts.bind_world_api("ActivateScene")?;
         scripts.bind_world_api("DisableGuardianSystem")?;

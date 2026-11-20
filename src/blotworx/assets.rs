@@ -3844,6 +3844,36 @@ impl World {
                             .find(|(_, field)| field.name == property)
                             .map(|(field_index, field)| (component_index, field_index, field))
                     });
+                if self.demo_story.enabled && expected == "String" && property == "Bone Attach Name" {
+                    let transform = match found {
+                        Some((component, field, value))
+                            if self.entities[entity].components[component].class_name == "JPSTransformationComponent"
+                                && value.class_name == "String" && !value.value.is_array() => Some((component, Some(field))),
+                        None => self.entities[entity].components.iter()
+                            .position(|component| component.class_name == "JPSTransformationComponent")
+                            .map(|component| (component, None)),
+                        _ => None,
+                    };
+                    if let Some((component, field)) = transform.filter(|_| index == 0) {
+                        let value = serde_json::json!(value.as_str().unwrap_or_default().to_ascii_lowercase());
+                        let component = &mut self.entities[entity].components[component];
+                        if let Some(field) = field {
+                            component.properties[field].value = value;
+                        } else {
+                            component.properties.push(epic_mickey_lib_rs::scene_file::Property::new(
+                                expected.into(), property, false, false, false, value,
+                            ));
+                        }
+                        let socket = super::skeletal_children::Socket::load(component)
+                            .map_err(mlua::Error::external)?;
+                        if let Some(local) = self.transform_hierarchy.get_mut(&entity) {
+                            local.socket = socket;
+                            self.update_skeletal_children_range_strict(entity..entity + 1)
+                                .map_err(mlua::Error::external)?;
+                        }
+                    }
+                    return Ok(mlua::MultiValue::new());
+                }
                 if found.is_none() {
                     // Reflected fields exist even when the scene omitted an
                     // unchanged default. Only create the verified scalar pool
@@ -3927,25 +3957,6 @@ impl World {
                     // not resize or merge these independently stored arrays.
                     if let Some(slot)=self.entities[entity].components[component_index].properties[field_index]
                         .value.get_mut(index as usize) { *slot=value; }
-                    return Ok(mlua::MultiValue::new());
-                }
-                if self.demo_story.enabled
-                    && expected == "String"
-                    && component.class_name == "JPSTransformationComponent"
-                    && property == "Bone Attach Name"
-                    && !field.value.is_array()
-                {
-                    self.entities[entity].components[component_index].properties[field_index]
-                        .value = value;
-                    let socket = super::skeletal_children::Socket::load(
-                        &self.entities[entity].components[component_index],
-                    )
-                    .map_err(mlua::Error::external)?;
-                    if let Some(local) = self.transform_hierarchy.get_mut(&entity) {
-                        local.socket = socket;
-                    }
-                    self.update_skeletal_children_range_strict(entity..entity + 1)
-                        .map_err(mlua::Error::external)?;
                     return Ok(mlua::MultiValue::new());
                 }
                 if expected == "Integer"
@@ -4248,6 +4259,19 @@ impl World {
                     table.raw_set(index + 1, value)?;
                 }
                 Ok(mlua::MultiValue::from_vec(vec![mlua::Value::Table(table)]))
+            }
+            "AddHeroPoints" | "AddScrapperPoints" => {
+                if args.len() != 2 {
+                    return Err(mlua::Error::external("Guardian points require an entity and amount"));
+                }
+                let amount = lua.coerce_number(args[1].clone())?
+                    .map(|amount| amount as f32)
+                    .filter(|amount| amount.is_finite())
+                    .ok_or_else(|| mlua::Error::external("Guardian point amount must be finite"))?;
+                self.scripts.resolve_native_entity_argument(lua, args[0].clone())?;
+                self.guardians.add_points(name == "AddHeroPoints", amount)
+                    .map_err(mlua::Error::external)?;
+                Ok(mlua::MultiValue::new())
             }
             "GetHeroPercent" | "GetScrapperPercent" => {
                 // Retail15bf8/15d0c resolve/pop the supplied entity, but the

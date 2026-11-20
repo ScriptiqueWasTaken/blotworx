@@ -4732,6 +4732,7 @@ impl Engine {
                         "dirty":world.guardians.dirty,"owned_count":world.guardian_entities.entities().len(),
                         "audio_tick":world.guardian_audio.schedule.tick(),"pending_audio_actions":world.guardian_audio.schedule.pending()}
                 });
+                report["guardians"]["pending_points"] = serde_json::json!(world.guardians.pending_points);
                 report["demo_npc_fallback"] = serde_json::to_value(&world.demo_story.npc_fallback).unwrap_or_default();
                 report["memory"] = serde_json::json!({
                     "tracked_cpu_asset_bytes":{

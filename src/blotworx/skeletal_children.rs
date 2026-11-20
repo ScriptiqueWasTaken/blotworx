@@ -29,15 +29,14 @@ impl Socket {
         if name.is_empty() {
             return Ok(None);
         }
-        let mode = i32::try_from(
-            value("Bone Attach Rotate Mode")
-                .and_then(|value| value.as_i64())
-                .context("Attachment mode missing")?,
-        )?;
-        let offset = crate::render_support::scene::parse_point3(
-            value("Bone Attach Offset").context("Attachment offset missing")?,
-        )
-        .context("Invalid attachment offset")?;
+        let mode = i32::try_from(value("Bone Attach Rotate Mode")
+            .map(|mode| mode.as_i64().context("Invalid attachment mode"))
+            .transpose()?.unwrap_or(0))?;
+        let offset = value("Bone Attach Offset")
+            .map(|offset| crate::render_support::scene::parse_point3(offset)
+                .context("Invalid attachment offset"))
+            .transpose()?
+            .unwrap_or([0.; 3]);
         // Native constructor default for the optional Bone Scale Multiplier.
         let multiplier = value("Bone Scale Multiplier")
             .map(|value| value.as_f64().context("Invalid bone scale multiplier"))

@@ -24,6 +24,7 @@ pub struct Session {
     tracking: BTreeSet<String>,
     player: Player,
     countdown: countdown::State,
+    guardian_pending_points: f32,
     input_presentation: input_presentation::State,
     scripts: ScriptTransfer,
     source_player: usize,
@@ -85,6 +86,7 @@ impl Session {
         let scripts = world.scripts.take_for_transition()?;
         Ok(Self {
             countdown: world.countdown.clone(),
+            guardian_pending_points: world.guardians.pending_points,
             input_presentation: world.input_presentation.clone(),
             scripts: ScriptTransfer(Arc::new(Mutex::new(Some(scripts)))),
             source_player: world.player_entity,
@@ -119,6 +121,7 @@ impl Session {
         world.report.geometry.push(report);
         world.globals = self.globals;
         world.countdown = self.countdown;
+        world.guardians.pending_points = self.guardian_pending_points;
         world.input_presentation = self.input_presentation;
         world.quests = self.quests;
         world.game_options = self.options;

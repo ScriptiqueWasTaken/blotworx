@@ -531,6 +531,7 @@ mod knockback;
 mod ledge_control;
 mod lifetime;
 mod level_session;
+mod loading_screen;
 mod level_transition;
 mod locomotion_actions;
 mod locomotion_animation;
@@ -842,7 +843,7 @@ fn options() -> Result<Options> {
         diagnostic_rig: None,
         diagnostic_clip: None,
         root: None,
-        level: "Levels/GV_ZoneA_Start.level".into(),
+        level: "Levels/DBC_Start_1st.Level".into(),
         inspect: None,
         inspect_save: None,
         smoke: false,
@@ -2426,6 +2427,7 @@ struct Engine {
     level_filter: String,
     show_unavailable_levels: bool,
     receiver: Option<mpsc::Receiver<Result<World>>>,
+    loading_screen: Option<loading_screen::Screen>,
     world: Option<World>,
     demo_hud: demo_hud::State,
     movie: Option<movie::Player>,
@@ -2550,6 +2552,7 @@ impl Engine {
             level_filter: String::new(),
             show_unavailable_levels: false,
             receiver: None,
+            loading_screen: None,
             world: None,
             #[cfg(feature = "blotworx-ui-render")]
             hud: None,
@@ -2641,7 +2644,6 @@ impl Engine {
         let particle_asset_preview = self.particle_asset_preview.clone();
         let particle_materials = self.particle_materials;
         let live_actor = self.live_actor.clone();
-        let runtime_script = self.runtime_script.clone();
         let diagnostic_relocation = self.diagnostic_relocation.clone();
         let diagnostic_pickup_commands = self.diagnostic_pickup_commands.clone();
         let diagnostic_counter_impact = self.diagnostic_counter_impact.clone();
@@ -2720,6 +2722,10 @@ impl Engine {
             .as_ref()
             .map(|world| world.render_options)
             .unwrap_or_default();
+        // A diagnostic script belongs to the level the run started in.
+        let runtime_script = self.runtime_script.take();
+        self.loading_screen = loading_screen::Screen::load(ctx, &root, self.world.is_none())
+            .inspect_err(|error| log::warn!("Loading screen: {error:#}")).ok();
         drop(self.world.take());
         self.controller = None;
         self.ear_pose = None;
@@ -4440,6 +4446,14 @@ impl eframe::App for Engine {
             || (edge & 0x10 != 0 && ui.input(|i| i.focused))
         {
             if self.options_open {self.options_open=false;} else {self.paused = !self.paused;}
+        }
+        if self.receiver.is_some() {
+            if let Some(screen) = &self.loading_screen {
+                screen.paint(ui);
+                return;
+            }
+        } else {
+            self.loading_screen = None;
         }
         self.draw_options(ui.ctx());
         if self.world.is_none() {

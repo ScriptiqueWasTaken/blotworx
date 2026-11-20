@@ -304,15 +304,23 @@ impl World {
                     .and_then(|p| p.value.as_bool())
                     .with_context(|| format!("Missing admission {name}"))
             };
+            let is_mover = flag("Is Mover")?;
             let requests_dynamic = super::dynamic_body::requests_dynamic(
-                flag("Is Mover")?,
+                is_mover,
                 flag("Is Real")?,
                 flag("Is Painted")?,
             );
-            let animated_system = state.bodies.len() > 1
-                && state.node_bindings.iter().all(Option::is_some)
-                && !requests_dynamic;
-            let eligible = (state.bodies.len() == 1 || animated_system)
+            // Authored movers can keyframe a body relative to the entity when
+            // its collision asset provides a local pose and no matching NIF node.
+            let keyframed_system = state.bodies.len() > 1
+                && !requests_dynamic
+                && state.bodies.iter().zip(&state.node_bindings).all(|(body, node)| {
+                    node.is_some()
+                        || (is_mover && body.auxiliary.user_data.as_ref().is_some_and(|data| {
+                            data.word_04 == 0 && data.dynamic_binding.is_some()
+                        }))
+                });
+            let eligible = (state.bodies.len() == 1 || keyframed_system)
                 && (self.entities[entity].transform_parent_id()?.is_none()
                     || self.transform_hierarchy.contains_key(&entity))
                 && self

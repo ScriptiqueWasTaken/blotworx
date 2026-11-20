@@ -189,9 +189,10 @@ impl super::assets::World {
                 .or_default()
                 .insert(index, disabled);
         }
-        // Objects To Spawn are source instances, not world pickups. Hide the
-        // source subtree; newly instantiated objects own independent draws.
+        // Objects To Spawn remain available as factory inputs. Scene loading
+        // keeps them hidden and defers OnSpawned until clone construction.
         for entity in templates {
+            self.spawner_sources.insert(entity);
             self.set_entity_hidden(entity, true)?;
             // Source objects remain available to the factory, but their
             // gameplay aliases must resolve to live spawned instances. In GV,

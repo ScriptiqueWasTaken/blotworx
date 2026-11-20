@@ -1111,7 +1111,9 @@ impl World {
         let mut initialization_connections=0;
         for entity in range.clone() {
             if self.outputs.has_connections(entity,"OnMapLoadOrStream") {initialization_connections+=1;}
-            self.emit_entity_output(entity,"OnSpawned",entity);
+            if !self.spawner_sources.contains(&entity) {
+                self.emit_entity_output(entity,"OnSpawned",entity);
+            }
             if stream_archive.is_some() {
                 self.emit_entity_output(entity,"OnMapLoadOrStream",entity);
             }

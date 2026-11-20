@@ -79,6 +79,17 @@
   ],
   "validated_connections": [
       {
+        "scope": "Spawner source lifetime in Tim's paint follow-up",
+        "state": "Scene admission retains hidden Objects To Spawn sources without delivering their clone-spawn callback. Newly created copies keep the existing deferred spawn event and can retire independently.",
+        "source": "gv_zoneb_dynamic.Spawner_PipeBurst and gv_zoneb_dynamic.FX_PipeBurst in gv_zoneb.bin. The latter has a two-second self-DestroyEntity connection on OnSpawned.",
+        "evidence": "The before-fix probe records the source valid at load and invalid after its timer. The 1340-tick Tim replay records independent clone retirement, a retained source, GV_ZoneB_OpenDoors completion, 15 pending Hero points, and released input with zero script or runtime errors.",
+        "open": [
+          "Original Wii verification of template admission scheduling",
+          "Complete natural combat and progression playthrough",
+          "The combined Zone C staging started the transfer while the earlier Zone B intro still owned an input restriction"
+        ]
+      },
+      {
         "scope": "Tim's paint dismissal and the boat-transfer gate",
         "state": "The original Lua callback clears the fallback combat planner's live target and cancels unfinished attacks. Tim's reflected PatrolSpeed write reaches the same controller field used for authored patrol destinations.",
         "source": "GV_ZoneB_SpatterDismissalFull, BasicAIControllerComponent.PatrolSpeed on SpatterMelee 04, and EM1 REL 2d47e0 and 2df228",

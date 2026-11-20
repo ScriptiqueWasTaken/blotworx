@@ -321,6 +321,7 @@ pub struct World {
     pub nif_camera_transition: Option<super::nif_camera::Transition>,
     pub nif_camera_completed_frame: Option<super::nif_camera::Frame>,
     pub spawners: BTreeMap<usize, template_spawner::State>,
+    pub(super) spawner_sources: HashSet<usize>,
     pub component_control: super::component_control::State,
     pub npc_relocations: BTreeMap<usize, super::npc_relocation::State>,
     pub globals: super::global_state::State,
@@ -1766,6 +1767,7 @@ impl World {
         // still exist. It detaches surviving children, then its own parent.
         self.detach_retiring_transform(entity)?;
         self.removed_entities.insert(entity);
+        self.spawner_sources.remove(&entity);
         self.live_transform_children.remove(&entity);
         self.controller_feedback.pushed_emitters.remove(&entity);
         self.demo_story.pending_deaths.remove(&entity);
@@ -9635,6 +9637,7 @@ pub(super) fn load_with_bootstrap_mode(
         nif_camera_transition: None,
         nif_camera_completed_frame: None,
         spawners: BTreeMap::new(),
+        spawner_sources: HashSet::new(),
         component_control: Default::default(),
         globals: global_state,
         quests: quest_state,
@@ -9848,7 +9851,9 @@ pub(super) fn load_with_bootstrap_mode(
         // child templates discarded authored initialization (door poses,
         // material colors, motion locks) on ordinary scene objects.
         // REL1ee060..1ee1a4 queues entity event3d after component callbacks.
-        world.emit_entity_output(entity, "OnSpawned", entity);
+        if !world.spawner_sources.contains(&entity) {
+            world.emit_entity_output(entity, "OnSpawned", entity);
+        }
         world.emit_entity_output(entity, "OnMapLoad", entity);
         world.emit_entity_output(entity, "OnMapLoadOrStream", entity);
     }

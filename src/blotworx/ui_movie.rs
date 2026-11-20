@@ -984,4 +984,4 @@ include!("ui_gameplay.rs");
 #[cfg(feature = "blotworx-ui-render")]
 mod title { include!("ui_title.rs"); }
 #[cfg(feature = "blotworx-ui-render")]
-pub(super) use title::Title;
+pub(super) use title::{Menu, Title};

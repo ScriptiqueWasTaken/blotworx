@@ -274,12 +274,22 @@
       },
       {
         "scope": "EM1 interactive title screen",
-        "state": "The startup handoff opens the shipped AVM1 title movie. Its PlayStartScreenMovie command starts the configured Bink intro, followed by the original silent loop. Accept runs the authored FadeOut and waits for StartScreenEnd. The temporary handoff opens Blotworx’s Game panel.",
+        "state": "The startup handoff opens the shipped AVM1 title movie. Its PlayStartScreenMovie command starts the configured Bink intro, followed by the original silent loop. Accept runs the authored FadeOut and waits for StartScreenEnd. The handoff opens the original main-menu movie.",
         "source": "HUDElements/Flash/cooked/startscreen.gfx, including the BlackMC Init, Fade_In and Fade_Out frame labels. The imported General_Shared and gfxfontlib movies supply the A button and title font. UI_Start uses the English NTSC dictionary entry.",
         "evidence": "The title replays recorded PlayStartScreenMovie and the title loop, then recorded StartScreenEnd on scripted Accept. The visible capture is taken after the original fade-in reaches the looping background.",
         "open": [
-          "Original MainMenu.gfx actions and slot selection",
-          "Original title particle effects, regional localization and aspect-ratio comparison"
+            "Original title particle effects, regional localization and aspect-ratio comparison"
+        ]
+      },
+      {
+        "scope": "EM1 authored main menu and save selection",
+        "state": "StartScreenEnd loads the shipped MainMenu movie. The movie drives its own Start Game and save-page transitions, requests the matching Bink backgrounds and draws three rows from the host saves. Slot selection uses the existing checkpoint or completed-slot loader, and an empty slot starts a fresh campaign with a newly selected save service.",
+        "source": "MainMenu.gfx Initialize, MaintoLoadGame, RefreshSlot, PlayMovie, NextMovie, MainMenuPick and MainMenuLoad. GAME v16 playtime, timebase and collectible header owners supply the slot display.",
+        "evidence": "The original Start Game button emitted MainMenuPick and played FE_Main_to_LoadGame. The native capture showed one empty slot and two distinct occupied rows. Selecting the third slot entered the original opening level from a completed save.",
+        "open": [
+          "Extras, delete confirmation and native menu effects",
+          "Reference comparison for timing, navigation, completion percentage and regional date formatting",
+          "Live replay of the empty-slot and active-checkpoint menu branches"
         ]
       },
       {

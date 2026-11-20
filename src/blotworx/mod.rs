@@ -2441,6 +2441,8 @@ struct Engine {
     #[cfg(feature = "blotworx-ui-render")]
     title: Option<ui_movie::Title>,
     #[cfg(feature = "blotworx-ui-render")]
+    main_menu: Option<ui_movie::Menu>,
+    #[cfg(feature = "blotworx-ui-render")]
     hud: Option<ui_movie::GameplayWorker>,
     controller: Option<controller::Controller>,
     error: Option<String>,
@@ -2571,6 +2573,8 @@ impl Engine {
             last_movie: None,
             #[cfg(feature = "blotworx-ui-render")]
             title: None,
+            #[cfg(feature = "blotworx-ui-render")]
+            main_menu: None,
             controller: None,
             error: None,
             camera: Viewport3DState {
@@ -2840,6 +2844,7 @@ impl Engine {
         #[cfg(feature = "blotworx-ui-render")]
         {
             self.title = None;
+            self.main_menu = None;
             self.hud = None;
             self.demo_hud = Default::default();
             viewport3d::clear_gpu_cache();
@@ -4507,7 +4512,7 @@ impl eframe::App for Engine {
         #[cfg(feature = "blotworx-ui-render")]
         self.present_title(ui);
         #[cfg(feature = "blotworx-ui-render")]
-        if self.title.is_some() {
+        if self.title.is_some() || self.main_menu.is_some() {
             return;
         }
         // Automated captures must not spin forever when loading or simulation fails.
@@ -4796,6 +4801,10 @@ impl Engine {
                 }
             }
         }
+        if self.main_menu.is_some() {
+            self.present_main_menu(ui);
+            return;
+        }
         let Some(title) = &mut self.title else { return; };
         let accept = if self.capture.is_some() {
             self.input_playback.as_ref().and_then(|playback| playback.frames.get(title.tick as usize))
@@ -4807,21 +4816,81 @@ impl Engine {
             pressed || ui.input(|input| input.key_pressed(egui::Key::Enter) || input.key_pressed(egui::Key::Space))
         };
         match title.show(ui, accept) {
-            Ok(true) if self.capture.is_none() => {
-                // Keep the original title handoff available while native main-menu
-                // slot bindings are being implemented.
-                self.options_tab = 2;
-                self.options_open = true;
+            Ok(true) => {
+                let directory = self.save_directory.clone().map(Ok).unwrap_or_else(save_service::default_directory);
+                match directory.and_then(|directory| ui_movie::Menu::load(std::path::Path::new(&self.root), directory)) {
+                    Ok(menu) => self.main_menu = Some(menu),
+                    Err(error) => self.error = Some(format!("Main menu: {error:#}")),
+                }
             }
             Ok(_) => {}
             Err(error) => self.error = Some(format!("Title screen: {error:#}")),
         }
-        let capture = self.capture_movie_frame.is_none() && title.tick >= self.capture_tick.unwrap_or(120);
+        let capture = self.main_menu.is_none() && self.capture_movie_frame.is_none()
+            && title.tick >= self.capture_tick.unwrap_or(120);
         self.draw_options(ui.ctx());
         if let Some(error) = &self.error {
             ui.colored_label(egui::Color32::LIGHT_RED, error);
         }
         self.capture_frame(ui, capture);
+    }
+
+    #[cfg(feature = "blotworx-ui-render")]
+    fn present_main_menu(&mut self, ui: &mut egui::Ui) {
+        let menu = self.main_menu.as_mut().unwrap();
+        let title_tick = self.title.as_ref().map_or(0, |title| title.tick);
+        let tick = title_tick + (menu.elapsed * 30.) as u64;
+        let replay = self.input_playback.as_ref().and_then(|playback| playback.frames.get(tick as usize)).copied();
+        let buttons = input::poll().buttons;
+        let edges = buttons & !self.previous_buttons;
+        self.previous_buttons = buttons;
+        match menu.show(ui, edges, replay) {
+            Ok(Some(slot)) => {
+                if let Err(error) = self.open_menu_slot(ui.ctx(), slot) {
+                    self.error = Some(format!("Open save slot: {error:#}"));
+                }
+            }
+            Ok(None) => {}
+            Err(error) => self.error = Some(format!("Main menu: {error:#}")),
+        }
+        self.draw_options(ui.ctx());
+        if let Some(error) = &self.error { ui.colored_label(egui::Color32::LIGHT_RED, error); }
+        self.capture_frame(ui, self.capture_movie_frame.is_none() && tick >= self.capture_tick.unwrap_or(title_tick + 160));
+    }
+
+    #[cfg(feature = "blotworx-ui-render")]
+    fn open_menu_slot(&mut self, ctx: &egui::Context, slot: usize) -> Result<()> {
+        let directory = self.save_directory.clone().map(Ok).unwrap_or_else(save_service::default_directory)?;
+        let root = assets::files_root(std::path::Path::new(&self.root));
+        let state = match save_service::Service::read_checkpoint(&directory, slot) {
+            Ok(snapshot) => Some(snapshot),
+            Err(error) if error.downcast_ref::<std::io::Error>().is_some_and(|e| e.kind() == std::io::ErrorKind::NotFound) => None,
+            Err(error) => return Err(error),
+        };
+        let completed = state.as_ref().map(|save| save.completed_playthrough()).transpose()?.unwrap_or(false);
+        let level = if let Some(snapshot) = state.as_ref().filter(|_| !completed) {
+            snapshot.level()?
+        } else {
+            endgame::campaign_start(&root)?
+        };
+        let world = self.world.as_mut().context("Main menu world is unavailable")?;
+        let now = world.frame_clock.hardware_sample();
+        if let Some(service) = &world.checkpoint.service {
+            service.flush(now, world.frame_clock.clock.rate.ticks_per_second.get())?;
+        }
+        let service = save_service::Service::open(directory, slot, now)?;
+        world.checkpoint = checkpoint::State { service: Some(service), ..Default::default() };
+        self.save_slot = slot;
+        if let Some(snapshot) = state {
+            let resume = if completed { score_state::CampaignResume::NextPlaythrough } else { score_state::CampaignResume::Checkpoint };
+            self.load_campaign_slot(ctx, snapshot, level, resume);
+        } else {
+            self.level = level;
+            self.preview_entry = None;
+            self.actor_focus = None;
+            self.load_with_checkpoint(ctx, None, true);
+        }
+        Ok(())
     }
 
     fn paint_loading_screen(&mut self, ui: &mut egui::Ui) {
@@ -5150,6 +5219,10 @@ impl Engine {
                 #[cfg(feature = "blotworx-ui-render")]
                 if let Some(title) = &self.title {
                     report["title_screen"] = title.summary();
+                }
+                #[cfg(feature = "blotworx-ui-render")]
+                if let Some(menu) = &self.main_menu {
+                    report["main_menu"] = menu.summary();
                 }
                 report["robot_arm_idle_requests"] =
                     serde_json::to_value(&world.robot_arm_idle_requests).unwrap();

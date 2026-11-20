@@ -493,6 +493,10 @@ fn variable(writer: &mut Writer<&mut Vec<u8>>, name: &str) -> Result<()> {
 /// callback interface. The in-memory adapter registers existing functions;
 /// their original bodies and display timeline are not rewritten.
 fn bridge(version: u8) -> Result<Vec<u8>> {
+    bridge_with_methods(version, &[])
+}
+
+fn bridge_with_methods(version: u8, methods: &[&str]) -> Result<Vec<u8>> {
     let mut getter = Vec::new();
     {
         let mut w = Writer::new(&mut getter, version);
@@ -507,7 +511,7 @@ fn bridge(version: u8) -> Result<Vec<u8>> {
         params: vec![swf::SwfStr::from_utf8_str("path")],
         actions: &getter,
     }))?;
-    for method in METHODS.into_iter().chain([GETTER]) {
+    for method in METHODS.into_iter().chain(methods.iter().copied()).chain([GETTER]) {
         // Arguments are popped by AVM1 in source order: name, this, method.
         variable(&mut w, "this")?;
         string(&mut w, method)?;
@@ -977,3 +981,7 @@ pub fn probe_with_player_level(
 }
 
 include!("ui_gameplay.rs");
+#[cfg(feature = "blotworx-ui-render")]
+mod title { include!("ui_title.rs"); }
+#[cfg(feature = "blotworx-ui-render")]
+pub(super) use title::Title;

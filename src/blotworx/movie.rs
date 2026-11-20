@@ -110,6 +110,10 @@ impl Requests {
         Ok(())
     }
 
+    pub(super) fn take_title(&mut self) -> bool {
+        std::mem::take(&mut self.title_ready)
+    }
+
     pub(super) fn take_next(&mut self) -> Option<Request> {
         if let Some(pending) = self.pending.take() {
             return Some(pending);
@@ -494,6 +498,7 @@ pub struct Player {
     skip: Option<super::movie_skip::Hold>,
     skip_clock: Instant,
     skipped: bool,
+    loop_frames: Option<Vec<egui::ColorImage>>,
 }
 impl Player {
     pub fn new(root: PathBuf, request: Request, skip_seconds: Option<f32>) -> Self {
@@ -565,12 +570,14 @@ impl Player {
             skip: skip_seconds.map(super::movie_skip::Hold::new),
             skip_clock: Instant::now(),
             skipped: false,
+            loop_frames: None,
         }
     }
     fn update(&mut self, ctx: &egui::Context) -> Result<()> {
         if self.streams.is_none() {
             match self.ready.try_recv() {
                 Ok(Ok(ready)) => {
+                    ensure!(self.loop_frames.is_none() || ready.audio.is_none(), "UI movie loops must be silent");
                     self.audio = ready
                         .audio_plan.as_ref()
                         .map(|plan| super::movie_audio::Stream::open(plan.rate, plan.channels))
@@ -648,6 +655,9 @@ impl Player {
                     [ready.header.width as usize, ready.header.height as usize],
                     &bytes,
                 );
+                if let Some(frames) = &mut self.loop_frames {
+                    frames.push(image.clone());
+                }
                 if let Some(texture) = &mut self.texture {
                     texture.set(image, egui::TextureOptions::LINEAR);
                 } else {
@@ -677,6 +687,30 @@ impl Player {
         }
         Ok(())
     }
+    pub(super) fn title_background(root: PathBuf, filename: String, looping: bool) -> Self {
+        let request = Request { serial: 0, filename, flags: [true, true], frontend_skip: None };
+        let mut player = Self::new(root, request, None);
+        player.loop_frames = looping.then(Vec::new);
+        player
+    }
+
+    pub(super) fn show_title_background(&mut self, ui: &mut egui::Ui) {
+        if let (Some(frames), true, Some(ready), Some(started)) =
+            (&self.loop_frames, self.completed, &self.streams, self.started)
+        {
+            if let Some(texture) = &mut self.texture {
+                let elapsed = started.elapsed().as_secs_f64();
+                let index = (elapsed * f64::from(ready.header.fps[0]) / f64::from(ready.header.fps[1])) as usize
+                    % frames.len();
+                if self.frame != Some(index as u32) {
+                    texture.set(frames[index].clone(), egui::TextureOptions::LINEAR);
+                    self.frame = Some(index as u32);
+                }
+            }
+        }
+        self.show_frame(ui, false, true);
+    }
+
     pub fn show(&mut self, ui: &mut egui::Ui, skip_held: bool) {self.show_frame(ui,skip_held,true);}
 
     /// RELc58a0 consumes an Accept event after the clip's minimum time.

@@ -2439,6 +2439,8 @@ struct Engine {
     movie: Option<movie::Player>,
     last_movie: Option<serde_json::Value>,
     #[cfg(feature = "blotworx-ui-render")]
+    title: Option<ui_movie::Title>,
+    #[cfg(feature = "blotworx-ui-render")]
     hud: Option<ui_movie::GameplayWorker>,
     controller: Option<controller::Controller>,
     error: Option<String>,
@@ -2567,6 +2569,8 @@ impl Engine {
             demo_hud: Default::default(),
             movie: None,
             last_movie: None,
+            #[cfg(feature = "blotworx-ui-render")]
+            title: None,
             controller: None,
             error: None,
             camera: Viewport3DState {
@@ -2835,6 +2839,7 @@ impl Engine {
         self.last_movie = None;
         #[cfg(feature = "blotworx-ui-render")]
         {
+            self.title = None;
             self.hud = None;
             self.demo_hud = Default::default();
             viewport3d::clear_gpu_cache();
@@ -4499,6 +4504,12 @@ impl eframe::App for Engine {
             }
             return;
         }
+        #[cfg(feature = "blotworx-ui-render")]
+        self.present_title(ui);
+        #[cfg(feature = "blotworx-ui-render")]
+        if self.title.is_some() {
+            return;
+        }
         // Automated captures must not spin forever when loading or simulation fails.
         // Keep interactive errors visible, but make unattended failures explicit.
         if self.debug.open { if let Some(world) = &self.world {
@@ -4775,6 +4786,44 @@ impl eframe::App for Engine {
 }
 
 impl Engine {
+    #[cfg(feature = "blotworx-ui-render")]
+    fn present_title(&mut self, ui: &mut egui::Ui) {
+        if let Some(world) = &mut self.world {
+            if world.movies.take_title() {
+                match ui_movie::Title::load(world) {
+                    Ok(title) => self.title = Some(title),
+                    Err(error) => self.error = Some(format!("Title screen: {error:#}")),
+                }
+            }
+        }
+        let Some(title) = &mut self.title else { return; };
+        let accept = if self.capture.is_some() {
+            self.input_playback.as_ref().and_then(|playback| playback.frames.get(title.tick as usize))
+                .is_some_and(|frame| frame.interact_pressed)
+        } else {
+            let buttons = input::poll().buttons;
+            let pressed = buttons & !self.previous_buttons & 0x1010 != 0;
+            self.previous_buttons = buttons;
+            pressed || ui.input(|input| input.key_pressed(egui::Key::Enter) || input.key_pressed(egui::Key::Space))
+        };
+        match title.show(ui, accept) {
+            Ok(true) if self.capture.is_none() => {
+                // Keep the original title handoff available while native main-menu
+                // slot bindings are being implemented.
+                self.options_tab = 2;
+                self.options_open = true;
+            }
+            Ok(_) => {}
+            Err(error) => self.error = Some(format!("Title screen: {error:#}")),
+        }
+        let capture = self.capture_movie_frame.is_none() && title.tick >= self.capture_tick.unwrap_or(120);
+        self.draw_options(ui.ctx());
+        if let Some(error) = &self.error {
+            ui.colored_label(egui::Color32::LIGHT_RED, error);
+        }
+        self.capture_frame(ui, capture);
+    }
+
     fn paint_loading_screen(&mut self, ui: &mut egui::Ui) {
         if let Some(screen) = &mut self.loading_screen {
             screen.paint(ui);
@@ -5098,6 +5147,10 @@ impl Engine {
                     .map(movie::Player::summary)
                     .or_else(|| self.last_movie.clone())
                     .into();
+                #[cfg(feature = "blotworx-ui-render")]
+                if let Some(title) = &self.title {
+                    report["title_screen"] = title.summary();
+                }
                 report["robot_arm_idle_requests"] =
                     serde_json::to_value(&world.robot_arm_idle_requests).unwrap();
                 report["robot_arm_controls"] =

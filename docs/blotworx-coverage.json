@@ -273,6 +273,16 @@
         ]
       },
       {
+        "scope": "EM1 interactive title screen",
+        "state": "The startup handoff opens the shipped AVM1 title movie. Its PlayStartScreenMovie command starts the configured Bink intro, followed by the original silent loop. Accept runs the authored FadeOut and waits for StartScreenEnd. The temporary handoff opens Blotworx’s Game panel.",
+        "source": "HUDElements/Flash/cooked/startscreen.gfx, including the BlackMC Init, Fade_In and Fade_Out frame labels. The imported General_Shared and gfxfontlib movies supply the A button and title font. UI_Start uses the English NTSC dictionary entry.",
+        "evidence": "The title replays recorded PlayStartScreenMovie and the title loop, then recorded StartScreenEnd on scripted Accept. The visible capture is taken after the original fade-in reaches the looping background.",
+        "open": [
+          "Original MainMenu.gfx actions and slot selection",
+          "Original title particle effects, regional localization and aspect-ratio comparison"
+        ]
+      },
+      {
         "scope": "EM1 completed slot to next playthrough",
         "state": "Continuing from a completed slot loads the configured first level with a fresh world, quests and player state. The native carryover owners are populated before scripts run, and the first new checkpoint replaces the completed save stream.",
         "source": "Retail REL2b030..2b0a4 and its extras, selective collectibles, options, pin and metadata readers. The start level comes from MainMenu gamestart in the imported game configuration.",

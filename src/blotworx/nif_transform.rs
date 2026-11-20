@@ -568,6 +568,7 @@ mod tests {
             class_name: "NiTransformController".into(),
             color: None,
             indirect_scale: None,
+            texture_transform: None,
             flags: 0xcc,
             frequency: 1.,
             phase: 0.,

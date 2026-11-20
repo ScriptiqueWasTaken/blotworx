@@ -46,6 +46,7 @@ pub fn entity_geometry(world: &World, draws: &[GpuDrawCommand], name: &str) -> s
                 "pinned_projection":draw.preview.as_ref().and_then(|p|p.as_ref().ok()).map(|p|p.pinned_projection),
                 "required_images":draw.preview.as_ref().and_then(|p|p.as_ref().ok()).map(|p|&p.texture_slots),
                 "bound_images":draw.material_images.iter().map(|image|(image.slot,image.width,image.height)).collect::<Vec<_>>(),
+                "texture_matrices":draw.material_images.iter().map(|image|(image.slot,image.matrix)).collect::<Vec<_>>(),
                 "uv_channels":draw.extra_uvs.as_ref().map(|channels|channels.keys().copied().collect::<Vec<_>>()),
                 "pass_constants":draw.preview.as_ref().and_then(|p|p.as_ref().ok()).map(|p|p.pass_constants),
                 "registers":draw.material_registers,"hidden":world.hidden_entity_draws.contains(&index)
@@ -126,6 +127,7 @@ pub fn candidates(
                 "pinned_projection":draw.preview.as_ref().and_then(|p|p.as_ref().ok()).map(|p|p.pinned_projection),
                 "required_images":draw.preview.as_ref().and_then(|p|p.as_ref().ok()).map(|p|&p.texture_slots),
                 "bound_images":draw.material_images.iter().map(|image|(image.slot,image.width,image.height)).collect::<Vec<_>>(),
+                "texture_matrices":draw.material_images.iter().map(|image|(image.slot,image.matrix)).collect::<Vec<_>>(),
                 "required_uv_images":draw.preview.as_ref().and_then(|p|p.as_ref().ok()).map(|p|&p.uv_textures),
                 "uv_sets":draw.preview.as_ref().and_then(|p|p.as_ref().ok()).map(|p|p.uv_sets),
                 "pass_constants":draw.preview.as_ref().and_then(|p|p.as_ref().ok()).map(|p|p.pass_constants),

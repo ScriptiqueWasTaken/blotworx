@@ -68,12 +68,15 @@ impl Screen {
 
     pub(super) fn paint(&mut self, ui: &mut Ui) {
         let elapsed = self.first_paint.get_or_insert_with(Instant::now).elapsed();
-        let viewport = ui.max_rect();
+        let ctx = ui.ctx();
+        let viewport = ctx.content_rect();
+        let layer = egui::LayerId::new(egui::Order::Foreground, egui::Id::new("em1_loading_screen"));
+        ctx.move_to_top(layer);
+        let painter = ctx.layer_painter(layer).with_clip_rect(viewport);
         let size = self.background.as_ref().map_or(Vec2::new(640., 480.), TextureHandle::size_vec2);
         let scale = (viewport.width() / size.x).min(viewport.height() / size.y);
         let image = Rect::from_center_size(viewport.center(), size * scale);
         let uv = Rect::from_min_max(egui::Pos2::ZERO, egui::pos2(1., 1.));
-        let painter = ui.painter();
         painter.rect_filled(viewport, 0., Color32::BLACK);
         if let Some(background) = &self.background {
             painter.image(background.id(), image, uv, Color32::WHITE);
@@ -85,10 +88,16 @@ impl Screen {
             let marker = Rect::from_min_max(corner - dot.size_vec2() * scale, corner);
             painter.image(dot.id(), marker, uv, Color32::WHITE);
         } else {
-            let indicator = Rect::from_center_size(viewport.center(), Vec2::splat(24.));
-            ui.put(indicator, egui::Spinner::new());
+            let radius = 10.;
+            let start = elapsed.as_secs_f32() * std::f32::consts::TAU;
+            let points = (0..=24).map(|segment| {
+                let angle = start + (segment as f32 / 24.) * std::f32::consts::PI * 1.5;
+                viewport.center() + Vec2::angled(angle) * radius
+            }).collect();
+            painter.add(egui::Shape::line(points, egui::Stroke::new(2., Color32::WHITE)));
         }
-        ui.ctx().request_repaint_after(DOT_FRAME);
+        let repaint = if self.dots.is_empty() { Duration::from_millis(16) } else { DOT_FRAME };
+        ctx.request_repaint_after(repaint);
     }
 }
 

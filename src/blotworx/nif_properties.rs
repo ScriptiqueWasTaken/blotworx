@@ -212,6 +212,65 @@ impl DirectColor {
     }
 }
 
+/// A controller targets an indexed map of a NiTexturingProperty.
+#[derive(Clone, Debug, serde::Serialize)]
+pub(super) struct DirectTextureTransform {
+    pub shader_map: bool,
+    pub slot: u32,
+    operation: u32,
+    track: Option<super::nif_transform::Track>,
+    value: f32,
+}
+
+impl DirectTextureTransform {
+    pub(super) fn load(
+        nif: &NifFile, interpolator: u32, shader_map: u8, slot: u32, operation: u32,
+    ) -> Result<Self> {
+        ensure!(shader_map <= 1 && operation <= 4, "Invalid texture transform selector");
+        let (track, value) = float_interpolator(nif, interpolator)?;
+        Ok(Self { shader_map: shader_map != 0, slot, operation, track, value })
+    }
+
+    pub(super) fn sample(&self, time: f32) -> Result<Option<(bool, u32, u32, f32)>> {
+        Ok(sample_float(&self.track, self.value, time)?
+            .map(|value| (self.shader_map, self.slot, self.operation, value)))
+    }
+
+    pub(super) fn apply(operation: u32, value: f32, transform: &mut crate::nif_textures::UvTransform) {
+        match operation {
+            0 => transform.translation[0] = value,
+            1 => transform.translation[1] = value,
+            2 => transform.rotation = value,
+            3 => transform.scale[0] = value,
+            4 => transform.scale[1] = value,
+            _ => unreachable!(),
+        }
+    }
+}
+
+fn float_interpolator(nif: &NifFile, interpolator: u32) -> Result<(Option<super::nif_transform::Track>, f32)> {
+    let Some(NiObject::Unknown(raw)) = nif.blocks.get(interpolator as usize) else {
+        anyhow::bail!("Direct float controller is missing its interpolator");
+    };
+    ensure!(raw.type_name == "NiFloatInterpolator" && raw.raw_data.len() == 8,
+        "Unsupported direct float interpolator");
+    let word = |offset| {
+        let bytes = raw.raw_data[offset..offset + 4].try_into().unwrap();
+        if nif.source_is_little_endian { u32::from_le_bytes(bytes) } else { u32::from_be_bytes(bytes) }
+    };
+    let data = word(4);
+    let track = (data != u32::MAX).then(|| super::nif_transform::Track::load_float_data(nif, data)).transpose()?;
+    Ok((track, f32::from_bits(word(0))))
+}
+
+fn sample_float(track: &Option<super::nif_transform::Track>, value: f32, time: f32) -> Result<Option<f32>> {
+    if let Some(track) = track {
+        track.sample_scalar(time)
+    } else {
+        Ok((value != -f32::MAX).then_some(value))
+    }
+}
+
 #[derive(Clone, Debug, serde::Serialize)]
 pub(super) struct DirectIndirectScale {
     track: Option<super::nif_transform::Track>,
@@ -223,26 +282,12 @@ impl DirectIndirectScale {
         if nif.string_table.get(name as usize).map(String::as_str) != Some("IndirectScale") {
             return Ok(None);
         }
-        let Some(NiObject::Unknown(raw)) = nif.blocks.get(interpolator as usize) else {
-            anyhow::bail!("Indirect scale controller is missing its interpolator");
-        };
-        ensure!(raw.type_name == "NiFloatInterpolator" && raw.raw_data.len() == 8,
-            "Unsupported indirect scale interpolator");
-        let word = |offset| {
-            let bytes = raw.raw_data[offset..offset + 4].try_into().unwrap();
-            if nif.source_is_little_endian { u32::from_le_bytes(bytes) } else { u32::from_be_bytes(bytes) }
-        };
-        let data = word(4);
-        let track = (data != u32::MAX).then(|| super::nif_transform::Track::load_float_data(nif, data)).transpose()?;
-        Ok(Some(Self { track, value: f32::from_bits(word(0)) }))
+        let (track, value) = float_interpolator(nif, interpolator)?;
+        Ok(Some(Self { track, value }))
     }
 
     pub(super) fn sample(&self, time: f32) -> Result<Option<f32>> {
-        if let Some(track) = &self.track {
-            track.sample_scalar(time)
-        } else {
-            Ok((self.value != -f32::MAX).then_some(self.value))
-        }
+        sample_float(&self.track, self.value, time)
     }
 }
 

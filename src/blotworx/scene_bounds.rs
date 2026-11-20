@@ -25,6 +25,7 @@ pub struct Controller {
     pub target: Option<u32>,
     pub transform: Option<Result<super::nif_transform::Interpolator, String>>,
     pub(super) color: Option<super::nif_properties::DirectColor>,
+    pub(super) texture_transform: Option<super::nif_properties::DirectTextureTransform>,
     pub(super) indirect_scale: Option<super::nif_properties::DirectIndirectScale>,
 }
 impl Controller {
@@ -36,6 +37,7 @@ impl Controller {
         !matches!(
             self.class_name.as_str(),
             "NiVisController" | "NiFloatExtraDataController" | "NiColorExtraDataController"
+                | "NiTextureTransformController"
         )
     }
 }
@@ -119,6 +121,15 @@ pub(super) fn controllers(nif: &NifFile, mut next: Option<u32>) -> Result<Vec<Co
         } else {
             None
         };
+        let texture_transform = if raw.type_name == "NiTextureTransformController" && bytes.len() == 39 {
+            link(26)?.and_then(|interpolator| {
+                super::nif_properties::DirectTextureTransform::load(nif, interpolator, bytes[30], uint(31), uint(35))
+                    .inspect_err(|error| log::warn!("Direct texture transform controller {id}: {error:#}"))
+                    .ok()
+            })
+        } else {
+            None
+        };
         result.push(Controller {
             block: id,
             class_name: raw.type_name.clone(),
@@ -131,6 +142,7 @@ pub(super) fn controllers(nif: &NifFile, mut next: Option<u32>) -> Result<Vec<Co
             transform,
             color,
             indirect_scale,
+            texture_transform,
         });
     }
     Ok(result)
@@ -650,10 +662,33 @@ impl Hierarchy {
                     _ => None,
                 })
                 .unwrap_or(-1);
-            let controllers = controllers(nif, av.base.controller_link)
+            let mut node_controllers = controllers(nif, av.base.controller_link)
                 .with_context(|| format!("Bound node {id} controller chain"))?;
+            for &property in av.property_links.iter().flatten() {
+                let Some(NiObject::Unknown(raw)) = nif.blocks.get(property as usize) else { continue; };
+                if raw.type_name != "NiTexturingProperty" || raw.raw_data.len() < 12 {
+                    continue;
+                }
+                let bytes = raw.raw_data[4..8].try_into()?;
+                let extras = if nif.source_is_little_endian { u32::from_le_bytes(bytes) } else { u32::from_be_bytes(bytes) };
+                let offset = 8 + 4 * extras as usize;
+                let Some(bytes) = raw.raw_data.get(offset..offset + 4) else { continue; };
+                let bytes = bytes.try_into()?;
+                let link = if nif.source_is_little_endian { u32::from_le_bytes(bytes) } else { u32::from_be_bytes(bytes) };
+                if link == u32::MAX {
+                    continue;
+                }
+                for mut control in controllers(nif, Some(link))
+                    .with_context(|| format!("Texture property {property} controller chain"))?
+                {
+                    if control.texture_transform.is_some() && control.target == Some(property) {
+                        control.target = Some(id);
+                        node_controllers.push(control);
+                    }
+                }
+            }
             let needs_runtime_bound = dynamic
-                || controllers.iter().any(|controller| {
+                || node_controllers.iter().any(|controller| {
                     controller.affects_bound()
                         && !(morph_bound && controller.class_name == "NiMorphWeightsController")
                 });
@@ -671,7 +706,7 @@ impl Hierarchy {
                     needs_runtime_bound,
                     runtime_geometry: dynamic,
                     morph_bound,
-                    controllers,
+                    controllers: node_controllers,
                 },
             );
         }
@@ -1406,6 +1441,7 @@ mod tests {
             class_name: "NiTransformController".into(),
             color: None,
             indirect_scale: None,
+            texture_transform: None,
             flags: 108,
             frequency: 1.,
             phase: 0.,
@@ -1496,6 +1532,7 @@ mod tests {
             class_name: "NiTransformController".into(),
             color: None,
             indirect_scale: None,
+            texture_transform: None,
             flags: 0x20,
             frequency: 1.,
             phase: 0.,

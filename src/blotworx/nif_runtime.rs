@@ -22,6 +22,7 @@ struct MaterialController {
 pub struct Instance {
     material_controllers: Vec<MaterialController>,
     colors: BTreeMap<(u32, usize), [f32; 4]>,
+    texture_transforms: BTreeMap<u32, Vec<(bool, u32, u32, f32)>>,
     indirect_scales: BTreeMap<u32, [[i32; 3]; 6]>,
     pub component_clock: Option<super::nif_sequence::ComponentClock>,
     controllers: Vec<Playback>,
@@ -48,8 +49,9 @@ impl Instance {
                         "Transform target outside model"
                     );
                     controllers.push(Playback::load(c)?);
-                } else if (c.color.is_some() || c.indirect_scale.is_some())
-                    && c.target.is_some() && seen.insert(c.block)
+                } else if c.texture_transform.is_some()
+                    || ((c.color.is_some() || c.indirect_scale.is_some())
+                        && c.target.is_some() && seen.insert(c.block))
                 {
                     material_controllers.push(MaterialController { control: c.clone(), clock: Default::default() });
                 }
@@ -74,6 +76,7 @@ impl Instance {
             material_controllers,
             colors: BTreeMap::new(),
             indirect_scales: BTreeMap::new(),
+            texture_transforms: BTreeMap::new(),
             controllers,
             controller_owners,
             published_locals: locals.clone(),
@@ -112,6 +115,9 @@ impl Instance {
         Ok(())
     }
     pub fn update(&mut self, hierarchy: &Hierarchy, time: f32) -> Result<()> {
+        for transforms in self.texture_transforms.values_mut() {
+            transforms.clear();
+        }
         for state in &mut self.material_controllers {
             let c = &state.control;
             if c.flags & 8 == 0 || c.flags & 0x20 != 0 {
@@ -122,6 +128,11 @@ impl Instance {
             if let Some(channel) = &c.color {
                 if let Some(color) = channel.sample(time)? {
                     self.colors.insert((target, channel.slot), super::nif_properties::packed_color(color)?);
+                }
+            }
+            if let Some(channel) = &c.texture_transform {
+                if let Some(sample) = channel.sample(time)? {
+                    self.texture_transforms.entry(target).or_default().push(sample);
                 }
             }
             if let Some(channel) = &c.indirect_scale {
@@ -137,7 +148,29 @@ impl Instance {
         }
         self.update_with_writes(hierarchy, time, |_, _| Ok(()))
     }
-    pub(super) fn apply_material(&self, mesh: u32, draw: &mut crate::render_support::viewport3d::GpuDrawCommand) {
+    pub(super) fn apply_material(&self, mesh: u32, draw: &mut crate::render_support::viewport3d::GpuDrawCommand) -> Result<()> {
+        if let (Some(samples), Some(material)) = (self.texture_transforms.get(&mesh), &draw.material) {
+            let mut transforms = BTreeMap::new();
+            for &(shader_map, slot, operation, sample) in samples {
+                let map = (shader_map, slot);
+                let Some(Ok(original)) = material.texture_transforms.get(&map) else { continue; };
+                let transform = transforms.entry(map).or_insert_with(|| original.unwrap_or_default());
+                super::nif_properties::DirectTextureTransform::apply(operation, sample, transform);
+            }
+            for ((shader_map, slot), transform) in transforms {
+                if shader_map && draw.material_images.iter().any(|image| u32::from(image.slot) == slot) {
+                    let matrix = transform.matrix().context("Invalid animated texture transform")?;
+                    for image in std::sync::Arc::make_mut(&mut draw.material_images) {
+                        if u32::from(image.slot) == slot {
+                            image.matrix = matrix;
+                        }
+                    }
+                }
+                if slot == 0 && (!shader_map || !material.texture_transforms.contains_key(&(false, 0))) {
+                    draw.uv_transform = Some(transform);
+                }
+            }
+        }
         if draw.material.as_ref().and_then(|material| material.shader.as_deref())
             .is_some_and(|name| name.eq_ignore_ascii_case("SFX_projectionWarp"))
         {
@@ -152,6 +185,7 @@ impl Instance {
                 }
             }
         }
+        Ok(())
     }
 
     /// Publish only writes performed by this update. Reapplying the cached
@@ -325,6 +359,7 @@ mod tests {
                 class_name: "NiTransformController".into(),
                 color: None,
                 indirect_scale: None,
+                texture_transform: None,
                 flags: 0x4d,
                 frequency: 1.,
                 phase: 0.,
@@ -387,6 +422,7 @@ mod tests {
             class_name: "NiTransformController".into(),
             color: None,
             indirect_scale: None,
+            texture_transform: None,
             flags: 0x45,
             frequency: 1.,
             phase: 0.,
@@ -445,6 +481,7 @@ mod tests {
                 class_name: "NiTransformController".into(),
                 color: None,
                 indirect_scale: None,
+                texture_transform: None,
                 flags: 0x4d,
                 frequency: 1.,
                 phase: 0.,

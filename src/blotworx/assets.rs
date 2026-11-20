@@ -6698,7 +6698,7 @@ impl World {
             for (&mesh, indices) in &runtime.mesh_draws {
                 for &index in indices {
                     let draw = draws.get_mut(index).context("Animated draw missing")?;
-                    animation.apply_material(mesh, draw);
+                    animation.apply_material(mesh, draw)?;
                 }
                 if uses_actor_pose || !animation.affected.contains(&mesh) {
                     continue;

@@ -278,6 +278,8 @@ mod audio_ingress;
 mod audio_listener;
 mod audio_nodes;
 mod audio_output;
+#[cfg(target_os = "android")]
+mod android_pcm;
 mod audio_panner;
 mod audio_play_action;
 mod audio_playback;
@@ -1292,6 +1294,12 @@ fn player_record_capture(world: &assets::World) -> serde_json::Value {
         )
 }
 pub fn run() -> Result<()> {
+    run_platform(#[cfg(target_os = "android")] None)
+}
+
+pub(crate) fn run_platform(
+    #[cfg(target_os = "android")] android_app: Option<android_activity::AndroidApp>,
+) -> Result<()> {
     if updater::finish_if_requested()? { return Ok(()); }
     #[cfg(debug_assertions)]
     {
@@ -2292,6 +2300,8 @@ pub fn run() -> Result<()> {
             // replay behind presentation backpressure. Interactive play keeps
             // the normal synchronized presentation policy.
             glow_options: egui_glow::GlowConfiguration {vsync: !capture_expected,..Default::default()},
+            #[cfg(target_os = "android")]
+            android_app,
             depth_buffer: 24,
             viewport: egui::ViewportBuilder::default()
                 .with_inner_size([1280., 800.])
@@ -2579,7 +2589,7 @@ impl Engine {
             };
         let mut s = Self {
             setup,
-            updater: updater::Updater::on_launch(o.updates),
+            updater: updater::Updater::on_launch(o.updates && !cfg!(target_os = "android")),
             frame_phases: Default::default(),
             save_directory: o.save_directory,
             save_slot: o.save_slot,
@@ -4224,7 +4234,7 @@ impl Engine {
                 ui.add_enabled_ui(self.receiver.is_none(), |ui| {
                     ui.text_edit_singleline(&mut self.root);
                     if ui.button("Choose game folderâ€¦").clicked() {
-                        if let Some(path) = rfd::FileDialog::new().pick_folder() {
+                        if let Some(path) = crate::file_dialog::FileDialog::new().pick_folder() {
                             self.root = path.to_string_lossy().into_owned();
                         }
                     }
@@ -4250,7 +4260,7 @@ impl Engine {
                         self.continue_checkpoint(ui.ctx());
                     }
                     if ui.button("Open levelâ€¦").clicked() {
-                        if let Some(path) = rfd::FileDialog::new()
+                        if let Some(path) = crate::file_dialog::FileDialog::new()
                             .add_filter("Epic Mickey level", &["level"])
                             .set_directory(std::path::Path::new(&self.root).join("Levels"))
                             .pick_file()
@@ -4608,7 +4618,8 @@ impl eframe::App for Engine {
                     let buttons = input::poll().buttons;
                     let pressed = buttons & !self.previous_buttons & 0x1000 != 0;
                     self.previous_buttons = buttons;
-                    pressed || ui.input(|input| input.key_pressed(egui::Key::Space) || input.key_pressed(egui::Key::Enter))
+                    pressed || ui.input(|input| input.key_pressed(egui::Key::Space) || input.key_pressed(egui::Key::Enter)
+                        || (cfg!(target_os = "android") && input.pointer.any_click()))
                 };
                 movie.show_frontend(ui, accept);
             } else {
@@ -4632,10 +4643,22 @@ impl eframe::App for Engine {
                 .capture_movie_frame
                 .is_some_and(|frame| movie.frame.is_some_and(|current| current >= frame))
                 || movie.error.is_some();
-            let completed = movie.completed;
             if let Some(error) = &movie.error {
-                self.error = Some(format!("Movie playback: {error}"));
+                #[cfg(target_os = "android")]
+                {
+                    let proceed = ui.vertical_centered(|ui| {
+                        ui.label("This video could not be played.");
+                        ui.weak(error);
+                        ui.button("Continue").clicked()
+                    }).inner;
+                    if proceed || skip_held {
+                        movie.continue_after_error();
+                    }
+                }
+                #[cfg(not(target_os = "android"))]
+                { self.error = Some(format!("Movie playback: {error}")); }
             }
+            let completed = movie.completed;
             self.capture_frame(ui, capture);
             if completed {
                 self.last_movie = self.movie.as_ref().map(movie::Player::summary);
@@ -4782,7 +4805,7 @@ impl eframe::App for Engine {
         } else {
             self.draw_options(ui.ctx());
             if self.details {
-                egui::Window::new("Level report").open(&mut self.details).resizable(true).default_width(530.).show(ui.ctx(),|ui|{if let Some(w)=&self.world{egui::ScrollArea::vertical().max_height(550.).show(ui,|ui|{ui.label(format!("{} entities Â· {} meshes Â· {} triangles Â· {} collision triangles",w.report.placed_entities,w.report.meshes,w.report.render_triangles,w.report.collision_triangles));ui.label(format!("Authored spawn: {:?}",w.report.spawn));ui.label(format!("Global definitions applied: {}",w.report.global_overrides));if ui.button("Export reportâ€¦").clicked(){if let Some(path)=rfd::FileDialog::new().set_file_name("blotworx-report.json").save_file(){if let Err(e)=std::fs::write(path,serde_json::to_vec_pretty(&w.report).unwrap_or_default()){self.error=Some(e.to_string())}}}ui.separator();for line in &w.report.unsupported{ui.label(line);}ui.collapsing("Asset / material warnings",|ui|{for line in &w.report.warnings{ui.label(line);}});ui.collapsing("Components",|ui|{for (name,count) in &w.report.components{ui.label(format!("{count} Ã— {name}"));}});});}});
+                egui::Window::new("Level report").open(&mut self.details).resizable(true).default_width(530.).show(ui.ctx(),|ui|{if let Some(w)=&self.world{egui::ScrollArea::vertical().max_height(550.).show(ui,|ui|{ui.label(format!("{} entities Â· {} meshes Â· {} triangles Â· {} collision triangles",w.report.placed_entities,w.report.meshes,w.report.render_triangles,w.report.collision_triangles));ui.label(format!("Authored spawn: {:?}",w.report.spawn));ui.label(format!("Global definitions applied: {}",w.report.global_overrides));if ui.button("Export reportâ€¦").clicked(){if let Some(path)=crate::file_dialog::FileDialog::new().set_file_name("blotworx-report.json").save_file(){if let Err(e)=std::fs::write(path,serde_json::to_vec_pretty(&w.report).unwrap_or_default()){self.error=Some(e.to_string())}}}ui.separator();for line in &w.report.unsupported{ui.label(line);}ui.collapsing("Asset / material warnings",|ui|{for line in &w.report.warnings{ui.label(line);}});ui.collapsing("Components",|ui|{for (name,count) in &w.report.components{ui.label(format!("{count} Ã— {name}"));}});});}});
             }
             self.play(ui);
             #[cfg(feature = "blotworx-ui-render")]
@@ -4882,7 +4905,7 @@ impl eframe::App for Engine {
                         .collect::<String>()
                         .into();
             }
-            if let Some(path) = rfd::FileDialog::new()
+            if let Some(path) = crate::file_dialog::FileDialog::new()
                 .add_filter("Performance report", &["json"])
                 .set_file_name("blotworx-performance.json")
                 .save_file()
@@ -4987,7 +5010,8 @@ impl Engine {
             let buttons = input::poll().buttons;
             let pressed = buttons & !self.previous_buttons & 0x1010 != 0;
             self.previous_buttons = buttons;
-            pressed || ui.input(|input| input.key_pressed(egui::Key::Enter) || input.key_pressed(egui::Key::Space))
+            pressed || ui.input(|input| input.key_pressed(egui::Key::Enter) || input.key_pressed(egui::Key::Space)
+                || (cfg!(target_os = "android") && input.pointer.any_click()))
         };
         match title.show(ui, accept) {
             Ok(true) => {

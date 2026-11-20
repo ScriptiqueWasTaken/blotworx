@@ -28,6 +28,15 @@ pub fn command(exe: &Path) -> Command {
 fn valid(path: &Path) -> bool {
     std::fs::read(path).is_ok_and(|b| digest(&b) == EXE_SHA)
 }
+#[cfg(target_os = "android")]
+pub fn provision() -> Result<PathBuf> {
+    let directory = std::env::var_os("BLOTWORX_ANDROID_CODECS").context("Android codec directory is unavailable")?;
+    let path = PathBuf::from(directory).join("libbwx_ffmpeg.so");
+    ensure!(path.is_file(), "This Android build does not include the Bink codec");
+    Ok(path)
+}
+
+#[cfg(not(target_os = "android"))]
 pub fn provision() -> Result<PathBuf> {
     static PROVISION: std::sync::Mutex<()> = std::sync::Mutex::new(());
     let _guard = PROVISION

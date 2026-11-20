@@ -228,7 +228,16 @@ pub fn poll() -> Pad {
     }
     Pad::default()
 }
-#[cfg(not(windows))]
+#[cfg(target_os = "android")]
+pub fn poll() -> Pad {
+    let (buttons, [lx, ly, rx, ry, lt, rt]) = crate::android_app::gamepad();
+    let axis = |value: f32| (value.clamp(-1., 1.) * i16::MAX as f32) as i16;
+    let trigger = |value: f32| (value.clamp(0., 1.) * u8::MAX as f32) as u8;
+    Pad { left: stick(axis(lx), axis(ly)), right: stick(axis(rx), axis(ry)),
+        buttons, triggers: [trigger(lt), trigger(rt)] }
+}
+
+#[cfg(not(any(windows, target_os = "android")))]
 pub fn poll() -> Pad {
     Pad::default()
 }

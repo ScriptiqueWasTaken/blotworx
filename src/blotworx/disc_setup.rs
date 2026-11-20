@@ -14,7 +14,11 @@ const FORMATS: &[&str] = &["iso", "gcm", "rvz", "wia", "wbfs", "ciso", "gcz", "n
 const MAX_DISC_SIZE: u64 = 9_000_000_000;
 
 fn library() -> Result<PathBuf> {
-    Ok(dirs::data_local_dir()
+    #[cfg(target_os = "android")]
+    let storage = crate::android_app::storage();
+    #[cfg(not(target_os = "android"))]
+    let storage = dirs::data_local_dir();
+    Ok(storage
         .context("Local application storage is unavailable")?
         .join("Blotworx Engine")
         .join("game"))
@@ -228,7 +232,12 @@ impl Setup {
             .name("Blotworx disc import".into())
             .spawn(move || {
                 let destination = library();
-                let _ = tx.send(destination.and_then(|path| import(&image, &path, &work)));
+                let result = destination.and_then(|path| import(&image, &path, &work));
+                #[cfg(target_os = "android")]
+                if let Err(error) = fs::remove_file(&image) {
+                    log::warn!("Remove staged Wii disc: {error}");
+                }
+                let _ = tx.send(result);
             }) {
             Ok(_) => self.job = Some((progress, rx)),
             Err(error) => self.error = Some(format!("Could not start disc import. {error}")),
@@ -260,6 +269,14 @@ impl Setup {
             }
         }
         let mut selected = None;
+        #[cfg(target_os = "android")]
+        if self.job.is_none() {
+            match crate::android_app::take_disc() {
+                Some(Ok(image)) => self.start(image),
+                Some(Err(error)) => self.error = Some(error.to_string()),
+                None => ui.ctx().request_repaint_after(std::time::Duration::from_millis(250)),
+            }
+        }
         if self.job.is_none() {
             if let Some(image) = ui.input(|input| {
                 input
@@ -305,14 +322,20 @@ impl Setup {
                     )
                     .clicked()
                 {
-                    selected = rfd::FileDialog::new()
+                    #[cfg(target_os = "android")]
+                    if let Err(error) = crate::android_app::choose_disc() {
+                        self.error = Some(error.to_string());
+                    }
+                    #[cfg(not(target_os = "android"))]
+                    { selected = crate::file_dialog::FileDialog::new()
                         .add_filter("Wii disc images", FORMATS)
                         .add_filter("ZIP archives", &["zip"])
                         .pick_file()
-                        .map(Event::Image);
+                        .map(Event::Image); }
                 }
+                #[cfg(not(target_os = "android"))]
                 if ui.link("Use an extracted game folder").clicked() {
-                    selected = rfd::FileDialog::new().pick_folder().map(Event::Folder);
+                    selected = crate::file_dialog::FileDialog::new().pick_folder().map(Event::Folder);
                 }
                 if let Some(error) = self.error.as_deref().or(launch_error) {
                     ui.add_space(8.);

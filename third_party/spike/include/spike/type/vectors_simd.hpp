@@ -17,7 +17,11 @@
 
 #pragma once
 #include "vectors.hpp"
+#if defined(__aarch64__)
+#include "sse2neon.h"
+#else
 #include <smmintrin.h>
+#endif
 
 #ifdef _MSC_VER
 thread_local static float __V4SimdFltType_EPSILON = FLT_EPSILON;
@@ -228,7 +232,7 @@ public:
     const store_type res1 =
         _mm_movemask_ps(test0) == 0 ? _mm_sqrt_ss(res0._data) : vector()._data;
 
-    _data = _mm_insert_ps(_data, res1, _MM_MK_INSERTPS_NDX(0, elementIndex, 0));
+    _data = _mm_insert_ps(_data, res1, (elementIndex << 4));
 
     return *this;
   }

@@ -7,6 +7,9 @@ description = "Standalone Rust game asset runtime"
 license = "GPL-3.0-only"
 repository = "https://github.com/Bloticle/blotworx"
 
+[lib]
+crate-type = ["rlib", "cdylib"]
+
 [features]
 # Gameplay HUD movies are loaded from the local game installation.
 default = ["blotworx-ui-render"]
@@ -40,7 +43,6 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 roxmltree = "0.20"
 toml = "0.8"
-rfd = "0.15"
 anyhow = "1"
 memchr = "2.8"
 ring = "0.17"
@@ -58,6 +60,14 @@ semver = "1"
 tempfile = "3"
 image = { version = "0.25", default-features = false, features = ["dds", "png", "jpeg", "tga"] }
 wiiu_swizzle = { version = "0.3", features = ["std"] }
+
+[target.'cfg(not(target_os = "android"))'.dependencies]
+rfd = "0.15"
+
+[target.'cfg(target_os = "android")'.dependencies]
+android-activity = { version = "0.6", features = ["native-activity"] }
+jni = "0.22"
+eframe = { version = "0.36", default-features = false, features = ["android-native-activity"] }
 
 [target.'cfg(windows)'.dependencies]
 windows-sys = { version = "0.61.2", features = ["Win32_System_LibraryLoader", "Win32_System_Memory", "Win32_System_ProcessStatus", "Win32_System_Threading"] }

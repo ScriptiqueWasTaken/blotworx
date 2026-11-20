@@ -40,7 +40,7 @@ void main(){
             ),
         ] {
             let shader = gl.create_shader(kind)?;
-            gl.shader_source(shader, source);
+            gl.shader_source(shader, &crate::render_support::shader_source(source));
             gl.compile_shader(shader);
             if !gl.get_shader_compile_status(shader) {
                 let e = gl.get_shader_info_log(shader);

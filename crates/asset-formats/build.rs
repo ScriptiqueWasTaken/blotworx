@@ -9,6 +9,11 @@ fn main() {
         build.flag("-std=c++20");
     }
 
+    if std::env::var("CARGO_CFG_TARGET_ARCH").as_deref() == Ok("aarch64") {
+        build.include("../../third_party/sse2neon");
+        build.flag_if_supported("-fsigned-char");
+        println!("cargo:rerun-if-changed=../../third_party/sse2neon");
+    }
     build.include("cpp");
     build.include("../../third_party/spike/3rd_party/glm");
     build.include("../../third_party/havoklib/include");

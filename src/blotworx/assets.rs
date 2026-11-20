@@ -6344,15 +6344,10 @@ impl World {
             .actors
             .get_mut(&entity)
             .context("Reset target has no supported actor instance")?;
-        let id = actor.requested_id(); // REL2f8358 retains the component's target.
+        // The component retains its target across a manager reset. Let the
+        // next update consume it, so a sequence selected immediately after
+        // reset starts clean instead of crossfading from a restarted old clip.
         actor.reset();
-        if let Some(id) = id {
-            actor.request(
-                id,
-                &self.actor_sequences[&entity],
-                &self.actor_bindings[&entity],
-            )?;
-        }
         Ok(())
     }
     pub fn play_actor(&mut self, name: &str, sequence: &str, repeat: bool) -> Result<()> {
@@ -6688,21 +6683,17 @@ impl World {
             if !self.entity_scene_active(entity) {
                 continue;
             }
-            if self
-                .actor_playback
-                .as_ref()
-                .is_some_and(|p| p.entity == entity)
-                || self.actors.get(&entity).is_some_and(|a| a.pose.is_some())
-            {
-                continue;
-            }
+            // A sequence supplies skeletal/mesh poses. Direct extra-data
+            // controllers still drive the material registers and indirect warp.
+            let uses_actor_pose = self.actor_playback.as_ref().is_some_and(|p| p.entity == entity)
+                || self.actors.get(&entity).is_some_and(|actor| actor.pose.is_some());
             let runtime = &self.entities[entity];
             for (&mesh, indices) in &runtime.mesh_draws {
                 for &index in indices {
                     let draw = draws.get_mut(index).context("Animated draw missing")?;
                     animation.apply_material(mesh, draw);
                 }
-                if !animation.affected.contains(&mesh) {
+                if uses_actor_pose || !animation.affected.contains(&mesh) {
                     continue;
                 }
                 let world = super::nif_runtime::matrix(
@@ -6805,8 +6796,12 @@ impl World {
                     .into_iter()
                     .flatten()
                 {
-                    if let Some(registers) = draws[index].material_registers.as_mut() {
-                        registers[slot] = color;
+                    let draw = &mut draws[index];
+                    if let Some(defaults) = draw.preview.as_ref()
+                        .and_then(|program| program.as_ref().ok())
+                        .and_then(|program| program.register_defaults)
+                    {
+                        draw.material_registers.get_or_insert(defaults)[slot] = color;
                     }
                 }
             }

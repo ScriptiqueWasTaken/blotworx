@@ -176,18 +176,18 @@
       },
       {
         "scope": "EM1 loading-screen presentation",
-        "state": "Full level loads show original imported artwork and cycle eight authored dot frames. The loading screen is shown for at least one UI frame. Level descriptors select destination artwork, while boot and missing or unspecified artwork use the opening screen.",
+        "state": "Full level loads and scene streams behind an authored fade show original artwork and cycle the authored dot frames. Faded scene imports wait until the loading screen has had a visible presentation window. Level loads use destination artwork, while streams use the current level's artwork.",
         "source": "loading_screen_texture in levels.pak, loose LoadingScreens assets, and src/blotworx/loading_screen.rs",
-        "evidence": "All 54 authored loading-screen paths in the BlueThinner import resolve to 640x480 DDS resources, including the English NTSC Guardian splash. All eight 64x16 dot assets resolve.",
+        "evidence": "The artwork paths and eight 64x16 dot frames resolve in the BlueThinner import. The DBC staged stream captured original artwork with a pending scene, then resumed with the scene queue drained and no runtime errors.",
         "open": [
           "Regional splash selection follows the English NTSC assets currently",
           "Retail timing and placement",
-          "In-level streaming presentation"
+          "Asynchronous scene publication and Wii UI timing"
         ]
       },
       {
         "scope": "DBC projector screen material animation",
-        "state": "The cloned projector screen plays its authored fade and flicker. The warp material samples current scene color with the projector's keyed IndirectScale, using a screen-space copy and an absolute two-axis strength for the authored single warp matrix.",
+        "state": "The cloned projector screen plays its authored fade and flicker. Direct material tracks remain active alongside sequence poses, and a scripted camera sequence chosen after reset starts without blending from the previous sequence. The warp samples current scene color using the authored two-axis IndirectScale.",
         "source": "screen_mickey.nif_wii, GEN_Portal_Screen_Distortion.nif_wii, and SFX_projectionWarp.r3mt",
         "evidence": "target/perf/dbc-refraction-staged.runtime.json records the original Dark Beauty Castle screen and a deliberately staged distortion spawn. SFX_projectionWarp contributes to the probed pixel with no fallback or script/runtime errors. The earlier paired color probes record Constant_Color_1 alpha changing from 0 to 0.098.",
         "open": [

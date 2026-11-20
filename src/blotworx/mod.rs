@@ -3127,7 +3127,10 @@ impl Engine {
         let mut aim_target = None;
         let mut aim_ray = None;
         let simulation_started = Instant::now();
-        let stream_screen_presented = self.stream_loading_screen.is_some();
+        let stream_screen_ready = self
+            .stream_loading_screen
+            .as_ref()
+            .is_some_and(loading_screen::Screen::ready_to_dismiss);
         {log::debug!(target:"blotworx_phase", "simulation begin ticks={} active={active}",controller.ticks);}
         let result=controller.advance_with_tick_phases_and_camera(world,|world|&world.collision,elapsed,active,input,
             |world|world.published_camera_frame().map(|frame|frame.map(|frame|frame.direction)),
@@ -3140,7 +3143,7 @@ impl Engine {
             if phase==controller::TickPhase::BeforeMovement {
                 // Scene publication can block the render thread. Defer it
                 // until a fully faded handoff has painted its loading artwork.
-                if !stream_screen_presented && world.faded_scene_load_pending() {
+                if !stream_screen_ready && world.fading_scene_load_pending() {
                     world.scene_requests_prepared_for_models = true;
                 } else {
                     world.with_live_player(player,|world|world.prepare_gameplay_scene_requests())?;
@@ -4507,19 +4510,30 @@ impl eframe::App for Engine {
             if self.details {
                 egui::Window::new("Level report").open(&mut self.details).resizable(true).default_width(530.).show(ui.ctx(),|ui|{if let Some(w)=&self.world{egui::ScrollArea::vertical().max_height(550.).show(ui,|ui|{ui.label(format!("{} entities Â· {} meshes Â· {} triangles Â· {} collision triangles",w.report.placed_entities,w.report.meshes,w.report.render_triangles,w.report.collision_triangles));ui.label(format!("Authored spawn: {:?}",w.report.spawn));ui.label(format!("Global definitions applied: {}",w.report.global_overrides));if ui.button("Export reportâ€¦").clicked(){if let Some(path)=rfd::FileDialog::new().set_file_name("blotworx-report.json").save_file(){if let Err(e)=std::fs::write(path,serde_json::to_vec_pretty(&w.report).unwrap_or_default()){self.error=Some(e.to_string())}}}ui.separator();for line in &w.report.unsupported{ui.label(line);}ui.collapsing("Asset / material warnings",|ui|{for line in &w.report.warnings{ui.label(line);}});ui.collapsing("Components",|ui|{for (name,count) in &w.report.components{ui.label(format!("{count} Ã— {name}"));}});});}});
             }
-            self.play(ui);
-            // Ordinary streaming continues behind gameplay. When an authored
-            // handoff has already faded to black, present the level's loading
-            // art while the pending scene queue is being published.
-            if let Some(world) = self.world.as_ref().filter(|world| world.faded_scene_load_pending()) {
+            // Give the loading screen time to present and animate before a
+            // synchronous scene import takes over the UI thread.
+            if self
+                .stream_loading_screen
+                .as_ref()
+                .is_none_or(loading_screen::Screen::ready_to_dismiss)
+            {
+                self.play(ui);
+            }
+            if let Some(world) = self.world.as_mut().filter(|world| {
+                self.error.is_none() && world.faded_scene_load_pending()
+            }) {
+                if self.stream_loading_screen.is_none() {
+                    self.simulation_active = false;
+                    world.frame_clock.suspend_for_loading();
+                }
                 let screen = self.stream_loading_screen.get_or_insert_with(|| {
                     loading_screen::Screen::load(ui.ctx(), world.source_data_root(), Some(&world.report.level))
                 });
                 screen.paint(ui);
-                ui.ctx().request_repaint();
-            } else {
-                self.stream_loading_screen = None;
+                self.capture_frame(ui, false);
+                return;
             }
+            self.stream_loading_screen = None;
             if let Some(world) = &mut self.world {
                 if let Some(dialogue) = &world.demo_story.dialogue {
                     let speaker = dialogue.speaker.clone();

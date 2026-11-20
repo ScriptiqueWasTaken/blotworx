@@ -171,10 +171,12 @@ impl State {
     }
 }
 impl super::assets::World {
+    pub(super) fn fading_scene_load_pending(&self) -> bool {
+        self.screen_fade.out && self.scene_requests.names().next().is_some()
+    }
+
     pub(super) fn faded_scene_load_pending(&self) -> bool {
-        self.screen_fade.out
-            && self.screen_fade.opacity >= 1.
-            && self.scene_requests.names().next().is_some()
+        self.screen_fade.opacity >= 1. && self.fading_scene_load_pending()
     }
 
     pub(super) fn advance_screen_fade_frame(&mut self) -> Result<()> {

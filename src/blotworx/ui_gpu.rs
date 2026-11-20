@@ -13,22 +13,45 @@ fn base_flags(diagnostic:bool)->wgpu::InstanceFlags {
     if diagnostic {wgpu::InstanceFlags::debugging().difference(wgpu::InstanceFlags::VALIDATION_INDIRECT_CALL)}else{wgpu::InstanceFlags::empty()}
 }
 pub fn create(diagnostic:bool)->Result<(Renderer,Info)> {
+    create_sized(diagnostic, (853, 480))
+}
+pub(super) fn create_sized(diagnostic: bool, size: (u32, u32)) -> Result<(Renderer, Info)> {
     // Match Ruffle's indirect-validation exclusion: it does not issue indirect
     // draws, and that validation requires a device feature Ruffle may not use.
     let flags=base_flags(diagnostic).with_env().difference(wgpu::InstanceFlags::VALIDATION_INDIRECT_CALL);
-    let instance=wgpu::Instance::new(wgpu::InstanceDescriptor{
-        backends:wgpu::Backends::PRIMARY,flags,backend_options:Default::default(),
-        ..wgpu::InstanceDescriptor::new_without_display_handle()
-    });
-    let(adapter,device,queue)=pollster::block_on(ruffle_render_wgpu::backend::request_adapter_and_device(
-        wgpu::Backends::PRIMARY,&instance,None,wgpu::PowerPreference::HighPerformance))
-        .map_err(|error|anyhow::anyhow!("HUD graphics device: {error}"))?;
+    let defaults: &[wgpu::Backends] = if cfg!(windows) {
+        &[wgpu::Backends::DX12, wgpu::Backends::VULKAN]
+    } else {
+        &[wgpu::Backends::PRIMARY]
+    };
+    let configured = wgpu::Backends::from_env().map(|backend| [backend]);
+    let mut selected = None;
+    let mut failures = Vec::new();
+    for &backends in configured.as_ref().map_or(defaults, |choices| &choices[..]) {
+        log::info!(target: "blotworx_phase", "Opening UI graphics backend {backends:?}");
+        let instance = wgpu::Instance::new(wgpu::InstanceDescriptor {
+            backends, flags, backend_options: Default::default(),
+            ..wgpu::InstanceDescriptor::new_without_display_handle()
+        });
+        match pollster::block_on(ruffle_render_wgpu::backend::request_adapter_and_device(
+            backends, &instance, None, wgpu::PowerPreference::HighPerformance,
+        )) {
+            Ok((adapter, device, queue)) => {
+                selected = Some((instance, adapter, device, queue));
+                break;
+            }
+            Err(error) => failures.push(format!("{backends:?}: {error}")),
+        }
+    }
+    let (instance, adapter, device, queue) =
+        selected.with_context(|| format!("UI graphics device: {}", failures.join("; ")))?;
     let adapter_info=adapter.get_info();
+    log::info!(target: "blotworx_phase", "UI graphics ready on {:?} {}", adapter_info.backend, adapter_info.name);
     let info=Info{adapter:adapter_info.name,backend:format!("{:?}",adapter_info.backend),driver:adapter_info.driver,
         flags:format!("{flags:?}"),native_api_validation:flags.contains(wgpu::InstanceFlags::VALIDATION),
         debug_information:flags.contains(wgpu::InstanceFlags::DEBUG),gpu_based_validation:flags.contains(wgpu::InstanceFlags::GPU_BASED_VALIDATION)};
     let descriptors=ruffle_render_wgpu::descriptors::Descriptors::new(instance,adapter,device,queue);
-    let target=ruffle_render_wgpu::target::TextureTarget::new(&descriptors.device,(853,480))
+    let target=ruffle_render_wgpu::target::TextureTarget::new(&descriptors.device,size)
         .map_err(|error|anyhow::anyhow!("HUD target: {error}"))?;
     let renderer=Renderer::new(Arc::new(descriptors),target)
         .map_err(|error|anyhow::anyhow!("HUD renderer: {error}"))

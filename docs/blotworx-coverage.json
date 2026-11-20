@@ -558,6 +558,13 @@
       ]
     },
     {
+      "scope": "EM1 Petetronic arena wall collision",
+      "state": "ForceSpawn can clone a static rigid body with the original collision geometry, transform and filter. The spawned body has a separate owner and publishes character contacts through the same path as scene collision.",
+      "source": "The authored sm_tl_zoned_gameplay.Spawner 01 clones sm_tl_zoned.StaticProp 01 on entry to the arena. The source entity uses SM_TL_ZoneD_WallCollision_static_mesh.hkx.",
+      "evidence": "A graphical Zone D replay triggered the arena intro and initialized the spawned object with one static collision part and no Lua errors.",
+      "open": ["Complete the Petetronic fight and exit in a player-driven replay."]
+    },
+    {
       "scope": "Authored preview spline segment timing",
       "state": "Preview traversal uses Hermite handles on linked edges. Without an authored duration it divides route length by live speed. Explicit times above the native epsilon are bounded below by route length divided by 200. Main and branch paths measure 200 cubic chords with the Wii distance arithmetic. Main paths use the chord table to map phase to distance. Branch paths sample cubic phase directly. The follower easing flag and knot overrides control a speed ramp over the first and last 10% of each linked segment. On a linked edge the signed phase step carries unused frame time through knot crossings and holds. An expiring hold queues OnHoldEnd from the canonical source knot to its authored output rows. The chord measurement also applies to zero-handle paths. Explicit fractional stops retain their existing behavior.",
       "source": "REL .text 3bc7dc..3bc8a4 supplies the duration and phase arithmetic. 3c06dc assembles the endpoint and handle vectors, 3c0f98 evaluates their cubic, afe4..b068 measures each chord with the paired reduction and reciprocal-root estimate; 3c10bc remaps main-path phase by cached lengths from 3c177c..3c1824, and 3c11f0 applies the authored endpoint easing. Main and branch knot preparation apply the duration bounds at 3c1828 and 3c197c. 3bc84c..3bc9fc advances phase, applies the short-edge rule and returns the residual after a strict crossing. The caller at 3bc534 repeats while time remains and the residual or phase changes. 3bc680..3bc74c queues event 0x1e when a positive hold expires with a source knot.",

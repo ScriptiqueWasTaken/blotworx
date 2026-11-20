@@ -57,6 +57,7 @@ fn clone_component_supported(name: &str) -> bool {
             | "AnimationComponent"
             | "AnimationComponentGB"
             | "PhysicsRigidBodyCharacterComponent"
+            | "PhysicsRigidBodyStaticComponent"
             | "BasicMotionControllerComponent"
             | "BasicAIControllerComponent"
             | "AIBrainComponent"
@@ -294,7 +295,7 @@ impl World {
             }
             output.push(last);
         }
-        let limitation="Object clones retain reflected gameplay components, fresh Havok/Gamebryo animation instances and generated character bodies through the common lifecycle. Prefab template member graphs, dynamic/static collision cloning and full child/prefab lifecycle remain incomplete; AI and physics retain their placed-actor compatibility limitations.";
+        let limitation="Object clones retain reflected gameplay components, fresh Havok/Gamebryo animation instances, character bodies and real static collision. Prefab template member graphs, dynamic and toon collision cloning and full child/prefab lifecycle remain incomplete; AI and physics retain their placed-actor compatibility limitations.";
         if !self
             .report
             .unsupported
@@ -367,8 +368,8 @@ impl World {
         ensure!(
             entity.jigsaw_asset.is_none()
                 && entity.jigsaw_states.is_empty()
-                && entity.collision_parts.is_empty(),
-            "Jigsaw/collision clone instantiation is not implemented on {}",
+                && !self.model_paint.contains_key(&source),
+            "Toon or jigsaw clone instantiation is not implemented on {}",
             entity.name
         );
         if entity.components.iter().any(|component|component.class_name=="AnimationComponentGB") {
@@ -619,6 +620,7 @@ impl World {
             }
             let root = self.data_root.clone();
             self.bind_cloned_phantom(source, index)?;
+            self.clone_static_collision(source, index)?;
             self.initialize_component_range(index..index + 1, &[], &root)?;
             if self.entities[index].components.iter().any(|component|component.class_name=="AnimationComponentGB") {
                 ensure!(self.actors.contains_key(&index),"Spawned Gamebryo actor initialization failed");
@@ -704,6 +706,7 @@ impl World {
                     "havok_actor_initialized": self.authored_havok.contains(index),
                     "gamebryo_actor_initialized": self.actors.contains_key(&index),
                     "character_body_initialized": self.character_physics.get(&index).is_some_and(Result::is_ok),
+                    "static_collision_parts": self.entities[index].collision_parts.len(),
                     "ai_brain_initialized": self.ai_brains.contains_key(&index),
                     "full_native_clone_parity_verified": false
                 }));
@@ -723,6 +726,55 @@ impl World {
             event_kind:0x3d,source:Some(index),header:None,
         }.into(),None)?;
         Ok(index)
+    }
+
+    fn clone_static_collision(&mut self, source: usize, entity: usize) -> Result<()> {
+        let source_parts = self.entities[source].collision_parts.clone();
+        if source_parts.is_empty() {
+            return Ok(());
+        }
+        let begin = self.report.collision_parts.len();
+        let first_owner = self.collision.next_owner()?.max(
+            self.report.collision_parts.iter().map(|part| part.owner)
+                .max().and_then(|owner| owner.checked_add(1)).context("Static owner overflow")?,
+        );
+        let transform = self.entities[entity].transform;
+        for (offset, index) in source_parts.enumerate() {
+            let mut part = self.report.collision_parts[index].clone();
+            part.owner = first_owner.checked_add(offset).context("Static owner overflow")?;
+            part.entity_id = self.entities[entity].id;
+            part.entity_transform = transform;
+            part.triangle_start = self.collision.triangle_count();
+            let mesh = &part.native_resource[part.native_part];
+            let vertices = mesh.vertices.iter().map(|&point| {
+                physics::point(&transform, physics::point(&mesh.body_transform, point))
+            }).collect::<Vec<_>>();
+            let triangles = mesh.indices.chunks_exact(3).map(|face| Triangle {
+                p: std::array::from_fn(|i| vertices[face[i] as usize]),
+            }).collect::<Vec<_>>();
+            let owner = part.owner;
+            let radius = mesh.triangle_radius;
+            let convex = mesh.convex;
+            // Publish owner bookkeeping before fallible admission so the
+            // existing clone rollback can retire every admitted shape.
+            self.static_collision_owner_parts.insert(owner, self.report.collision_parts.len());
+            self.report.collision_parts.push(part);
+            self.entities[entity].collision_parts = begin..self.report.collision_parts.len();
+            if !triangles.is_empty() {
+                self.collision.add_static_triangles(&triangles, radius, owner)?;
+            }
+            if convex {
+                self.collision.add_static_convex(&vertices, radius, owner)?;
+            }
+        }
+        let range = self.entities[entity].collision_parts.clone();
+        scene_import::retain_fixed_ground_velocities(
+            &mut self.collision,
+            self.report.collision_parts[range.clone()].iter(),
+        )?;
+        self.append_static_character_contacts(range)?;
+        self.report.collision_triangles = self.collision.triangle_count();
+        Ok(())
     }
 }
 #[cfg(debug_assertions)]

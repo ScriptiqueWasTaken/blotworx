@@ -1080,29 +1080,7 @@ impl World {
             false,
         )?;
         self.bind_spherical_properties(range.clone(), sources, files, &mut batch.textures)?;
-        let contacts = self.report.collision_parts[part_base..]
-            .iter()
-            .filter(|part| part.triangle_count > 0)
-            .map(|part| -> Result<_> {
-                let entity = self
-                    .collision_entity(part.owner)
-                    .context("Static contact entity missing")?;
-                Ok(super::super::character_contacts::Source {
-                    owner: part.owner,
-                    resource: part.native_resource.clone(),
-                    part: part.native_part,
-                    welding: part.native_welding.clone(),
-                    body: part.body_offset,
-                    triangle_start: part.triangle_start,
-                    initial: super::super::native_hk_transform::initial_body(
-                        &entity.physics_transform(),
-                        &part.body_transform,
-                    )?,
-                })
-            })
-            .collect::<Result<Vec<_>>>()?;
-        self.collision
-            .append_native_static_character_contacts(contacts)?;
+        self.append_static_character_contacts(part_base..self.report.collision_parts.len())?;
         self.scene_motion_prepared_at = None;
         self.report.collision_triangles = self.collision.triangle_count();
         self.report.textures = batch
@@ -1132,6 +1110,34 @@ impl World {
         }
         self.report.geometry.push(serde_json::json!({"kind":if stream_archive.is_some(){"streamed_scene_initialization"}else{"spawned_entity_initialization"},"scene":published_name,"entities":range.len(),"connected_owners":initialization_connections,"native_phase_timing_verified":false}));
         Ok(range)
+    }
+
+    pub(super) fn append_static_character_contacts(
+        &mut self,
+        range: std::ops::Range<usize>,
+    ) -> Result<()> {
+        let contacts = self.report.collision_parts[range]
+            .iter()
+            .filter(|part| part.triangle_count > 0)
+            .map(|part| -> Result<_> {
+                let entity = self
+                    .collision_entity(part.owner)
+                    .context("Static contact entity missing")?;
+                Ok(super::super::character_contacts::Source {
+                    owner: part.owner,
+                    resource: part.native_resource.clone(),
+                    part: part.native_part,
+                    welding: part.native_welding.clone(),
+                    body: part.body_offset,
+                    triangle_start: part.triangle_start,
+                    initial: super::super::native_hk_transform::initial_body(
+                        &entity.physics_transform(),
+                        &part.body_transform,
+                    )?,
+                })
+            })
+            .collect::<Result<Vec<_>>>()?;
+        self.collision.append_native_static_character_contacts(contacts)
     }
 }
 

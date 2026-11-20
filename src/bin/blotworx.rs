@@ -47,7 +47,9 @@ fn main() -> anyhow::Result<()> {
     if validation.as_deref() == Some("--validate-dbc-courtyard-armor") {
         return blotworx::blotworx::validate_dbc_courtyard_armor();
     }
-    let _ = env_logger::try_init();
+    if startup_log::install().is_none() {
+        let _ = env_logger::try_init();
+    }
     #[cfg(debug_assertions)]
     if validation.as_deref() == Some("--validate-story-rewards") {return blotworx::blotworx::validate_story_rewards();}
     #[cfg(debug_assertions)]
@@ -125,5 +127,7 @@ fn main() -> anyhow::Result<()> {
     if validation.as_deref() == Some("--validate-brush-puzzle") {return blotworx::blotworx::validate_brush_puzzle();}
     #[cfg(debug_assertions)]
     if validation.as_deref() == Some("--validate-gv-encounter") {return blotworx::blotworx::validate_gv_encounter();}
-    blotworx::blotworx::run()
+    blotworx::blotworx::run().inspect_err(|error| log::error!("Application exited: {error:#}"))
 }
+#[path = "../startup_log.rs"]
+mod startup_log;

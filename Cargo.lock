@@ -541,7 +541,7 @@ dependencies = [
 
 [[package]]
 name = "blotworx"
-version = "0.1.0-demo.2"
+version = "0.1.0-demo.3"
 dependencies = [
  "anyhow",
  "async-channel",

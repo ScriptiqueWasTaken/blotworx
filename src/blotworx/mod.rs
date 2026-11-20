@@ -2814,6 +2814,7 @@ impl Engine {
         self.anvil_root_pending = false;
         let root = PathBuf::from(&self.root);
         let level = self.level.clone();
+        log::info!(target: "blotworx_phase", "Loading level {level}");
         let diagnostic_morph = self.diagnostic_morph.clone();
         let particle_asset_preview = self.particle_asset_preview.clone();
         let particle_materials = self.particle_materials;
@@ -4388,7 +4389,7 @@ impl eframe::App for Engine {
                 self.receiver = None;
                 match result {
                     Ok(mut world) => {
-                        log::debug!(target:"blotworx_phase", "level import received");
+                        log::info!(target:"blotworx_phase", "Level import received");
                         let ear_pose = match ears::Pose::new(&world.player_animations.rig.bones) {
                             Ok(pose) => pose,
                             Err(e) => {
@@ -4559,12 +4560,15 @@ impl eframe::App for Engine {
                         self.last_movie = None;
                         self.world = Some(world);
                         self.loading_save = None;
-                        log::debug!(target:"blotworx_phase", "level ready for playback");
+                        log::info!(target:"blotworx_phase", "Level ready for playback");
                         self.last = Instant::now();
                     }
-                    Err(e) => self.error = Some(format!(
-                        "{e:#}\nThe previous level was released before loading to reduce peak memory; load it again to return."
-                    )),
+                    Err(e) => {
+                        log::error!("Level load failed: {e:#}");
+                        self.error = Some(format!(
+                            "{e:#}\nThe previous level was released before loading to reduce peak memory; load it again to return."
+                        ));
+                    }
                 }
             }
         }
@@ -4958,9 +4962,16 @@ impl Engine {
     fn present_title(&mut self, ui: &mut egui::Ui) {
         if let Some(world) = &mut self.world {
             if world.movies.take_title() {
+                log::info!(target: "blotworx_phase", "Loading title screen");
                 match ui_movie::Title::load(world) {
-                    Ok(title) => self.title = Some(title),
-                    Err(error) => self.error = Some(format!("Title screen: {error:#}")),
+                    Ok(title) => {
+                        self.title = Some(title);
+                        log::info!(target: "blotworx_phase", "Title screen ready");
+                    }
+                    Err(error) => {
+                        log::error!("Title screen failed: {error:#}");
+                        self.error = Some(format!("Title screen: {error:#}"));
+                    }
                 }
             }
         }

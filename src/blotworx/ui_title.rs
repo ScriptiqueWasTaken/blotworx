@@ -167,12 +167,8 @@ impl Stage {
             images: Rc::new(RefCell::new(images)),
             resources: Rc::new(RefCell::new(resources)),
         };
-        let renderer = Renderer::for_offscreen(
-            (640, 480),
-            wgpu::Backends::PRIMARY,
-            wgpu::PowerPreference::HighPerformance,
-        )
-        .map_err(|error| anyhow::anyhow!("Create title renderer: {error}"))?;
+        let (renderer, _) = super::gpu::create_sized(false, (640, 480))
+            .context("Create title renderer")?;
         let handle = PlayerBuilder::new()
             .with_movie(data)
             .with_autoplay(true)

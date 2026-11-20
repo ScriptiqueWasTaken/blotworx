@@ -48,7 +48,7 @@ mod vector_property;
 
 /// Maps the shared world triangle storage back to an authored body/subpart.
 /// Names alone are not identity: separate placements may share the same asset.
-#[derive(serde::Serialize)]
+#[derive(Clone, serde::Serialize)]
 pub struct CollisionPart {
     /// Runtime collider identity, independent of this record's report index.
     pub owner: usize,

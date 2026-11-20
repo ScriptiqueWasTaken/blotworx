@@ -200,6 +200,24 @@ pub fn initialize_header(bytes: &mut [u8]) -> Result<()> {
     Ok(())
 }
 
+/// REL26029c..2604d4 resets gameplay sections, retaining only the
+/// header-owned progression and presentation records for the next run.
+pub(super) fn complete_playthrough(source: &[u8]) -> Result<BuiltMemory> {
+    let archive = Archive::parse(source)?;
+    ensure!(source[0x2c4] == 0, "Save slot already records a completed playthrough");
+    ensure!(archive.optional_section(*b"MICK")?.is_some(), "No campaign checkpoint to complete");
+
+    let mut bytes = vec![0; source.len()];
+    initialize_header(&mut bytes)?;
+    for range in [0x158..0x298, 0x298..0x2b1, 0x2b4..0x2c0, 0x2c5..0x30e, 0x310..0x320] {
+        bytes[range.clone()].copy_from_slice(&source[range]);
+    }
+    let playthrough = word(source, 0x2c0)?.wrapping_add(1);
+    bytes[0x2c0..0x2c4].copy_from_slice(&playthrough.to_be_bytes());
+    bytes[0x2c4] = 1;
+    MemoryWriter::from_storage(bytes)?.finish()
+}
+
 pub struct BuiltMemory {
     pub bytes: Vec<u8>,
     pub logical_size: usize,
@@ -394,6 +412,34 @@ pub fn append_record(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn completed_playthrough_retains_only_native_header_owners() -> Result<()> {
+        let mut source = vec![0; 0x10000];
+        initialize_header(&mut source)?;
+        source[0x10..0x14].copy_from_slice(b"test");
+        for range in [0x158..0x298, 0x298..0x2b1, 0x2b4..0x2c0, 0x2c5..0x30e, 0x310..0x320] {
+            for index in range {
+                source[index] = index as u8;
+            }
+        }
+        source[0x2c0..0x2c4].copy_from_slice(&3u32.to_be_bytes());
+        let mut writer = MemoryWriter::from_storage(source)?;
+        writer.append_section(*b"MICK", 3, &[7, 8, 9, 10])?;
+        let source = writer.finish()?.bytes;
+        let completed = complete_playthrough(&source)?;
+        let archive = Archive::parse(&completed.bytes)?;
+        assert_eq!(archive.sections.len(), 1);
+        assert_eq!(archive.sections[0].tag, LAST);
+        assert_eq!(archive.header_string(0x10, 60)?, "");
+        assert_eq!(word(&completed.bytes, 0x2c0)?, 4);
+        assert_eq!(completed.bytes[0x2c4], 1);
+        for range in [0x158..0x2b1, 0x2b4..0x2c0, 0x2c5..0x30e, 0x310..0x320] {
+            assert_eq!(completed.bytes[range.clone()], source[range]);
+        }
+        assert!(complete_playthrough(&completed.bytes).is_err());
+        Ok(())
+    }
+
     #[test]
     fn header_initialization_matches_original_instruction_reference() -> Result<()> {
         let reference: serde_json::Value =

@@ -108,6 +108,23 @@ impl Service {
         writer.request(snapshot, now, frequency, false)
     }
 
+    /// The completion write bypasses the ordinary checkpoint throttle.
+    pub(super) fn complete_playthrough(&self, snapshot: &Arc<Snapshot>) -> Result<Admission> {
+        let mut writer = self.writer();
+        if writer.closed || writer.disabled {
+            return Ok(Admission::Declined);
+        }
+        if let Some(job) = &writer.job {
+            job.wait()?;
+            writer.poll()?;
+        }
+        let selected = writer.selected;
+        writer.slots[selected].capture(&snapshot.bytes)?;
+        let admission = writer.start_write(snapshot)?;
+        writer.memory_checkpoint = Some(snapshot.clone());
+        Ok(admission)
+    }
+
     pub fn poll(&self) -> Result<()> { self.writer().poll() }
 
     pub fn flush(&self, now: u64, frequency: u32) -> Result<()> {
@@ -244,6 +261,12 @@ impl Writer {
             self.pending = true;
             return Ok(Admission::Deferred);
         }
+        let admission = self.start_write(snapshot)?;
+        self.last_write_tick = now;
+        Ok(admission)
+    }
+
+    fn start_write(&mut self, snapshot: &Arc<Snapshot>) -> Result<Admission> {
         let job = Arc::new(Job {
             result: Mutex::new(None),
             ready: Condvar::new(),
@@ -263,7 +286,6 @@ impl Writer {
                 }
             })
             .context("Start persistent checkpoint job")?;
-        self.last_write_tick = now;
         self.pending = false;
         self.frontend = 6;
         self.status = 2;
@@ -574,6 +596,23 @@ mod tests {
         std::fs::remove_file(collision)?;
         Ok(())
     }
+    #[test]
+    fn completed_playthrough_supersedes_a_throttled_write() -> Result<()> {
+        let directory = Directory::new();
+        let service = Service::open(directory.0.clone(), 1, 0)?;
+        let active = snapshot(b'A')?;
+        assert_eq!(service.request(&active, 0, 1000)?, Admission::Deferred);
+        let mut bytes = active.bytes.clone();
+        bytes[0x2c4] = 1;
+        let completed = Arc::new(Snapshot { bytes, logical_size: active.logical_size });
+        assert_eq!(service.complete_playthrough(&completed)?, Admission::Started);
+        service.flush(0, 1000)?;
+        assert_eq!(service.writes(), 1);
+        assert!(!service.pending());
+        assert_eq!(std::fs::read(directory.0.join("save1.dat"))?, completed.bytes);
+        Ok(())
+    }
+
     #[test]
     fn shutdown_during_level_import_commits_the_live_memory_buffer_once() -> Result<()> {
         let directory = Directory::new();

@@ -242,6 +242,16 @@
         ]
       },
       {
+        "scope": "EM1 campaign completion slot and ending outcomes",
+        "state": "StoreEndgameData records nine signed global outcomes as booleans in native header order on the next memory capture. ResetSaveGameSlot preserves the native header fields for the next playthrough, increments the playthrough counter, marks the completed slot, and writes a LAST-only archive without the ordinary save throttle.",
+        "source": "Authored DoEndGame and SetEndgameVariables, Wii REL2fbd0 -> 345b4 and 260620 -> 26029c..2604d4. RELba148 reads the outcome bytes for the frontend movie list.",
+        "evidence": "A scratch copy of Zone F ran the original SetEndgameVariables with staged story decisions. target/perf/campaign-completion-live.runtime.json captures a LAST-only save and zero runtime or script errors. The committed bytes contain the expected nine outcomes and playthrough +1, and the backup equals the starting file. Two focused tests cover exact header retention and replacement of a throttled write.",
+        "open": [
+          "The actual final encounter and pin-update callback",
+          "Ending movie order, main-menu credits handoff, and starting a new run from a completed slot"
+        ]
+      },
+      {
         "scope": "EM1 loading-screen presentation",
         "state": "Full level loads and scene streams behind an authored fade show original artwork and cycle the authored dot frames. Faded scene imports wait until the loading screen has had a visible presentation window. Level loads use destination artwork, while streams use the current level's artwork.",
         "source": "loading_screen_texture in levels.pak, loose LoadingScreens assets, and src/blotworx/loading_screen.rs",

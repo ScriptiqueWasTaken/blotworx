@@ -22,8 +22,13 @@ pub struct Snapshot {
     pub logical_size: usize,
 }
 impl Snapshot {
+    pub(super) fn has_active_campaign(&self) -> bool {
+        self.bytes.get(0x2c4) == Some(&0)
+    }
+
     pub(super) fn level(&self) -> Result<String> {
         let archive = Archive::parse(&self.bytes)?;
+        ensure!(self.has_active_campaign(), "This slot completed the campaign and has no active checkpoint");
         let level = archive.header_string(0x10, 60)?;
         ensure!(!level.is_empty(), "Checkpoint has no saved level");
         Ok(level.to_owned())
@@ -330,6 +335,28 @@ impl super::assets::World {
         self.checkpoint.persistent_requested = false;
         Ok(())
     }
+    pub(super) fn store_endgame_outcomes(&mut self) {
+        // REL345b4 snapshots the signed global values in this save-header order.
+        let names = [
+            "Daisy", "Donald", "Goofy", "Petetronic", "Hook",
+            "Clocktower", "SmallPete", "Horace", "Pete",
+        ];
+        self.checkpoint.pending_nine = Some(names.map(|name| {
+            u8::from(self.globals.get(&format!("Endgame_Var_Pos_{name}")).unwrap_or(0) != 0)
+        }));
+    }
+
+    pub(super) fn complete_save_slot(&mut self) -> Result<()> {
+        let Some(source) = &self.checkpoint.latest else { return Ok(()); };
+        let built = super::save_game::complete_playthrough(&source.bytes)?;
+        let snapshot = Arc::new(Snapshot { bytes: built.bytes, logical_size: built.logical_size });
+        let service = self.checkpoint.service.as_ref().context("Campaign completion needs a save slot")?;
+        service.complete_playthrough(&snapshot)?;
+        self.checkpoint.latest = Some(snapshot);
+        self.checkpoint.persistent_requested = true;
+        Ok(())
+    }
+
     pub(super) fn save_game_to_memory(
         &mut self,
         lua: &mlua::Lua,

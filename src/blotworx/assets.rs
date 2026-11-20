@@ -1427,7 +1427,7 @@ impl World {
         Ok(entity)
     }
     pub(super) fn player_checkpoint_death_available(&self) -> bool {
-        self.checkpoint.latest.is_some()
+        self.checkpoint.latest.as_ref().is_some_and(|snapshot| snapshot.has_active_campaign())
             && self.outputs.has_connections(self.player_entity, "OnDeath")
     }
 
@@ -3469,6 +3469,17 @@ impl World {
                     lua, args.back().cloned().unwrap_or(mlua::Value::Nil),
                 )? {
                     self.clear_ai_combat_target(owner);
+                }
+                Ok(mlua::MultiValue::new())
+            }
+            "StoreEndgameData" | "ResetSaveGameSlot" => {
+                if !args.is_empty() {
+                    self.report.warnings.push(format!("{name} takes no arguments"));
+                }
+                if name == "StoreEndgameData" {
+                    self.store_endgame_outcomes();
+                } else {
+                    self.complete_save_slot().map_err(mlua::Error::external)?;
                 }
                 Ok(mlua::MultiValue::new())
             }

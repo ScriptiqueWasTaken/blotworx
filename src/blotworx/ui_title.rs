@@ -2,6 +2,9 @@ use super::*;
 use std::collections::BTreeMap;
 use ruffle_render_wgpu::{backend::WgpuRenderBackend, target::TextureTarget};
 
+#[path = "ui_extras_images.rs"]
+mod extras_images;
+
 type Renderer = WgpuRenderBackend<TextureTarget>;
 type Labels = BTreeMap<&'static str, String>;
 
@@ -119,6 +122,9 @@ impl Stage {
         let labels = localize_frontend_labels(&mut movie, &mut resources)?;
         let mut images = super::super::ui_images::Images::default();
         images.adapt(&mut movie, &file.path, &mut resources)?;
+        if path_name.ends_with("/extrasmenu.gfx") {
+            extras_images::prepare(&mut movie)?;
+        }
         let first = movie
             .tags
             .iter()
@@ -189,6 +195,10 @@ impl Stage {
     }
 
     fn call(&self, method: &str) -> Result<bool> {
+        self.call_with(method, &[])
+    }
+
+    fn call_with(&self, method: &str, arguments: &[super::super::ui_calls::Value<'_>]) -> Result<bool> {
         let mut player = lock(&self.handle)?;
         super::super::ui_calls::Movie::invoke(
             &mut NativeView {
@@ -197,7 +207,7 @@ impl Stage {
             },
             super::super::ui_calls::Invocation {
                 method,
-                arguments: &[],
+                arguments,
             },
         )
     }
@@ -488,12 +498,52 @@ impl Title {
     }
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, serde::Serialize)]
+enum ExtrasCategory {
+    Concept,
+    Movies,
+    Cartoons,
+}
+
+impl ExtrasCategory {
+    fn from_command(command: &str) -> Option<Self> {
+        match command {
+            "Concept" => Some(Self::Concept),
+            "Movies" => Some(Self::Movies),
+            "Cartoons" => Some(Self::Cartoons),
+            _ => None,
+        }
+    }
+
+    fn index(self) -> usize {
+        match self {
+            Self::Concept => 0,
+            Self::Movies => 1,
+            Self::Cartoons => 2,
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, serde::Serialize)]
+enum ExtrasPage {
+    Landing,
+    Entering(ExtrasCategory),
+    Browsing(ExtrasCategory),
+    Leaving,
+    Watching(ExtrasCategory),
+}
+
 struct ExtrasMenu {
     stage: Stage,
     initialized: bool,
     fade_started: bool,
     slot: usize,
     counts: [String; 4],
+    items: [Vec<super::super::extras::Entry>; 3],
+    page: ExtrasPage,
+    offset: usize,
+    assets: super::super::resource_store::Store,
+    locked_thumbnail: Vec<u8>,
 }
 
 impl ExtrasMenu {
@@ -507,25 +557,45 @@ impl ExtrasMenu {
                 .is_some_and(|error| error.kind() == std::io::ErrorKind::NotFound) => {}
             Err(error) => return Err(error).context("Read Extras unlocks from the selected save"),
         }
-        // RELbc610 fills the category tables. RELbc018 publishes Concept Art,
-        // Cartoon and Film counts in this order, with a constant Credits row.
-        let [art, cartoons, films] = ["Concept_Art", "Cartoon", "Film"].map(|kind| {
-            let entries = database.entries.iter().filter(|entry| entry.kind == kind);
-            let total = entries.clone().count();
-            let unlocked = entries.filter(|entry| entry.unlocked).count();
-            format!("{unlocked}/{total}")
+        // RELbc740 maps the three native states to Concept_Art, Film,
+        // and Cartoon. REL113794 inserts unlocked entries ahead of locked
+        // entries and orders each group by the generated _Name key.
+        let mut items = [Vec::new(), Vec::new(), Vec::new()];
+        for entry in database.entries {
+            let index = match entry.kind.as_str() {
+                "Concept_Art" => 0,
+                "Film" => 1,
+                "Cartoon" => 2,
+                _ => continue,
+            };
+            items[index].push(entry);
+        }
+        for group in &mut items {
+            group.sort_by_cached_key(|entry| (!entry.unlocked, format!("{}_Name", entry.name)));
+        }
+        let [art, films, cartoons] = items.each_ref().map(|entries| {
+            let unlocked = entries.iter().take_while(|entry| entry.unlocked).count();
+            format!("{unlocked}/{}", entries.len())
         });
         let stage = Stage::load(
             root,
             "HUDElements/Flash/cooked/extrasmenu.gfx",
-            &["Initialize", "FadeIn"],
+            &["Initialize", "FadeIn", "UpdateSubMenu", "EnableScroll", "RestoreMenu",
+                "RestoreMovieMenu", "RestoreCartoonMenu"],
         )?;
+        let mut assets = super::super::resource_store::Store::new(root, &[])?;
+        let locked_thumbnail = extras_images::read_texture(&mut assets, extras_images::LOCKED)?;
         Ok(Self {
             stage,
             initialized: false,
             fade_started: false,
             slot,
             counts: [art, cartoons, films, "1/1".into()],
+            items,
+            page: ExtrasPage::Landing,
+            offset: 0,
+            assets,
+            locked_thumbnail,
         })
     }
 
@@ -555,6 +625,57 @@ impl ExtrasMenu {
         Ok(())
     }
 
+    const PAGE_SIZE: usize = 6;
+
+    fn transition(&self, active: bool) -> Result<()> {
+        let mut player = lock(&self.stage.handle)?;
+        player.call_internal_interface("__bwx_frontend_set", [
+            Value::String("_global.IsInTransitionMovie".into()),
+            Value::Bool(active),
+        ]);
+        Ok(())
+    }
+
+    fn publish_category(&mut self, category: ExtrasCategory) -> Result<()> {
+        use super::super::ui_calls::Value as Argument;
+        let items = &self.items[category.index()];
+        {
+            let mut player = lock(&self.stage.handle)?;
+            for (path, array) in [
+                ("_global.EXTRALOCKED", items.iter().map(|item| Value::Number(f64::from(!item.unlocked))).collect()),
+                ("_global.EXTRA_NEWLY_UNLOCKED", vec![Value::Number(0.); items.len()]),
+            ] {
+                player.call_internal_interface("__bwx_frontend_set", [
+                    Value::String(path.into()), Value::List(array),
+                ]);
+            }
+        }
+        ensure!(
+            self.stage.call_with("UpdateSubMenu", &[Argument::Number(items.len() as f64)])?,
+            "Authored Extras submenu callback is unavailable"
+        );
+        self.stage.call("EnableScroll")?;
+        self.update_thumbnails(category, 0)?;
+        self.page = ExtrasPage::Browsing(category);
+        Ok(())
+    }
+
+    fn update_thumbnails(&mut self, category: ExtrasCategory, offset: usize) -> Result<()> {
+        let mut player = lock(&self.stage.handle)?;
+        let items = &self.items[category.index()];
+        for (index, texture) in extras_images::PLACES.into_iter().enumerate() {
+            let image = items.get(offset + index)
+                .filter(|item| item.unlocked && !item.thumbnail.is_empty())
+                .map(|item| extras_images::read_texture(&mut self.assets, &item.thumbnail))
+                .transpose()?;
+            extras_images::publish(
+                &mut player, texture, image.as_deref().unwrap_or(&self.locked_thumbnail),
+            )?;
+        }
+        self.offset = offset;
+        Ok(())
+    }
+
     fn summary(&self) -> serde_json::Value {
         let labels = lock(&self.stage.handle).map(|mut player| {
             extras_label_paths().filter_map(|path| match read(&mut player, &path) {
@@ -565,6 +686,12 @@ impl ExtrasMenu {
         serde_json::json!({
             "initialized": self.initialized, "fade_started": self.fade_started,
             "slot": self.slot, "counts": self.counts, "labels": labels,
+            "page": self.page, "offset": self.offset,
+            "visible_entries": match self.page {
+                ExtrasPage::Browsing(category) | ExtrasPage::Watching(category) => self.items[category.index()]
+                    .iter().skip(self.offset).take(Self::PAGE_SIZE).collect::<Vec<_>>(),
+                _ => Vec::new(),
+            },
         })
     }
 }
@@ -580,6 +707,7 @@ pub(in crate::blotworx) struct Menu {
     in_slots: bool,
     last: std::time::Instant,
     replay_down: bool,
+    replay_back_down: bool,
     pub(in crate::blotworx) elapsed: f64,
     pub(in crate::blotworx) start_tick: u64,
     pub(in crate::blotworx) title_report: Option<serde_json::Value>,
@@ -617,6 +745,7 @@ impl Menu {
             in_slots: false,
             last: std::time::Instant::now(),
             replay_down: false,
+            replay_back_down: false,
             elapsed: 0.,
             start_tick,
             title_report,
@@ -710,6 +839,9 @@ impl Menu {
         let delta = now.duration_since(self.last).as_secs_f64();
         self.last = now;
         self.elapsed += delta;
+        let replay_back = replay.is_some_and(|frame| frame.spin_pressed);
+        let replay_back_pressed = replay_back && !self.replay_back_down;
+        self.replay_back_down = replay_back;
         let stage = self.extras.as_mut().map_or(&mut self.stage, |extras| &mut extras.stage);
         {
             let rect = ui.max_rect();
@@ -803,8 +935,8 @@ impl Menu {
                     0x0008,
                 ),
             ] {
-                let pressed = if let Some(frame) = replay {
-                    egui_key == egui::Key::Escape && frame.spin_pressed
+                let pressed = if replay.is_some() {
+                    egui_key == egui::Key::Escape && replay_back_pressed
                 } else {
                     pad_edges & bit != 0 || ui.input(|i| i.key_pressed(egui_key))
                 };
@@ -879,9 +1011,8 @@ impl Menu {
                     self.notice = None;
                     self.stage.call("ExtraToMain")?;
                 }
-                "Extras" | "ExtrasSub" if self.extras.is_some() => {
-                    self.notice = Some("This Extras category is unavailable.".into());
-                }
+                "Extras" if self.extras.is_some() => self.handle_extras_command(&args)?,
+                "ExtrasSub" if self.extras.is_some() => self.open_extra(&args)?,
                 "MainMenuDelete" => self.notice = Some("Delete is unavailable.".into()),
                 _ => {}
             }
@@ -911,12 +1042,104 @@ impl Menu {
             ui.painter()
                 .rect_filled(ui.max_rect(), 0., egui::Color32::BLACK);
         }
+        if self.background.as_ref().is_some_and(|background| background.completed) {
+            self.finish_extras_movie()?;
+        }
         let stage = self.extras.as_mut().map_or(&mut self.stage, |extras| &mut extras.stage);
         stage.paint(ui)?;
         if let Some(notice) = &self.notice {
             ui.label(notice);
         }
         Ok(selection)
+    }
+
+    fn extras_movie(&mut self, filename: String, looping: bool) {
+        self.background = Some(super::super::movie::Player::title_background(
+            self.root.clone(), filename, looping,
+        ));
+    }
+
+    fn handle_extras_command(&mut self, command: &str) -> Result<()> {
+        let extras = self.extras.as_mut().context("Extras menu is closed")?;
+        self.notice = None;
+        if let Some(category) = ExtrasCategory::from_command(command) {
+            extras.transition(true)?;
+            extras.page = ExtrasPage::Entering(category);
+            let number = category.index() + 1;
+            self.extras_movie(format!("FE_Extras_to_Sub{number}.bik"), false);
+        } else if let ExtrasPage::Watching(_) = extras.page {
+            if command == "StopMovie" {
+                self.finish_extras_movie()?;
+            }
+        } else if let ExtrasPage::Browsing(category) = extras.page {
+            if command == "Main" {
+                extras.transition(true)?;
+                extras.page = ExtrasPage::Leaving;
+                let number = category.index() + 1;
+                self.extras_movie(format!("FE_Extras_Sub{number}_to_Extras.bik"), false);
+            } else if let Ok(page) = command.parse::<usize>() {
+                if let Some(offset) = page.checked_mul(ExtrasMenu::PAGE_SIZE)
+                    .filter(|offset| *offset < extras.items[category.index()].len())
+                {
+                    extras.update_thumbnails(category, offset)?;
+                }
+                extras.stage.call("EnableScroll")?;
+            }
+        } else if command == "Credits" {
+            extras.stage.call("RestoreMenu")?;
+            self.notice = Some("Extras credits playback is unavailable.".into());
+        }
+        Ok(())
+    }
+
+    fn open_extra(&mut self, command: &str) -> Result<()> {
+        let extras = self.extras.as_mut().context("Extras menu is closed")?;
+        let ExtrasPage::Browsing(category) = extras.page else { return Ok(()); };
+        let Some(index) = command.strip_prefix("thumbitem")
+            .and_then(|number| number.parse::<usize>().ok())
+            .filter(|index| (1..=ExtrasMenu::PAGE_SIZE).contains(index))
+        else { return Ok(()); };
+        let Some(item) = extras.items[category.index()].get(extras.offset + index - 1)
+            .filter(|item| item.unlocked) else { return Ok(()); };
+        if category == ExtrasCategory::Concept {
+            self.notice = Some("Concept art preview is unavailable.".into());
+            return Ok(());
+        }
+        let file = item.asset.replace('\\', "/");
+        ensure!(!file.is_empty(), "Unlocked Extras movie has no asset");
+        extras.page = ExtrasPage::Watching(category);
+        self.extras_movie(file, false);
+        Ok(())
+    }
+
+    fn finish_extras_movie(&mut self) -> Result<()> {
+        let Some(extras) = &mut self.extras else { return Ok(()); };
+        match extras.page {
+            ExtrasPage::Entering(category) => {
+                extras.transition(false)?;
+                extras.publish_category(category)?;
+                extras.stage.call("FadeIn")?;
+                self.extras_movie(format!("FE_Extras_Sub{}_Loop.bik", category.index() + 1), true);
+            }
+            ExtrasPage::Leaving => {
+                extras.transition(false)?;
+                extras.stage.call("RestoreMenu")?;
+                extras.stage.call("FadeIn")?;
+                extras.page = ExtrasPage::Landing;
+                self.extras_movie("FE_Extras_Loop.bik".into(), true);
+            }
+            ExtrasPage::Watching(category) => {
+                extras.stage.call(match category {
+                    ExtrasCategory::Movies => "RestoreMovieMenu",
+                    ExtrasCategory::Cartoons => "RestoreCartoonMenu",
+                    ExtrasCategory::Concept => unreachable!(),
+                })?;
+                extras.page = ExtrasPage::Browsing(category);
+                self.extras_movie(format!("FE_Extras_Sub{}_Loop.bik", category.index() + 1), true);
+            }
+            ExtrasPage::Landing | ExtrasPage::Browsing(_) => {}
+        }
+        Ok(())
     }
 
     pub(in crate::blotworx) fn summary(&self) -> serde_json::Value {

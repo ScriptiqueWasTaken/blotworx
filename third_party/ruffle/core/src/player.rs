@@ -2292,6 +2292,28 @@ impl Player {
         }
     }
 
+    /// Refresh pixels for a host-provided root movie image at its authored size.
+    pub fn update_root_bitmap(
+        &mut self,
+        id: u16,
+        bitmap: ruffle_render::bitmap::Bitmap<'_>,
+        region: ruffle_render::bitmap::PixelRegion,
+    ) -> Result<bool, ruffle_render::error::Error> {
+        use ruffle_render::bitmap::BitmapSource;
+        self.mutate_with_update_context(|context| {
+            let Some(library) = context.library.library_for_movie(*context.root_swf) else {
+                return Ok(false);
+            };
+            let source = crate::library::MovieLibrarySource { library };
+            let Some(handle) = source.bitmap_handle(id, context.renderer) else {
+                return Ok(false);
+            };
+            context.renderer.update_texture(&handle, bitmap, region)?;
+            *context.needs_render = true;
+            Ok(true)
+        })
+    }
+
     /// Runs the closure `f` with an `UpdateContext`.
     /// This takes cares of populating the `UpdateContext` struct, avoiding borrow issues.
     pub fn mutate_with_update_context<F, R>(&mut self, f: F) -> R

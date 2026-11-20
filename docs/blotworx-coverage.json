@@ -307,8 +307,18 @@
         "source": "Wii REL1fd328..1fd360 slot selection, bc610 category tables, bc008..bc234 count publication, and extrasmenu.gfx Initialize, DelayedInit and the EditText layout. English_NTSC.pak contains the shipped text.",
         "evidence": "frontend-extras-final.runtime.json captures ExtrasMenuLoad Slot1 and the authored Extras display with counts 0/50, 4/39, 0/2 and 1/1. An independent parse of the two scratch saves and collectibles.pak predicts 4/39 for the selected save and 5/39 if combined. Both save hashes are unchanged. The frontend-extras-localization replay reads the localized text directly from the four authored cards. The frontend-extras-back replay routes Escape through the authored B handler, then plays FE_Extras_to_Main and resumes FE_MainMenu_Loop with both scratch saves unchanged.",
         "open": [
-          "Category item browsing, media playback and Extras credits/teaser",
+          "Concept Art viewer, localized item details, Extras credits/teaser and remaining category validation",
           "Frame and timing comparison with the original Wii UI"
+        ]
+      },
+      {
+        "scope": "EM1 Extras category browsing and movie playback",
+        "state": "The authored category transitions, six-card pages and thumbnail slots use the chosen save. The host publishes the original lock array, puts unlocked entries first and opens only unlocked movie records.",
+        "source": "Wii RELbc4cc/bc740/bc8f4, bd2f0..bd418, 113794..113870, collectibles.pak and extrasmenu.gfx UpdateSubMenu, RestoreMovieMenu and RestoreCartoonMenu.",
+        "evidence": "The frontend-extras-thumbnails replay enters the Movies category, renders four original thumbnails from the selected save and shows page 1/7. The frontend-extras-media replay selects the first item and plays AL_visit1_Cyrano_for_Pirate_Happy.bik. The frontend-extras-paging replay stops the movie with one Back press and advances to page 2 using the authored arrow. These replays preserve the scratch saves and report no runtime or script errors.",
+        "open": [
+          "Full native visual and timing comparison, title and description localization, Concept Art detail view and Extras credits/teaser",
+          "Playback and pagination validation across the remaining categories"
         ]
       },
       {

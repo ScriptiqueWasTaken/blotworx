@@ -14,6 +14,8 @@ pub(super) struct Screen {
     opened: Instant,
     background: Option<TextureHandle>,
     dots: Vec<TextureHandle>,
+    spinner: Option<TextureHandle>,
+    widescreen: bool,
     first_paint: Option<Instant>,
 }
 
@@ -23,12 +25,21 @@ impl Screen {
         root: &Path,
         destination: Option<&str>,
     ) -> Self {
-        let (sender, receiver) = mpsc::channel();
         let root = root.to_owned();
         let destination = destination.map(str::to_owned);
+        Self::spawn(ctx, false, move || Artwork::load(&root, destination.as_deref()))
+    }
+
+    pub(super) fn em2(ctx: &egui::Context, root: &Path) -> Self {
+        let root = root.to_owned();
+        Self::spawn(ctx, true, move || Artwork::em2(&root))
+    }
+
+    fn spawn(ctx: &egui::Context, widescreen: bool, load: impl FnOnce() -> Artwork + Send + 'static) -> Self {
+        let (sender, receiver) = mpsc::channel();
         let ctx = ctx.clone();
         std::thread::spawn(move || {
-            let _ = sender.send(Artwork::load(&root, destination.as_deref()));
+            let _ = sender.send(load());
             ctx.request_repaint();
         });
         Self {
@@ -36,6 +47,8 @@ impl Screen {
             opened: Instant::now(),
             background: None,
             dots: Vec::new(),
+            spinner: None,
+            widescreen,
             first_paint: None,
         }
     }
@@ -57,6 +70,7 @@ impl Screen {
                     let upload = |(name, image)| ctx.load_texture(name, image, TextureOptions::LINEAR);
                     self.background = artwork.background.map(upload);
                     self.dots = artwork.dots.into_iter().map(upload).collect();
+                    self.spinner = artwork.spinner.map(upload);
                     self.pending = None;
                 }
                 Err(TryRecvError::Empty) => {}
@@ -66,16 +80,21 @@ impl Screen {
                 }
             }
         }
-        if self.pending.is_none() {
+        let viewport = ctx.content_rect();
+        if self.pending.is_none() && viewport.is_positive() {
             self.first_paint.get_or_insert_with(Instant::now);
         }
         let elapsed = self.first_paint.unwrap_or(self.opened).elapsed();
 
-        let viewport = ctx.content_rect();
-        let layer = egui::LayerId::new(egui::Order::Foreground, egui::Id::new("em1_loading_screen"));
+        let layer = egui::LayerId::new(egui::Order::Foreground, egui::Id::new("game_loading_screen"));
         ctx.move_to_top(layer);
         let painter = ctx.layer_painter(layer).with_clip_rect(viewport);
-        let size = self.background.as_ref().map_or(Vec2::new(640., 480.), TextureHandle::size_vec2);
+        // The EM2 loading art is stored as square textures for 16:9 quads.
+        let size = if self.widescreen {
+            Vec2::new(640., 360.)
+        } else {
+            self.background.as_ref().map_or(Vec2::new(640., 480.), TextureHandle::size_vec2)
+        };
         let scale = (viewport.width() / size.x).min(viewport.height() / size.y);
         let image = Rect::from_center_size(viewport.center(), size * scale);
         let uv = Rect::from_min_max(egui::Pos2::ZERO, egui::pos2(1., 1.));
@@ -83,7 +102,15 @@ impl Screen {
         if let Some(background) = &self.background {
             painter.image(background.id(), image, uv, Color32::WHITE);
         }
-        if !self.dots.is_empty() {
+        if let Some(spinner) = &self.spinner {
+            let side = image.height() / 8.;
+            let center = image.min + image.size() * 0.8;
+            let square = Rect::from_center_size(center, Vec2::splat(side));
+            let mut mesh = egui::Mesh::with_texture(spinner.id());
+            mesh.add_rect_with_uv(square, uv, Color32::WHITE);
+            mesh.rotate(egui::emath::Rot2::from_angle(elapsed.as_secs_f32() * std::f32::consts::TAU), center);
+            painter.add(egui::Shape::mesh(mesh));
+        } else if !self.dots.is_empty() {
             let frame = (elapsed.as_millis() / DOT_FRAME.as_millis()) as usize;
             let dot = &self.dots[frame % self.dots.len()];
             let corner = image.right_bottom() - Vec2::splat(18. * scale);
@@ -109,6 +136,7 @@ type Texture = (String, ColorImage);
 struct Artwork {
     background: Option<Texture>,
     dots: Vec<Texture>,
+    spinner: Option<Texture>,
 }
 
 impl Artwork {
@@ -136,7 +164,25 @@ impl Artwork {
         let dots = (1..=8)
             .filter_map(|index| read(&format!("LoadingScreens/LoadingDots_{index:02}.tga")))
             .collect();
-        Self { background, dots }
+        Self { background, dots, spinner: None }
+    }
+
+    fn em2(root: &Path) -> Self {
+        // Yen Sid's Lab uses the generic loading pool. The retail PC game
+        // stores each backdrop and the spinner in loose texture NIFs.
+        let load = |file: &str| {
+            let path = root.join("LoadingScreens").join(file);
+            let bytes = std::fs::read(&path).ok()?;
+            let (rgba, width, height) = crate::render_support::nif::decode_image_bytes(&bytes)?;
+            Some((file.to_owned(), ColorImage::from_rgba_unmultiplied([width as usize, height as usize], &rgba)))
+        };
+        let index = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH)
+            .map_or(0, |time| time.subsec_nanos() % 6);
+        let background = (0..6).find_map(|offset| {
+            load(&format!("loading_screen_random{:02}_tex.nif", (index + offset) % 6 + 1))
+        });
+        let spinner = load("loading_spinner_tex.nif");
+        Self { background, dots: Vec::new(), spinner }
     }
 }
 

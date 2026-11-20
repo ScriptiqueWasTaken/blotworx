@@ -1,6 +1,6 @@
 //! PC EM2 startup bootstrap. Does not substitute an EM1 world or scripts.
 use anyhow::{Context, Result, ensure};
-use std::{collections::{HashMap, HashSet}, path::Path, sync::Arc};
+use std::{collections::{HashMap, HashSet}, path::Path, sync::{Arc, mpsc}};
 use crate::render_support::{scene, viewport3d::{self, GpuDrawCommand, Viewport3DState}};
 use epic_mickey_lib_rs::packfile::VirtualFile;
 
@@ -16,6 +16,88 @@ fn safe_stem(path: &str) -> Result<&str> {
 }
 pub(super) fn is_install(root: &Path) -> bool { root.join("DEM2.exe").is_file() && root.join("packfiles").is_dir() }
 pub(super) fn run(options: super::Options, root: &Path) -> Result<()> {
+    let (tx, rx) = mpsc::channel();
+    if options.inspect.is_some() {
+        build(options, root, tx)?;
+        return Ok(());
+    }
+    let wants_capture = options.capture.is_some();
+    let root = root.to_owned();
+    eframe::run_native(
+        "Blotworx Engine - EM2 (F6: shared-controller playtest)",
+        eframe::NativeOptions {
+            depth_buffer: 24,
+            viewport: egui::ViewportBuilder::default().with_inner_size([1280., 800.]),
+            ..Default::default()
+        },
+        Box::new(move |cc| {
+            let screen = super::loading_screen::Screen::em2(&cc.egui_ctx, &root);
+            let (send, pending) = mpsc::channel();
+            let ctx = cc.egui_ctx.clone();
+            let startup_errors = tx.clone();
+            std::thread::spawn(move || {
+                let result = build(options, &root, tx).and_then(|scene| scene.context("EM2 startup produced no scene"));
+                let _ = send.send(result);
+                ctx.request_repaint();
+            });
+            Ok(Box::new(Startup { pending: Some((screen, pending)), scene: None, movie: None, error: None, wants_capture, startup_errors }))
+        }),
+    ).map_err(|e| anyhow::anyhow!(e.to_string()))?;
+    if wants_capture { rx.try_recv().context("EM2 capture interrupted")??; }
+    Ok(())
+}
+
+struct Startup {
+    pending: Option<(super::loading_screen::Screen, mpsc::Receiver<Result<Bootstrap>>)>,
+    scene: Option<Bootstrap>,
+    movie: Option<super::movie::Player>,
+    error: Option<String>,
+    wants_capture: bool,
+    startup_errors: mpsc::Sender<Result<()>>,
+}
+
+impl eframe::App for Startup {
+    fn ui(&mut self, ui: &mut egui::Ui, _: &mut eframe::Frame) {
+        if let Some((screen, receiver)) = &mut self.pending {
+            if !screen.ready_to_dismiss() {
+                screen.paint(ui);
+                return;
+            }
+            let result = match receiver.try_recv() {
+                Ok(result) => result,
+                Err(mpsc::TryRecvError::Empty) => {
+                    screen.paint(ui);
+                    return;
+                }
+                Err(mpsc::TryRecvError::Disconnected) => Err(anyhow::anyhow!("EM2 startup worker stopped")),
+            };
+            self.pending = None;
+            match result {
+                Ok(mut scene) => {
+                    scene.last_frame = std::time::Instant::now();
+                    self.scene = Some(scene);
+                }
+                Err(error) if self.wants_capture => {
+                    let _ = self.startup_errors.send(Err(error));
+                    ui.ctx().send_viewport_cmd(egui::ViewportCommand::Close);
+                }
+                Err(error) => self.error = Some(format!("{error:#}")),
+            }
+        }
+        if let Some(scene) = &mut self.scene {
+            scene.update(ui, &mut self.movie);
+        } else if let Some(error) = &self.error {
+            ui.heading("Couldn’t load Epic Mickey 2");
+            ui.label(error);
+        }
+    }
+
+    fn on_exit(&mut self, gl: Option<&eframe::glow::Context>) {
+        if let Some(scene) = &mut self.scene { scene.on_exit(gl); }
+    }
+}
+
+fn build(options: super::Options, root: &Path, tx: mpsc::Sender<Result<()>>) -> Result<Option<Bootstrap>> {
     let mut settings=std::collections::BTreeMap::new();let mut audio_language=None;
     for (name,command) in [("ConfigFiles.ini",false),("cmdline.txt",true)] {
         let path=root.join(name);if !path.is_file(){continue;}
@@ -296,7 +378,7 @@ pub(super) fn run(options: super::Options, root: &Path) -> Result<()> {
         "failed_textures":failed_textures,"decoded_textures":textures.len(),"mesh_time_controllers":draws.iter().filter(|draw|draw.shader_time.is_some()).count(),
         "child_entities":child_graph.summary(),"child_poses":child_poses.summary(),"camera_tracker_sources":camera_trackers,"actors":actor_report,"companion":companion_report,"global_state":global_state.summary(),"player":player_report,"scripts":script_report,"scene_events":event_report,"collision":collision_report,"body_bindings":model_body_report,
         "startup_hidden_entities":startup_hidden,"startup_hidden_draws":hidden_draws.len(),"gameplay_implemented":false,"material_mode":"original PC effects with live viewport bridge; unresolved inputs use diffuse fallback","compiled_level":&*level});
-    if let Some(path)=options.inspect.as_ref() { std::fs::write(path,serde_json::to_vec_pretty(&report)?)?; return Ok(()); }
+    if let Some(path)=options.inspect.as_ref() { std::fs::write(path,serde_json::to_vec_pretty(&report)?)?; return Ok(None); }
     if scene_events.is_none() {
         if let Some(path)=options.capture.as_ref() {std::fs::write(path.with_extension("runtime.json"),serde_json::to_vec_pretty(&report)?)?;}
         anyhow::bail!("EM2 scene initialization failed: {}",scene_events_error.as_deref().unwrap_or("No scene runtime"));
@@ -343,14 +425,7 @@ pub(super) fn run(options: super::Options, root: &Path) -> Result<()> {
     vp.pixel_probe=options.render_probe;
     let capture=options.capture;
     let capture_tick=options.capture_tick.unwrap_or(3);
-    let (tx,rx)=std::sync::mpsc::channel();
-    let wants_capture=capture.is_some();
-    eframe::run_native("Blotworx Engine - EM2 (F6: shared-controller playtest)",eframe::NativeOptions {depth_buffer:24,
-        viewport:egui::ViewportBuilder::default().with_inner_size([1280.,800.]),..Default::default()},
-        Box::new(move |_|Ok(Box::new(Bootstrap {projection_centers,dialogue_pad:0,playtest_origin:None,playtest_draws:HashMap::new(),playback,playtest,playtest_pad:0,child_poses,draw_sources,movie_root,movie_language,movie_skip_seconds,capture_movie_frame,movie:None,global_state,scene_events,startup_error_reported:false,static_collision,model_bodies,hidden_draws,collision_debug,collision_lines,vp,draws,lights,scripts,actors,capture,capture_tick,frame:0,ticks:0,capture_requested:false,last_frame:std::time::Instant::now(),accumulator:0.,report,tx}))))
-        .map_err(|e|anyhow::anyhow!(e.to_string()))?;
-    if wants_capture { rx.try_recv().context("EM2 capture interrupted")??; }
-    Ok(())
+    Ok(Some(Bootstrap {projection_centers,dialogue_pad:0,playtest_origin:None,playtest_draws:HashMap::new(),playback,playtest,playtest_pad:0,child_poses,draw_sources,movie_root,movie_language,movie_skip_seconds,capture_movie_frame,global_state,scene_events,startup_error_reported:false,static_collision,model_bodies,hidden_draws,collision_debug,collision_lines,vp,draws,lights,scripts,actors,capture,capture_tick,frame:0,ticks:0,capture_requested:false,last_frame:std::time::Instant::now(),accumulator:0.,report,tx}))
 }
 fn collision_overlay(world:Option<&super::scene_static_collision::Loaded>, bindings:Option<&super::model_body_binding::State>)->Vec<viewport3d::GpuLineSegment> {
     let Some(world)=world else{return Vec::new();};
@@ -395,7 +470,7 @@ impl AnimatedActor {
     }
 }
 type NativeMaterials=HashMap<usize,(std::sync::Weak<crate::render_support::nif::MaterialBindings>,Result<Arc<super::d3d9_material::Resources>,String>)>;
-struct Bootstrap {projection_centers:Vec<Option<[f32;3]>>,dialogue_pad:u16,playtest_origin:Option<[f32;16]>,playtest_draws:HashMap<usize,[f32;16]>,playback:Option<super::input_playback::Playback>,playtest:Option<super::controller::Controller>,playtest_pad:u16,child_poses:super::em2_child_pose::State,draw_sources:Vec<super::model_body_binding::DrawSource>,movie_root:std::path::PathBuf,movie_language:String,movie_skip_seconds:Option<f32>,capture_movie_frame:Option<u32>,movie:Option<super::movie::Player>, global_state:super::em2_global_state::State,scene_events:Option<super::scene_event_runtime::Runtime>,startup_error_reported:bool,model_bodies:Option<super::model_body_binding::State>, hidden_draws:HashSet<usize>, collision_debug:bool,collision_lines:Vec<viewport3d::GpuLineSegment>, static_collision:Option<super::scene_static_collision::Loaded>, actors:Vec<AnimatedActor>,ticks:u64,capture_requested:bool,last_frame:std::time::Instant,accumulator:f32, scripts:super::actor_scripts::Scripts, vp:Viewport3DState, draws:Vec<GpuDrawCommand>,lights:Vec<viewport3d::GpuLight>,capture:Option<std::path::PathBuf>,capture_tick:u64,
+struct Bootstrap {projection_centers:Vec<Option<[f32;3]>>,dialogue_pad:u16,playtest_origin:Option<[f32;16]>,playtest_draws:HashMap<usize,[f32;16]>,playback:Option<super::input_playback::Playback>,playtest:Option<super::controller::Controller>,playtest_pad:u16,child_poses:super::em2_child_pose::State,draw_sources:Vec<super::model_body_binding::DrawSource>,movie_root:std::path::PathBuf,movie_language:String,movie_skip_seconds:Option<f32>,capture_movie_frame:Option<u32>, global_state:super::em2_global_state::State,scene_events:Option<super::scene_event_runtime::Runtime>,startup_error_reported:bool,model_bodies:Option<super::model_body_binding::State>, hidden_draws:HashSet<usize>, collision_debug:bool,collision_lines:Vec<viewport3d::GpuLineSegment>, static_collision:Option<super::scene_static_collision::Loaded>, actors:Vec<AnimatedActor>,ticks:u64,capture_requested:bool,last_frame:std::time::Instant,accumulator:f32, scripts:super::actor_scripts::Scripts, vp:Viewport3DState, draws:Vec<GpuDrawCommand>,lights:Vec<viewport3d::GpuLight>,capture:Option<std::path::PathBuf>,capture_tick:u64,
     frame:u64, report:serde_json::Value,tx:std::sync::mpsc::Sender<Result<()>> }
 impl Bootstrap {
     fn advance_playtest(&mut self,ctx:&egui::Context,first:bool)->Result<()> {
@@ -486,11 +561,11 @@ fn update_playtest_draw_pose(draws:&mut [GpuDrawCommand],sources:&[super::model_
         }
     }Ok(())
 }
-impl eframe::App for Bootstrap {
+impl Bootstrap {
     fn on_exit(&mut self,gl:Option<&eframe::glow::Context>) {
         if let (Some(gl),Some(backend))=(gl,&self.vp.native_material) {unsafe {backend.lock().unwrap().destroy(gl);}}
     }
-    fn ui(&mut self,ui:&mut egui::Ui,_:&mut eframe::Frame) {
+    fn update(&mut self, ui: &mut egui::Ui, movie_player: &mut Option<super::movie::Player>) {
 
         let ctx=ui.ctx().clone();
         let size=ui.available_size();
@@ -504,15 +579,15 @@ impl eframe::App for Bootstrap {
             self.collision_lines=if self.collision_debug {collision_overlay(self.static_collision.as_ref(),self.model_bodies.as_ref())}else{Vec::new()};
         }
         self.report["collision"]["overlay"]=serde_json::json!({"enabled":self.collision_debug,"segments":self.collision_lines.len(),"mode":"static geometry (green), model-bound dynamic sources (magenta); excludes radius expansion"});
-        if self.movie.is_none() {
+        if movie_player.is_none() {
             if let Some(request)=self.scene_events.as_mut().and_then(|events|events.movies.pending.take()) {
-                self.movie=Some(super::movie::Player::with_audio_selection(self.movie_root.clone(),request,self.movie_skip_seconds,
+                *movie_player=Some(super::movie::Player::with_audio_selection(self.movie_root.clone(),request,self.movie_skip_seconds,
                     super::movie_tracks::Selection::PcLanguage(self.movie_language.clone())));
                 self.accumulator=0.;self.last_frame=std::time::Instant::now();
                 if let Some(events)=self.scene_events.as_ref(){self.report["scene_events"]["world"]=events.summary();}
             }
         }
-        if let Some(movie)=self.movie.as_mut() {
+        if let Some(movie)=movie_player.as_mut() {
             let held=ctx.input(|input|input.key_down(egui::Key::Space)) || super::input::poll().buttons&0x1000!=0;
             egui::CentralPanel::default().frame(egui::Frame::NONE).show(ui,|ui| {
                 if self.capture_requested {movie.show_frozen(ui);}else{movie.show(ui,held);}
@@ -527,10 +602,10 @@ impl eframe::App for Bootstrap {
                     events.movies.completed+=1;events.movies.last_completed=Some(movie.request.filename.clone());
                     self.report["scene_events"]["world"]=events.summary();
                 }
-                self.movie=None;self.accumulator=0.;
+                *movie_player=None;self.accumulator=0.;
             }
             self.last_frame=std::time::Instant::now();
-            self.finish_capture(&ctx,ready);ctx.request_repaint();return;
+            self.finish_capture(&ctx,ready,movie_player.as_ref().and_then(|movie| movie.frame));ctx.request_repaint();return;
         }
         if ctx.input(|i|i.key_pressed(egui::Key::F6)) {
             if self.playtest.is_some(){self.playtest=None;}
@@ -663,11 +738,11 @@ impl eframe::App for Bootstrap {
         let waiting_movie=self.scene_events.as_ref().is_some_and(|events|events.movies.pending.is_some());
         let ready=!waiting_movie && ((self.capture_movie_frame.is_none() && self.ticks>=self.capture_tick.max(1))
             || (self.playtest.is_none() && self.scene_events.as_ref().is_some_and(|events|events.halted().is_some())));
-        self.finish_capture(&ctx,ready);ctx.request_repaint();
+        self.finish_capture(&ctx,ready,movie_player.as_ref().and_then(|movie| movie.frame));ctx.request_repaint();
     }
 }
 impl Bootstrap {
-    fn finish_capture(&mut self,ctx:&egui::Context,ready:bool) {
+    fn finish_capture(&mut self,ctx:&egui::Context,ready:bool,movie_frame:Option<u32>) {
         self.frame+=1;
         if self.capture.is_some() && !self.capture_requested && ready {
             if self.playtest.is_some(){
@@ -685,7 +760,7 @@ impl Bootstrap {
                 self.report["capture_draw_bounds"]=serde_json::json!(bounds.into_iter().take(24).map(|(_,v)|v).collect::<Vec<_>>());
             }
             self.report["capture"]=serde_json::json!({"animation_tick":self.ticks,"fixed_delta":super::STEP,
-                "movie_frame":self.movie.as_ref().and_then(|movie|movie.frame),"requested_movie_frame":self.capture_movie_frame,
+                "movie_frame":movie_frame,"requested_movie_frame":self.capture_movie_frame,
                 "actors_frozen_during_readback":true});
             self.capture_requested=true;ctx.send_viewport_cmd(egui::ViewportCommand::Screenshot(egui::UserData::default()));
         }

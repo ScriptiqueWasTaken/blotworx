@@ -2645,20 +2645,23 @@ impl Engine {
                 }
             }
             let snapshot = save_service::Service::read_checkpoint(&directory, self.save_slot)?;
-            let archive = save_game::Archive::parse(&snapshot.bytes)?;
-            let level = archive.header_string(0x10, 60)?.to_owned();
-            anyhow::ensure!(!level.is_empty(), "Checkpoint slot has no saved level");
-            Ok((level, snapshot))
+            Ok(snapshot)
         })();
         match result {
-            Ok((level, snapshot)) => {
+            Ok(snapshot) => self.resume_snapshot(ctx, snapshot),
+            Err(error) => self.error = Some(format!("Continue game: {error:#}")),
+        }
+    }
+    fn resume_snapshot(&mut self, ctx: &egui::Context, snapshot: std::sync::Arc<checkpoint::Snapshot>) {
+        match snapshot.level() {
+            Ok(level) => {
                 self.level = level;
                 self.preview_entry = None;
                 self.actor_focus = None;
                 self.options_open = false;
                 self.load_with_checkpoint(ctx, Some(snapshot));
             }
-            Err(error) => self.error = Some(format!("Continue game: {error:#}")),
+            Err(error) => self.error = Some(format!("Restore checkpoint: {error:#}")),
         }
     }
     fn load(&mut self, ctx: &egui::Context) {
@@ -2702,7 +2705,16 @@ impl Engine {
         if let Some(world) = &mut self.world {
             world.frame_clock.suspend_for_loading();
         }
-        let mut scores = if let Some(world) = self.world.as_mut().filter(|_| snapshot.is_none()) {
+        let mut scores = if let Some(world) = self.world.as_ref().filter(|_| snapshot.is_some()) {
+            score_state::InitialState {
+                frame_clock: Some(world.frame_clock),
+                checkpoint: checkpoint::State {
+                    service: world.checkpoint.service.clone(),
+                    ..Default::default()
+                },
+                ..Default::default()
+            }
+        } else if let Some(world) = self.world.as_mut() {
             let session=match level_session::Session::capture(world) {
                 Ok(session)=>session,
                 Err(error)=> { self.error=Some(format!("Lua session transfer: {error:#}")); return; }
@@ -3203,7 +3215,9 @@ impl Engine {
                 world.with_live_player(player,|world|world.advance_demo_triggers(trigger_position,STEP))?;
                 world.advance_demo_counter_states()?;
                 if let Some(spawn)=world.player_spawn.override_transform{player.spawn=spawn.position;}
-                if world.runtime_health.get(&world.player_entity).is_some_and(|s|s.health<=0) {
+                let dead = world.runtime_health.get(&world.player_entity).is_some_and(|s|s.health<=0);
+                let authored_death = dead && world.player_checkpoint_death_available();
+                if dead && !authored_death {
                     // Keep the player loop playable in every level even before
                     // authored checkpoint/death-sequence restoration is wired.
                     player.respawn();
@@ -3214,7 +3228,7 @@ impl Engine {
                     }
                 }
                 world.prepare_side_scroller(player);
-                player.script_input_restricted=world.cutscene_input.restricted || world.player_physics.as_ref().is_some_and(|b|b.suspended_motion.is_some());
+                player.script_input_restricted=authored_death || world.cutscene_input.restricted || world.player_physics.as_ref().is_some_and(|b|b.suspended_motion.is_some());
                 if player.script_input_restricted {self.spin_preview_pending=false;self.anvil_root_pending=false;}
                 world.prepare_scene_motion(STEP)?;
                 if std::mem::take(&mut self.anvil_root_pending) {
@@ -4677,6 +4691,11 @@ impl eframe::App for Engine {
         // Original Lua requests replace a world only after the current frame's
         // callbacks have returned. Reuse the same loader as manual selection.
         if self.receiver.is_none() && self.error.is_none() {
+            if let Some(snapshot) = self.world.as_mut().and_then(|world| world.checkpoint.take_restore()) {
+                self.resume_snapshot(ui.ctx(), snapshot);
+                ui.ctx().request_repaint();
+                return;
+            }
             if let Some(level) = self.world.as_mut().and_then(|world| world.level_transition.take()) {
                 self.level = level;
                 self.actor_focus = None;

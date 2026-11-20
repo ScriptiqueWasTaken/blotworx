@@ -210,6 +210,17 @@
         ]
       },
       {
+        "scope": "EM1 scripted checkpoint reload and player death routing",
+        "state": "LoadGameFromMemory latches a reload after callbacks return. With a checkpoint present, Mickey's authored OnDeath connection dispatches LoadCheckpoint to restore its world, spawn, and player records.",
+        "source": "Wii REL2fd14 and REL346f8, globalscripts.lua LoadCheckpoint, and the player InputOutputComponent in _Dynamic.bin, gv_shared_zf.bin and sw_steama_shared.bin.",
+        "evidence": "With a copy of the Zone F save, set health to 4 and call SaveGameToMemory('GV_ZoneF_LoadCheckpoint', false, '', false). Lower health to 2 and request LoadCheckpoint(GetPlayer()), or set health to 0. target/perf/memory-checkpoint-script.runtime.json and memory-checkpoint-death.runtime.json report health 4 with no errors at tick 57. Both shipped callbacks ran again and each disk copy was byte-identical.",
+        "open": [
+          "Original death animation and fade timing",
+          "Behavior without a memory checkpoint",
+          "Additional level and checkpoint coverage"
+        ]
+      },
+      {
         "scope": "EM1 loading-screen presentation",
         "state": "Full level loads and scene streams behind an authored fade show original artwork and cycle the authored dot frames. Faded scene imports wait until the loading screen has had a visible presentation window. Level loads use destination artwork, while streams use the current level's artwork.",
         "source": "loading_screen_texture in levels.pak, loose LoadingScreens assets, and src/blotworx/loading_screen.rs",

@@ -21,6 +21,14 @@ pub struct Snapshot {
     pub bytes: Vec<u8>,
     pub logical_size: usize,
 }
+impl Snapshot {
+    pub(super) fn level(&self) -> Result<String> {
+        let archive = Archive::parse(&self.bytes)?;
+        let level = archive.header_string(0x10, 60)?;
+        ensure!(!level.is_empty(), "Checkpoint has no saved level");
+        Ok(level.to_owned())
+    }
+}
 /// Retain one memory checkpoint across level replacement. Clone shares the
 /// immutable snapshot; constructing the next checkpoint gets its own buffer.
 #[derive(Clone, Debug, Default)]
@@ -30,6 +38,8 @@ pub struct State {
     pub pending_nine: Option<[u8; 9]>,
     pub pending_sixty_four: Option<[u8; 64]>,
     pub persistent_requested: bool,
+    // REL346f8 latches a restore request for the application update.
+    pub(super) restore_requested: bool,
     pub notification: Option<Notification>,
 }
 #[derive(Clone, Debug, serde::Serialize)]
@@ -39,6 +49,12 @@ pub struct Notification {
     pub duration: i32,
 }
 impl State {
+    pub(super) fn take_restore(&mut self) -> Option<Arc<Snapshot>> {
+        if std::mem::take(&mut self.restore_requested) {
+            return self.latest.clone();
+        }
+        None
+    }
     fn storage(&self) -> Result<Vec<u8>> {
         if let Some(snapshot) = &self.latest {
             return Ok(snapshot.bytes.clone());

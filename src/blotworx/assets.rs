@@ -1426,6 +1426,11 @@ impl World {
         }
         Ok(entity)
     }
+    pub(super) fn player_checkpoint_death_available(&self) -> bool {
+        self.checkpoint.latest.is_some()
+            && self.outputs.has_connections(self.player_entity, "OnDeath")
+    }
+
     fn advance_health_lifecycle(&mut self) -> Result<()> {
         let owners = self
             .runtime_health
@@ -1446,8 +1451,12 @@ impl World {
                 continue;
             }
             if entity == self.player_entity {
-                let message =
-                    "Player death animation/checkpoint lifecycle is not connected".to_string();
+                if self.player_checkpoint_death_available() {
+                    self.emit_entity_output(entity, "OnDeath", entity);
+                    let deliveries = self.outputs.ready_for_owner(self.animation_time, entity);
+                    self.dispatch_actor_deliveries(deliveries);
+                }
+                let message = "Original player death animation and fade timing are not connected".to_string();
                 if !self.report.unsupported.contains(&message) {
                     self.report.unsupported.push(message);
                 }
@@ -3462,6 +3471,17 @@ impl World {
                 Ok(mlua::MultiValue::new())
             }
             "SaveGameToMemory" => self.save_game_to_memory(lua, args),
+            "LoadGameFromMemory" => {
+                // REL2fd14 diagnoses extra arguments and still submits the
+                // request through REL346f8. The native wrapper returns nothing.
+                if !args.is_empty() {
+                    self.report.warnings.push("LoadGameFromMemory takes no arguments".into());
+                }
+                if self.checkpoint.latest.is_some() {
+                    self.checkpoint.restore_requested = true;
+                }
+                Ok(mlua::MultiValue::new())
+            }
             "SetPlayerSpawnTransform" | "SetPlayerSpawnTransformEntity" => {
                 if args.len() != 1 {
                     return Err(mlua::Error::external(format!("{name} requires one argument; native count diagnostics are not reconstructed")));

@@ -1019,6 +1019,7 @@ impl Scripts {
             scripts.bind_world_api(name)?;
         }
         scripts.bind_world_api("SaveGameToMemory")?;
+        scripts.bind_world_api("LoadGameFromMemory")?;
         scripts.bind_world_api("SetPlayerSpawnTransformEntity")?;
         scripts.bind_world_api("SetDefaultCameraValues")?;
         for name in [

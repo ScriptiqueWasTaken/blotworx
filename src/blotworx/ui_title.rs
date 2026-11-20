@@ -436,12 +436,19 @@ pub(in crate::blotworx) struct Menu {
     last: std::time::Instant,
     replay_down: bool,
     pub(in crate::blotworx) elapsed: f64,
+    pub(in crate::blotworx) start_tick: u64,
+    pub(in crate::blotworx) title_report: Option<serde_json::Value>,
     commands: Vec<(String, String)>,
     notice: Option<String>,
 }
 
 impl Menu {
-    pub(in crate::blotworx) fn load(root: &Path, directory: PathBuf) -> Result<Self> {
+    pub(in crate::blotworx) fn load(
+        root: &Path,
+        directory: PathBuf,
+        start_tick: u64,
+        title_report: Option<serde_json::Value>,
+    ) -> Result<Self> {
         let root = root.canonicalize()?;
         let stage = Stage::load(
             &root,
@@ -464,6 +471,8 @@ impl Menu {
             last: std::time::Instant::now(),
             replay_down: false,
             elapsed: 0.,
+            start_tick,
+            title_report,
             commands: Vec::new(),
             notice: None,
         })

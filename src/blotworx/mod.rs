@@ -2373,6 +2373,12 @@ fn record_phase(
 ) {
     phases.entry(name).or_default().record(start.elapsed());
 }
+enum LevelLoad {
+    Transfer,
+    Clean,
+    NewCampaign,
+}
+
 struct Engine {
     frame_phases: std::collections::BTreeMap<&'static str, PhaseTiming>,
     save_directory: Option<PathBuf>,
@@ -2691,16 +2697,16 @@ impl Engine {
         self.preview_entry = None;
         self.actor_focus = None;
         self.options_open = false;
-        self.load_with_checkpoint(ctx, Some((snapshot, resume)), false);
+        self.load_with_checkpoint(ctx, Some((snapshot, resume)), LevelLoad::Transfer);
     }
     fn load(&mut self, ctx: &egui::Context) {
-        self.load_with_checkpoint(ctx, None, false);
+        self.load_with_checkpoint(ctx, None, LevelLoad::Transfer);
     }
     fn load_with_checkpoint(
         &mut self,
         ctx: &egui::Context,
         snapshot: Option<(std::sync::Arc<checkpoint::Snapshot>, score_state::CampaignResume)>,
-        clean: bool,
+        mode: LevelLoad,
     ) {
         self.root = assets::files_root(std::path::Path::new(&self.root))
             .to_string_lossy()
@@ -2744,8 +2750,13 @@ impl Engine {
                 },
                 ..Default::default()
             }
-        } else if let Some(world) = self.world.as_ref().filter(|_| clean) {
+        } else if let Some(world) = self.world.as_ref().filter(|_| !matches!(mode, LevelLoad::Transfer)) {
+            let mut playtime = checkpoint_time::Playtime::default();
+            if matches!(mode, LevelLoad::NewCampaign) {
+                playtime.set(0, &world.frame_clock.clock);
+            }
             score_state::InitialState {
+                playtime,
                 frame_clock: Some(world.frame_clock),
                 checkpoint: world.checkpoint.clone(),
                 ..Default::default()
@@ -2767,8 +2778,7 @@ impl Engine {
         } else {
             let frame_clock = frame_clock::Context::boot(self.rtc_seconds);
             let mut playtime = checkpoint_time::Playtime::default();
-            // Explicit fresh demo session, matching the native new-game
-            // playtime reset. Native frontend/menu boot remains incomplete.
+            // Direct boot uses the same playtime reset as a new campaign.
             playtime.set(0, &frame_clock.clock);
             let service = match &self.loading_save {
                 Some((service, _, _)) => Ok(service.clone()),
@@ -4756,7 +4766,8 @@ impl eframe::App for Engine {
                 self.level = level;
                 self.actor_focus = None;
                 self.preview_entry = None;
-                self.load_with_checkpoint(ui.ctx(), None, clean);
+                let mode = if clean { LevelLoad::Clean } else { LevelLoad::Transfer };
+                self.load_with_checkpoint(ui.ctx(), None, mode);
                 if self.receiver.is_some() {
                     self.paint_loading_screen(ui);
                 }
@@ -4821,8 +4832,16 @@ impl Engine {
         match title.show(ui, accept) {
             Ok(true) => {
                 let directory = self.save_directory.clone().map(Ok).unwrap_or_else(save_service::default_directory);
-                match directory.and_then(|directory| ui_movie::Menu::load(std::path::Path::new(&self.root), directory)) {
-                    Ok(menu) => self.main_menu = Some(menu),
+                let title_report = self.capture.is_some().then(|| title.summary());
+                match directory.and_then(|directory| ui_movie::Menu::load(
+                    std::path::Path::new(&self.root), directory, title.tick, title_report,
+                )) {
+                    Ok(menu) => {
+                        self.main_menu = Some(menu);
+                        self.title = None;
+                        ui.ctx().request_repaint();
+                        return;
+                    }
                     Err(error) => self.error = Some(format!("Main menu: {error:#}")),
                 }
             }
@@ -4841,7 +4860,7 @@ impl Engine {
     #[cfg(feature = "blotworx-ui-render")]
     fn present_main_menu(&mut self, ui: &mut egui::Ui) {
         let menu = self.main_menu.as_mut().unwrap();
-        let title_tick = self.title.as_ref().map_or(0, |title| title.tick);
+        let title_tick = menu.start_tick;
         let tick = title_tick + (menu.elapsed * 30.) as u64;
         let replay = self.input_playback.as_ref().and_then(|playback| playback.frames.get(tick as usize)).copied();
         let buttons = input::poll().buttons;
@@ -4891,7 +4910,7 @@ impl Engine {
             self.level = level;
             self.preview_entry = None;
             self.actor_focus = None;
-            self.load_with_checkpoint(ctx, None, true);
+            self.load_with_checkpoint(ctx, None, LevelLoad::NewCampaign);
         }
         Ok(())
     }
@@ -5227,6 +5246,9 @@ impl Engine {
                 }
                 #[cfg(feature = "blotworx-ui-render")]
                 if let Some(menu) = &self.main_menu {
+                    if let Some(title) = &menu.title_report {
+                        report["title_screen"] = title.clone();
+                    }
                     report["main_menu"] = menu.summary();
                 }
                 report["robot_arm_idle_requests"] =

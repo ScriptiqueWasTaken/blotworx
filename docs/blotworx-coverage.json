@@ -274,7 +274,7 @@
       },
       {
         "scope": "EM1 interactive title screen",
-        "state": "The startup handoff opens the shipped AVM1 title movie. Its PlayStartScreenMovie command starts the configured Bink intro, followed by the original silent loop. Accept runs the authored FadeOut and waits for StartScreenEnd. The handoff opens the original main-menu movie.",
+        "state": "The startup handoff opens the shipped AVM1 title movie. Its PlayStartScreenMovie command starts the configured Bink intro, followed by the original silent loop. Accept runs the authored FadeOut and waits for StartScreenEnd. The handoff opens the original main-menu movie and releases the title renderer and movie resources.",
         "source": "HUDElements/Flash/cooked/startscreen.gfx, including the BlackMC Init, Fade_In and Fade_Out frame labels. The imported General_Shared and gfxfontlib movies supply the A button and title font. UI_Start uses the English NTSC dictionary entry.",
         "evidence": "The title replays recorded PlayStartScreenMovie and the title loop, then recorded StartScreenEnd on scripted Accept. The visible capture is taken after the original fade-in reaches the looping background.",
         "open": [
@@ -283,13 +283,12 @@
       },
       {
         "scope": "EM1 authored main menu and save selection",
-        "state": "StartScreenEnd loads the shipped MainMenu movie. The movie drives its own Start Game and save-page transitions, requests the matching Bink backgrounds and draws three rows from the host saves. Slot selection uses the existing checkpoint or completed-slot loader, and an empty slot starts a fresh campaign with a newly selected save service.",
+        "state": "StartScreenEnd loads the shipped MainMenu movie. The movie drives its own Start Game and save-page transitions, requests the matching Bink backgrounds and draws three rows from the host saves. Slot selection uses the existing checkpoint or completed-slot loader, and an empty slot starts a fresh campaign with a newly selected save service and a running playtime clock.",
         "source": "MainMenu.gfx Initialize, MaintoLoadGame, RefreshSlot, PlayMovie, NextMovie, MainMenuPick and MainMenuLoad. GAME v16 playtime, timebase and collectible header owners supply the slot display.",
-        "evidence": "The original Start Game button emitted MainMenuPick and played FE_Main_to_LoadGame. The native capture showed one empty slot and two distinct occupied rows. Selecting the third slot entered the original opening level from a completed save.",
+        "evidence": "The original Start Game button emitted MainMenuPick and played FE_Main_to_LoadGame. The native capture showed one empty slot and two distinct occupied rows. Selecting the third slot entered the original opening level from a completed save. The frontend-campaign-lifecycle live replays reached tick 540 in DBC for an empty first slot and an active second slot with no script or runtime errors. The empty slot started on playthrough zero with a running timer. The active slot restored DBC_1st_ZoneA_LoadCheckpoint and left the scratch save hash unchanged.",
         "open": [
           "Extras, delete confirmation and native menu effects",
-          "Reference comparison for timing, navigation, completion percentage and regional date formatting",
-          "Live replay of the empty-slot and active-checkpoint menu branches"
+          "Reference comparison for timing, navigation, completion percentage and regional date formatting"
         ]
       },
       {

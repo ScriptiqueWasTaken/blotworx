@@ -4691,10 +4691,19 @@ impl eframe::App for Engine {
         // Original Lua requests replace a world only after the current frame's
         // callbacks have returned. Reuse the same loader as manual selection.
         if self.receiver.is_none() && self.error.is_none() {
-            if let Some(snapshot) = self.world.as_mut().and_then(|world| world.checkpoint.take_restore()) {
-                self.resume_snapshot(ui.ctx(), snapshot);
-                ui.ctx().request_repaint();
-                return;
+            if let Some(world) = &mut self.world {
+                match world.checkpoint.take_restore() {
+                    Ok(Some(snapshot)) => {
+                        self.resume_snapshot(ui.ctx(), snapshot);
+                        ui.ctx().request_repaint();
+                        return;
+                    }
+                    Ok(None) => {}
+                    Err(error) => {
+                        self.error = Some(format!("Restore checkpoint: {error:#}"));
+                        return;
+                    }
+                }
             }
             if let Some(level) = self.world.as_mut().and_then(|world| world.level_transition.take()) {
                 self.level = level;

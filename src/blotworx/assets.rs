@@ -1451,6 +1451,8 @@ impl World {
                 continue;
             }
             if entity == self.player_entity {
+                // REL323be4..323bf8 clears the damage timer on death.
+                self.runtime_health.get_mut(&entity).unwrap().invulnerable_until = 0.;
                 if self.player_checkpoint_death_available() {
                     self.emit_entity_output(entity, "OnDeath", entity);
                     let deliveries = self.outputs.ready_for_owner(self.animation_time, entity);
@@ -3472,14 +3474,29 @@ impl World {
             }
             "SaveGameToMemory" => self.save_game_to_memory(lua, args),
             "LoadGameFromMemory" => {
-                // REL2fd14 diagnoses extra arguments and still submits the
-                // request through REL346f8. The native wrapper returns nothing.
+                // 3a724 binds this wrapper to REL2fcc8. Its last argument
+                // selects the frontend load job instead of the memory buffer.
+                if args.len() > 1 {
+                    self.report.warnings.push("LoadGameFromMemory expects at most one argument".into());
+                }
+                let from_disk = super::actor_scripts::native_boolean(
+                    lua, args.back().cloned().unwrap_or(mlua::Value::Nil),
+                )?;
+                if from_disk {
+                    self.checkpoint.restore_requested = Some(super::checkpoint::Restore::Disk);
+                } else if self.checkpoint.latest.is_some() {
+                    self.checkpoint.restore_requested = Some(super::checkpoint::Restore::Memory);
+                }
+                Ok(mlua::MultiValue::new())
+            }
+            "RestartCurrentLevel" => {
+                // REL2f7e8 -> 2b938 -> 2a21c submits the current descriptor
+                // with both part overrides absent. It does not load MICK/WRLD.
                 if !args.is_empty() {
-                    self.report.warnings.push("LoadGameFromMemory takes no arguments".into());
+                    self.report.warnings.push("RestartCurrentLevel takes no arguments".into());
                 }
-                if self.checkpoint.latest.is_some() {
-                    self.checkpoint.restore_requested = true;
-                }
+                self.level_transition.request(&self.report.level)
+                    .map_err(mlua::Error::external)?;
                 Ok(mlua::MultiValue::new())
             }
             "SetPlayerSpawnTransform" | "SetPlayerSpawnTransformEntity" => {

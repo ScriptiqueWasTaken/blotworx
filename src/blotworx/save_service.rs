@@ -85,6 +85,15 @@ impl Service {
         Ok(Arc::new(Snapshot { bytes, logical_size }))
     }
 
+    pub(super) fn read_selected_checkpoint(&self) -> Result<Option<Arc<Snapshot>>> {
+        match Self::read_checkpoint(&self.root, self.selected) {
+            Ok(snapshot) => Ok(Some(snapshot)),
+            Err(error) if error.downcast_ref::<std::io::Error>()
+                .is_some_and(|error| error.kind() == std::io::ErrorKind::NotFound) => Ok(None),
+            Err(error) => Err(error),
+        }
+    }
+
     pub fn open(root: PathBuf, selected: usize, initial_tick: u64) -> Result<Self> {
         ensure!(selected < 3, "Save slot must be0,1 or2");
         std::fs::create_dir_all(&root)

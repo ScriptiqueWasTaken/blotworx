@@ -29,6 +29,14 @@ impl Snapshot {
         Ok(level.to_owned())
     }
 }
+/// REL2fcc8 selects the synchronous memory route or the save-slot read
+/// callback. The host consumes the request outside the Lua/IO update.
+#[derive(Clone, Copy, Debug)]
+pub(super) enum Restore {
+    Memory,
+    Disk,
+}
+
 /// Retain one memory checkpoint across level replacement. Clone shares the
 /// immutable snapshot; constructing the next checkpoint gets its own buffer.
 #[derive(Clone, Debug, Default)]
@@ -38,8 +46,7 @@ pub struct State {
     pub pending_nine: Option<[u8; 9]>,
     pub pending_sixty_four: Option<[u8; 64]>,
     pub persistent_requested: bool,
-    // REL346f8 latches a restore request for the application update.
-    pub(super) restore_requested: bool,
+    pub(super) restore_requested: Option<Restore>,
     pub notification: Option<Notification>,
 }
 #[derive(Clone, Debug, serde::Serialize)]
@@ -49,12 +56,17 @@ pub struct Notification {
     pub duration: i32,
 }
 impl State {
-    pub(super) fn take_restore(&mut self) -> Option<Arc<Snapshot>> {
-        if std::mem::take(&mut self.restore_requested) {
-            return self.latest.clone();
+    pub(super) fn take_restore(&mut self) -> Result<Option<Arc<Snapshot>>> {
+        match self.restore_requested.take() {
+            Some(Restore::Memory) => Ok(self.latest.clone()),
+            Some(Restore::Disk) => match &self.service {
+                Some(service) => service.read_selected_checkpoint(),
+                None => Ok(None),
+            },
+            None => Ok(None),
         }
-        None
     }
+
     fn storage(&self) -> Result<Vec<u8>> {
         if let Some(snapshot) = &self.latest {
             return Ok(snapshot.bytes.clone());

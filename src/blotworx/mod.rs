@@ -4840,9 +4840,15 @@ impl Engine {
             Ok(true) => {
                 let directory = self.save_directory.clone().map(Ok).unwrap_or_else(save_service::default_directory);
                 let title_report = self.capture.is_some().then(|| title.summary());
-                match directory.and_then(|directory| ui_movie::Menu::load(
-                    std::path::Path::new(&self.root), directory, title.tick, title_report,
-                )) {
+                match directory.and_then(|directory| {
+                    // Finish gameplay writes before the menu reads or deletes a slot.
+                    if let Some(world) = &self.world {
+                        if let Some(service) = &world.checkpoint.service {
+                            service.flush(world.frame_clock.hardware_sample(), world.frame_clock.clock.rate.ticks_per_second.get())?;
+                        }
+                    }
+                    ui_movie::Menu::load(std::path::Path::new(&self.root), directory, title.tick, title_report)
+                }) {
                     Ok(menu) => {
                         self.main_menu = Some(menu);
                         self.title = None;

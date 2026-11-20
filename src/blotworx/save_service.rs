@@ -78,6 +78,14 @@ impl Service {
         Writer::read_checkpoint(root, selected)
     }
 
+    #[cfg(feature = "blotworx-ui-render")]
+    pub(super) fn delete_confirmed(root: &Path, slot: usize, expected: &Snapshot) -> Result<()> {
+        let current = Self::read_checkpoint(root, slot)?;
+        ensure!(current.bytes == expected.bytes, "Save slot changed during confirmation");
+        let path = root.join(format!("save{slot}.dat"));
+        std::fs::remove_file(&path).with_context(|| format!("Delete checkpoint {}", path.display()))
+    }
+
     pub(super) fn read_selected_checkpoint(&self) -> Result<Option<Arc<Snapshot>>> {
         self.writer().read_selected_checkpoint()
     }

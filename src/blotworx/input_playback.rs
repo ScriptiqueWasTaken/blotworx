@@ -16,6 +16,8 @@ pub struct Frame {
     pub paint: bool,
     pub thinner: bool,
     pub interact_pressed: bool,
+    /// Frontend Wii Minus action, independent of gameplay spin.
+    pub menu_delete_pressed: bool,
     pub dialogue_choice: Option<usize>,
     pub aim: Option<[f32; 2]>,
 }

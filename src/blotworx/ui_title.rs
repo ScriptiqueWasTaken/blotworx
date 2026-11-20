@@ -34,6 +34,7 @@ impl FsCommandProvider for Events {
             | "MainMenuAction"
             | "SaveStartupCheck"
             | "MainMenuDelete"
+            | "Error"
             | "ExtrasMenuLoad"
             | "Extras"
             | "ExtrasSub"
@@ -782,7 +783,53 @@ pub(in crate::blotworx) struct Menu {
     pub(in crate::blotworx) start_tick: u64,
     pub(in crate::blotworx) title_report: Option<serde_json::Value>,
     commands: Vec<(String, String)>,
-    notice: Option<String>,
+    delete: Option<DeleteConfirmation>,
+    last_deleted_slot: Option<usize>,
+}
+
+struct DeleteConfirmation {
+    stage: Stage,
+    slot: usize,
+    expected: Arc<super::super::checkpoint::Snapshot>,
+    initialized: bool,
+    accepts_input: bool,
+    answer: Option<bool>,
+}
+
+impl DeleteConfirmation {
+    fn tick(&mut self, delta: f64, answer: Option<bool>) -> Result<bool> {
+        use super::super::ui_calls::Value as Argument;
+        lock(&self.stage.handle)?.tick(FloatDuration::from_secs(delta));
+        self.stage.executor.run();
+        if !self.initialized && self.stage.call("FadeIn")? {
+            for (method, key) in [
+                ("SetMessageText", "Lotcheck_Confirm_Delete"),
+                ("SetAButtonText", "Lotcheck_Delete_File"),
+                ("SetBButtonText", "Lotcheck_No"),
+            ] {
+                let label = self.stage.labels.get(key).with_context(|| format!("Missing save prompt text {key}"))?;
+                ensure!(self.stage.call_with(method, &[Argument::String(label)])?, "Missing save prompt method {method}");
+            }
+            self.initialized = true;
+        }
+        let events = std::mem::take(&mut *self.stage.events.0.lock().unwrap());
+        for (command, args) in events {
+            if command == "Error" {
+                match args.as_str() {
+                    "FadeInComplete" => self.accepts_input = true,
+                    "FadeOutComplete" => return Ok(true),
+                    _ => {}
+                }
+            }
+        }
+        if self.accepts_input && self.answer.is_none() {
+            if let Some(answer) = answer {
+                self.answer = Some(answer);
+                ensure!(self.stage.call("FadeOut")?, "Save prompt did not close");
+            }
+        }
+        Ok(false)
+    }
 }
 
 impl Menu {
@@ -820,7 +867,8 @@ impl Menu {
             start_tick,
             title_report,
             commands: Vec::new(),
-            notice: None,
+            delete: None,
+            last_deleted_slot: None,
         })
     }
 
@@ -913,6 +961,34 @@ impl Menu {
         let replay_back = replay.is_some_and(|frame| frame.spin_pressed);
         let replay_back_pressed = replay_back && !self.replay_back_down;
         self.replay_back_down = replay_back;
+        if let Some(prompt) = &mut self.delete {
+            let replay_accept = replay.is_some_and(|frame| frame.interact_pressed);
+            let (accept, back) = if replay.is_some() {
+                (replay_accept && !self.replay_down, replay_back_pressed)
+            } else {
+                (pad_released & 0x1000 != 0 || ui.input(|i| i.key_released(egui::Key::Enter)),
+                 pad_released & 0x2000 != 0 || ui.input(|i| i.key_released(egui::Key::Escape)))
+            };
+            self.replay_down = replay_accept;
+            let answer = if back { Some(false) } else { accept.then_some(true) };
+            if let Some(background) = &mut self.background {
+                background.show_title_background(ui);
+            }
+            self.stage.paint(ui)?;
+            if prompt.tick(delta, answer)? {
+                let prompt = self.delete.take().unwrap();
+                if prompt.answer == Some(true) {
+                    super::super::save_service::Service::delete_confirmed(&self.directory, prompt.slot, &prompt.expected)?;
+                    self.last_deleted_slot = Some(prompt.slot);
+                    self.save_info()?;
+                    self.stage.call("RefreshLoadGameButtons")?;
+                    self.stage.refresh_labels()?;
+                }
+            } else {
+                prompt.stage.paint(ui)?;
+            }
+            return Ok(None);
+        }
         if self.extras.as_ref().is_some_and(|extras| extras.page == ExtrasPage::Credits) {
             let quick_exit = if replay.is_some() {
                 replay_back_pressed
@@ -1017,9 +1093,11 @@ impl Menu {
                     NamedKey::ArrowRight,
                     0x0008,
                 ),
+                (egui::Key::PageUp, PhysicalKey::PageUp, NamedKey::PageUp, 0x0020),
             ] {
                 let pressed = if replay.is_some() {
-                    egui_key == egui::Key::Escape && replay_back_pressed
+                    (egui_key == egui::Key::Escape && replay_back_pressed)
+                        || (egui_key == egui::Key::PageUp && replay.is_some_and(|frame| frame.menu_delete_pressed))
                 } else {
                     pad_edges & bit != 0 || ui.input(|i| i.key_pressed(egui_key))
                 };
@@ -1085,14 +1163,12 @@ impl Menu {
                         self.root.clone(), "FE_Extras_Loop.bik".into(), true,
                     ));
                     self.next = None;
-                    self.notice = None;
                     self.in_slots = false;
                 }
                 "Extras" if args == "MainMenu" && self.extras.is_some() => {
                     self.extras = None;
                     self.background = None;
                     self.next = None;
-                    self.notice = None;
                     self.stage.call("ExtraToMain")?;
                 }
                 "Extras" if self.extras.is_some() => self.handle_extras_command(&args)?,
@@ -1104,7 +1180,23 @@ impl Menu {
                         }
                     }
                 }
-                "MainMenuDelete" => self.notice = Some("Delete is unavailable.".into()),
+                "MainMenuDelete" if self.in_slots && self.extras.is_none() && self.delete.is_none() => {
+                    let slot = menu_slot(&args)?;
+                    use super::super::save_service::Service;
+                    match Service::read_checkpoint(&self.directory, slot) {
+                        Ok(expected) => {
+                            let keys = ["Lotcheck_Confirm_Delete", "Lotcheck_Delete_File", "Lotcheck_No"];
+                            let stage = Stage::load_with_labels(&self.root, "HUDElements/Flash/cooked/error.gfx",
+                                &["FadeIn", "FadeOut", "SetMessageText", "SetAButtonText", "SetBButtonText"],
+                                keys.into_iter().map(str::to_owned))?;
+                            self.delete = Some(DeleteConfirmation { stage, slot, expected,
+                                initialized: false, accepts_input: false, answer: None });
+                        }
+                        Err(error) if error.downcast_ref::<std::io::Error>()
+                            .is_some_and(|error| error.kind() == std::io::ErrorKind::NotFound) => {}
+                        Err(error) => return Err(error),
+                    }
+                }
                 _ => {}
             }
             self.commands.push((command, args));
@@ -1142,9 +1234,6 @@ impl Menu {
         }
         let stage = self.extras.as_mut().map_or(&mut self.stage, |extras| &mut extras.stage);
         stage.paint(ui)?;
-        if let Some(notice) = &self.notice {
-            ui.label(notice);
-        }
         Ok(selection)
     }
 
@@ -1156,7 +1245,6 @@ impl Menu {
 
     fn handle_extras_command(&mut self, command: &str) -> Result<()> {
         let extras = self.extras.as_mut().context("Extras menu is closed")?;
-        self.notice = None;
         if let Some(category) = ExtrasCategory::from_command(command) {
             extras.transition(true)?;
             extras.page = ExtrasPage::Entering(category);
@@ -1253,7 +1341,8 @@ impl Menu {
 
     pub(in crate::blotworx) fn summary(&self) -> serde_json::Value {
         serde_json::json!({"initialized":self.initialized,"in_slots":self.in_slots,"commands":self.commands,
-            "extras":self.extras.as_ref().map(ExtrasMenu::summary),
+            "extras":self.extras.as_ref().map(ExtrasMenu::summary), "delete_prompt":self.delete.as_ref().map(|prompt|prompt.slot),
+            "last_deleted_slot":self.last_deleted_slot,
             "background":self.background.as_ref().map(super::super::movie::Player::summary),
             "child_movies":self.stage.host.0.lock().unwrap().fetches})
     }

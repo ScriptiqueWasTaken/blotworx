@@ -1,7 +1,9 @@
-//! Preview routes use authored knot links and segment times with linear geometry.
+//! Preview routes use authored knot links, segment times, and curve handles.
 use super::assets::{RuntimeEntity, World};
 use anyhow::{ensure, Context, Result};
 use std::collections::BTreeMap;
+#[path = "spline_curve.rs"]
+mod spline_curve;
 #[derive(Default)]
 pub struct State {
     movers: BTreeMap<usize, Mover>,
@@ -31,6 +33,8 @@ struct TimedSegment {
     origin: usize,
     duration: f32,
     phase: f32,
+    reversed: bool,
+    path: spline_curve::Path,
 }
 
 impl TimedSegment {
@@ -578,8 +582,7 @@ impl World {
                 let source = &self.entities[owner];
                 let position: [f32; 3] = source.transform[12..15].try_into()?;
                 let rotation = source.runtime_rotation;
-                // The demo follows a linear segment; native curved-path traversal
-                // remains separate. Preserve the supplied (unclamped) coordinate.
+                // Explicit stops still use the supplied, unclamped coordinate.
                 let target: [f32; 3] = if let Some(stop) = m.stop {
                     stop.destination(
                         self.entities[stop.start].transform[12..15].try_into()?,
@@ -591,26 +594,31 @@ impl World {
                 if m.timed.as_ref().is_some_and(|segment| self.removed_entities.contains(&segment.origin)) {
                     m.timed = None;
                 }
-                let (origin, fraction) = if let Some(segment) = &mut m.timed {
-                    let origin = &self.entities[segment.origin].transform[12..15];
-                    (origin.try_into()?, segment.advance(travel_delta))
+                let (destination, fraction) = if let Some(segment) = &mut m.timed {
+                    let origin = self.entities[segment.origin].transform[12..15].try_into()?;
+                    let fraction = segment.advance(travel_delta);
+                    let destination = if fraction == 1. {
+                        target
+                    } else if segment.reversed {
+                        segment.path.sample(target, origin, 1. - fraction)
+                    } else {
+                        segment.path.sample(origin, target, fraction)
+                    };
+                    (destination, fraction)
                 } else {
                     let difference = std::array::from_fn::<_, 3, _>(|i| target[i] - position[i]);
                     let distance = difference.iter().map(|v| v * v).sum::<f32>().sqrt();
                     ensure!(distance.is_finite(), "Nonfinite demo platform route");
                     let step = m.speed.abs() * travel_delta;
                     let fraction = if distance > step { step / distance } else { 1. };
-                    (position, fraction)
-                };
-                self.move_demo_spline_owner(
-                    owner,
-                    if fraction == 1. {
+                    let destination = if fraction == 1. {
                         target
                     } else {
-                        std::array::from_fn(|i| origin[i] + (target[i] - origin[i]) * fraction)
-                    },
-                    rotation,
-                )?;
+                        std::array::from_fn(|i| position[i] + difference[i] * fraction)
+                    };
+                    (destination, fraction)
+                };
+                self.move_demo_spline_owner(owner, destination, rotation)?;
                 if fraction == 1. {
                     self.emit_entity_output(owner, "OnReachedPosition", owner);
                     if m.stop.is_none_or(|s| s.position == 0. || s.position == 1.) {
@@ -656,13 +664,31 @@ impl World {
                     if let Some((next, branched)) = next {
                         // Main and branch durations live on the departure
                         // knot of the authored edge, even in reverse.
-                        let time_owner = if m.reverse { next } else { m.target };
+                        let (start, end) = if m.reverse { (next, m.target) } else { (m.target, next) };
                         let key = if branched { "BranchPathTime" } else { "MainPathTime" };
-                        m.timed = property(&self.entities[time_owner], "SplineKnotComponent", key)
+                        let duration = property(&self.entities[start], "SplineKnotComponent", key)
                             .and_then(|value| value.as_f64())
                             .map(|value| value as f32)
-                            .filter(|&duration| duration.is_finite() && duration > f32::EPSILON)
-                            .map(|duration| TimedSegment { origin: m.target, duration, phase: 0. });
+                            .filter(|&duration| duration.is_finite() && duration > f32::EPSILON);
+                        m.timed = if let Some(duration) = duration {
+                            let handle = |knot: usize, name: &str| {
+                                property(&self.entities[knot], "SplineKnotComponent", name)
+                                    .map(|value| crate::render_support::scene::parse_point3(value)
+                                        .with_context(|| format!("Invalid spline {name} on {}", self.entities[knot].name)))
+                                    .transpose()
+                                    .map(|value| value.unwrap_or([0.; 3]))
+                            };
+                            let path = spline_curve::Path::new(
+                                self.entities[start].transform[12..15].try_into()?,
+                                handle(start, "OutgoingHandle")?,
+                                handle(end, "IncomingHandle")?,
+                                self.entities[end].transform[12..15].try_into()?,
+                                !branched,
+                            );
+                            Some(TimedSegment { origin: m.target, duration, phase: 0., reversed: m.reverse, path })
+                        } else {
+                            None
+                        };
                         m.target = next;
                     } else {
                         m.stopped = true;
@@ -707,6 +733,7 @@ pub(super) fn validate_inactive_motion()->Result<()> {
 
 #[cfg(debug_assertions)]
 pub(super) fn validate_spline_events()->Result<()> {
+    spline_curve::validate()?;
     let root=std::env::var_os("BLOTWORX_TEST_DATA").context("Set BLOTWORX_TEST_DATA")?;
     let mut world=super::assets::load(std::path::Path::new(&root),"Levels/GV_ZoneA_Start.level",&egui::Context::default())?;
     world.enable_demo_story()?;

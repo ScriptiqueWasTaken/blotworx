@@ -1595,6 +1595,7 @@ impl World {
             "Spawn Delay" | "Spawn Radius" => Some("TemplateSpawnerComponent"),
             // REL3c764c/3c7818 -> 3c7c64 -> 123d80 stores the target value.
             "Target Value" => Some("TargetableComponent"),
+            "InitialSpeed" => Some("SplineFollowerComponent"),
             _ => None,
         };
         if let Some(owner) = scalar_owner {
@@ -1627,6 +1628,9 @@ impl World {
                         false,
                         serde_json::json!(value),
                     ));
+            }
+            if name == "InitialSpeed" {
+                self.publish_spline_initial_speed(entity, value);
             }
             return Ok(());
         }
@@ -3403,8 +3407,8 @@ impl World {
             {
                 self.demo_ai_lua(lua, name, args)
             }
-            "SetSplineFollowerInitialSpeed"
-            | "SetSpeed"
+            "SetSplineFollowerInitialSpeed" => self.spline_initial_speed_lua(lua, args),
+            "SetSpeed"
             | "Reverse"
             | "SplineFollower_SetDisabled"
             | "SplineFollower_StopAtPosition"
@@ -4525,6 +4529,7 @@ impl World {
                     "Spawn Delay" | "Spawn Radius" => Some("TemplateSpawnerComponent"),
                     "UsableRadius" => Some("UsableComponent"),
                     "Target Value" => Some("TargetableComponent"),
+                    "InitialSpeed" => Some("SplineFollowerComponent"),
                     _ => None,
                 };
                 if let Some(owner) = scalar_owner {

@@ -268,7 +268,7 @@
         "source": "DBC_TentacleSore_01 NIF/KFM/KF, Wii DOL804d12d4..804d1568 (paired update and activation ID) and DOL804d1dfc (key-driven emission). Gamebryo NiPoseBlender selects referenced evaluators by weight.",
         "evidence": "Run blotworx diagnose --strict-runtime --level Levels/DBC_Start_ZoneS.level --run-script tools/blotworx/fixtures/dbc_zone_s_sore_pop.lua --capture <image> --capture-tick <tick> with imported EM1 data. The first placed blister has 0, 31 and 0 live particles at ticks 24, 49 and 161, with zero runtime errors. Only three NiPSCurveEmitter admissions still fail in this scene, down from 49 total particle admission errors in the baseline.",
         "open": [
-          "Zone S initialization reports a missing SetSplineFollowerInitialSpeed binding.",
+          "Native curved-path platform motion remains incomplete.",
           "Curve emitters, the animated emitter rotation-speed variance, dynamic particle bounds, and Wii visual and birth-by-birth parity."
         ]
       },
@@ -278,7 +278,16 @@
         "source": "Wii REL3c75b4..3c7658 registers Target Value, 3c7c44..3c7c68 resolves its scalar read and write, and 321904..321988 registers ForceInvulnerable. The imported Zone S scene supplies the OnDamage routing and the door KFM names Open as sequence 1.",
         "evidence": "With original EM1 data, run blotworx diagnose --strict-runtime --level Levels/DBC_Start_ZoneS.level --run-script tools/blotworx/fixtures/dbc_zone_s_first_chamber.lua --capture <image> --capture-tick 289 --focus-actor \"dbc_zones_static.DBC_ZoneS_Door01_Inert 01\". The replay sends thinner stimuli through the health receiver, verifies forced invulnerability, unlocks blisters 2 and 3 in order, and finishes with the door playing Open and blister 4 still gated.",
         "open": [
-          "Player-driven traversal and brush aiming through both chambers. The separate startup spline-speed script call remains unsupported."
+          "Player-driven traversal and brush aiming through both chambers."
+        ]
+      },
+      {
+        "scope": "EM1 spline follower speed binding",
+        "state": "SetSplineFollowerInitialSpeed now resolves the original follower and updates InitialSpeed in both runtime modes. The reflected getter and setter share that value. Speed writes preserve the follower's disabled state and the existing preview motion state.",
+        "source": "Wii REL2645a0..264680 resolves the entity and SplineFollowerComponent. REL3b1aa0 -> 123d80 writes only the word at +0x38. REL3b2510..3b2518 bind the generated property accessors to that same field.",
+        "evidence": "Six isolated Wii setter executions each changed only the expected float word. On imported Zone S data, the dbc_zone_s_spline_speed Lua fixture reads the startup speed and round-trips writes at tick 60. The staged first chamber replay also reaches tick 289 with no script or runtime errors in strict mode.",
+        "open": [
+          "Native path progression, authored segment times and easing, and player support over moving collision. Motion tests still use the provisional preview follower."
         ]
       },
       {

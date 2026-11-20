@@ -1,0 +1,14 @@
+-- Exercise the native Lua binding and its ordinary reflected scalar.
+Wait(1.25)
+local disc = GetEntity("dbc_zones.MoverDisc01_Inert 01")
+assert(disc and disc ~= 0)
+local speed = "InitialSpeed"
+assert(GetPropertyFloat(disc, speed) == 1)
+assert(select("#", SetSplineFollowerInitialSpeed(disc, "1.25")) == 0)
+assert(GetPropertyFloat(disc, speed) == 1.25)
+assert(select("#", SetSplineFollowerInitialSpeed("BwxMissingMover", 2)) == 0)
+assert(select("#", SetSplineFollowerInitialSpeed(GetPlayer(), 2)) == 0)
+assert(not pcall(SetSplineFollowerInitialSpeed, disc))
+assert(select("#", SetPropertyFloat(disc, speed, 1)) == 0)
+assert(GetPropertyFloat(disc, speed) == 1)
+Print("BLOTWORX_ZONE_S_SPLINE_SPEED_WRITES_VERIFIED")

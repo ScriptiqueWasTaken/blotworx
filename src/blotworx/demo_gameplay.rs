@@ -281,6 +281,39 @@ impl World {
             }
         }
     }
+    /// REL2645a0 -> 3b1aa0 -> 123d80 changes the follower's speed scalar
+    /// (+0x38). It leaves the current segment, hold, direction and disable bit alone.
+    pub(super) fn spline_initial_speed_lua(
+        &mut self,
+        lua: &mlua::Lua,
+        args: mlua::MultiValue,
+    ) -> mlua::Result<mlua::MultiValue> {
+        if args.len() != 2 {
+            return Err(mlua::Error::external("SetSplineFollowerInitialSpeed requires an entity and speed"));
+        }
+        let speed = lua.coerce_number(args[1].clone())?
+            .ok_or_else(|| mlua::Error::external("Spline speed must be numeric"))? as f32;
+        let Some(owner) = self.scripts.resolve_native_entity_argument(lua, args[0].clone())?
+            .filter(|owner| !self.removed_entities.contains(owner))
+        else {
+            return Ok(mlua::MultiValue::new());
+        };
+        if self.entities[owner].components.iter()
+            .any(|component| component.class_name == "SplineFollowerComponent") {
+            self.set_entity_float_property(owner, "InitialSpeed", speed)
+                .map_err(mlua::Error::external)?;
+        }
+        Ok(mlua::MultiValue::new())
+    }
+
+    pub(super) fn publish_spline_initial_speed(&mut self, owner: usize, speed: f32) {
+        if let Some(mover) = self.demo_story.motion.movers.get_mut(&owner) {
+            mover.speed = speed;
+        } else if self.demo_story.enabled {
+            self.initialize_demo_motion_range(owner..owner + 1);
+        }
+    }
+
     pub(super) fn demo_motion_lua(
         &mut self,
         lua: &mlua::Lua,
@@ -371,7 +404,7 @@ impl World {
             mover.target = knot;
             mover.hold = 0.;
             mover.stop = None;
-        } else if name == "SetSplineFollowerInitialSpeed" || name == "SetSpeed" {
+        } else if name == "SetSpeed" {
             let speed = lua
                 .coerce_number(args[1].clone())?
                 .context("Spline speed must be numeric")
@@ -379,11 +412,8 @@ impl World {
             if !speed.is_finite() {
                 return Err(mlua::Error::external("Spline speed must be finite"));
             }
-            if name == "SetSpeed"
-                && self.entities[owner]
-                    .components
-                    .iter()
-                    .any(|c| c.class_name == "RotatorComponent")
+            if self.entities[owner].components.iter()
+                .any(|c| c.class_name == "RotatorComponent")
             {
                 self.set_rotator_speed(owner, speed)
                     .map_err(mlua::Error::external)?;

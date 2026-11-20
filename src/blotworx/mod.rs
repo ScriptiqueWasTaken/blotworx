@@ -533,6 +533,7 @@ mod lifetime;
 mod level_session;
 mod loading_screen;
 mod level_transition;
+mod endgame;
 mod locomotion_actions;
 mod locomotion_animation;
 mod lod;
@@ -2662,18 +2663,19 @@ impl Engine {
                 self.preview_entry = None;
                 self.actor_focus = None;
                 self.options_open = false;
-                self.load_with_checkpoint(ctx, Some(snapshot));
+                self.load_with_checkpoint(ctx, Some(snapshot), false);
             }
             Err(error) => self.error = Some(format!("Restore checkpoint: {error:#}")),
         }
     }
     fn load(&mut self, ctx: &egui::Context) {
-        self.load_with_checkpoint(ctx, None);
+        self.load_with_checkpoint(ctx, None, false);
     }
     fn load_with_checkpoint(
         &mut self,
         ctx: &egui::Context,
         snapshot: Option<std::sync::Arc<checkpoint::Snapshot>>,
+        clean: bool,
     ) {
         self.root = assets::files_root(std::path::Path::new(&self.root))
             .to_string_lossy()
@@ -2715,6 +2717,12 @@ impl Engine {
                     service: world.checkpoint.service.clone(),
                     ..Default::default()
                 },
+                ..Default::default()
+            }
+        } else if let Some(world) = self.world.as_ref().filter(|_| clean) {
+            score_state::InitialState {
+                frame_clock: Some(world.frame_clock),
+                checkpoint: world.checkpoint.clone(),
                 ..Default::default()
             }
         } else if let Some(world) = self.world.as_mut() {
@@ -4419,8 +4427,8 @@ impl eframe::App for Engine {
                 self.paused = true;
             }
         }
-        if let Some(world) = &mut self.world {
-            if let Some(request) = world.movies.pending.take() {
+        if let Some(world) = self.world.as_mut().filter(|_| self.movie.is_none()) {
+            if let Some(request) = world.movies.take_next() {
                 self.movie = Some(movie::Player::new(
                     world.source_data_root().to_owned(),
                     request,
@@ -4715,11 +4723,11 @@ impl eframe::App for Engine {
                     }
                 }
             }
-            if let Some(level) = self.world.as_mut().and_then(|world| world.level_transition.take()) {
+            if let Some((level, clean)) = self.world.as_mut().and_then(|world| world.level_transition.take()) {
                 self.level = level;
                 self.actor_focus = None;
                 self.preview_entry = None;
-                self.load(ui.ctx());
+                self.load_with_checkpoint(ui.ctx(), None, clean);
                 ui.ctx().request_repaint();
                 return;
             }

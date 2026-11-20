@@ -25,6 +25,8 @@ pub struct Request {
 #[derive(Default)]
 pub struct Requests {
     pub pending: Option<Request>,
+    ending: std::collections::VecDeque<String>,
+    ending_total: usize,
     pub submitted: u64,
     pub completed: u64,
     pub last_completed: Option<String>,
@@ -65,8 +67,22 @@ impl Requests {
         });
         Ok(vec![mlua::Value::Boolean(true)].into())
     }
+    pub(super) fn start_ending(&mut self, paths: Vec<String>) {
+        self.ending_total = paths.len();
+        self.ending = paths.into();
+    }
+
+    pub(super) fn take_next(&mut self) -> Option<Request> {
+        if let Some(pending) = self.pending.take() {
+            return Some(pending);
+        }
+        let filename = self.ending.pop_front()?;
+        self.submitted += 1;
+        Some(Request { serial: self.submitted, filename, flags: [true, true] })
+    }
+
     pub fn summary(&self) -> serde_json::Value {
-        serde_json::json!({"pending":self.pending,"submitted":self.submitted,"completed":self.completed,"last_completed":self.last_completed})
+        serde_json::json!({"pending":self.pending,"submitted":self.submitted,"completed":self.completed,"last_completed":self.last_completed,"ending_total":self.ending_total,"ending_remaining":self.ending})
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]

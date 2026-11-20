@@ -3345,13 +3345,17 @@ impl World {
             // Authored OnSpawned callbacks run before the optional demo story
             // adapter is enabled. Particle commands belong to the live World.
             "StartEmitters" | "StopEmitters" => self.demo_scene_lua(lua,name,args),
-            "TransitionToLevel" => {
+            "TransitionToLevel" | "CleanLoadLevel" => {
                 if args.len() != 1 {
-                    return Err(mlua::Error::external("TransitionToLevel requires one destination"));
+                    return Err(mlua::Error::external(format!("{name} requires one destination")));
                 }
                 if let Some(path) = lua.coerce_string(args[0].clone())? {
-                    self.level_transition.request(&path.to_str()?)
-                        .map_err(mlua::Error::external)?;
+                    let path = path.to_str()?;
+                    if name == "CleanLoadLevel" {
+                        self.level_transition.request_clean(&path)
+                    } else {
+                        self.level_transition.request(&path)
+                    }.map_err(mlua::Error::external)?;
                 }
                 Ok(mlua::MultiValue::new())
             }
@@ -3472,14 +3476,42 @@ impl World {
                 }
                 Ok(mlua::MultiValue::new())
             }
-            "StoreEndgameData" | "ResetSaveGameSlot" => {
+            "StoreEndgameData" | "UpdatePins" | "ResetSaveGameSlot" => {
                 if !args.is_empty() {
                     self.report.warnings.push(format!("{name} takes no arguments"));
                 }
-                if name == "StoreEndgameData" {
-                    self.store_endgame_outcomes();
+                match name {
+                    "StoreEndgameData" => self.store_endgame_outcomes(),
+                    "UpdatePins" => self.record_endgame_pins(),
+                    _ => self.complete_save_slot().map_err(mlua::Error::external)?,
+                }
+                Ok(mlua::MultiValue::new())
+            }
+            "SetEndingGame" => {
+                self.checkpoint.ending_game = super::actor_scripts::native_boolean(
+                    lua, args.back().cloned().unwrap_or(mlua::Value::Nil),
+                )?;
+                Ok(mlua::MultiValue::new())
+            }
+            "GetWasEndGame" | "GetWasQuitGame" => {
+                // GetWasQuitGame is false on boot and clean in-session loads.
+                // The host quit action currently closes the application.
+                Ok(vec![mlua::Value::Boolean(name == "GetWasEndGame" && self.checkpoint.ending_game)].into())
+            }
+            "StartSequence" => {
+                let sequence = lua.coerce_string(args.get(1).cloned().unwrap_or(mlua::Value::Nil))?
+                    .ok_or_else(|| mlua::Error::external("StartSequence needs an owner and sequence string"))?;
+                let sequence = sequence.to_str()?;
+                if sequence.as_ref() == "EndGame:0" {
+                    let checkpoint = self.checkpoint.latest.as_ref()
+                        .filter(|snapshot| !snapshot.has_active_campaign())
+                        .ok_or_else(|| mlua::Error::external("The ending sequence needs a completed slot"))?;
+                    let outcomes = checkpoint.bytes[0x2c5..0x2ce].try_into().unwrap();
+                    let movies = super::endgame::movies(outcomes, &self.runtime_settings)
+                        .map_err(mlua::Error::external)?;
+                    self.movies.start_ending(movies);
                 } else {
-                    self.complete_save_slot().map_err(mlua::Error::external)?;
+                    return Err(mlua::Error::external(format!("Unsupported frontend sequence: {sequence}")));
                 }
                 Ok(mlua::MultiValue::new())
             }

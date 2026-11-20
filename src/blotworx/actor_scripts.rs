@@ -1020,6 +1020,12 @@ impl Scripts {
         }
         scripts.bind_world_api("SaveGameToMemory")?;
         scripts.bind_world_api("StoreEndgameData")?;
+        scripts.bind_world_api("UpdatePins")?;
+        scripts.bind_world_api("SetEndingGame")?;
+        scripts.bind_world_api("GetWasEndGame")?;
+        scripts.bind_world_api("GetWasQuitGame")?;
+        scripts.bind_world_api("StartSequence")?;
+        scripts.bind_world_api("CleanLoadLevel")?;
         scripts.bind_world_api("ResetSaveGameSlot")?;
         scripts.bind_world_api("LoadGameFromMemory")?;
         scripts.bind_world_api("RestartCurrentLevel")?;

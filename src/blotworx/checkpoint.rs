@@ -51,6 +51,7 @@ pub struct State {
     pub pending_nine: Option<[u8; 9]>,
     pub pending_sixty_four: Option<[u8; 64]>,
     pub persistent_requested: bool,
+    pub(super) ending_game: bool,
     pub(super) restore_requested: Option<Restore>,
     pub notification: Option<Notification>,
 }
@@ -344,6 +345,16 @@ impl super::assets::World {
         self.checkpoint.pending_nine = Some(names.map(|name| {
             u8::from(self.globals.get(&format!("Endgame_Var_Pos_{name}")).unwrap_or(0) != 0)
         }));
+    }
+
+    pub(super) fn record_endgame_pins(&mut self) {
+        // REL353ac copies the low bytes of exactly 57 pin globals. The
+        // remaining seven bytes of the pending header block are reserved.
+        let mut pins = self.checkpoint.pending_sixty_four.unwrap_or([0; 64]);
+        for (byte, name) in pins.iter_mut().zip(super::endgame::PIN_GLOBALS) {
+            *byte = self.globals.get(name).unwrap_or(0) as u8;
+        }
+        self.checkpoint.pending_sixty_four = Some(pins);
     }
 
     pub(super) fn complete_save_slot(&mut self) -> Result<()> {

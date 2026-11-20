@@ -252,6 +252,16 @@
         ]
       },
       {
+        "scope": "EM1 authored ending sequence and title handoff",
+        "state": "UpdatePins captures the 57 original named global bytes. CleanLoadLevel takes the original ending flag and completed slot into a fresh Main_Menu world. PreStartScreenAction selects EndGame:0, and the original opening, nine configured outcomes and closing are queued one at a time.",
+        "source": "Wii REL353ac and relocated pin table at section 7 +0x1c4, CleanLoadLevel at 2f314, SetEndingGame at 26c944, and frontend movie list builder ba148. Shipped StartScreen.lua and ConfigFiles.ini supply the sequence request and variant movie paths.",
+        "evidence": "target/perf/ending-verified-opening.runtime.json shows the original opening frame and expected mixed-outcome file order. ending-verified-complete.runtime.json records all 11 clips finishing with skip input, no script/runtime errors and the closing clip last. The completed slot retains the staged first pin. The separate Zone S terminal callback probe staged boss flag 25, ran the shipped DoEndGame, wrote LAST-only and opened the original ending movie.",
+        "open": [
+          "Final encounter played to its terminal callback without staging",
+          "Original ending soundtrack synchronization, closing menu behavior and standalone credits route"
+        ]
+      },
+      {
         "scope": "EM1 loading-screen presentation",
         "state": "Full level loads and scene streams behind an authored fade show original artwork and cycle the authored dot frames. Faded scene imports wait until the loading screen has had a visible presentation window. Level loads use destination artwork, while streams use the current level's artwork.",
         "source": "loading_screen_texture in levels.pak, loose LoadingScreens assets, and src/blotworx/loading_screen.rs",

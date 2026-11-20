@@ -236,14 +236,14 @@ mod windows {
 }
 #[cfg(windows)]
 pub use windows::Stream;
-#[cfg(not(windows))]
+#[cfg(not(any(windows, target_os = "android")))]
 pub struct Stream {
     pub rate: u32,
     pub channels: u16,
     pub submitted: u64,
     pub started: bool,
 }
-#[cfg(not(windows))]
+#[cfg(not(any(windows, target_os = "android")))]
 impl Stream {
     pub fn open(_: u32, _: u16) -> Result<Self> {
         anyhow::bail!("Movie audio output is not implemented on this platform")
@@ -267,3 +267,9 @@ impl Stream {
         unreachable!()
     }
 }
+
+#[cfg(target_os = "android")]
+#[path = "movie_audio_android.rs"]
+mod android;
+#[cfg(target_os = "android")]
+pub use android::Stream;

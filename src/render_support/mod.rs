@@ -20,3 +20,11 @@ pub(crate) mod surface_material;
 pub mod viewport3d;
 pub(crate) mod volume_shadow;
 pub(crate) mod wii_default;
+
+
+pub(crate) fn shader_source(source: &str) -> std::borrow::Cow<'_, str> {
+    if cfg!(target_os = "android") && source.trim_start().starts_with("#version 330 core") {
+        return source.replacen("#version 330 core", "#version 300 es\nprecision highp float;\nprecision highp int;", 1).into();
+    }
+    source.into()
+}

@@ -1,3 +1,4 @@
+#include <cstring>
 #include "havok_ffi.h"
 #include "hka_spline_decompressor.hpp"
 #include "hklib/hk_packfile.hpp"
@@ -15,6 +16,14 @@
 #include <memory>
 #include <cstring>
 #include <algorithm>
+
+// Havok names may be string views into the packed data.
+static void copy_name(char* destination, size_t capacity, std::string_view name) {
+    if (!destination || capacity == 0) return;
+    const size_t length = (std::min)(name.size(), capacity - 1);
+    if (length != 0) std::memcpy(destination, name.data(), length);
+    destination[length] = '\0';
+}
 
 struct HavokPackFileHandle {
     IhkPackFile::Ptr packFile;
@@ -81,7 +90,7 @@ extern "C" int32_t havok_get_skeleton_info(HavokPackFileHandle* handle, size_t s
     if (out_num_bones) *out_num_bones = skel->GetNumBones();
     if (out_name && out_name_len > 0) {
         std::string name = skel->Name();
-        strncpy_s(out_name, out_name_len, name.c_str(), _TRUNCATE);
+        copy_name(out_name, out_name_len, name);
     }
     return 0;
 }
@@ -93,7 +102,7 @@ extern "C" int32_t havok_get_skeleton_bones(HavokPackFileHandle* handle, size_t 
 
     for (size_t i = 0; i < num_bones; ++i) {
         std::string_view name = skel->GetBoneName(i);
-        strncpy_s(out_bones[i].name, sizeof(out_bones[i].name), name.data(), _TRUNCATE);
+        copy_name(out_bones[i].name, sizeof(out_bones[i].name), name);
 
         out_bones[i].parent_index = skel->GetBoneParentID(i);
 
@@ -148,7 +157,7 @@ extern "C" int32_t havok_get_animation_info(HavokPackFileHandle* handle, size_t 
 
     if (out_name && out_name_len > 0) {
         std::string_view skel_name = bind ? bind->GetSkeletonName() : std::string_view{""};
-        strncpy_s(out_name, out_name_len, skel_name.data(), _TRUNCATE);
+        copy_name(out_name, out_name_len, skel_name);
     }
     float dur = anim->Duration();
     uint32 fps = anim->FrameRate();
@@ -221,7 +230,7 @@ extern "C" int32_t havok_decompile_to_xml(const uint8_t* data, size_t len, char*
 
         if (out_written) *out_written = xml_str.size();
         if (out_xml && max_xml_len > 0) {
-            strncpy_s(out_xml, max_xml_len, xml_str.c_str(), _TRUNCATE);
+            copy_name(out_xml, max_xml_len, xml_str);
         }
         return 0;
     } catch (...) {
@@ -269,9 +278,9 @@ extern "C" int32_t havok_get_object_info(HavokPackFileHandle* handle, size_t obj
     if (out_class_name && out_class_name_len > 0) {
         if (auto cls = safe_deref_cast<const hkVirtualClass>(c.get())) {
             std::string_view cname = cls->GetClassName(handle->packFile->GetToolset());
-            strncpy_s(out_class_name, out_class_name_len, cname.data(), _TRUNCATE);
+            copy_name(out_class_name, out_class_name_len, cname);
         } else {
-            strncpy_s(out_class_name, out_class_name_len, "hkVirtualClass", _TRUNCATE);
+            copy_name(out_class_name, out_class_name_len, "hkVirtualClass");
         }
     }
     return 0;
@@ -300,7 +309,7 @@ extern "C" int32_t havok_get_collision_info(HavokPackFileHandle* handle, size_t 
     if (out_num_indices) *out_num_indices = coll.indices.size();
 
     if (out_name && out_name_len > 0) {
-        strncpy_s(out_name, out_name_len, coll.name.c_str(), _TRUNCATE);
+        copy_name(out_name, out_name_len, coll.name);
     }
     return 0;
 }

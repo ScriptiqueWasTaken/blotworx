@@ -160,6 +160,7 @@ pub(super) fn report_button(
                 } else {
                     ui.label("Loading is taking longer than usual.");
                 }
+                #[cfg(not(target_os = "android"))]
                 if ui.button("Save diagnostic report…").clicked() {
                     let report = crate::startup_log::report(level, error, elapsed);
                     if let Err(error) = crate::startup_log::save_report(&report) {
@@ -168,6 +169,19 @@ pub(super) fn report_button(
                             .set_description(error.to_string())
                             .set_level(rfd::MessageLevel::Error)
                             .show();
+                    }
+                }
+                #[cfg(target_os = "android")]
+                {
+                    let id = ui.id().with("android_report");
+                    if ui.button("View diagnostic report").clicked() {
+                        let report = crate::startup_log::report(level, error, elapsed);
+                        ui.ctx().data_mut(|data| data.insert_temp(id, report));
+                    }
+                    if let Some(report) = ui.ctx().data(|data| data.get_temp::<String>(id)) {
+                        egui::ScrollArea::vertical().max_height(160.).show(ui, |ui| {
+                            ui.label(egui::RichText::new(report).monospace());
+                        });
                     }
                 }
             });

@@ -1,6 +1,6 @@
 # Blotworx public demo
 
-Blotworx runs the original Epic Mickey campaign with files imported from your own Wii disc image. This Windows x64 preview requires the North American release. The download contains the engine only.
+Blotworx runs the Epic Mickey campaign with files imported from your own North American Wii disc image. Public demos ship a Windows x64 ZIP and an experimental Android ARM64 APK. The downloads contain the engine only.
 
 1. Extract the demo ZIP to a folder you can write to.
 2. Open **Blotworx.exe** and choose or drop your disc image. Setup supports ISO, GCM, RVZ, WBFS, WIA, CISO, GCZ, NFS and a ZIP containing one supported image. Split images must be supplied unpacked with all parts together.
@@ -17,3 +17,5 @@ Press **Esc** to pause and **F10** to open Blotworx settings. This is a developm
 If the demo closes unexpectedly on Windows, choose **Yes** in the crash window to save a diagnostic report. If the splash screen stays open, use **Save diagnostic report** once it appears. Attach the text file and describe what happened. The report includes recent engine logs and may include local paths. Review it before sharing.
 
 If the window cannot open, the latest and previous logs are under `%LOCALAPPDATA%\Blotworx Engine`. Run `Blotworx.exe --support-report` from a terminal to see the same diagnostic text without starting the game.
+
+For Android requirements, installation, and update behavior, see the [Android guide](https://github.com/Bloticle/blotworx/tree/main/android).

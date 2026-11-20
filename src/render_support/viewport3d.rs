@@ -1425,7 +1425,7 @@ impl GpuViewportCache {
                             return Err(e);
                         }
                     };
-                    gl.shader_source(shader, text);
+                    gl.shader_source(shader, &crate::render_support::shader_source(text));
                     gl.compile_shader(shader);
                     if !gl.get_shader_compile_status(shader) {
                         let error = gl.get_shader_info_log(shader);
@@ -1761,11 +1761,11 @@ impl GpuViewportCache {
         "#;
 
         let vs_shadow = gl.create_shader(glow::VERTEX_SHADER).ok()?;
-        gl.shader_source(vs_shadow, vs_shadow_src);
+        gl.shader_source(vs_shadow, &crate::render_support::shader_source(vs_shadow_src));
         gl.compile_shader(vs_shadow);
 
         let fs_shadow = gl.create_shader(glow::FRAGMENT_SHADER).ok()?;
-        gl.shader_source(fs_shadow, fs_shadow_src);
+        gl.shader_source(fs_shadow, &crate::render_support::shader_source(fs_shadow_src));
         gl.compile_shader(fs_shadow);
 
         let shadow_program = gl.create_program().ok()?;
@@ -1961,7 +1961,7 @@ impl GpuViewportCache {
         "#;
 
         let vs_mesh = gl.create_shader(glow::VERTEX_SHADER).ok()?;
-        gl.shader_source(vs_mesh, vs_mesh_src);
+        gl.shader_source(vs_mesh, &crate::render_support::shader_source(vs_mesh_src));
         gl.compile_shader(vs_mesh);
         if !gl.get_shader_compile_status(vs_mesh) {
             log::error!("Mesh VS compile error: {}", gl.get_shader_info_log(vs_mesh));
@@ -1969,7 +1969,7 @@ impl GpuViewportCache {
 
         let fs_mesh = gl.create_shader(glow::FRAGMENT_SHADER).ok()?;
         let fs_mesh_src=super::surface_lighting::legacy_fragment(fs_mesh_src);
-        gl.shader_source(fs_mesh, &fs_mesh_src);
+        gl.shader_source(fs_mesh, &crate::render_support::shader_source(&fs_mesh_src));
         gl.compile_shader(fs_mesh);
         if !gl.get_shader_compile_status(fs_mesh) {
             log::error!("Mesh FS compile error: {}", gl.get_shader_info_log(fs_mesh));
@@ -2028,11 +2028,11 @@ impl GpuViewportCache {
         "#;
 
         let vs_line = gl.create_shader(glow::VERTEX_SHADER).ok()?;
-        gl.shader_source(vs_line, vs_line_src);
+        gl.shader_source(vs_line, &crate::render_support::shader_source(vs_line_src));
         gl.compile_shader(vs_line);
 
         let fs_line = gl.create_shader(glow::FRAGMENT_SHADER).ok()?;
-        gl.shader_source(fs_line, fs_line_src);
+        gl.shader_source(fs_line, &crate::render_support::shader_source(fs_line_src));
         gl.compile_shader(fs_line);
 
         let line_program = gl.create_program().ok()?;

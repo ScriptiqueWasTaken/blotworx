@@ -543,6 +543,7 @@ dependencies = [
 name = "blotworx"
 version = "0.1.0-demo.4"
 dependencies = [
+ "android-activity",
  "anyhow",
  "async-channel",
  "cc",
@@ -557,6 +558,7 @@ dependencies = [
  "flate2",
  "glow 0.15.0",
  "image",
+ "jni",
  "libm",
  "log",
  "memchr",

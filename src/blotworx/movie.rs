@@ -868,6 +868,12 @@ impl Player {
 
     pub fn show(&mut self, ui: &mut egui::Ui, skip_held: bool) {self.show_frame(ui,skip_held,true);}
 
+    #[cfg(target_os = "android")]
+    pub(super) fn continue_after_error(&mut self) {
+        self.skipped = true;
+        self.completed = true;
+    }
+
     /// RELc58a0 consumes an Accept event after the clip's minimum time.
     /// Frontend playback has its own control word, independent of gameplay skip.
     pub(super) fn show_frontend(&mut self, ui: &mut egui::Ui, accept: bool) {

@@ -35,7 +35,7 @@ unsafe fn program(gl: &glow::Context, vs: &str, fs: &str) -> Result<glow::Progra
     let p = gl.create_program()?;
     for (kind, source) in [(glow::VERTEX_SHADER, vs), (glow::FRAGMENT_SHADER, fs)] {
         let s = gl.create_shader(kind)?;
-        gl.shader_source(s, source);
+        gl.shader_source(s, &crate::render_support::shader_source(source));
         gl.compile_shader(s);
         if !gl.get_shader_compile_status(s) {
             let error = gl.get_shader_info_log(s);

@@ -96,7 +96,7 @@ impl Pass {
         let p = gl.create_program()?;
         for (k,s) in [(glow::VERTEX_SHADER,"#version 330 core\nlayout(location=0)in vec3 p;uniform mat4 vp;uniform mat4 model;void main(){gl_Position=vp*model*vec4(p,1.);}"),
             (glow::FRAGMENT_SHADER,"#version 330 core\nout vec4 color;void main(){color=vec4(vec3(119./255.),0.);}")] {
-            let shader=gl.create_shader(k)?;gl.shader_source(shader,s);gl.compile_shader(shader);
+            let shader=gl.create_shader(k)?;gl.shader_source(shader, &crate::render_support::shader_source(s));gl.compile_shader(shader);
             if !gl.get_shader_compile_status(shader){let e=gl.get_shader_info_log(shader);gl.delete_shader(shader);gl.delete_program(p);return Err(e);}
             gl.attach_shader(p,shader);gl.delete_shader(shader);
         }

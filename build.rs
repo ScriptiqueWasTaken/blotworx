@@ -1,16 +1,26 @@
 fn main() {
     println!("cargo:rerun-if-changed=third_party/mojoshader");
     println!("cargo:rerun-if-changed=src/blotworx/d3d9_translate_bridge.cpp");
+    let android = std::env::var("CARGO_CFG_TARGET_OS").as_deref() == Ok("android");
+    if android {
+        println!("cargo:rustc-cdylib-link-arg=-Wl,-z,max-page-size=16384");
+        cc::Build::new().cpp(true).std("c++17").opt_level(2)
+            .define("MOJOSHADER_NO_VERSION_INCLUDE", None)
+            .include("third_party/mojoshader").file("src/blotworx/d3d9_translate_bridge.cpp")
+            .compile("blotworx_shader_bridge");
+    }
     let mut shaders = cc::Build::new();
+    if android {
+        shaders.std("c99");
+    } else {
+        shaders.cpp(true).std("c++17").file("src/blotworx/d3d9_translate_bridge.cpp");
+    }
     shaders
-        .cpp(true)
-        .std("c++17")
         .opt_level(2)
         .warnings(false)
         .include("third_party/mojoshader")
         .define("MOJOSHADER_NO_VERSION_INCLUDE", None)
         .define("_CRT_SECURE_NO_WARNINGS", None)
-        .file("src/blotworx/d3d9_translate_bridge.cpp")
         .file("third_party/mojoshader/mojoshader.c")
         .file("third_party/mojoshader/mojoshader_common.c")
         .file("third_party/mojoshader/profiles/mojoshader_profile_common.c")

@@ -8,6 +8,9 @@ use std::{
 const LOG_BYTES: u64 = 24 * 1024;
 
 fn directory() -> Option<PathBuf> {
+    #[cfg(target_os = "android")]
+    return crate::android_app::storage();
+    #[cfg(not(target_os = "android"))]
     Some(dirs::data_local_dir()?.join("Blotworx Engine"))
 }
 
@@ -114,6 +117,7 @@ pub fn report(level: Option<&str>, error: Option<&str>, elapsed: Option<std::tim
     report
 }
 
+#[cfg(not(target_os = "android"))]
 pub fn save_report(report: &str) -> std::io::Result<bool> {
     let Some(path) = rfd::FileDialog::new()
         .set_file_name("blotworx-report.txt")

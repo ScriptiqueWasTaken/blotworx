@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="dev.bloticle.blotworx" android:versionCode="1" android:versionName="0.1.0-demo.3-android.1">
+    <uses-sdk android:minSdkVersion="26" android:targetSdkVersion="35" />
+    <uses-feature android:glEsVersion="0x00030000" android:required="true" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <application android:label="Blotworx" android:extractNativeLibs="true" android:allowBackup="false">
+        <provider android:name=".BlotworxUpdateProvider" android:authorities="dev.bloticle.blotworx.updates"
+            android:exported="false" android:grantUriPermissions="true" />
+        <activity android:name=".BlotworxActivity" android:exported="true"
+            android:screenOrientation="landscape"
+            android:configChanges="orientation|screenSize|keyboard|keyboardHidden|density|smallestScreenSize|uiMode">
+            <meta-data android:name="android.app.lib_name" android:value="blotworx" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

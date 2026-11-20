@@ -485,7 +485,7 @@ impl Title {
         }
         if let Some(background) = &mut self.background {
             background.show_title_background(ui);
-            if !self.shown && background.frame.is_some() {
+            if !self.shown && (background.frame.is_some() || (cfg!(target_os = "android") && background.error.is_some())) {
                 let mut player = lock(&self.stage.handle)?;
                 self.shown = super::super::ui_calls::Movie::invoke(
                     &mut NativeView {
@@ -498,11 +498,18 @@ impl Title {
                     },
                 )?;
             }
+            #[cfg(not(target_os = "android"))]
             ensure!(
                 background.error.is_none(),
                 "Title background: {}",
                 background.error.as_deref().unwrap_or("")
             );
+            #[cfg(target_os = "android")]
+            if let Some(error) = background.error.take() {
+                log::warn!("Title background unavailable: {error}");
+                background.completed = true;
+                self.looping = true;
+            }
             if background.completed && !self.looping {
                 self.background = Some(super::super::movie::Player::title_background(
                     self.root.clone(),

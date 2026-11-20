@@ -653,7 +653,11 @@ mod endpoint {
         }
     }
 }
-#[cfg(not(windows))]
+#[cfg(target_os = "android")]
+#[path = "audio_output_android.rs"]
+mod endpoint;
+
+#[cfg(not(any(windows, target_os = "android")))]
 mod endpoint {
     use super::*;
     pub struct Endpoint;

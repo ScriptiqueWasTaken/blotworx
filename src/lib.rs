@@ -1,4 +1,10 @@
 //! Blotworx runtime and its shared asset support.
+#[cfg(target_os = "android")]
+mod android_app;
+#[cfg(not(target_os = "android"))]
+use rfd as file_dialog;
+#[cfg(target_os = "android")]
+use android_app as file_dialog;
 mod ai_nav;
 mod asset_graph;
 pub mod blotworx;

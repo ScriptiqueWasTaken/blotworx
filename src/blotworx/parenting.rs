@@ -139,7 +139,10 @@ impl World {
         }
         let socket=if parent.is_some() {super::skeletal_children::Socket::load(&self.entities[child].components[component])?} else {None};
         if parent.is_some() {if let Some(socket)=&socket {ensure!(matches!(socket.mode,0|1|3|4|5),"Unsupported skeletal parenting mode {}",socket.mode);}}
-        if let Some(old)=old {self.prepare_child_slots(old)?;}
+        if let Some(old)=old {
+            self.prepare_child_slots(old)?;
+            self.sync_keyframed_character_attachment(child)?;
+        }
         if let Some(parent)=parent {self.prepare_child_slots(parent)?;}
         let world_position=self.entities[child].transform[12..15].try_into().unwrap();
         let world_rotation=self.entities[child].runtime_rotation;

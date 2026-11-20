@@ -385,9 +385,9 @@
     },
     {
       "scope": "DBC courtyard Calvin cage",
-      "state": "The authored spawn callback selects the jailed Havok animation. The Box3D compatibility body holds its spawn pose until the original cage release script restores motion, the shadow and interaction.",
-      "source": "src/blotworx/animation_variables.rs, src/blotworx/actor_scripts.rs, src/blotworx/assets.rs and src/blotworx/shadow_scene.rs",
-      "evidence": "target/perf/dbc-calvin-repro.ticks.json records the actor falling from Y 25.65 to Y -1.15. target/perf/dbc-calvin-final-hold.error.log records zero drift during the held replay. target/perf/dbc-calvin-final-release.error.log records the staged authored release restoring collision layer 4 and the usable radius.",
+      "state": "The cage follows the animated trebuchet socket and Calvin follows the cage while his character body is suspended. The authored rescue clears Calvin's parent before enabling motion.",
+      "source": "dbc_1st_zonec.bin binds cage 97115 to ref:cagebone on arm 97083 and binds Calvin 97600 to cage 97115. Both placed transforms list the authored parent before a duplicate empty row. Prefab inheritance retains the first row from each transform record. The keyframed character uses the parent pose as its solver target and preserves its local offset.",
+      "evidence": "tools/blotworx/fixtures/dbc_courtyard_cage_motion.lua streams the original courtyard, plays Drop1 and samples both transforms. The unfixed replay measured no cage travel. The fixed replay measured 6.336 units of travel with Calvin inside and verified that Rest no longer moves him after ClearParent.",
       "open": ["Reference capture and the full courtyard rescue cutscene"]
     },
     {

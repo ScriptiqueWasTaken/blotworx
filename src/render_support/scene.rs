@@ -660,7 +660,17 @@ pub(crate) fn get_effective_components(entity: &Entity, all_objects: &[Entity]) 
             });
             if let Some(slot) = slot {
                 let mut properties = effective[slot].properties.clone();
+                let mut has_parent_override = false;
                 for property in &component.properties {
+                    // Placed prefab transforms can carry a second Parent Entity
+                    // row after their authored parent. Keep the first row, as
+                    // direct transform lookup does for an unmerged component.
+                    if component.class_name == "JPSTransformationComponent"
+                        && property.name == "Parent Entity"
+                        && std::mem::replace(&mut has_parent_override, true)
+                    {
+                        continue;
+                    }
                     if let Some(index) = properties.iter().position(|p| p.name == property.name) {
                         // The override carries its own type and asset flags, not only a value.
                         properties[index] = property.clone();

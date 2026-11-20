@@ -411,6 +411,11 @@ impl World {
                 pose.angular[2],
                 0.,
             ]);
+            if body.motion.current.motion_type() == 4 && self.transform_hierarchy.contains_key(&index) {
+                // The parent owns a suspended character's pose. A solver
+                // writeback would also rewrite the authored local offset.
+                continue;
+            }
             let entity = &mut self.entities[index];
             entity.runtime_rotation = std::array::from_fn(|i| state.transform[(i % 3) * 4 + i / 3]);
             entity.transform =
@@ -426,6 +431,18 @@ impl World {
             )?;
         }
         self.publish_ai_actor_positions()
+    }
+
+    pub(super) fn sync_keyframed_character_attachment(&mut self, entity: usize) -> Result<()> {
+        if let Some(Ok(body)) = self.character_physics.get(&entity) {
+            if body.motion.current.motion_type() == 4 && self.collision.owner_in_world(body.owner)? {
+                let target = self.entities[entity].physics_transform();
+                if body.motion.current.swept_state().transform != target {
+                    self.warp_character_body(entity, target)?;
+                }
+            }
+        }
+        Ok(())
     }
     /// Controller gravity is independent of AI steering/stun. Motion7 disables
     /// world gravity, so omitting this stage leaves knockback airborne forever.

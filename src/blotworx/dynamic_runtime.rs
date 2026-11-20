@@ -688,6 +688,12 @@ impl World {
     /// casts and character support now observe the same admitted body poses.
     pub fn advance_dynamic_physics(&mut self, dt: f32) -> Result<()> {
         self.prepare_scene_motion(dt)?;
+        let attachments = self.character_physics.keys().copied()
+            .filter(|entity| self.transform_hierarchy.contains_key(entity))
+            .collect::<Vec<_>>();
+        for entity in attachments {
+            self.sync_keyframed_character_attachment(entity)?;
+        }
         self.prepare_character_gravity(dt)?;
         if self.dynamic_runtime_sources.is_empty()
             && self.player_physics.is_none()

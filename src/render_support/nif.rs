@@ -130,6 +130,7 @@ pub struct MaterialBindings {
     pub legacy_diffuse: Option<[f32; 4]>,
     pub legacy_alpha_flags: Option<u16>,
     pub legacy_alpha_threshold: Option<u8>,
+    pub(crate) sort_disabled: bool,
     pub legacy_depth_flags: Option<Result<u16, String>>,
     pub legacy_texture_flags: Option<Result<u16, String>>,
     pub legacy_stencil_flags: Option<Result<u16, String>>,
@@ -531,6 +532,8 @@ pub(crate) fn find_mesh_surface(nif: &NifFile, mesh: usize) -> PreviewSurface {
             legacy_diffuse: None,
             legacy_alpha_flags: None,
             legacy_alpha_threshold: None,
+            // NiAVObject::DISABLE_SORTING applies to this render object.
+            sort_disabled: render.is_some_and(|base| base.base.flags & 0x0040 != 0),
             legacy_depth_flags: None,
             legacy_texture_flags: None,
             legacy_stencil_flags: None,

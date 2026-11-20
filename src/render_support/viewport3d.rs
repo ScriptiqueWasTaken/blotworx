@@ -249,6 +249,35 @@ pub struct GpuDrawCommand {
     pub light_group: Arc<str>,
 }
 impl GpuDrawCommand {
+    fn needs_alpha_sort(&self, prepared: bool, platform_native: bool) -> bool {
+        let alpha = self.material.as_ref().and_then(|m| m.legacy_alpha_flags).unwrap_or(0);
+        if alpha & 0x2000 != 0 || self.material.as_ref().is_some_and(|m| m.sort_disabled) {
+            return false;
+        }
+        if platform_native {
+            return alpha & 1 != 0;
+        }
+        if prepared {
+            if let Some(Ok(program)) = &self.preview {
+                return program.blend.is_some_and(|blend| {
+                    blend != (glow::ONE, glow::ZERO, glow::FUNC_ADD)
+                });
+            }
+        }
+        self.material.as_ref().is_some_and(|m| m.shader.is_none()) && alpha & 1 != 0
+    }
+
+    fn alpha_depth(&self, view: &[f32; 16]) -> f32 {
+        let center: [f32; 3] = std::array::from_fn(|axis| {
+            (self.aabb_min[axis] + self.aabb_max[axis]) * 0.5
+        });
+        let world: [f32; 3] = std::array::from_fn(|axis| {
+            self.trans_mat[12 + axis]
+                + (0..3).map(|column| self.trans_mat[column * 4 + axis] * center[column]).sum::<f32>()
+        });
+        -(view[2] * world[0] + view[6] * world[1] + view[10] * world[2])
+    }
+
     /// Release per-draw asset references after its owning entity is retired.
     /// Keep the stable draw slot and lightweight bounds/transform metadata so
     /// indices held by reports and runtime handles never change.
@@ -2908,12 +2937,27 @@ pub(crate) fn render_viewport(
                     let mut probe_previous=probe_pixel.map(|p|read_probe_pixel(gl,p));
                     let mut probe_previous_depth=probe_pixel.map(|p|read_probe_depth(gl,p));
                     if probe_pixel.is_some(){work.pixel_history.clear();work.pixel_history.push(serde_json::json!({"stage":"clear","rgba":probe_previous}));}
-                    for (draw_index,((cmd, prepared), rejected)) in
-                        draw_commands.iter().zip(&prepared_materials).zip(&rejected).enumerate()
-                    {
-                        if *rejected || cmd.indices.is_empty() || cmd.v_data.is_empty() {
+                    // Defer sortable blended geometry until opaque/alpha-tested
+                    // draws have populated depth, as NiAlphaAccumulator does.
+                    let mut immediate = Vec::with_capacity(draw_commands.len());
+                    let mut blended = Vec::new();
+                    for (index, cmd) in draw_commands.iter().enumerate() {
+                        if rejected[index] || cmd.indices.is_empty() || cmd.v_data.is_empty() {
                             continue;
                         }
+                        let managed = native_managed.as_ref().is_some_and(|values| values[index].0);
+                        if cmd.needs_alpha_sort(prepared_materials[index].is_some(), managed) {
+                            blended.push((index, cmd.alpha_depth(&view_mat)));
+                        } else {
+                            immediate.push(index);
+                        }
+                    }
+                    blended.sort_unstable_by(|&(left_index, left_depth), &(right_index, right_depth)| {
+                        right_depth.total_cmp(&left_depth).then(left_index.cmp(&right_index))
+                    });
+                    for draw_index in immediate.into_iter().chain(blended.into_iter().map(|(index, _)| index)) {
+                        let cmd = &draw_commands[draw_index];
+                        let prepared = &prepared_materials[draw_index];
 
                         if native_managed.as_ref().is_some_and(|managed|managed[draw_index].0) {
                             let result=cache.get_or_upload_mesh(gl,&cmd.v_data,&cmd.indices)

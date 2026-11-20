@@ -922,6 +922,7 @@ impl Scripts {
         scripts.bind_world_api("Unhide")?;
         scripts.bind_world_api("RemovePhysicsFromWorld")?;
         scripts.bind_world_api("EnableMotion")?;
+        scripts.bind_world_api("AI_ClearTarget")?;
         scripts.bind_world_api("DisableMotion")?;
         scripts.bind_world_api("EnableComponent")?;
         scripts.bind_world_api("DisableComponent")?;

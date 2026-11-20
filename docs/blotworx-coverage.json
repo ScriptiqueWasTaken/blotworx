@@ -79,6 +79,18 @@
   ],
   "validated_connections": [
       {
+        "scope": "Tim's paint dismissal and the boat-transfer gate",
+        "state": "The original Lua callback clears the fallback combat planner's live target and cancels unfinished attacks. Tim's reflected PatrolSpeed write reaches the same controller field used for authored patrol destinations.",
+        "source": "GV_ZoneB_SpatterDismissalFull, BasicAIControllerComponent.PatrolSpeed on SpatterMelee 04, and EM1 REL 2d47e0 and 2df228",
+        "evidence": "The 920-tick paint replay verifies the selected Spatter, the patrol speed change from 7 to 3, and completion of GV_ZoneB_TimFullDismiss. It then reaches the previously untested pipe-burst spawn. The separate boat-transfer replay reached stream_3 and completed Zone B cleanup at 1440 ticks with no script or runtime errors.",
+        "open": [
+          "The pipe-burst spawner's source is unavailable after scene initialization. The authored source has a delayed DestroyEntity on OnSpawned.",
+          "Native permanent-target ownership and target-change event",
+          "Unstaged paint combat and full travel through the boat-transfer puzzle",
+          "The staged Zone C intro completes its first two conversations but retains one input restriction"
+        ]
+      },
+      {
         "scope": "Zone B Tim dismissal, guardian award intake, and first boat ride",
         "state": "Tim's thinner outcome can release the scripted guardian from its animated socket. The authored hero and scrapper award callbacks publish signed pending points with the retail enable gate.",
         "source": "GuardianPrefab_StartNextGuardian, GV_ZoneB_GuardianExplaination, and EM1 REL 1ca48, 1cb60, 18d38–18d64",

@@ -1555,7 +1555,7 @@ impl World {
         let stored_owner = match name {
             "NegativeThreshold" | "PositiveThreshold" => Some("MoodComponent"),
             "Wander Radius" => Some("AIBrainComponent"),
-            "Desired Move Speed" | "Desired Vertical Speed" => Some("BasicAIControllerComponent"),
+            "Desired Move Speed" | "Desired Vertical Speed" | "PatrolSpeed" => Some("BasicAIControllerComponent"),
             "BranchPathChance"=>Some("SplineKnotComponent"),
             _ => None,
         };
@@ -3430,6 +3430,14 @@ impl World {
                 Ok(mlua::MultiValue::new())
             }
             "AnimVarInt" | "AnimVarFloat" => self.animation_variable_lua(lua, name, args),
+            "AI_ClearTarget" => {
+                if let Some(owner) = self.scripts.resolve_native_entity_argument(
+                    lua, args.back().cloned().unwrap_or(mlua::Value::Nil),
+                )? {
+                    self.clear_ai_combat_target(owner);
+                }
+                Ok(mlua::MultiValue::new())
+            }
             "SaveGameToMemory" => self.save_game_to_memory(lua, args),
             "SetPlayerSpawnTransform" | "SetPlayerSpawnTransformEntity" => {
                 if args.len() != 1 {
@@ -4538,10 +4546,11 @@ impl World {
                                 .ok_or_else(|| mlua::Error::external("Invalid rotator float"))?
                                 as f32
                         }
-                        "NegativeThreshold" | "PositiveThreshold" | "Wander Radius" | "BranchPathChance" => {
+                        "NegativeThreshold" | "PositiveThreshold" | "Wander Radius" | "BranchPathChance" | "PatrolSpeed" => {
                             let owner = match property.as_str() {
                                 "Wander Radius" => "AIBrainComponent",
                                 "BranchPathChance" => "SplineKnotComponent",
+                                "PatrolSpeed" => "BasicAIControllerComponent",
                                 _ => "MoodComponent",
                             };
                             if component.class_name!=owner {

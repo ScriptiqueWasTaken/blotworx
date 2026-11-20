@@ -52,6 +52,16 @@ struct Attack {
     phase: u8,
 }
 impl World {
+    pub(super) fn clear_ai_combat_target(&mut self, entity: usize) {
+        let Some(brain) = self.ai_brains.get_mut(&entity) else {
+            return;
+        };
+        brain.combat_target = None;
+        self.demo_story.ai.steering.remove(&entity);
+        if self.demo_story.ai.attacking.remove(&entity).is_some() {
+            let _ = self.authored_havok.send_event(entity, "EVENT_ForceNormalIdle");
+        }
+    }
     fn demo_melee_clear(
         &mut self,
         shape: usize,
@@ -687,8 +697,17 @@ impl World {
             let dx = destination[0] - source[0];
             let dz = destination[2] - source[2];
             let distance = (dx * dx + dz * dz).sqrt();
-            let hostile = status != 1 && target == self.player_entity;
             let in_range = distance < 18. && (destination[1] - source[1]).abs() < 4.;
+            let brain = self.ai_brains.get_mut(&entity).unwrap();
+            brain.combat_target = if status != 1 && !dead && !paused && target == self.player_entity
+                && (in_range || brain.combat_target == Some(target)
+                    && self.demo_story.ai.attacking.contains_key(&entity))
+            {
+                Some(target)
+            } else {
+                None
+            };
+            let hostile = brain.combat_target.is_some();
             if paused || dead || !hostile {
                 self.demo_story.ai.attacking.remove(&entity);
             }
@@ -728,11 +747,13 @@ impl World {
             );
             let moving = wants_move && direction != [0.; 2];
             let speed = if moving {
-                if distance > 3. {
-                    3.0
-                } else {
-                    2.0
-                }
+                let patrol_speed = patrol_target.and_then(|_| {
+                    self.entities[entity].components.iter()
+                        .find(|component| component.class_name == "BasicAIControllerComponent")?
+                        .properties.iter().find(|property| property.name == "PatrolSpeed")?
+                        .value.as_f64().map(|speed| speed as f32)
+                });
+                patrol_speed.unwrap_or(if distance > 3. { 3. } else { 2. })
             } else {
                 0.
             };

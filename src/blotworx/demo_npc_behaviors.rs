@@ -30,6 +30,10 @@ impl World {
             && self.ai_brains.get(&owner).is_some_and(|brain| {
                 brain.ai_type.eq_ignore_ascii_case("Pete:SmallWorld")
                     || brain.ai_type.to_ascii_lowercase().starts_with("gremlin")
+                    || (!self.uses_demo_combat(owner, &brain.ai_type)
+                        && !brain.behaviors.iter().any(|name| name == "RobotArmGeneral")
+                        && (!brain.scripted_move.is_empty() || !brain.patrol.is_empty())
+                        && self.entities[owner].components.iter().any(|c| c.class_name == "BasicAIControllerComponent"))
             })
             && self.authored_havok.contains(owner)
             && self.character_physics.get(&owner).is_some_and(|b|b.is_ok())

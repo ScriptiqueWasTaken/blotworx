@@ -765,6 +765,28 @@ impl Runtime {
             (state.info.name == name).then_some(runtime.time)
         })
     }
+    pub(super) fn active_state_clip_finished(&self, entity: usize, name: &str) -> bool {
+        let Some(instance) = self.instances.get(&entity) else {
+            return false;
+        };
+        let prepared = &instance.actor.prepared;
+        prepared.machines.iter().any(|(id, runtime)| {
+            if !runtime.active {
+                return false;
+            }
+            let definition = &prepared.state.machines[id];
+            let state = &definition.states[definition.state_indices[&runtime.current]];
+            state.info.name == name
+                && prepared.clips.get(&state.info.generator.id).is_ok_and(|clip| clip.clock.at_end)
+        })
+    }
+
+    pub(super) fn has_event(&self, entity: usize, name: &str) -> bool {
+        self.instances.get(&entity)
+            .and_then(|instance| self.animations.get(&instance.animation))
+            .is_some_and(|animation| animation.contract.events.iter().any(|event| event == name))
+    }
+
     pub fn send_event(&mut self, entity: usize, name: &str) -> Result<()> {
         let instance = self
             .instances

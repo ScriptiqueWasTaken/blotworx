@@ -10,7 +10,7 @@ use std::collections::BTreeMap;
 
 #[derive(Default)]
 pub(super) struct State {
-    releases: Vec<(usize, usize, usize)>,
+    releases: Vec<(usize, usize, V)>,
     flights: BTreeMap<usize, Flight>,
     draining: Vec<usize>,
     launched: u64,
@@ -25,8 +25,8 @@ struct Flight {
     contact: Option<usize>,
 }
 impl State {
-    pub(super) fn queue(&mut self, actor: usize, weapon: usize, target: usize) {
-        self.releases.push((actor, weapon, target));
+    pub(super) fn queue(&mut self, actor: usize, weapon: usize, aim: V) {
+        self.releases.push((actor, weapon, aim));
     }
     pub(super) fn summary(&self) -> serde_json::Value {
         serde_json::json!({
@@ -83,8 +83,8 @@ fn launch_velocity(origin: V, target: V, speed: f32, gravity: f32) -> Result<V> 
 
 impl World {
     pub(super) fn launch_ai_projectiles(&mut self) {
-        for (actor, weapon, target) in std::mem::take(&mut self.demo_story.projectiles.releases) {
-            if let Err(error) = self.launch_ai_projectile(actor, weapon, target) {
+        for (actor, weapon, aim) in std::mem::take(&mut self.demo_story.projectiles.releases) {
+            if let Err(error) = self.launch_ai_projectile(actor, weapon, aim) {
                 let message = format!("AI projectile {}: {error:#}", self.entities[actor].name);
                 self.demo_story.projectiles.last_error = Some(message.clone());
                 if !self.report.unsupported.contains(&message) {
@@ -94,7 +94,7 @@ impl World {
         }
     }
 
-    fn launch_ai_projectile(&mut self, actor: usize, weapon: usize, target: usize) -> Result<()> {
+    fn launch_ai_projectile(&mut self, actor: usize, weapon: usize, aim: V) -> Result<()> {
         if !self.entity_scene_active(actor)
             || self.hidden_entities.contains(&actor)
             || self.removed_entities.contains(&weapon)
@@ -155,9 +155,6 @@ impl World {
             .collect::<Result<Vec<_>>>()?;
         let origin = muzzle.transform[12..15].try_into()?;
         let rotation = muzzle.runtime_rotation;
-        let Some(aim) = self.entity_position_or_bound_center(target)? else {
-            return Ok(());
-        };
         let velocity = launch_velocity(origin, aim, speed, self.report.physics_world.gravity[1])?;
         for name in names {
             let entity = self.spawn_palette_root(weapon, &name, origin, rotation, "")?;

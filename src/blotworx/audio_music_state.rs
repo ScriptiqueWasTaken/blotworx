@@ -96,7 +96,7 @@ impl World {
         }
         Ok(())
     }
-    fn music_team(&self, id: usize) -> Option<(i64, &epic_mickey_lib_rs::scene_file::Component)> {
+    pub(super) fn music_team(&self, id: usize) -> Option<(i64, &epic_mickey_lib_rs::scene_file::Component)> {
         let component = self.entities.get(id)?.components.iter().find(|c| c.class_name == "TeamComponent")?;
         let team = ["CurrentTeam", "Team"].into_iter().find_map(|name| component.properties.iter()
             .find(|p| p.name == name).and_then(|p| p.value.as_i64())).unwrap_or(0);

@@ -110,6 +110,7 @@ struct Attack {
     contact_open: bool,
     hit: bool,
     uses_slot: bool,
+    walk_attack: bool,
     abort_at: f32,
 }
 #[derive(Clone, Copy)]
@@ -207,7 +208,9 @@ impl World {
             2 => "EVENT_Start_AttackCharge",
             _ => return None,
         };
-        self.authored_havok.has_event(parent, event).then_some(false)
+        (self.authored_havok.has_event(parent, event)
+            || event == "EVENT_Start_AttackMelee" && self.authored_havok.has_event(parent, "EVENT_WalkAttack_Start"))
+            .then_some(false)
     }
     pub(super) fn record_demo_melee_contact(&mut self, weapon: usize) {
         if self.demo_melee_trigger_enabled(weapon) != Some(true) {
@@ -281,6 +284,9 @@ impl World {
             // while others stop it before branching to hit or miss.
             (0x7b, _) => attack.contact_open = false,
             (0xc1, AttackPhase::Recovery) => {
+                self.demo_story.ai.attacking.remove(&actor);
+            }
+            (0xc1, AttackPhase::AwaitStrike | AttackPhase::Striking) if attack.walk_attack => {
                 self.demo_story.ai.attacking.remove(&actor);
             }
             _ => {}
@@ -1254,6 +1260,8 @@ impl World {
                 }
             }
             let attacking = self.demo_story.ai.attacking.contains_key(&entity);
+            let walk_attack = family == "beetleworxcrawler"
+                && self.authored_havok.has_event(entity, "EVENT_WalkAttack_Start");
             if self.advance_blob_vacuum(entity, sees_player && !attacking, paused || dead,
                 shape, source, player_position, facing)?
             {
@@ -1267,7 +1275,7 @@ impl World {
             {
                 let reach = if melee_spatter { melee_radius } else { f32::INFINITY };
                 if (destination[1] - source[1]).abs() < 1.5
-                    && self.authored_havok.has_event(entity, "EVENT_Start_AttackMelee")
+                    && (walk_attack || self.authored_havok.has_event(entity, "EVENT_Start_AttackMelee"))
                 {
                     selected = self.demo_weapon(entity, distance, reach, WeaponKind::Melee).map(|v| (v, WeaponKind::Melee));
                 }
@@ -1449,8 +1457,8 @@ impl World {
             if let Some(attack) = self.demo_story.ai.attacking.get_mut(&entity) {
                 if attack.charge.is_none() && attack.ranged_target.is_none()
                     && matches!(attack.phase, AttackPhase::AwaitStrike | AttackPhase::Striking)
-                    && (attack.hit || self.authored_havok
-                        .active_state_clip_finished(entity, "MeleeAttack_Attack"))
+                    && (attack.hit || self.authored_havok.active_state_clip_finished(entity,
+                        if attack.walk_attack { "WalkAttack_Strike" } else { "MeleeAttack_Attack" }))
                 {
                     // FinishPrep can be authored at time zero. The weapon
                     // opens later, so resolve from contact or the clip end.
@@ -1530,6 +1538,7 @@ impl World {
                 } else {
                     (None, windup.max(0.))
                 };
+                let walk_attack = kind == WeaponKind::Melee && walk_attack;
                 self.demo_story.ai.attacking.insert(
                     entity,
                     Attack {
@@ -1540,13 +1549,15 @@ impl World {
                         charge,
                         ranged_aim: None,
                         uses_slot,
+                        walk_attack,
                         abort_at: self.animation_time + 8. + windup,
-                        phase: AttackPhase::Windup,
+                        phase: if walk_attack { AttackPhase::AwaitStrike } else { AttackPhase::Windup },
                         contact_open: false,
                         hit: false,
                     },
                 );
                 let event = match kind {
+                    WeaponKind::Melee if walk_attack => "EVENT_WalkAttack_Start",
                     WeaponKind::Melee => "EVENT_Start_AttackMelee",
                     WeaponKind::Ranged => "EVENT_Start_AttackRanged",
                     WeaponKind::Charge => {

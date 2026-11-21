@@ -28,6 +28,7 @@ pub struct State {
     pub(super) stunned_until: BTreeMap<usize, f32>,
     steering: BTreeMap<usize, Steering>,
     attacking: BTreeMap<usize, Attack>,
+    detonations: BTreeMap<usize, bool>,
     pub attacks: u64,
     pub charge_windups: u64,
     pub charge_rolls: u64,
@@ -60,6 +61,7 @@ struct Attack {
     phase: AttackPhase,
     contact_open: bool,
     hit: bool,
+    uses_slot: bool,
 }
 #[derive(Clone, Copy)]
 struct Charge {
@@ -90,9 +92,23 @@ enum AttackPhase {
 impl World {
     pub(super) fn uses_demo_combat(&self, actor: usize, kind: &str) -> bool {
         let kind = kind.to_ascii_lowercase();
-        kind.contains("spatter") || kind.contains("fodder")
+        kind.contains("spatter") || kind.contains("fodder") || kind.contains("kamikaze")
             || (self.music_team(actor).is_some_and(|(team, _)| team == 2 || team == 3)
                 && self.entities[actor].components.iter().any(|c| c.class_name == "ArsenalComponent"))
+    }
+
+    fn uses_attack_slot(&self, entity: usize) -> bool {
+        let mut name = self.ai_brains[&entity].ai_type.as_str();
+        loop {
+            let key = format!("AttackConfig_{name}_AttacksAlwaysAllowed");
+            if let Some(value) = self.runtime_settings.get(&key) {
+                return value.eq_ignore_ascii_case("false") || value == "0";
+            }
+            let Some((parent, _)) = name.rsplit_once(':') else {
+                return false;
+            };
+            name = parent;
+        }
     }
 
     fn demo_weapon(&self, actor: usize, distance: f32, max_reach: f32, kind: WeaponKind) -> Option<(usize, f32)> {
@@ -156,6 +172,12 @@ impl World {
         }
     }
     pub(super) fn advance_demo_attack_animation(&mut self, actor: usize, event: u32) -> Result<()> {
+        if self.demo_story.ai.detonations.get(&actor) == Some(&false)
+            && self.animation_events.as_ref().ok()
+                .and_then(|catalog| catalog.id("EVENT_Done_Explode")) == Some(event)
+        {
+            return self.finish_demo_detonation(actor);
+        }
         // Latch the ranged aim on the authored prepare cue. The projectile
         // release cue can come later, after Mickey has already dodged.
         let aim = if event == 0x98 {
@@ -849,6 +871,52 @@ impl World {
             stopped: 0.,
         }, if windup < 0. { setting("WindupIdleTime")? } else { windup }))
     }
+    fn finish_demo_detonation(&mut self, entity: usize) -> Result<()> {
+        use super::projectile_stimulus::{Delivery, Emission};
+        let Some(component) = self.entities[entity].components.iter().find(|c| c.class_name == "ExplodeComponent") else {
+            return Ok(());
+        };
+        let field = |name| component.properties.iter().find(|p| p.name == name).map(|p| &p.value);
+        let numbers = |name| field(name).and_then(|value| value.as_array()).into_iter().flatten();
+        let stimuli = numbers("StimulusTypeList").zip(numbers("StimulusAmountList"))
+            .zip(numbers("StimulusRadiusList"))
+            .filter_map(|((kind, amount), radius)| Some((u32::try_from(kind.as_u64()?).ok()?,
+                amount.as_f64()? as f32, radius.as_f64()? as f32)))
+            .filter(|&(_, amount, radius)| amount.is_finite() && radius.is_finite() && radius > 0.)
+            .collect::<Vec<_>>();
+        let check_sight = field("Check Line Of Sight").and_then(|v| v.as_bool()).unwrap_or(false);
+        let retire = field("RemoveEntity").and_then(|v| v.as_bool()).unwrap_or(false);
+        let source = self.entities[entity].transform[12..15].try_into()?;
+        let shape = self.character_physics.get(&entity).and_then(|body| body.as_ref().ok()).map(|body| body.shape);
+        self.demo_story.ai.detonations.insert(entity, true);
+        let mut pending = BTreeMap::<usize, Vec<Emission>>::new();
+        for (stimulus, amount, radius) in stimuli {
+            for target in self.area_stimulus_recipients(source, radius, Some(entity))? {
+                if target == entity { continue; }
+                let Some(position) = self.entity_position_or_bound_center(target)? else { continue; };
+                if let Some(shape) = shape {
+                    if check_sight && !self.demo_melee_clear(shape, source, position, target)? { continue; }
+                }
+                let offset = super::physics::sub(position, source);
+                let length = super::physics::length(offset).max(0.001);
+                pending.entry(target).or_default().push(Emission {
+                    stimulus, amount, position: source, direction: offset.map(|value| value / length),
+                    target: Some(target as u64), owner: Some(entity as u64),
+                    tag: String::new(), delivery: Delivery::Target,
+                });
+            }
+        }
+        for (target, emissions) in pending {
+            self.receive_combat(target, &emissions)?;
+        }
+        self.emit_entity_output(entity, "OnExplode", entity);
+        if retire {
+            self.emit_entity_output(entity, "OnDeath", entity);
+            self.queue_entity_retirement(entity)?;
+        }
+        Ok(())
+    }
+
     pub(super) fn advance_demo_ai(&mut self, delta: f32) -> Result<()> {
         if !self.demo_story.enabled {
             return Ok(());
@@ -870,6 +938,14 @@ impl World {
         let melee_radius = melee_setting("SpatterMelee_AttackRadius", 1.25);
         let melee_chase = melee_setting("SpatterMelee_ChaseSpeed", 5.);
         let melee_walk = melee_setting("SpatterMelee_DefaultSpeed", 3.);
+        let friendly_distance = melee_setting("SpatterFriendlyFollowTolerance", 2.5);
+        let kamikaze_reach = melee_setting("BEH_KamikazeChase_Default_ChaseTolerance", 1.5);
+        let kamikaze_speed = melee_setting("BEH_KamikazeChase_Default_ChaseSpeed", 5.8);
+        let attack_cap = |key, default| self.runtime_settings.get(key)
+            .and_then(|value| value.trim().parse::<usize>().ok()).unwrap_or(default);
+        let melee_slots = attack_cap("AttackConfig_MaxConcurrentMeleeAttackers", 1);
+        let ranged_slots = attack_cap("AttackConfig_MaxConcurrentRangedAttackers", 2);
+        self.demo_story.ai.detonations.retain(|entity, _| !self.removed_entities.contains(entity));
         let ids = self
             .ai_brains
             .iter()
@@ -959,7 +1035,30 @@ impl World {
             let dx = destination[0] - source[0];
             let dz = destination[2] - source[2];
             let distance = dx.hypot(dz);
-            let melee_spatter = self.ai_brains[&entity].ai_type.eq_ignore_ascii_case("SpatterMelee");
+            let ai_type = &self.ai_brains[&entity].ai_type;
+            let family = ai_type.split([':', '_']).next().unwrap_or(ai_type);
+            let melee_spatter = family.eq_ignore_ascii_case("SpatterMelee");
+            let stationary = family.eq_ignore_ascii_case("KamikazeBlotlingStationary");
+            let kamikaze = ai_type.to_ascii_lowercase().contains("kamikaze")
+                && self.entities[entity].components.iter().any(|c| c.class_name == "ExplodeComponent")
+                && self.authored_havok.has_event(entity, "EVENT_Start_Explode");
+            if kamikaze && hostile && distance <= kamikaze_reach
+                && (destination[1] - source[1]).abs() < 1.5
+                && !self.demo_story.ai.detonations.contains_key(&entity)
+                && self.demo_melee_clear(shape, source, destination, target)?
+            {
+                self.authored_havok.send_event(entity, "EVENT_Start_Explode")?;
+                self.demo_story.ai.detonations.insert(entity, false);
+            }
+            if let Some(&done) = self.demo_story.ai.detonations.get(&entity) {
+                if !done && self.authored_havok.active_state_clip_finished(entity, "Explode_Default") {
+                    self.finish_demo_detonation(entity)?;
+                }
+                self.collision.set_simulation_velocity(shape, [0., pose.linear[1], 0.])?;
+                continue;
+            }
+            let follows_mickey = status == 1 && !stationary && patrol_target.is_none()
+                && ai_type.to_ascii_lowercase().starts_with("spatter") && in_range;
             if paused || dead || !hostile {
                 if self.demo_story.ai.attacking.remove(&entity).is_some()
                     && !dead && self.authored_havok.contains(entity)
@@ -1040,7 +1139,7 @@ impl World {
             let facing_target = target_heading.is_some_and(|heading| {
                 facing[0] * heading[0] + facing[1] * heading[1] >= 0.9
             });
-            let wants_move = !paused
+            let wants_move = !paused && (!stationary || patrol_target.is_some())
                 && self.npc_relocations.get(&entity).is_none_or(|s|s.input_flags&2!=0)
                 && !dead
                 && !attacking
@@ -1048,9 +1147,9 @@ impl World {
                 // Perception limits belong to this provisional combat planner,
                 // not an explicit authored patrol destination. Applying them to
                 // both silently discards real routes (the airlock requests29m).
-                && (patrol_target.is_some() || hostile)
-                && distance > if !hostile { 0.25 } else if melee_spatter { 0.55 } else { 1.3 }
-                && (status != 1 || target != self.player_entity);
+                && (patrol_target.is_some() || hostile || follows_mickey)
+                && distance > if follows_mickey { friendly_distance } else if !hostile { 0.25 }
+                    else if melee_spatter { 0.55 } else { 1.3 };
             let direction = if let Some((direction, _)) = charge_motion {
                 direction
             } else if wants_move {
@@ -1096,7 +1195,9 @@ impl World {
                         .value.as_f64().map(|speed| speed as f32)
                 });
                 patrol_speed.unwrap_or_else(|| {
-                    if melee_spatter {
+                    if kamikaze && hostile { kamikaze_speed }
+                    else if follows_mickey { melee_walk.min((distance - friendly_distance) * 2.) }
+                    else if melee_spatter {
                         if hostile { melee_chase } else { melee_walk }
                     } else if distance > 3. { 3. } else { 2. }
                 })
@@ -1240,10 +1341,15 @@ impl World {
                 {
                     continue;
                 }
-                self.demo_story
-                    .ai
-                    .attack_at
-                    .insert(entity, self.animation_time + 1.6);
+                let uses_slot = self.uses_attack_slot(entity);
+                let ranged = kind == WeaponKind::Ranged;
+                if uses_slot && self.demo_story.ai.attacking.values()
+                    .filter(|attack| attack.uses_slot && attack.ranged_target.is_some() == ranged)
+                    .count() >= if ranged { ranged_slots } else { melee_slots }
+                {
+                    continue;
+                }
+                self.demo_story.ai.attack_at.insert(entity, self.animation_time + 1.6);
                 let (charge, windup) = if kind == WeaponKind::Charge {
                     let (charge, windup) = self.seer_charge(weapon, windup)?;
                     (Some(charge), windup)
@@ -1259,6 +1365,7 @@ impl World {
                         ranged_target: (kind == WeaponKind::Ranged).then_some(target),
                         charge,
                         ranged_aim: None,
+                        uses_slot,
                         phase: AttackPhase::Windup,
                         contact_open: false,
                         hit: false,

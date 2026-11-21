@@ -1919,6 +1919,23 @@ impl Scripts {
         let function = self.lua.load(&bytes).set_name(path).into_function()?;
         let thread = self.lua.create_thread(function)?;
         let values = resume_context(&thread, &self.callback_context, context, ())?;
+        if key.rsplit('/').next() == Some("gv_zonefx.lua") {
+            // On a repeat return the authored callback skips the cinematic
+            // that normally releases the projector's input restriction.
+            // Select the projector's own non-cinematic exit for that case.
+            self.lua.load(r#"
+                local enter = GV_BigBen_IntroStart
+                if enter then
+                    function GV_BigBen_IntroStart(...)
+                        if GV_BigBen_Intro ~= 0 then
+                            local projector = GetPrefabData("GV_ZoneF_BigBenExitMarker")
+                            if projector then projector.ToFlyThrough = "False" end
+                        end
+                        return enter(...)
+                    end
+                end
+            "#).set_name("@zone-f-repeat-projector-return").exec()?;
+        }
         if thread.status() == ThreadStatus::Resumable {
             self.tasks.push(Task {
                 name: path.into(),

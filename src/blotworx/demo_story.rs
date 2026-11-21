@@ -220,6 +220,7 @@ mod tests {
                     super::super::STEP,
                 )?;
                 world.advance_dynamic_physics(super::super::STEP)?;
+                world.advance_jigsaw_effects(super::super::STEP)?;
             }
             Ok(())
         }
@@ -1600,8 +1601,29 @@ impl super::assets::World {
                         .find(|(_,r)| r.name == name || r.key == name)
                     {
                         let node = sequence(&resource.bytes, &resource.path)?;
-                        p.events
-                            .splice(p.cursor..p.cursor,events(resource_id,&[],list(&node,"Events")));
+                        let next = events(resource_id, &[], list(&node, "Events"));
+                        self.globals.set(&resource.played_key, 1);
+                        if event.value("Flag").and_then(|v| v.as_bool()) == Some(true) {
+                            // The chained conversation takes over this presentation.
+                            // Publish its Played state before it can branch back to
+                            // the original sequence (Tim's Wrench and ThanksFull).
+                            let restricted = resource.flags & 1 != 0;
+                            match (p.restricted, restricted) {
+                                (false, true) => self.cutscene_input.restrict(),
+                                (true, false) => self.cutscene_input.unrestrict(),
+                                _ => {}
+                            }
+                            p.restricted = restricted;
+                            p.name.clone_from(&resource.name);
+                            p.cursor = 0;
+                            p.events = next;
+                            self.demo_story.current_request = Some(super::story_sequences::Request {
+                                entity: p.owner,
+                                resource: resource_id,
+                            });
+                        } else {
+                            p.events.splice(p.cursor..p.cursor, next);
+                        }
                     } else {
                         bail!("Missing nested sequence {name}");
                     }

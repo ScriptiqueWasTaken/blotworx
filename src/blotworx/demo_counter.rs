@@ -140,9 +140,14 @@ impl World {
         if (previous == 1) != (current == 1) && self.ai_brains.contains_key(&entity) {
             self.emit_entity_output(entity, "OnTeamChanged", entity);
         }
+        // A paintable rigid body owns the completion outputs. Its material,
+        // collision and Is Painted property must already agree when IO runs.
+        let body_publishes_completion = self.model_paint.contains_key(&entity);
         if current == 2 {
             self.counter_actor_effect(entity, &["blotlingpuddle_fx_small", "puddlesplash"], true);
-            self.emit_entity_output(entity, "OnFullySketched", self.player_entity);
+            if !body_publishes_completion {
+                self.emit_entity_output(entity, "OnFullySketched", self.player_entity);
+            }
             self.emit_entity_output(entity, "OnCharacterPuddled", self.player_entity);
             let zero = self.entities[entity]
                 .components
@@ -183,7 +188,9 @@ impl World {
             if current == 1 {
                 self.counter_actor_effect(entity,
                     &["fx_turn_good_gremlin", "fx_turn_good_seer", "fx_turn_good", "fx_turn_good_shared"], false);
-                self.emit_entity_output(entity, "OnFullyPainted", self.player_entity);
+                if !body_publishes_completion {
+                    self.emit_entity_output(entity, "OnFullyPainted", self.player_entity);
+                }
                 self.emit_entity_output(entity, "OnCharacterPainted", self.player_entity);
             }
         }

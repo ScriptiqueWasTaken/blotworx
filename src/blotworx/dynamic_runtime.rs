@@ -734,7 +734,10 @@ impl World {
                 body.accept_simulation_pose(pose, self.dynamic_runtime_time, dt)?;
                 // The entity is the target owner for keyframed motion. Do not
                 // replace its authored rotator target with solver integration drift.
-                if body.motion.current.motion_type() == 4 {
+                let entity_index = self.dynamic_bodies[source].entity;
+                if body.motion.current.motion_type() == 4
+                    || self.transform_hierarchy.get(&entity_index).is_some_and(|node| node.socket.is_some())
+                {
                     continue;
                 }
                 anyhow::ensure!(

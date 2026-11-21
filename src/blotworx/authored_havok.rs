@@ -32,6 +32,7 @@ struct SkinFrame {
 pub struct Runtime {
     animations: BTreeMap<(String, String), Animation>,
     models: BTreeMap<String, Vec<Mesh>>,
+    reference_attachments: BTreeMap<(String, String), BTreeMap<String, super::actor_bone_query::Pose>>,
     instances: BTreeMap<usize, Instance>,
     event_maps: BTreeMap<(String, String), BTreeMap<u32, i32>>,
     export_maps: BTreeMap<(String, String), BTreeMap<i32, u32>>,
@@ -907,10 +908,6 @@ impl Runtime {
                         .any(|c| c.class_name == "AnimationComponentGB"),
                     "Mixed Havok/Gamebryo animation requires native arbitration"
                 );
-                ensure!(
-                    !world.actor_has_local_nif_draws(entity),
-                    "Havok actor with local NIF controller draws requires binding reconstruction"
-                );
                 let string = |name: &str| {
                     components[0]
                         .properties
@@ -940,6 +937,20 @@ impl Runtime {
                             find(path).map(|file| file.data.clone())
                         })?;
                     resources.set_wii_source(self.wii_source.clone());
+                    if !self.reference_attachments.contains_key(&identity) {
+                        let rig = &resources.rig.bones;
+                        let mut pose = super::actor_pose_storage::Storage {
+                            parents: rig.iter().map(|bone| bone.parent_index).collect(),
+                            model: vec![[0.; 12]; rig.len()],
+                            flags: vec![2; rig.len()],
+                            local: resources.reference_qs.clone(),
+                        };
+                        let sockets = rig.iter().enumerate().filter_map(|(index, bone)| {
+                            pose.resolve(index, &mut super::actor_pose_compose::Native).ok()
+                                .map(|pose| (bone.name.to_ascii_lowercase(), pose))
+                        }).collect();
+                        self.reference_attachments.insert(identity.clone(), sockets);
+                    }
                     if let Ok(catalog) = &world.animation_events {
                         let map = catalog.graph_map(&contract.events)?;
                         self.export_maps.insert(
@@ -959,6 +970,10 @@ impl Runtime {
                         },
                     );
                 }
+                ensure!(
+                    !world.actor_has_local_nif_draws(entity),
+                    "Havok actor with local NIF controller draws requires binding reconstruction"
+                );
                 let model = runtime
                     .model_asset
                     .as_ref()
@@ -1098,6 +1113,14 @@ impl Runtime {
             name,
         )
     }
+    pub(super) fn reference_attachment_pose(
+        &self, project: &str, character: &str, name: &str,
+    ) -> Result<Option<super::actor_bone_query::Pose>> {
+        Ok(self.reference_attachments.get(&(key(project), character.to_owned()))
+            .and_then(|sockets| sockets.get(name))
+            .copied())
+    }
+
     pub fn shadow_bone_pose(
         &self,
         entity: usize,

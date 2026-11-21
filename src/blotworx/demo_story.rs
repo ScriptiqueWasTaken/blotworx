@@ -26,6 +26,8 @@ pub struct State {
     pub drips_visible: bool,
     pub motion: super::demo_gameplay::State,
     pub ai: super::demo_ai::State,
+    pub(super) enemy_armor: super::enemy_armor::State,
+    pub(super) boss_ai: super::boss_ai::State,
     pub(super) projectiles: super::ai_projectiles::State,
     pub npc_fallback: super::demo_npc_behaviors::State,
     pub scene: super::demo_scene::State,

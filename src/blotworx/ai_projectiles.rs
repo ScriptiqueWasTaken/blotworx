@@ -123,10 +123,9 @@ impl World {
         {
             return Ok(());
         }
-        ensure!(
-            field(shooter, "Shooter Delivery Method")?.as_u64() == Some(4),
-            "Shooter delivery mode requires its own trajectory implementation"
-        );
+        let method = field(shooter, "Shooter Delivery Method")?.as_u64()
+            .context("Invalid shooter delivery method")?;
+        ensure!(matches!(method, 2 | 4), "Unsupported shooter delivery method {method}");
         let speed = field(shooter, "Shooter Speed")?
             .as_f64()
             .context("Invalid shooter speed")? as f32;
@@ -155,7 +154,15 @@ impl World {
             .collect::<Result<Vec<_>>>()?;
         let origin = muzzle.transform[12..15].try_into()?;
         let rotation = muzzle.runtime_rotation;
-        let velocity = launch_velocity(origin, aim, speed, self.report.physics_world.gravity[1])?;
+        let velocity = if method == 4 {
+            launch_velocity(origin, aim, speed, self.report.physics_world.gravity[1])?
+        } else {
+            let delta = physics::sub(aim, origin);
+            let distance = physics::length(delta);
+            ensure!(speed.is_finite() && distance.is_finite(), "Invalid direct shot");
+            if distance <= f32::EPSILON { return Ok(()); }
+            physics::mul(delta, speed / distance)
+        };
         for name in names {
             let entity = self.spawn_palette_root(weapon, &name, origin, rotation, "")?;
             let result = (|| -> Result<()> {
@@ -179,9 +186,11 @@ impl World {
                 // Mode 4 solves for the world's gravity in REL39191c. Apply
                 // that gravity to the released Box3D body without changing
                 // the source projectile or its prelaunch component defaults.
-                body.motion.current.initialize_motion_tuning(|name| {
-                    Ok(if name == "Gravity Factor" { 1. } else { 0. })
-                })?;
+                if method == 4 {
+                    body.motion.current.initialize_motion_tuning(|name| {
+                        Ok(if name == "Gravity Factor" { 1. } else { 0. })
+                    })?;
+                }
                 self.collision.set_simulation_body(
                     &body.shapes,
                     &body.motion.current,

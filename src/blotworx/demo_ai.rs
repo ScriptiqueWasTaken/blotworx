@@ -174,7 +174,8 @@ impl World {
                 let field = |name| component.properties.iter().find(|p| p.name == name).map(|p| &p.value);
                 let ranged = kind == WeaponKind::Ranged;
                 let component_name = if ranged { "ShooterComponent" } else { "TriggerDamageComponent" };
-                if field("WeaponType")?.as_u64()? != kind as u64
+                if field("WeaponShots").and_then(|shots| shots.as_i64()) == Some(0)
+                    || field("WeaponType")?.as_u64()? != kind as u64
                     || field("WeaponFiringMethod")?.as_u64()? != u64::from(!ranged)
                     || !self.entities[weapon].components.iter().any(|c| c.class_name == component_name)
                 {
@@ -298,7 +299,7 @@ impl World {
             let _ = self.authored_havok.send_event(entity, "EVENT_ForceNormalIdle");
         }
     }
-    fn demo_melee_clear(
+    pub(super) fn demo_melee_clear(
         &mut self,
         shape: usize,
         source: [f32; 3],
@@ -1053,7 +1054,10 @@ impl World {
             // RELd3e0 -> b2ec ->324bbc restricts the current player's
             // controller byte31. It does not pause NPCs. Authored encounter
             // motion must continue while the player watches a sequence.
-            let pause_reason = if self.demo_story.conversation.contains(&entity) {
+            let exposed = self.ai_manager_enabled != Some(false) && self.advance_enemy_armor(entity)?;
+            let pause_reason = if exposed {
+                Some("exposed weak point")
+            } else if self.demo_story.conversation.contains(&entity) {
                 Some("conversation")
             } else if self.ai_manager_enabled == Some(false) {
                 Some("AI manager paused")
@@ -1150,6 +1154,10 @@ impl World {
             self.ai_brains.get_mut(&entity).unwrap().combat_target = hostile.then_some(player);
             if hostile && previous_target != Some(player) {
                 self.emit_entity_output(entity, "OnPlayerSighted", player);
+                self.emit_entity_output(entity, "OnEnterCombat", player);
+                self.prepare_cannon_weapons(entity)?;
+            } else if !hostile && previous_target == Some(player) && !exposed {
+                self.emit_entity_output(entity, "OnExitCombat", player);
             }
             // Retain the patrol node so the actor can resume it after losing
             // the target. A current patrol must not suppress acquisition.
@@ -1195,7 +1203,7 @@ impl World {
                 .is_some_and(|attack| self.animation_time >= attack.abort_at);
             if paused || dead || !hostile || attack_expired {
                 if self.demo_story.ai.attacking.remove(&entity).is_some()
-                    && !dead && self.authored_havok.contains(entity)
+                    && !dead && !exposed && self.authored_havok.contains(entity)
                 {
                     self.authored_havok.send_event(entity, "EVENT_ForceNormalIdle")?;
                 }
@@ -1246,6 +1254,13 @@ impl World {
                 }
             }
             let attacking = self.demo_story.ai.attacking.contains_key(&entity);
+            if self.advance_blob_vacuum(entity, sees_player && !attacking, paused || dead,
+                shape, source, player_position, facing)?
+            {
+                self.collision.set_simulation_velocity(shape, [0., pose.linear[1], 0.])?;
+                self.authored_havok.write_native_variable(entity, "VAR_Forward_Speed", 0)?;
+                continue;
+            }
             let mut selected = None;
             if sees_player && !attacking
                 && self.authored_havok.contains(entity) && self.prepare_child_slots(entity)?
@@ -1484,7 +1499,22 @@ impl World {
                 {
                     continue;
                 }
-                self.demo_story.ai.attack_at.insert(entity, self.animation_time + 1.6);
+                let weapon_component = self.entities[weapon].components.iter_mut()
+                    .find(|component| component.class_name == "WeaponComponent")
+                    .context("Selected attack has no weapon component")?;
+                let variant = weapon_component.properties.iter()
+                    .find(|p| p.name == "WeaponAnimationVariable")
+                    .and_then(|p| p.value.as_i64()).unwrap_or(0);
+                let attack_cooldown = weapon_component.properties.iter()
+                    .find(|p| p.name == "WeaponMinRefireTime")
+                    .and_then(|p| p.value.as_f64()).unwrap_or(0.) as f32;
+                if let Some(shots) = weapon_component.properties.iter_mut().find(|p| p.name == "WeaponShots") {
+                    if let Some(remaining) = shots.value.as_i64().filter(|&remaining| remaining > 0) {
+                        shots.value = serde_json::json!(remaining - 1);
+                    }
+                }
+                self.authored_havok.write_native_variable(entity, "VAR_Attack_Type", variant as u32)?;
+                self.demo_story.ai.attack_at.insert(entity, self.animation_time + attack_cooldown.max(1.6));
                 let (charge, windup) = if kind == WeaponKind::Charge {
                     let (charge, windup) = match self.seer_charge(weapon, windup) {
                         Ok(values) => values,

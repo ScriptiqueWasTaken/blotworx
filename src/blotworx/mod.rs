@@ -471,6 +471,8 @@ mod decal_preview;
 mod decal_queue;
 mod decal_targets;
 mod demo_ai;
+mod enemy_armor;
+mod boss_ai;
 mod ai_projectiles;
 mod demo_npc_behaviors;
 mod demo_counter;

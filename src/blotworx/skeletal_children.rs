@@ -437,14 +437,21 @@ impl super::assets::World {
                             &socket.name,
                         )?
                     } else {
-                        ensure!(
-                            !root
-                                .components
-                                .iter()
-                                .any(|component| component.class_name == "AnimationComponent"),
-                            "Attachment parent actor graph is unavailable"
-                        );
-                        self.node_attachment_pose(parent, &socket.name, parent_pose)?
+                        // Rigid shell parts still belong to the actor's
+                        // rig when mesh or graph playback cannot initialize.
+                        let reference = root.components.iter()
+                            .find(|c| c.class_name == "AnimationComponent")
+                            .map(|component| {
+                                let value = |name| component.properties.iter()
+                                    .find(|p| p.name == name).and_then(|p| p.value.as_str()).unwrap_or("");
+                                self.authored_havok.reference_attachment_pose(
+                                    value("Behavior File Path"), value("CharacterName"), &socket.name,
+                                )
+                            }).transpose()?.flatten();
+                        match reference {
+                            Some(pose) => pose,
+                            None => self.node_attachment_pose(parent, &socket.name, parent_pose)?,
+                        }
                     };
                     let pose = cache(parent_pose, bone, &socket)?;
                     let local = &self.transform_hierarchy[&child];

@@ -1835,6 +1835,8 @@ impl World {
         self.havok_actors.remove(&entity);
         self.ai_brains.remove(&entity);
         self.demo_story.npc_fallback.retire(entity);
+        self.demo_story.enemy_armor.retire(entity);
+        self.demo_story.boss_ai.retire(entity);
         self.patrol_predecessors.remove(&entity);
         self.robot_arm_idle_requests.remove(&entity);
         self.robot_arm_controls.remove(&entity);
@@ -2056,6 +2058,18 @@ impl World {
         target: usize,
         emissions: &[super::projectile_stimulus::Emission],
     ) -> Result<()> {
+        if self.demo_story.enabled && !self.removed_entities.contains(&target) {
+            self.enemy_weak_point_hit(target, emissions)?;
+        }
+        self.receive_combat_inner(target, emissions, None)
+    }
+
+    pub(super) fn receive_combat_inner(
+        &mut self,
+        target: usize,
+        emissions: &[super::projectile_stimulus::Emission],
+        weak_point_damage: Option<f32>,
+    ) -> Result<()> {
         if self.removed_entities.contains(&target) {
             return Ok(());
         }
@@ -2095,6 +2109,10 @@ impl World {
             }
         } else {
             effective.extend(emissions.iter().map(|e| (e.stimulus, e.amount)));
+        }
+        if let Some(amount) = weak_point_damage {
+            effective.clear();
+            effective.push((8, amount));
         }
         // Dynamic rigid-body listener, REL3815b4..3816e0: first type-3
         // stimulus only; exclude the source entity and non-positive amounts.
@@ -2183,6 +2201,9 @@ impl World {
                     .receive_damage(target, self.animation_time)?;
                 self.execute_component_events(actions)?;
             }
+        }
+        if self.demo_story.enabled {
+            self.record_blob_vacuum_stimuli(target, &effective);
         }
         if let Some((direction, amount)) = character_impulse {
             self.demo_character_knockback(target, direction, amount)?;
@@ -2917,6 +2938,9 @@ impl World {
                 }
             }
             return Ok(());
+        }
+        if self.demo_story.enabled {
+            self.enemy_armor_animation(entity, event.id as u32)?;
         }
         self.advance_demo_attack_animation(entity, event.id as u32)?;
         // The native ordinary kind9 fallback ignores payloads. Specialized

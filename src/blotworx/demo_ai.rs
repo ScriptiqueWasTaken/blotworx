@@ -104,6 +104,7 @@ struct Attack {
     contact_open: bool,
     hit: bool,
     uses_slot: bool,
+    abort_at: f32,
 }
 #[derive(Clone, Copy)]
 struct Charge {
@@ -222,7 +223,7 @@ impl World {
         }
         // Latch the ranged aim on the authored prepare cue. The projectile
         // release cue can come later, after Mickey has already dodged.
-        let aim = if event == 0x98 {
+        let aim = if matches!(event, 0x98 | 0x99) {
             let target = self.demo_story.ai.attacking.get(&actor).and_then(|attack| {
                 if attack.phase == AttackPhase::AwaitStrike { attack.ranged_target } else { None }
             });
@@ -247,14 +248,14 @@ impl World {
                 (0x95, AttackPhase::Windup) if attack.windup_end.is_none() => {
                     attack.windup_end = Some(self.animation_time + attack.windup_idle);
                 }
-                (0x98, AttackPhase::AwaitStrike) => attack.ranged_aim = aim,
-                (0x7a, AttackPhase::AwaitStrike) => {
+                (0x98 | 0x99, AttackPhase::AwaitStrike) => attack.ranged_aim = aim,
+                (0x7a | 0x9a, AttackPhase::AwaitStrike) => {
                     if let Some(aim) = attack.ranged_aim {
                         self.demo_story.projectiles.queue(actor, attack.weapon, aim);
                     }
                     attack.phase = AttackPhase::Recovery;
                 }
-                (0xc1, AttackPhase::AwaitStrike | AttackPhase::Recovery) => {
+                (0x97 | 0xc1, AttackPhase::AwaitStrike | AttackPhase::Recovery) => {
                     self.demo_story.ai.attacking.remove(&actor);
                 }
                 _ => {}
@@ -1155,7 +1156,9 @@ impl World {
             }
             let follows_mickey = status == 1 && !stationary && patrol_target.is_none()
                 && ai_type.to_ascii_lowercase().starts_with("spatter") && player_distance < 18.;
-            if paused || dead || !hostile {
+            let attack_expired = self.demo_story.ai.attacking.get(&entity)
+                .is_some_and(|attack| self.animation_time >= attack.abort_at);
+            if paused || dead || !hostile || attack_expired {
                 if self.demo_story.ai.attacking.remove(&entity).is_some()
                     && !dead && self.authored_havok.contains(entity)
                 {
@@ -1166,8 +1169,9 @@ impl World {
             if let Some(attack) = self.demo_story.ai.attacking.get_mut(&entity) {
                 if let Some(charge) = &mut attack.charge {
                     if attack.phase == AttackPhase::Windup
-                        && self.authored_havok.active_state_time(entity, "ChargeAttack_WindupIdle")
-                            .is_some_and(|time| time >= attack.windup_idle)
+                        && ["ChargeAttack_WindupIdle", "ChargeAttack_WindupIdle00"].iter().any(|name|
+                            self.authored_havok.active_state_time(entity, name)
+                                .is_some_and(|time| time >= attack.windup_idle))
                     {
                         charge.direction = [dx / distance.max(0.001), dz / distance.max(0.001)];
                         charge.origin = source;
@@ -1178,7 +1182,8 @@ impl World {
                     if attack.phase == AttackPhase::Striking {
                         if !attack.contact_open {
                             attack.contact_open = self.authored_havok
-                                .active_state_time(entity, "ChargeAttack_Attack").is_some();
+                                .active_state_time(entity, "ChargeAttack_Attack").is_some()
+                                || self.authored_havok.active_state_time(entity, "ChargeAttack_Spin00").is_some();
                             self.demo_story.ai.charge_rolls += u64::from(attack.contact_open);
                         }
                         if attack.contact_open {
@@ -1221,6 +1226,7 @@ impl World {
                 }
                 if selected.is_none() && distance > 0.001 && (destination[1] - source[1]).abs() < 1.5
                     && self.authored_havok.has_event(entity, "EVENT_Start_AttackCharge")
+                    && self.authored_havok.has_event(entity, "EVENT_Finish_AttackChargeWindup")
                 {
                     selected = self.demo_weapon(entity, distance, f32::INFINITY, WeaponKind::Charge)
                         .map(|v| (v, WeaponKind::Charge));
@@ -1394,7 +1400,7 @@ impl World {
                 if attack.charge.is_none() && attack.ranged_target.is_none()
                     && matches!(attack.phase, AttackPhase::AwaitStrike | AttackPhase::Striking)
                     && (attack.hit || self.authored_havok
-                        .active_state_clip_finished(entity, "MeleeAttack_Attack00"))
+                        .active_state_clip_finished(entity, "MeleeAttack_Attack"))
                 {
                     // FinishPrep can be authored at time zero. The weapon
                     // opens later, so resolve from contact or the clip end.
@@ -1445,7 +1451,16 @@ impl World {
                 }
                 self.demo_story.ai.attack_at.insert(entity, self.animation_time + 1.6);
                 let (charge, windup) = if kind == WeaponKind::Charge {
-                    let (charge, windup) = self.seer_charge(weapon, windup)?;
+                    let (charge, windup) = match self.seer_charge(weapon, windup) {
+                        Ok(values) => values,
+                        Err(error) => {
+                            let reason = format!("Charge weapon {}: {error:#}", self.entities[weapon].name);
+                            if !self.report.unsupported.contains(&reason) {
+                                self.report.unsupported.push(reason);
+                            }
+                            continue;
+                        }
+                    };
                     (Some(charge), windup)
                 } else {
                     (None, windup.max(0.))
@@ -1460,6 +1475,7 @@ impl World {
                         charge,
                         ranged_aim: None,
                         uses_slot,
+                        abort_at: self.animation_time + 8. + windup,
                         phase: AttackPhase::Windup,
                         contact_open: false,
                         hit: false,

@@ -765,7 +765,7 @@ impl Runtime {
             (state.info.name == name).then_some(runtime.time)
         })
     }
-    pub(super) fn active_state_clip_finished(&self, entity: usize, name: &str) -> bool {
+    pub(super) fn active_state_clip_finished(&self, entity: usize, name_prefix: &str) -> bool {
         let Some(instance) = self.instances.get(&entity) else {
             return false;
         };
@@ -776,7 +776,7 @@ impl Runtime {
             }
             let definition = &prepared.state.machines[id];
             let state = &definition.states[definition.state_indices[&runtime.current]];
-            state.info.name == name
+            state.info.name.starts_with(name_prefix)
                 && prepared.clips.get(&state.info.generator.id).is_ok_and(|clip| clip.clock.at_end)
         })
     }

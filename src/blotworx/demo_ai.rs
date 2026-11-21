@@ -32,6 +32,7 @@ pub struct State {
     perception_profiles: BTreeMap<String, Perception>,
     last_seen: BTreeMap<usize, ([f32; 3], f32)>,
     sight_checks: BTreeMap<usize, (bool, f32)>,
+    home: BTreeMap<usize, ([f32; 3], f32)>,
     pub(super) player_footstep: Option<([f32; 3], f32)>,
     pub attacks: u64,
     pub charge_windups: u64,
@@ -1000,6 +1001,7 @@ impl World {
         self.demo_story.ai.last_seen.retain(|entity, (_, expiry)| {
             *expiry >= self.animation_time && !self.removed_entities.contains(entity)
         });
+        self.demo_story.ai.home.retain(|entity, _| !self.removed_entities.contains(entity));
         self.demo_story.ai.sight_checks.retain(|entity, (_, next)| {
             *next + 1. >= self.animation_time && !self.removed_entities.contains(entity)
         });
@@ -1076,6 +1078,16 @@ impl World {
                 .is_some_and(|h| h.health <= 0)
                 || status == 2;
             let source = pose.position;
+            if !self.demo_story.ai.home.contains_key(&entity) {
+                let radius = if self.ai_brains[&entity].behaviors.iter().any(|name| name == "RunHome") {
+                    self.entities[entity].components.iter().find(|c| c.class_name == "AIBrainComponent")
+                        .and_then(|c| c.properties.iter().find(|p| p.name == "Tether Radius"))
+                        .and_then(|p| p.value.as_f64()).unwrap_or(0.) as f32
+                } else {
+                    0.
+                };
+                self.demo_story.ai.home.insert(entity, (source, radius));
+            }
             self.publish_ai_actor_position(entity)?;
             let navigation_position=self.npc_relocations.get(&entity).and_then(|state|state.navigation_position);
             let navigation_floor=self.npc_relocations.get(&entity).and_then(|state|state.navigation_floor);
@@ -1099,7 +1111,13 @@ impl World {
             let in_range = (player_position[1] - source[1]).abs() < 4.
                 && (close || profile.cones.iter().any(|&(range, cosine)| player_distance <= range && dot >= cosine));
             let previous_target = self.ai_brains[&entity].combat_target;
-            let can_attack = status != 1 && !dead && !paused
+            let (home, tether) = self.demo_story.ai.home[&entity];
+            let distance_to_home = (source[0] - home[0]).hypot(source[2] - home[2]);
+            let player_outside_tether = tether > 0.
+                && (player_position[0] - home[0]).hypot(player_position[2] - home[2]) > tether;
+            let returning = tether > 0. && status != 1 && distance_to_home > 0.5
+                && (distance_to_home > tether || player_outside_tether && previous_target.is_none());
+            let can_attack = status != 1 && !dead && !paused && !returning && !player_outside_tether
                 && self.music_team(entity).is_none_or(|(team, _)| team == 2);
             let sees_player = if can_attack && in_range {
                 match self.demo_story.ai.sight_checks.get(&entity) {
@@ -1140,6 +1158,8 @@ impl World {
             let target = patrol_target.unwrap_or(player);
             let destination: [f32; 3] = if hostile {
                 remembered.unwrap_or(player_position)
+            } else if returning && patrol_target.is_none() {
+                home
             } else {
                 self.entities[target].transform[12..15].try_into()?
             };
@@ -1258,7 +1278,7 @@ impl World {
                 // Perception limits belong to this provisional combat planner,
                 // not an explicit authored patrol destination. Applying them to
                 // both silently discards real routes (the airlock requests29m).
-                && (patrol_target.is_some() || hostile || follows_mickey)
+                && (patrol_target.is_some() || hostile || follows_mickey || returning)
                 && distance > if follows_mickey { friendly_distance } else if !hostile { 0.25 }
                     else if melee_spatter { 0.55 } else { 1.3 };
             let direction = if let Some((direction, _)) = charge_motion {

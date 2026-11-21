@@ -3209,6 +3209,12 @@ impl World {
         super::controller_feedback::dispatch(id, variant, |effect| {
             match effect {
                 super::controller_feedback::Effect::FootstepCategory(_) => {
+                    if entity == self.player_entity && self.demo_story.enabled {
+                        let player = &self.entities[entity].transform;
+                        self.demo_story.ai.player_footstep = Some((
+                            [player[12], player[13], player[14]], self.animation_time,
+                        ));
+                    }
                     let actions = self.component_events.receive_footstep(
                         entity,
                         variant,

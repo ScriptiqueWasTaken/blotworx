@@ -32,6 +32,7 @@ pub struct State {
     perception_profiles: BTreeMap<String, Perception>,
     last_seen: BTreeMap<usize, ([f32; 3], f32)>,
     sight_checks: BTreeMap<usize, (bool, f32)>,
+    pub(super) player_footstep: Option<([f32; 3], f32)>,
     pub attacks: u64,
     pub charge_windups: u64,
     pub charge_rolls: u64,
@@ -50,11 +51,13 @@ impl State {
 struct Perception {
     cones: [(f32, f32); 3],
     memory: f32,
+    hearing_range: f32,
+    hearing_memory: f32,
 }
 
 impl Perception {
     fn from_settings(settings: &BTreeMap<String, String>, sensor: &str, kind: &str) -> Self {
-        let read = |property: &str, fallback| {
+        let read = |sensor: &str, property: &str, fallback| {
             let mut scope = kind;
             loop {
                 let key = format!("SENS_{sensor}_{scope}_{property}");
@@ -71,8 +74,8 @@ impl Perception {
                 .filter(|value| value.is_finite()).unwrap_or(fallback)
         };
         let cone = |distance, angle, range, degrees| {
-            let angle = read(angle, degrees).clamp(0., 360.);
-            (read(distance, range), (angle.to_radians() * 0.5).cos())
+            let angle = read(sensor, angle, degrees).clamp(0., 360.);
+            (read(sensor, distance, range), (angle.to_radians() * 0.5).cos())
         };
         Self {
             cones: [
@@ -80,7 +83,9 @@ impl Perception {
                 cone("ViewConeDistance1", "ViewConeAngle1", 0., 0.),
                 cone("ViewConeDistance2", "ViewConeAngle2", 0., 0.),
             ],
-            memory: read("FactExistsDuration", 4.).max(0.),
+            memory: read(sensor, "FactExistsDuration", 4.).max(0.),
+            hearing_range: read("HearEnemyFootsteps", "HearFootstepDistance", 5.).max(0.),
+            hearing_memory: read("HearEnemyFootsteps", "FactExistsDuration", 4.).max(0.),
         }
     }
 }
@@ -1111,6 +1116,15 @@ impl World {
             };
             if sees_player {
                 self.demo_story.ai.last_seen.insert(entity, (player_position, self.animation_time + profile.memory));
+            } else if can_attack {
+                if let Some((position, time)) = self.demo_story.ai.player_footstep {
+                    let expiry = time + profile.hearing_memory;
+                    let audible = super::physics::length(super::physics::sub(position, source)) <= profile.hearing_range;
+                    let newer = self.demo_story.ai.last_seen.get(&entity).is_none_or(|&(_, previous)| expiry > previous);
+                    if audible && newer && self.animation_time < time + 0.2 && self.animation_time < expiry {
+                        self.demo_story.ai.last_seen.insert(entity, (position, expiry));
+                    }
+                }
             }
             let remembered = self.demo_story.ai.last_seen.get(&entity).map(|&(position, _)| position);
             let hostile = can_attack && (remembered.is_some()

@@ -30,9 +30,9 @@ impl World {
             && self.ai_brains.get(&owner).is_some_and(|brain| {
                 brain.ai_type.eq_ignore_ascii_case("Pete:SmallWorld")
                     || brain.ai_type.to_ascii_lowercase().starts_with("gremlin")
-                    || (!self.uses_demo_combat(owner, &brain.ai_type)
-                        && !brain.behaviors.iter().any(|name| name == "RobotArmGeneral")
-                        && (!brain.scripted_move.is_empty() || !brain.patrol.is_empty())
+                    || (!brain.behaviors.iter().any(|name| name == "RobotArmGeneral")
+                        && (!brain.scripted_move.is_empty()
+                            || (!self.uses_demo_combat(owner, &brain.ai_type) && !brain.patrol.is_empty()))
                         && self.entities[owner].components.iter().any(|c| c.class_name == "BasicAIControllerComponent"))
             })
             && self.authored_havok.contains(owner)
@@ -186,7 +186,7 @@ impl ai_selection::LifecycleHost for Driver<'_>{
 impl ai_selection::Host for Driver<'_>{
     fn score_20(&mut self,b:usize)->Result<i32>{Ok(match self.name(b)?{"ScriptedMove"=>44,"ScriptedIdle"=>43,"Conversation"=>42,"Paused"=>40,"Patrol"=>4,_=>-1})}
     fn current_gate_0c(&mut self,_:usize)->Result<bool>{Ok(false)}fn candidate_gate_28(&mut self,_:usize)->Result<bool>{Ok(false)}fn current_gate_2c(&mut self,_:usize)->Result<bool>{Ok(false)}
-    fn candidate_gate_24(&mut self,b:usize)->Result<bool>{let brain=self.brain()?;Ok(match self.name(b)?{"ScriptedMove"=>brain.scripted_move[&b].pending,"ScriptedIdle"=>brain.motion_suspended,"Conversation"=>brain.conversations[&b].eligible(),"Paused"=>brain.paused[&b].active,"Patrol"=>true,_=>false})}
+    fn candidate_gate_24(&mut self,b:usize)->Result<bool>{let brain=self.brain()?;Ok(match self.name(b)?{"ScriptedMove"=>brain.scripted_move[&b].pending,"ScriptedIdle"=>brain.motion_suspended,"Conversation"=>brain.conversations[&b].eligible(),"Paused"=>brain.paused[&b].active,"Patrol"=>!self.world.uses_demo_combat(self.owner,&brain.ai_type),_=>false})}
     fn random(&mut self)->Result<i32>{Ok(self.world.game_random.draw() as i32)}
     fn leave_and_notify(&mut self,b:usize)->Result<()>{self.finish(b)}
     fn enter_4c(&mut self,b:usize,_:bool)->Result<()>{

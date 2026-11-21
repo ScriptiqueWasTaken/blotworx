@@ -31,6 +31,7 @@ pub struct State {
     detonations: BTreeMap<usize, bool>,
     perception_profiles: BTreeMap<String, Perception>,
     last_seen: BTreeMap<usize, ([f32; 3], f32)>,
+    sight_checks: BTreeMap<usize, (bool, f32)>,
     pub attacks: u64,
     pub charge_windups: u64,
     pub charge_rolls: u64,
@@ -285,6 +286,7 @@ impl World {
         brain.combat_target = None;
         self.demo_story.ai.steering.remove(&entity);
         self.demo_story.ai.last_seen.remove(&entity);
+        self.demo_story.ai.sight_checks.remove(&entity);
         if self.demo_story.ai.attacking.remove(&entity).is_some() {
             let _ = self.authored_havok.send_event(entity, "EVENT_ForceNormalIdle");
         }
@@ -813,7 +815,8 @@ impl World {
         let Some(brain) = self.ai_brains.get(&entity) else {
             return Ok(());
         };
-        if !self.uses_demo_combat(entity, &brain.ai_type) {
+        let family = brain.ai_type.to_ascii_lowercase();
+        if !(family.contains("spatter") || family.contains("fodder")) || family.contains("kamikaze") {
             return Ok(());
         }
         if let Some(Ok(body)) = self.character_physics.get(&entity) {
@@ -991,6 +994,9 @@ impl World {
         self.demo_story.ai.last_seen.retain(|entity, (_, expiry)| {
             *expiry >= self.animation_time && !self.removed_entities.contains(entity)
         });
+        self.demo_story.ai.sight_checks.retain(|entity, (_, next)| {
+            *next + 1. >= self.animation_time && !self.removed_entities.contains(entity)
+        });
         let ids = self
             .ai_brains
             .iter()
@@ -1011,6 +1017,15 @@ impl World {
                 continue;
             };
             let (shape, owner) = (body.shape, body.owner);
+            let brain = &self.ai_brains[&entity];
+            let scripted_move = brain.scripted_move.values().any(|move_request| move_request.pending)
+                || brain.selector.current.and_then(|slot| brain.behaviors.get(slot))
+                    .is_some_and(|behavior| behavior == "ScriptedMove");
+            if scripted_move && self.demo_npc_active(entity) {
+                // The scripted task owns velocity and facing until its arrival event.
+                self.demo_story.ai.attacking.remove(&entity);
+                continue;
+            }
             if !self.collision.owner_in_world(owner)? {
                 continue;
             }
@@ -1080,8 +1095,19 @@ impl World {
             let previous_target = self.ai_brains[&entity].combat_target;
             let can_attack = status != 1 && !dead && !paused
                 && self.music_team(entity).is_none_or(|(team, _)| team == 2);
-            let sees_player = can_attack && in_range
-                && self.demo_melee_clear(shape, source, player_position, player)?;
+            let sees_player = if can_attack && in_range {
+                match self.demo_story.ai.sight_checks.get(&entity) {
+                    Some(&(clear, next)) if next > self.animation_time => clear,
+                    _ => {
+                        let clear = self.demo_melee_clear(shape, source, player_position, player)?;
+                        self.demo_story.ai.sight_checks.insert(entity, (clear, self.animation_time + 0.12));
+                        clear
+                    }
+                }
+            } else {
+                self.demo_story.ai.sight_checks.remove(&entity);
+                false
+            };
             if sees_player {
                 self.demo_story.ai.last_seen.insert(entity, (player_position, self.animation_time + profile.memory));
             }
@@ -1404,6 +1430,9 @@ impl World {
                         .copied()
                         .unwrap_or(0.)
                 {
+                    continue;
+                }
+                if !self.demo_melee_clear(shape, source, destination, target)? {
                     continue;
                 }
                 let uses_slot = self.uses_attack_slot(entity);

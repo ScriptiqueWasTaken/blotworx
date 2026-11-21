@@ -1489,6 +1489,13 @@ impl super::assets::World {
                         text: self.demo_story.localized(text(line, "Text key")),
                         choices,
                     };
+                    // The original Wii sends some of these cues to the
+                    // controller speaker. Play the authored event in the
+                    // host mix so it is audible with any controller.
+                    let audio_event = text(line, "Audio event").trim();
+                    if !audio_event.is_empty() {
+                        self.post_audio_from_game(p.owner, audio_event);
+                    }
                     // REL27ab44 reads the active sequence's bit 0. The
                     // caller passes it to REL1e6da0, which chooses the modal
                     // event or a timed bark using BarkDisplayTime.

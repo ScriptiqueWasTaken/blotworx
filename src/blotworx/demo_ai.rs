@@ -693,7 +693,7 @@ pub(in crate::blotworx) mod tests {
 impl World {
     /// Functional demo receiver. The Lua direction/radius and vulnerability
     /// filtering are recovered separately; native character action admission,
-    /// knockback animation and motion-state timing remain unimplemented.
+    /// NPC reaction timing still follows the compatibility stun interval.
     pub(super) fn demo_character_knockback(
         &mut self,
         entity: usize,
@@ -705,16 +705,24 @@ impl World {
         } else if let Some(Ok(body)) = self.character_physics.get(&entity) {
             self.collision
                 .apply_owner_impulse(body.owner, direction.map(|v| v * amount))?;
-            self.demo_story
-                .ai
-                .stunned_until
-                .insert(entity, self.animation_time + 0.9);
+            self.begin_npc_knockback_animation(entity)?;
         } else {
             anyhow::bail!("Demo knockback target lacks its character body");
         }
-        let message="NPC demo knockback still applies an impulse and provisional stun; native NPC motion-state/action/animation integration remains unimplemented.";
-        if !self.report.unsupported.iter().any(|s| s == message) {
-            self.report.unsupported.push(message.into());
+        Ok(())
+    }
+    fn npc_knockback_event(&mut self, entity: usize, name: &str) -> Result<bool> {
+        let id = self.animation_events.as_ref().ok().and_then(|catalog| catalog.id(name));
+        match id {
+            Some(id) if self.authored_havok.contains(entity) => self.authored_havok.send_native_event(entity, id),
+            _ => Ok(false),
+        }
+    }
+    fn begin_npc_knockback_animation(&mut self, entity: usize) -> Result<()> {
+        let previous = self.demo_story.ai.stunned_until.insert(entity, self.animation_time + 0.9);
+        self.demo_story.ai.attacking.remove(&entity);
+        if previous.is_none_or(|end| end <= self.animation_time) {
+            self.npc_knockback_event(entity, "EVENT_Start_Knockback_FallDown")?;
         }
         Ok(())
     }
@@ -734,15 +742,7 @@ impl World {
             self.collision
                 .set_simulation_velocity(body.shape, [dx / length * 6., 3., dz / length * 6.])?;
         }
-        self.demo_story
-            .ai
-            .stunned_until
-            .insert(entity, self.animation_time + 0.9);
-        if self.authored_havok.contains(entity) {
-            let _ = self
-                .authored_havok
-                .send_event(entity, "EVENT_Start_Knockback");
-        }
+        self.begin_npc_knockback_animation(entity)?;
         if !self
             .paint_counters
             .get(&entity)
@@ -834,6 +834,17 @@ impl World {
     pub(super) fn advance_demo_ai(&mut self, delta: f32) -> Result<()> {
         if !self.demo_story.enabled {
             return Ok(());
+        }
+        let finished: Vec<_> = self.demo_story.ai.stunned_until.iter()
+            .filter_map(|(&entity, &end)| (end <= self.animation_time).then_some(entity))
+            .collect();
+        for entity in finished {
+            self.demo_story.ai.stunned_until.remove(&entity);
+            if !self.removed_entities.contains(&entity) && self.entity_scene_active(entity)
+                && !self.npc_knockback_event(entity, "EVENT_Stop_Knockback_InAir")?
+            {
+                self.npc_knockback_event(entity, "EVENT_Start_Knockback_Recover")?;
+            }
         }
         let melee_setting = |name: &str, default| self.runtime_settings.get(name)
             .and_then(|value| super::config_value::decimal_float(value).ok())

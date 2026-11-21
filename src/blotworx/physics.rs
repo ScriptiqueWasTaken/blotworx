@@ -3200,6 +3200,10 @@ pub struct Player {
     movement_direction_override: Option<V>,
 }
 impl Player {
+    pub(super) fn can_spray_below(&self) -> bool {
+        self.jump_stage.is_some() && !self.grounded
+    }
+
     pub(super) fn query_support(&self, world: &Collision, dt: f32) -> Option<super::support::State> {
         let slope_cos = self.motion.max_slope_degrees.to_radians().cos();
         match self.side_scroll_plane {

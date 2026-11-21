@@ -3429,7 +3429,11 @@ impl Engine {
                     if std::mem::take(&mut self.spin_preview_pending) {
                         if world.player_ability_enabled("Spin",brush::Ink::Paint)? {preview.request_spin();}
                     }
-                    if let Some(ink)=requested_hose {
+                    let downward_spray = requested_hose.is_some() && player.can_spray_below();
+                    preview.brush_jump_transition(downward_spray, &world.player_behavior)?;
+                    if downward_spray {
+                        preview.brush_aim(&mut world.player_graph.state, -1., 0.)?;
+                    } else if let Some(ink)=requested_hose {
                         let camera=if let Some(frame)=world.published_camera_frame()? {frame.cursor_camera()}else {
                             let (sy,cy)=camera_yaw.sin_cos();let (sp,cp)=camera_pitch.sin_cos();
                             let direction=[cy*cp,sp,sy*cp];let center=add(player.position,[0.,1.,0.]);
@@ -3490,6 +3494,13 @@ impl Engine {
                     let pose=skin::model_pose(&preview.pose,self.ear_pose.as_ref().map_or(&[],|e|e.overrides.as_slice()))?;
                     let actor=world.entities[world.player_entity].controller_matrix(player.position,player.yaw);
                     let origin=world.brush.emitter_position(&pose,actor,player.position)?;
+                    if let Some(ink) = requested_hose.filter(|_| downward_spray) {
+                        let channel = if ink == 0 { brush::Ink::Paint } else { brush::Ink::Thinner };
+                        let range = world.report.brush_settings.as_ref().context("Missing brush settings")?
+                            .value(channel, "Range", 0, ability_value::NEUTRAL_PLAYSTYLE)?;
+                        aim_ray = Some([origin, [0., -1., 0.]]);
+                        aim_target = Some([origin[0], origin[1] - range, origin[2]]);
+                    }
                     if let Some(ribbon)=&mut world.spin_ribbon {
                         ribbon.advance(STEP,preview.spin_lifecycle.active,world.brush.emitter_transform(&pose,actor)?)?;
                     }

@@ -20,6 +20,7 @@ pub struct Preview {
     /// Queries awaiting the world's fixed-tick combat dispatcher.
     pub pending_combat_queries: u64,
     brush_animation: super::brush::AnimationBindings,
+    brush_jump_active: bool,
     pub idle: super::mickey_idle::State,
     idle_settings: Option<super::mickey_idle::Settings>,
 }
@@ -109,6 +110,21 @@ impl Preview {
     ) -> Result<()> {
         self.playback.queue_named_event(graph, name)
     }
+    pub(super) fn brush_jump_transition(
+        &mut self, active: bool, graph: &super::behavior::Document,
+    ) -> Result<()> {
+        if active == self.brush_jump_active {
+            return Ok(());
+        }
+        self.brush_jump_active = active;
+        let name = if active { "EVENT_Start_ThinnerJump" } else { "EVENT_Stop_ThinnerJump" };
+        if graph.single("hkbBehaviorGraphStringData")?["eventNames"].as_array()
+            .is_some_and(|names| names.iter().any(|candidate| candidate.as_str() == Some(name)))
+        {
+            self.queue_named_event(graph, name)?;
+        }
+        Ok(())
+    }
     pub fn new(world: &mut World) -> Result<Self> {
         let mut preview = Self::initialize(
             &world.player_behavior,
@@ -153,6 +169,7 @@ impl Preview {
             controller_animation: super::controller_animation::Bindings::load(graph)?,
             diagnostic_brush_direction: false,
             brush_animation: super::brush::AnimationBindings::load(graph)?,
+            brush_jump_active: false,
             ground_history: Default::default(),
             spin_lifecycle: Default::default(),
             spin_config: None,

@@ -1166,11 +1166,12 @@ impl World {
             let dx = destination[0] - source[0];
             let dz = destination[2] - source[2];
             let distance = dx.hypot(dz);
-            let ai_type = &self.ai_brains[&entity].ai_type;
-            let family = ai_type.split([':', '_']).next().unwrap_or(ai_type);
-            let melee_spatter = family.eq_ignore_ascii_case("SpatterMelee");
-            let stationary = stationary || family.eq_ignore_ascii_case("KamikazeBlotlingStationary");
-            let kamikaze = ai_type.to_ascii_lowercase().contains("kamikaze")
+            let ai_type = self.ai_brains[&entity].ai_type.to_ascii_lowercase();
+            let family = ai_type.split([':', '_']).next().unwrap_or(&ai_type);
+            let melee_spatter = family == "spattermelee";
+            let stationary = stationary || family == "kamikazeblotlingstationary";
+            let spatter = family.starts_with("spatter");
+            let kamikaze = ai_type.contains("kamikaze")
                 && self.entities[entity].components.iter().any(|c| c.class_name == "ExplodeComponent")
                 && self.authored_havok.has_event(entity, "EVENT_Start_Explode");
             if kamikaze && sees_player && distance <= kamikaze_reach
@@ -1189,7 +1190,7 @@ impl World {
                 continue;
             }
             let follows_mickey = status == 1 && !stationary && patrol_target.is_none()
-                && ai_type.to_ascii_lowercase().starts_with("spatter") && player_distance < 18.;
+                && spatter && player_distance < 18.;
             let attack_expired = self.demo_story.ai.attacking.get(&entity)
                 .is_some_and(|attack| self.animation_time >= attack.abort_at);
             if paused || dead || !hostile || attack_expired {

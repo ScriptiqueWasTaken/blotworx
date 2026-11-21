@@ -2018,6 +2018,15 @@ impl Collision {
         dt: f32,
         slope_cos: f32,
     ) -> Option<super::support::State> {
+        self.support_at_with_depth(position, dt, slope_cos, None)
+    }
+    fn support_at_with_depth(
+        &self,
+        position: V,
+        dt: f32,
+        slope_cos: f32,
+        depth: Option<V>,
+    ) -> Option<super::support::State> {
         if !dt.is_finite() || dt <= 0. {
             return None;
         }
@@ -2059,10 +2068,7 @@ impl Collision {
                     (shape, mode)
                 },
             )));
-        let candidate = super::support::classify(requested, solved, up, slope_cos);
-        Some(super::support::retain_active_support(
-            candidate,
-            up,
+        let contacts = || {
             (0..count).map(|index| {
                 let mut plane = [0.; 4];
                 unsafe {
@@ -2071,8 +2077,22 @@ impl Collision {
                 ([plane[0], plane[1], plane[2]], unsafe {
                     bw_collision_contact_active(self.handle.as_ptr(), index) != 0
                 })
-            }),
-        ))
+            })
+        };
+        let candidate = super::support::classify(requested, solved, up, slope_cos);
+        let state = super::support::retain_active_support(candidate, up, contacts());
+        if let Some(depth) = depth {
+            if state == super::support::State::Sliding
+                && contacts().any(|(normal, active)| {
+                    active && normal[1] > 0.08
+                        && super::side_scroller::surface_normal(normal, depth)
+                            .is_some_and(|projected| projected[1] >= slope_cos)
+                })
+            {
+                return Some(super::support::State::Supported);
+            }
+        }
+        Some(state)
     }
     /// Latest mover planes, copied only by explicit diagnostics (no frame trace).
     pub fn contact_planes(&self) -> Vec<[f32; 4]> {
@@ -3180,6 +3200,25 @@ pub struct Player {
     movement_direction_override: Option<V>,
 }
 impl Player {
+    pub(super) fn query_support(&self, world: &Collision, dt: f32) -> Option<super::support::State> {
+        let slope_cos = self.motion.max_slope_degrees.to_radians().cos();
+        match self.side_scroll_plane {
+            Some((_, depth)) => world.support_at_with_depth(self.position, dt, slope_cos, Some(depth)),
+            None => world.support_at(self.position, dt, slope_cos),
+        }
+    }
+
+    fn planar_support_normal(&self, normal: V) -> Option<V> {
+        match self.side_scroll_plane {
+            Some((_, depth)) => super::side_scroller::surface_normal(normal, depth),
+            None => Some(normal),
+        }
+    }
+
+    fn support_normal_walkable(&self, normal: V) -> bool {
+        self.planar_support_normal(normal)
+            .is_some_and(|normal| normal[1] >= self.motion.max_slope_degrees.to_radians().cos())
+    }
     pub(super) fn begin_damage_leap(&mut self) -> bool {
         if !self.motion.damage_leap_enabled || self.native_knockback || self.damage_leaping {
             return false;
@@ -3519,11 +3558,7 @@ impl Player {
         let published_support = self.pending_ground_support.take();
         if world.player_body.is_some() && self.grounded {
             self.support_state = published_support.or_else(|| {
-                world.support_at(
-                    self.position,
-                    dt,
-                    self.motion.max_slope_degrees.to_radians().cos(),
-                )
+                self.query_support(world, dt)
             });
             self.grounded = self
                 .support_state
@@ -3545,7 +3580,8 @@ impl Player {
                     .then_some(self.motion_surface_normal)
                     .flatten()
                     .map(|v| [v[0], v[1], v[2]])
-            });
+            })
+            .and_then(|normal| self.planar_support_normal(normal));
         let support_velocity = support_surface
             .as_ref()
             .map(|surface| surface.velocity)
@@ -3956,11 +3992,7 @@ impl Player {
                 self.motion.max_slope_degrees.to_radians().cos(),
             );
         }
-        self.support_state = world.support_at(
-            self.position,
-            dt,
-            self.motion.max_slope_degrees.to_radians().cos(),
-        );
+        self.support_state = self.query_support(world, dt);
         // Retail ground state retains both sliding and supported results.
         // Keep the provisional jump lifecycle in charge while rising from a
         // deliberate jump; support beneath the hull must not cancel takeoff.
@@ -3978,7 +4010,7 @@ impl Player {
                     // otherwise removing airborne gravity leaves it hovering.
                     if let Some((normal, offset)) = world.active_support_surface() {
                         let correction = offset / normal[1];
-                        if normal[1] >= self.motion.max_slope_degrees.to_radians().cos()
+                        if self.support_normal_walkable(normal)
                             && correction < 0.
                             && correction >= -0.1
                         {
@@ -3993,7 +4025,7 @@ impl Player {
         let landed = self.grounded
             && self.support_state != Some(super::support::State::Sliding)
             && world.active_support_surface().is_none_or(|(normal, _)| {
-                normal[1] >= self.motion.max_slope_degrees.to_radians().cos()
+                self.support_normal_walkable(normal)
             });
         if landed {
             self.damage_leap_landed = std::mem::take(&mut self.damage_leaping);

@@ -533,7 +533,10 @@ impl Gameplay {
         self.host.0.lock().unwrap().player=Some(data.clone());
         self.executor.run();
         let mut player=lock(&self.handle)?;
-        let height = (rect.height() * input.pixels_per_point).round().clamp(480., 1080.) as u32;
+        // Gameplay composites a readback of the movie. Bound the copied pixels
+        // independently of the scene and menu resolutions.
+        let max_height = if cfg!(target_os = "android") { 480. } else { 720. };
+        let height = (rect.height() * input.pixels_per_point).round().clamp(480., max_height) as u32;
         let width = (height * 853 + 240) / 480;
         let resized = self.raster_height != height;
         if resized {
@@ -927,10 +930,15 @@ impl Gameplay {
                 let info=target.buffer.as_ref().context("HUD frame unavailable")?;
                 let (buffer,dimensions)=info.buffer.inner();
                 let image=ruffle_render_wgpu::utils::capture_image(backend.inner.device(),buffer,dimensions,None,|rgba,stride| {
-                    let pixels=rgba.chunks(stride as usize).take(target.size.height as usize)
-                        .flat_map(|row|row[..target.size.width as usize*4].chunks_exact(4))
-                        .map(|p|egui::Color32::from_rgba_premultiplied(p[0],p[1],p[2],p[3])).collect();
-                    egui::ColorImage::new([target.size.width as usize,target.size.height as usize],pixels)
+                    let width = target.size.width as usize;
+                    let height = target.size.height as usize;
+                    let mut pixels = Vec::with_capacity(width * height);
+                    for row in rgba.chunks_exact(stride as usize).take(height) {
+                        pixels.extend(row[..width * 4].as_chunks::<4>().0.iter().map(
+                            |&[r, g, b, a]| egui::Color32::from_rgba_premultiplied(r, g, b, a),
+                        ));
+                    }
+                    egui::ColorImage::new([width, height], pixels)
                 });
                 self.timings.entry("gpu_readback_and_premultiplied_copy").or_default().record(started.elapsed());
                 rendered_image=Some(image);

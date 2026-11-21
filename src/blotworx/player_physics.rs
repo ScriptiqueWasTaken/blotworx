@@ -190,15 +190,11 @@ impl World {
             return Ok(());
         }
         let previous_motion = player.motion_state();
-        let slope_cosine = player.motion.max_slope_degrees.to_radians().cos();
         // Native308a54 publishes the fresh checkSupport result before the
         // ground record. Scene changes can invalidate last tick's support.
         let support = self
             .collision
-            .with_player_queries(|| {
-                self.collision
-                    .support_at(player.position, super::STEP, slope_cosine)
-            })
+            .with_player_queries(|| player.query_support(&self.collision, super::STEP))
             .context("Character support query unavailable for motion ground publication")?;
         player.accept_motion_surface(support, || {
             let surface = self
@@ -305,8 +301,11 @@ impl World {
                 pose.position=constrained;
                 pose.center=super::physics::add(pose.center,correction);
             }
-            pose.linear=super::side_scroller::project(pose.linear,normal);
-            self.collision.set_simulation_velocity(shape,pose.linear)?;
+            let constrained_velocity = super::side_scroller::project(pose.linear, normal);
+            if constrained_velocity != pose.linear {
+                self.collision.set_simulation_velocity(shape, constrained_velocity)?;
+                pose.linear = constrained_velocity;
+            }
         }
         let body = self.player_physics.as_mut().unwrap();
         let mut state = body.record.swept_state();

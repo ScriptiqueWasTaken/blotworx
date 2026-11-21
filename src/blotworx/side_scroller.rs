@@ -23,6 +23,14 @@ pub fn project(vector: [f32;3], normal: [f32;3]) -> [f32;3] {
     let depth: f32=vector.iter().zip(normal).map(|(a,b)|a*b).sum();
     std::array::from_fn(|i|vector[i]-depth*normal[i])
 }
+pub(super) fn surface_normal(surface: [f32; 3], depth: [f32; 3]) -> Option<[f32; 3]> {
+    let projected = project(surface, depth);
+    let length_squared = projected.iter().map(|axis| axis * axis).sum::<f32>();
+    (length_squared > 1e-8).then(|| {
+        let inverse = length_squared.sqrt().recip();
+        projected.map(|axis| axis * inverse)
+    })
+}
 impl World {
     fn side_scroll_camera(&self, index: usize) -> Option<&RuntimeEntity> {
         self.entities.get(index).filter(|entity| {
@@ -92,5 +100,12 @@ mod tests {
         let n=[0.6,0.,0.8];let v=project([3.,4.,5.],n);
         assert!((v[0]*n[0]+v[2]*n[2]).abs()<1e-6);
         assert_eq!(v[1],4.);
+    }
+    #[test]
+    fn slope_uses_only_the_axes_the_player_can_move_along() {
+        let depth = [0., 0., 1.];
+        assert_eq!(surface_normal([0., 0.6, 0.8], depth), Some([0., 1., 0.]));
+        assert!(surface_normal([0.8, 0.6, 0.], depth).unwrap()[1] < 0.77);
+        assert_eq!(surface_normal(depth, depth), None);
     }
 }

@@ -125,6 +125,17 @@ impl super::assets::World {
                 "SetTransformation requires entity, position and direction",
             ));
         }
+        let direction_value = args.pop_back().unwrap();
+        let position_value = args.pop_back().unwrap();
+        // A named group can become empty before a resumed script uses it.
+        // In that case GetFacing returns nil and there is no owner to move.
+        let Some(entity) = self
+            .scripts
+            .resolve_native_entity_argument(lua, args.pop_back().unwrap())?
+            .filter(|i| !self.removed_entities.contains(i))
+        else {
+            return Ok(MultiValue::new());
+        };
         let vector = |value: Value| -> mlua::Result<super::lua_vector::Vector4> {
             let Value::UserData(value) = value else {
                 return Err(mlua::Error::external(
@@ -134,15 +145,8 @@ impl super::assets::World {
             let value = *value.borrow::<super::lua_vector::Vector4>()?;
             Ok(value)
         };
-        let direction = vector(args.pop_back().unwrap())?.normalized3()?;
-        let position = vector(args.pop_back().unwrap())?.0;
-        let Some(entity) = self
-            .scripts
-            .resolve_native_entity_argument(lua, args.pop_back().unwrap())?
-            .filter(|i| !self.removed_entities.contains(i))
-        else {
-            return Ok(MultiValue::new());
-        };
+        let direction = vector(direction_value)?.normalized3()?;
+        let position = vector(position_value)?.0;
         let rotation =
             super::facing_rotation::from_direction(direction.0).map_err(mlua::Error::external)?;
         if !position.iter().all(|v| v.is_finite()) {

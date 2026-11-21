@@ -49,19 +49,72 @@ pub fn apply_model_pose(
     pose: &[[f32; 16]],
     draws: &mut [GpuDrawCommand],
 ) -> Result<()> {
+    apply_model_pose_inner(world, pose, draws, None)
+}
+
+#[derive(Default)]
+pub(super) struct SkinFrame {
+    pose: Vec<[f32; 16]>,
+    meshes: std::collections::HashMap<usize, (Arc<Vec<f32>>, SkinnedMesh)>,
+}
+
+#[derive(Clone)]
+pub(super) struct SkinnedMesh {
+    vertices: Arc<Vec<f32>>,
+    minimum: [f32; 3],
+    maximum: [f32; 3],
+}
+
+impl SkinnedMesh {
+    pub(super) fn new((vertices, minimum, maximum): (Vec<f32>, [f32; 3], [f32; 3])) -> Self {
+        Self { vertices: Arc::new(vertices), minimum, maximum }
+    }
+
+    pub(super) fn apply(&self, draw: &mut GpuDrawCommand) {
+        draw.v_data = self.vertices.clone();
+        draw.aabb_min = self.minimum;
+        draw.aabb_max = self.maximum;
+    }
+}
+
+impl SkinFrame {
+    pub(super) fn apply(&mut self, world: &World, pose: &[[f32; 16]], draws: &mut [GpuDrawCommand]) -> Result<()> {
+        if self.pose != pose {
+            self.pose.clear();
+            self.pose.extend_from_slice(pose);
+            self.meshes.clear();
+        }
+        apply_model_pose_inner(world, pose, draws, Some(self))
+    }
+}
+
+fn apply_model_pose_inner(
+    world: &World,
+    pose: &[[f32; 16]],
+    draws: &mut [GpuDrawCommand],
+    mut cache: Option<&mut SkinFrame>,
+) -> Result<()> {
     for mesh in &world.player_meshes {
+        let draw = draws.get_mut(mesh.draw).context("Missing player draw")?;
+        if let Some((_, skinned)) = cache.as_ref().and_then(|cache| cache.meshes.get(&mesh.draw))
+            .filter(|(source, _)| Arc::ptr_eq(source, &draw.v_data))
+        {
+            skinned.apply(draw);
+            continue;
+        }
         let skin = world
             .skins
             .get(&mesh.asset)
             .and_then(|s| s.iter().find(|s| s.block == mesh.block))
             .context("Player mesh has no decoded skin")?;
         let palette = skin::palette_from_model_pose(skin, pose)?;
-        let draw = draws.get_mut(mesh.draw).context("Missing player draw")?;
-        let (vertices, minimum, maximum) =
-            skin::render_skinned_pose(skin,&palette,&draw.v_data,&mesh.positions,&mesh.normals,&mesh.sources,mesh.transform)?;
-        draw.v_data = Arc::new(vertices);
-        draw.aabb_min = minimum;
-        draw.aabb_max = maximum;
+        let skinned = SkinnedMesh::new(
+            skin::render_skinned_pose(skin,&palette,&draw.v_data,&mesh.positions,&mesh.normals,&mesh.sources,mesh.transform)?
+        );
+        if let Some(cache) = cache.as_mut() {
+            cache.meshes.insert(mesh.draw, (draw.v_data.clone(), skinned.clone()));
+        }
+        skinned.apply(draw);
     }
     Ok(())
 }

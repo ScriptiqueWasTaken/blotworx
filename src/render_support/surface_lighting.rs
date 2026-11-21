@@ -166,6 +166,58 @@ fn group_applies(object: &str, light: &str) -> bool {
             .split_whitespace()
             .any(|a| light.split_whitespace().any(|b| a.eq_ignore_ascii_case(b)))
 }
+/// Uniform locations are immutable for the lifetime of a linked program.
+#[derive(Clone)]
+pub(super) struct Uniforms {
+    bw_clusters: Option<glow::UniformLocation>,
+    bw_group_masks: Option<glow::UniformLocation>,
+    bw_lights: Option<glow::UniformLocation>,
+    bw_depth: Option<glow::UniformLocation>,
+    bw_hdr: Option<glow::UniformLocation>,
+    bw_style: Option<glow::UniformLocation>,
+    bw_model: Option<glow::UniformLocation>,
+    bw_authored_surface: Option<glow::UniformLocation>,
+    bw_base_tint: Option<glow::UniformLocation>,
+    bw_eye: Option<glow::UniformLocation>,
+    bw_light_settings: Option<glow::UniformLocation>,
+    bw_surface: Option<glow::UniformLocation>,
+    bw_object_group: Option<glow::UniformLocation>,
+    bw_group_words: Option<glow::UniformLocation>,
+    bw_grid_size: Option<glow::UniformLocation>,
+    bw_grid_depth: Option<glow::UniformLocation>,
+    bw_viewport_origin: Option<glow::UniformLocation>,
+    bw_view: Option<glow::UniformLocation>,
+    bw_light_vp: Option<glow::UniformLocation>,
+    bw_has_shadow: Option<glow::UniformLocation>,
+}
+
+impl Uniforms {
+    pub unsafe fn load(gl: &glow::Context, program: glow::Program) -> Self {
+        Self {
+            bw_clusters: gl.get_uniform_location(program, "bw_clusters"),
+            bw_group_masks: gl.get_uniform_location(program, "bw_group_masks"),
+            bw_lights: gl.get_uniform_location(program, "bw_lights"),
+            bw_depth: gl.get_uniform_location(program, "bw_depth"),
+            bw_hdr: gl.get_uniform_location(program, "bw_hdr"),
+            bw_style: gl.get_uniform_location(program, "bw_style"),
+            bw_model: gl.get_uniform_location(program, "bw_model"),
+            bw_authored_surface: gl.get_uniform_location(program, "bw_authored_surface"),
+            bw_base_tint: gl.get_uniform_location(program, "bw_base_tint"),
+            bw_eye: gl.get_uniform_location(program, "bw_eye"),
+            bw_light_settings: gl.get_uniform_location(program, "bw_light_settings"),
+            bw_surface: gl.get_uniform_location(program, "bw_surface"),
+            bw_object_group: gl.get_uniform_location(program, "bw_object_group"),
+            bw_group_words: gl.get_uniform_location(program, "bw_group_words"),
+            bw_grid_size: gl.get_uniform_location(program, "bw_grid_size"),
+            bw_grid_depth: gl.get_uniform_location(program, "bw_grid_depth"),
+            bw_viewport_origin: gl.get_uniform_location(program, "bw_viewport_origin"),
+            bw_view: gl.get_uniform_location(program, "bw_view"),
+            bw_light_vp: gl.get_uniform_location(program, "bw_light_vp"),
+            bw_has_shadow: gl.get_uniform_location(program, "bw_has_shadow"),
+        }
+    }
+}
+
 #[derive(Default)]
 pub struct State {
     pub settings: Settings,
@@ -183,6 +235,10 @@ pub struct State {
     >,
     object_groups: HashMap<usize, i32>,
     grid: super::clustered_lights::Grid,
+    cluster_dirty: bool,
+    uploaded_lights: Vec<f32>,
+    uploaded_masks: Vec<u32>,
+    buffer_capacity: Option<usize>,
     view: [f32; 16],
     cluster_buffer: Option<glow::Buffer>,
     cluster_texture: Option<glow::Texture>,
@@ -191,6 +247,8 @@ pub struct State {
     group_words: i32,
     pub candidate_pairs: usize,
     pub admitted_pairs: usize,
+    pub cluster_rebuilds: u64,
+    pub buffer_uploads: u64,
     buffer: Option<glow::Buffer>,
     texture: Option<glow::Texture>,
     pub error: Option<String>,
@@ -291,6 +349,9 @@ impl State {
             gl.delete_texture(t)
         }
         self.object_groups.clear();
+        self.uploaded_lights.clear();
+        self.uploaded_masks.clear();
+        self.buffer_capacity = None;
     }
     pub unsafe fn begin(
         &mut self,
@@ -308,8 +369,9 @@ impl State {
         self.eye = eye;
         self.light_vp = light_vp;
         self.view = view;
-        if settings.mode != 0 {
-            self.grid.build(lights, view, projection, rect);
+        if settings.mode != 0 && self.grid.build(lights, view, projection, rect) {
+            self.cluster_rebuilds += 1;
+            self.cluster_dirty = true;
         }
         self.error = None;
         self.shadow = None;
@@ -332,12 +394,6 @@ impl State {
         draws: &[GpuDrawCommand],
         lights: &[GpuLight],
     ) -> Result<(), String> {
-        if self.buffer.is_none() {
-            self.buffer = Some(gl.create_buffer()?)
-        }
-        if self.texture.is_none() {
-            self.texture = Some(gl.create_texture()?)
-        }
         self.object_groups.clear();
         let mut names = Vec::<String>::new();
         let mut name_ids = HashMap::<String, i32>::new();
@@ -393,7 +449,9 @@ impl State {
         self.light_records = lights.len();
         self.candidate_pairs = self.grid.candidates;
         self.admitted_pairs = self.grid.admitted;
-        let capacity = gl.get_parameter_i32(glow::MAX_TEXTURE_BUFFER_SIZE).max(0) as usize;
+        let capacity = *self.buffer_capacity.get_or_insert_with(|| {
+            gl.get_parameter_i32(glow::MAX_TEXTURE_BUFFER_SIZE).max(0) as usize
+        });
         if packed.len() / 4 > capacity
             || masks.len() > capacity
             || self.grid.indices.len() > capacity
@@ -405,41 +463,31 @@ impl State {
         if masks.is_empty() {
             masks.push(0)
         }
-        Self::integer_buffer(
-            gl,
-            &mut self.cluster_buffer,
-            &mut self.cluster_texture,
-            12,
-            glow::R32I,
-            std::slice::from_raw_parts(
-                self.grid.indices.as_ptr() as *const u8,
-                self.grid.indices.len() * 4,
-            ),
-        )?;
-        Self::integer_buffer(
-            gl,
-            &mut self.group_buffer,
-            &mut self.group_texture,
-            13,
-            glow::R32UI,
-            std::slice::from_raw_parts(masks.as_ptr() as *const u8, masks.len() * 4),
-        )?;
+        if self.cluster_dirty || self.cluster_texture.is_none() {
+            Self::upload_buffer(gl, &mut self.cluster_buffer, &mut self.cluster_texture,
+                12, glow::R32I, bytemuck::cast_slice(&self.grid.indices))?;
+            self.cluster_dirty = false;
+            self.buffer_uploads += 1;
+        }
+        if self.uploaded_masks != masks {
+            Self::upload_buffer(gl, &mut self.group_buffer, &mut self.group_texture,
+                13, glow::R32UI, bytemuck::cast_slice(&masks))?;
+            self.uploaded_masks = masks;
+            self.buffer_uploads += 1;
+        }
         if packed.is_empty() {
             packed.resize(24, 0.)
         }
-        gl.bind_buffer(glow::TEXTURE_BUFFER, self.buffer);
-        gl.buffer_data_u8_slice(
-            glow::TEXTURE_BUFFER,
-            std::slice::from_raw_parts(packed.as_ptr() as *const u8, packed.len() * 4),
-            glow::STREAM_DRAW,
-        );
-        gl.active_texture(glow::TEXTURE11);
-        gl.bind_texture(glow::TEXTURE_BUFFER, self.texture);
-        gl.tex_buffer(glow::TEXTURE_BUFFER, glow::RGBA32F, self.buffer);
-        gl.bind_buffer(glow::TEXTURE_BUFFER, None);
+        let packed_bytes: &[u8] = bytemuck::cast_slice(&packed);
+        if bytemuck::cast_slice::<f32, u8>(&self.uploaded_lights) != packed_bytes {
+            Self::upload_buffer(gl, &mut self.buffer, &mut self.texture,
+                11, glow::RGBA32F, packed_bytes)?;
+            self.uploaded_lights = packed;
+            self.buffer_uploads += 1;
+        }
         Ok(())
     }
-    unsafe fn integer_buffer(
+    unsafe fn upload_buffer(
         gl: &glow::Context,
         buffer: &mut Option<glow::Buffer>,
         texture: &mut Option<glow::Texture>,
@@ -464,23 +512,23 @@ impl State {
     pub unsafe fn bind(
         &self,
         gl: &glow::Context,
-        program: glow::Program,
+        uniforms: &Uniforms,
         cmd: &GpuDrawCommand,
         shadow_pass: bool,
     ) {
-        gl.uniform_1_i32(gl.get_uniform_location(program, "bw_clusters").as_ref(), 12);
+        gl.uniform_1_i32(uniforms.bw_clusters.as_ref(), 12);
         gl.uniform_1_i32(
-            gl.get_uniform_location(program, "bw_group_masks").as_ref(),
+            uniforms.bw_group_masks.as_ref(),
             13,
         );
         if self.settings.mode == 0 {
-            gl.uniform_1_i32(gl.get_uniform_location(program, "bw_lights").as_ref(), 11);
-            gl.uniform_1_i32(gl.get_uniform_location(program, "bw_depth").as_ref(), 10);
-            gl.uniform_1_i32(gl.get_uniform_location(program, "bw_hdr").as_ref(), 0);
-            gl.uniform_1_i32(gl.get_uniform_location(program, "bw_style").as_ref(), 0);
+            gl.uniform_1_i32(uniforms.bw_lights.as_ref(), 11);
+            gl.uniform_1_i32(uniforms.bw_depth.as_ref(), 10);
+            gl.uniform_1_i32(uniforms.bw_hdr.as_ref(), 0);
+            gl.uniform_1_i32(uniforms.bw_style.as_ref(), 0);
             return;
         }
-        let loc = gl.get_uniform_location(program, "bw_style");
+        let loc = &uniforms.bw_style;
         if loc.is_none() {
             return;
         }
@@ -495,7 +543,7 @@ impl State {
             && !shadow_pass
             && (cmd.preview.is_some() || fallback_surface);
         gl.uniform_1_i32(
-            gl.get_uniform_location(program, "bw_hdr").as_ref(),
+            uniforms.bw_hdr.as_ref(),
             i32::from(!shadow_pass && self.settings.mode != 0 && self.error.is_none()),
         );
         gl.uniform_1_i32(
@@ -507,12 +555,12 @@ impl State {
             },
         );
         gl.uniform_matrix_4_f32_slice(
-            gl.get_uniform_location(program, "bw_model").as_ref(),
+            uniforms.bw_model.as_ref(),
             false,
             &cmd.trans_mat,
         );
-        gl.uniform_1_i32(gl.get_uniform_location(program, "bw_lights").as_ref(), 11);
-        gl.uniform_1_i32(gl.get_uniform_location(program, "bw_depth").as_ref(), 10);
+        gl.uniform_1_i32(uniforms.bw_lights.as_ref(), 11);
+        gl.uniform_1_i32(uniforms.bw_depth.as_ref(), 10);
         gl.active_texture(glow::TEXTURE11);
         gl.bind_sampler(11, None);
         gl.bind_texture(glow::TEXTURE_BUFFER, self.texture);
@@ -545,7 +593,7 @@ impl State {
                             .is_some_and(|(a, b)| a != b)
                 });
         gl.uniform_1_i32(
-            gl.get_uniform_location(program, "bw_authored_surface")
+            uniforms.bw_authored_surface
                 .as_ref(),
             i32::from(preserve),
         );
@@ -556,19 +604,19 @@ impl State {
             .and_then(|m| m.legacy_diffuse)
             .unwrap_or(cmd.color);
         gl.uniform_3_f32(
-            gl.get_uniform_location(program, "bw_base_tint").as_ref(),
+            uniforms.bw_base_tint.as_ref(),
             tint[0],
             tint[1],
             tint[2],
         );
         gl.uniform_3_f32(
-            gl.get_uniform_location(program, "bw_eye").as_ref(),
+            uniforms.bw_eye.as_ref(),
             self.eye[0],
             self.eye[1],
             self.eye[2],
         );
         gl.uniform_4_f32(
-            gl.get_uniform_location(program, "bw_light_settings")
+            uniforms.bw_light_settings
                 .as_ref(),
             s.direct,
             s.indirect,
@@ -583,62 +631,54 @@ impl State {
             .map(|m| ((2. / (m.shininess + 2.)).sqrt() * (s.roughness / 0.7)).clamp(0.12, 1.))
             .unwrap_or(s.roughness);
         gl.uniform_4_f32(
-            gl.get_uniform_location(program, "bw_surface").as_ref(),
+            uniforms.bw_surface.as_ref(),
             roughness,
             s.detail,
             s.shadows,
             s.softness,
         );
         gl.uniform_1_i32(
-            gl.get_uniform_location(program, "bw_object_group").as_ref(),
+            uniforms.bw_object_group.as_ref(),
             self.object_groups
                 .get(&(cmd as *const GpuDrawCommand as usize))
                 .copied()
                 .unwrap_or(0),
         );
         gl.uniform_1_i32(
-            gl.get_uniform_location(program, "bw_group_words").as_ref(),
+            uniforms.bw_group_words.as_ref(),
             self.group_words,
         );
         gl.uniform_3_i32(
-            gl.get_uniform_location(program, "bw_grid_size").as_ref(),
+            uniforms.bw_grid_size.as_ref(),
             self.grid.dims[0],
             self.grid.dims[1],
             self.grid.dims[2],
         );
         gl.uniform_4_f32(
-            gl.get_uniform_location(program, "bw_grid_depth").as_ref(),
+            uniforms.bw_grid_depth.as_ref(),
             self.grid.near,
             self.grid.far,
             if self.grid.perspective { 1. } else { 0. },
             0.,
         );
         gl.uniform_2_f32(
-            gl.get_uniform_location(program, "bw_viewport_origin")
+            uniforms.bw_viewport_origin
                 .as_ref(),
             self.grid.rect[0] as f32,
             self.grid.rect[1] as f32,
         );
         gl.uniform_matrix_4_f32_slice(
-            gl.get_uniform_location(program, "bw_view").as_ref(),
+            uniforms.bw_view.as_ref(),
             false,
             &self.view,
         );
-        gl.active_texture(glow::TEXTURE11);
-        gl.bind_sampler(11, None);
-        gl.bind_texture(glow::TEXTURE_BUFFER, self.texture);
-        gl.uniform_1_i32(gl.get_uniform_location(program, "bw_lights").as_ref(), 11);
         gl.uniform_matrix_4_f32_slice(
-            gl.get_uniform_location(program, "bw_light_vp").as_ref(),
+            uniforms.bw_light_vp.as_ref(),
             false,
             &self.light_vp,
         );
-        gl.active_texture(glow::TEXTURE10);
-        gl.bind_sampler(10, None);
-        gl.bind_texture(glow::TEXTURE_2D, self.shadow);
-        gl.uniform_1_i32(gl.get_uniform_location(program, "bw_depth").as_ref(), 10);
         gl.uniform_1_i32(
-            gl.get_uniform_location(program, "bw_has_shadow").as_ref(),
+            uniforms.bw_has_shadow.as_ref(),
             i32::from(self.shadow_valid),
         );
     }

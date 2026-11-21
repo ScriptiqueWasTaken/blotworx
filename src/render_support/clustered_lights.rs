@@ -14,6 +14,8 @@ pub struct Grid {
     pub perspective: bool,
     pub rect: [i32; 4],
     projection: [f32; 16],
+    view: [f32; 16],
+    light_bounds: Vec<([f32; 3], f32, bool)>,
     bounds: Vec<Bound>,
     cells: Vec<Vec<i32>>,
     pub indices: Vec<i32>,
@@ -23,14 +25,14 @@ pub struct Grid {
 fn point(m: &[f32; 16], p: [f32; 3]) -> [f32; 3] {
     std::array::from_fn(|r| m[12 + r] + (0..3).map(|c| m[c * 4 + r] * p[c]).sum::<f32>())
 }
-fn intersects(b: Bound, p: [f32; 3], radius: f32) -> bool {
+fn intersects(b: Bound, p: [f32; 3], radius_squared: f32) -> bool {
     let d = (0..3)
         .map(|i| {
             let v = (b.lo[i] - p[i]).max(0.).max(p[i] - b.hi[i]);
             v * v
         })
         .sum::<f32>();
-    d <= (radius + radius.abs() * 1e-5 + 1e-4).powi(2)
+    d <= radius_squared
 }
 fn depth_plane(near: f32, far: f32, perspective: bool, t: f32) -> f32 {
     if perspective {
@@ -46,8 +48,19 @@ impl Grid {
         view: [f32; 16],
         projection: [f32; 16],
         rect: [i32; 4],
-    ) {
+    ) -> bool {
         let dims = [(rect[2] + 63) / 64, (rect[3] + 63) / 64, 16];
+        let resized = self.rect[2..] != rect[2..];
+        self.rect = rect;
+        let light_bound = |light: &GpuLight| (light.position, light.range, light.dimmer != 0.);
+        if !resized && self.dims == dims && self.projection == projection && self.view == view
+            && self.light_bounds.iter().copied().eq(lights.iter().map(light_bound))
+        {
+            return false;
+        }
+        self.view = view;
+        self.light_bounds.clear();
+        self.light_bounds.extend(lights.iter().map(light_bound));
         let perspective = projection[11] != 0.;
         let near = if perspective {
             projection[14] / (projection[10] - 1.)
@@ -59,11 +72,9 @@ impl Grid {
         } else {
             (projection[14] - 1.) / projection[10]
         };
-        let resized = self.rect[2..] != rect[2..];
         self.near = near.max(0.0001);
         self.far = far.max(self.near + 0.001);
         self.perspective = perspective;
-        self.rect = rect;
         if self.dims != dims || self.projection != projection || resized {
             self.dims = dims;
             self.projection = projection;
@@ -172,12 +183,13 @@ impl Grid {
                 y1 = (((hi[1] * 0.5 + 0.5) * rect[3] as f32 / 64.).floor() as i32)
                     .clamp(0, dims[1] - 1);
             }
+            let radius_squared = (l.range + l.range.abs() * 1e-5 + 1e-4).powi(2);
             for z in z0..=z1 {
                 for y in y0..=y1 {
                     for x in x0..=x1 {
                         let cell = ((z * dims[1] + y) * dims[0] + x) as usize;
                         self.candidates += 1;
-                        if l.range <= 0. || intersects(self.bounds[cell], p, l.range) {
+                        if l.range <= 0. || intersects(self.bounds[cell], p, radius_squared) {
                             self.cells[cell].push(index as i32);
                             self.admitted += 1;
                         }
@@ -193,6 +205,7 @@ impl Grid {
             self.indices[i * 2 + 1] = cell.len() as i32;
             self.indices.extend_from_slice(cell);
         }
+        true
     }
     fn slice(&self, z: f32) -> i32 {
         let t = if self.perspective {
@@ -240,8 +253,15 @@ mod tests {
         for i in [0, 5, 10, 15] {
             view[i] = 1.;
         }
-        g.build(&[l], view, projection(), [0, 0, 256, 256]);
+        g.build(std::slice::from_ref(&l), view, projection(), [0, 0, 256, 256]);
         let selected = (0..g.cells()).filter(|&i| g.indices[i * 2 + 1] > 0).count();
         assert!(selected > 0 && selected < g.cells() / 2);
+        assert!(!g.build(std::slice::from_ref(&l), view, projection(), [12, 3, 256, 256]));
+        assert_eq!(g.rect[..2], [12, 3]);
+        l.dimmer = 0.5;
+        assert!(!g.build(std::slice::from_ref(&l), view, projection(), [0, 0, 256, 256]));
+        l.dimmer = 0.;
+        assert!(g.build(&[l], view, projection(), [0, 0, 256, 256]));
+        assert_eq!(g.admitted, 0);
     }
 }

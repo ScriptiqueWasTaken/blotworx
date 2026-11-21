@@ -2496,6 +2496,7 @@ struct Engine {
     hose_emitters: [bool; 2],
     ear_pose: Option<ears::Pose>,
     clip_preview: Option<clip_preview::ClipPreview>,
+    player_skin_frame: clip_preview::SkinFrame,
     authored_preview: Option<authored_preview::Preview>,
     root: String,
     level: String,
@@ -2640,6 +2641,7 @@ impl Engine {
             diagnostic_strafe: o.diagnostic_strafe,
             diagnostic_shuffle: o.diagnostic_shuffle,
             clip_preview: None,
+            player_skin_frame: Default::default(),
             authored_preview: None,
             ear_pose: None,
             root,
@@ -3787,7 +3789,7 @@ impl Engine {
         } else if let Some(preview) = &self.authored_preview {
             let result=skin::model_pose(&preview.pose,self.ear_pose.as_ref().map_or(&[],|e|e.overrides.as_slice()))
                 .and_then(|pose| {
-                    clip_preview::apply_model_pose(world,&pose,&mut draws)?;
+                    self.player_skin_frame.apply(world,&pose,&mut draws)?;
                     if world.hidden_entities.contains(&world.player_entity) {return Ok(());}
                     let actor=draws[*world.player_draws.first().context("Missing Mickey draw")?].trans_mat;
                     let brush_start=draws.len();

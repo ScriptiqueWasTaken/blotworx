@@ -732,6 +732,7 @@ impl Default for GpuLight {
 
 #[derive(Clone)]
 struct MaterialGpuProgram {
+    surface_uniforms: Arc<super::surface_lighting::Uniforms>,
     shadow_matrix: Option<glow::UniformLocation>,
     clip_matrix: Option<glow::UniformLocation>,
     shadow_image: Option<glow::UniformLocation>,
@@ -773,6 +774,10 @@ pub struct RenderWork {
     pub surface_light_records: usize,
     pub surface_candidate_pairs: usize,
     pub surface_admitted_pairs: usize,
+    pub surface_cluster_rebuilds: u64,
+    pub surface_buffer_uploads: u64,
+    pub vertex_buffer_uploads: u64,
+    pub index_buffer_uploads: u64,
     pub surface_error: Option<String>,
     pub scene_light_counts: [usize;4],
     pub finishing_frames: u64,
@@ -805,6 +810,12 @@ unsafe fn read_probe_pixel(gl:&glow::Context,p:[i32;2])->[f32;4]{
 unsafe fn read_probe_depth(gl:&glow::Context,p:[i32;2])->f32{
  let mut depth=1f32;let bytes=std::slice::from_raw_parts_mut((&mut depth)as *mut f32 as *mut u8,4);gl.read_pixels(p[0],p[1],1,1,glow::DEPTH_COMPONENT,glow::FLOAT,glow::PixelPackData::Slice(Some(bytes)));depth
 }
+struct IndexBuffer {
+    owner: std::sync::Weak<Vec<u32>>,
+    buffer: glow::NativeBuffer,
+    max_index: Option<u32>,
+}
+
 pub struct GpuViewportCache {
     smooth_textures: bool,
     surfaces: super::surface_lighting::State,
@@ -815,7 +826,11 @@ pub struct GpuViewportCache {
     model_shadow_pass: Option<Result<super::model_shadow::Pass, String>>,
     volume_shadow_pass: Option<Result<super::volume_shadow::Pass, String>>,
     uv_buffers: HashMap<usize, (std::sync::Weak<Vec<[f32; 2]>>, glow::NativeBuffer)>,
+    index_buffers: HashMap<usize, IndexBuffer>,
+    vertex_buffer_uploads: u64,
+    index_buffer_uploads: u64,
     pub mesh_program: glow::Program,
+    mesh_surface_uniforms: super::surface_lighting::Uniforms,
     pub u_mvp: glow::UniformLocation,
     pub u_model: glow::UniformLocation,
     pub u_color: glow::UniformLocation,
@@ -1448,6 +1463,7 @@ impl GpuViewportCache {
             if self.surfaces.settings.mode!=0 {if let Err(error)=&compiled {self.surfaces.error=Some(format!("Enhanced material shader: {error}"));}}
             let program = compiled
                 .map(|program| MaterialGpuProgram {
+                    surface_uniforms: Arc::new(super::surface_lighting::Uniforms::load(gl, program)),
                     shadow_matrix: gl.get_uniform_location(program, "bw_shadow_matrix"),
                     clip_matrix: gl.get_uniform_location(program, "bw_clip_matrix"),
                     shadow_image: gl.get_uniform_location(program, "bw_shadow_image"),
@@ -1720,7 +1736,7 @@ impl GpuViewportCache {
         } else {
             gl.disable(glow::CULL_FACE);
         }
-        if self.surfaces.settings.mode!=0 {self.surfaces.bind(gl,program.program,cmd,self.surfaces.shadow_pass);}
+        if self.surfaces.settings.mode!=0 {self.surfaces.bind(gl,&program.surface_uniforms,cmd,self.surfaces.shadow_pass);}
         if self.surfaces.shadow_pass {gl.enable(glow::DEPTH_TEST);gl.depth_mask(true);gl.depth_func(glow::LESS);}
         gl.bind_vertex_array(Some(mesh.vao));
         for (i, buffer) in extra_uv_buffers.iter().enumerate() {
@@ -2115,6 +2131,7 @@ impl GpuViewportCache {
             model_shadow_pass: None,
             volume_shadow_pass: None,
             mesh_program,
+            mesh_surface_uniforms: super::surface_lighting::Uniforms::load(gl, mesh_program),
             u_mvp,
             u_model,
             u_color,
@@ -2153,6 +2170,9 @@ impl GpuViewportCache {
             uv_buffers: HashMap::new(),
             invalidated: false,
             meshes: HashMap::new(),
+            index_buffers: HashMap::new(),
+            vertex_buffer_uploads: 0,
+            index_buffer_uploads: 0,
             textures: HashMap::new(),
         })
     }
@@ -2175,7 +2195,13 @@ impl GpuViewportCache {
             }
             gl.delete_vertex_array(handle.vao);
             gl.delete_buffer(handle.vbo);
-            gl.delete_buffer(handle.ebo);
+            false
+        });
+        self.index_buffers.retain(|_, indices| {
+            if !invalidated && indices.owner.strong_count() > 0 {
+                return true;
+            }
+            gl.delete_buffer(indices.buffer);
             false
         });
         self.textures.retain(|_, (pixels, texture, _, _)| {
@@ -2294,12 +2320,11 @@ impl GpuViewportCache {
 
         let vao = gl.create_vertex_array().ok()?;
         let vbo = gl.create_buffer().ok()?;
-        let ebo = gl.create_buffer().ok()?;
-
         gl.bind_vertex_array(Some(vao));
         gl.bind_buffer(glow::ARRAY_BUFFER, Some(vbo));
         let v_bytes = std::slice::from_raw_parts(v_data.as_ptr() as *const u8, v_data.len() * 4);
         gl.buffer_data_u8_slice(glow::ARRAY_BUFFER, v_bytes, glow::STATIC_DRAW);
+        self.vertex_buffer_uploads += 1;
 
         let mesh_stride = (12 * std::mem::size_of::<f32>()) as i32;
         gl.enable_vertex_attrib_array(0);
@@ -2311,9 +2336,25 @@ impl GpuViewportCache {
         gl.enable_vertex_attrib_array(3);
         gl.vertex_attrib_pointer_f32(3, 4, glow::FLOAT, false, mesh_stride, 8 * 4);
 
-        gl.bind_buffer(glow::ELEMENT_ARRAY_BUFFER, Some(ebo));
-        let i_bytes = std::slice::from_raw_parts(indices.as_ptr() as *const u8, indices.len() * 4);
-        gl.buffer_data_u8_slice(glow::ELEMENT_ARRAY_BUFFER, i_bytes, glow::STATIC_DRAW);
+        let (ebo, max_index) = if let Some(cached) = self.index_buffers.get(&key.1) {
+            gl.bind_buffer(glow::ELEMENT_ARRAY_BUFFER, Some(cached.buffer));
+            (cached.buffer, cached.max_index)
+        } else {
+            let Ok(buffer) = gl.create_buffer() else {
+                gl.bind_vertex_array(None);
+                gl.delete_vertex_array(vao);
+                gl.delete_buffer(vbo);
+                return None;
+            };
+            gl.bind_buffer(glow::ELEMENT_ARRAY_BUFFER, Some(buffer));
+            gl.buffer_data_u8_slice(glow::ELEMENT_ARRAY_BUFFER, bytemuck::cast_slice(indices), glow::STATIC_DRAW);
+            let max_index = indices.iter().copied().max();
+            self.index_buffers.insert(key.1, IndexBuffer {
+                owner: Arc::downgrade(indices), buffer, max_index,
+            });
+            self.index_buffer_uploads += 1;
+            (buffer, max_index)
+        };
         gl.bind_vertex_array(None);
 
         let handle = GpuMeshHandle {
@@ -2322,9 +2363,7 @@ impl GpuViewportCache {
             ebo,
             index_count: indices.len() as i32,
             bounds: if indices.len() <= i32::MAX as usize
-                && indices
-                    .iter()
-                    .all(|&index| (index as usize) < v_data.len() / 12)
+                && max_index.is_none_or(|index| (index as usize) < v_data.len() / 12)
             {
                 super::clip_visibility::Bounds::from_interleaved(v_data)
             } else {
@@ -2786,6 +2825,10 @@ pub(crate) fn render_viewport(
                     work.surface_light_records=cache.surfaces.light_records;
                     work.surface_candidate_pairs=cache.surfaces.candidate_pairs;
                     work.surface_admitted_pairs=cache.surfaces.admitted_pairs;
+                    work.surface_cluster_rebuilds=cache.surfaces.cluster_rebuilds;
+                    work.surface_buffer_uploads=cache.surfaces.buffer_uploads;
+                    work.vertex_buffer_uploads=cache.vertex_buffer_uploads;
+                    work.index_buffer_uploads=cache.index_buffer_uploads;
                     work.surface_error=cache.surfaces.error.clone();
                     work.scene_light_counts=std::array::from_fn(|i|lights.iter().filter(|l|l.light_type==i as i32).count());
                     work.early_rejected_draws =
@@ -2865,7 +2908,8 @@ pub(crate) fn render_viewport(
 
                         cache.surfaces.shadow_pass=enhanced_shadow;
                         gl.color_mask(false,false,false,false);
-                        for (draw_index,cmd) in draw_commands.iter().enumerate() {
+                        let mut using_shadow_program = true;
+                        for cmd in &draw_commands {
                             if cmd.skybox || cmd.indices.is_empty() || cmd.v_data.is_empty() {
                                 continue;
                             }
@@ -2877,11 +2921,18 @@ pub(crate) fn render_viewport(
                             if enhanced_shadow {
                                 if let Some(Ok(source))=&cmd.preview {
                                     if !super::surface_lighting::eligible(source,cmd){continue;}
+                                    let mvp = mat4_mul(&light_vp, &cmd.trans_mat);
+                                    if view_culling && cache.get_or_upload_mesh(gl, &cmd.v_data, &cmd.indices)
+                                        .and_then(|mesh| mesh.bounds).is_some_and(|bounds| bounds.outside(&mvp))
+                                    {
+                                        work.rejected_shadow_casters += 1;
+                                        continue;
+                                    }
                                     // Main-view rejection does not reject shadow casters.
                                     if let Some(mut prepared)=cache.prepare_material(gl,source,cmd,&light_vp,&l_view){
-                                        prepared.mvp=mat4_mul(&light_vp,&cmd.trans_mat);
-                                        if view_culling && prepared.mesh.bounds.is_some_and(|b|b.outside(&prepared.mvp)){continue;}
+                                        prepared.mvp=mvp;
                                         cache.draw_prepared_material(gl,source,cmd,&light_vp,&l_view,&prepared);
+                                        using_shadow_program = false;
                                         work.shadow_caster_draws+=1;
                                     }
                                     continue;
@@ -2889,9 +2940,6 @@ pub(crate) fn render_viewport(
                                 // Unknown/custom PE shaders cannot be treated as solid cards.
                                 if cmd.preview.is_some() || cmd.material.as_ref().and_then(|m|m.legacy_alpha_flags).is_some_and(|flags|flags&1!=0){continue;}
                             }
-                            gl.use_program(Some(cache.shadow_program));
-                            gl.uniform_matrix_4_f32_slice(Some(&cache.u_shadow_light_vp),false,&light_vp);
-                            let _=draw_index;
                             if let Some(mesh_handle) =
                                 cache.get_or_upload_mesh(gl, &cmd.v_data, &cmd.indices)
                             {
@@ -2905,6 +2953,10 @@ pub(crate) fn render_viewport(
                                 {
                                     work.rejected_shadow_casters += 1;
                                     continue;
+                                }
+                                if !using_shadow_program {
+                                    gl.use_program(Some(cache.shadow_program));
+                                    using_shadow_program = true;
                                 }
                                 work.shadow_caster_draws += 1;
                                 gl.uniform_matrix_4_f32_slice(
@@ -3259,7 +3311,7 @@ pub(crate) fn render_viewport(
                             gl.uniform_1_i32(Some(&cache.u_use_tex), 0);
                         }
 
-                        cache.surfaces.bind(gl,cache.mesh_program,cmd,false);
+                        cache.surfaces.bind(gl,&cache.mesh_surface_uniforms,cmd,false);
                         if let Some(mesh_handle) =
                             cache.get_or_upload_mesh(gl, &cmd.v_data, &cmd.indices)
                         {

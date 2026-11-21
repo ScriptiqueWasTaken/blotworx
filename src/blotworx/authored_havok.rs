@@ -20,6 +20,13 @@ struct Instance {
     animation: (String, String),
     model: String,
     actor: Actor,
+    skin_frame: std::cell::RefCell<SkinFrame>,
+}
+
+#[derive(Default)]
+struct SkinFrame {
+    pose: Vec<[f32; 16]>,
+    meshes: Vec<super::clip_preview::SkinnedMesh>,
 }
 #[derive(Default)]
 pub struct Runtime {
@@ -1000,6 +1007,7 @@ impl Runtime {
                         animation: identity,
                         model: model.clone(),
                         actor,
+                        skin_frame: Default::default(),
                     },
                 );
                 Ok(())
@@ -1140,18 +1148,22 @@ impl Runtime {
             }
             let pose = super::skin::model_pose(&instance.actor.playback.pose, &[])?;
             let runtime = &world.entities[entity];
-            for mesh in &self.models[&instance.model] {
-                let skin = world.skins[&instance.model]
-                    .iter()
-                    .find(|skin| skin.block == mesh.block)
-                    .context("Actor skin disappeared")?;
-                let palette = super::skin::palette_from_model_pose(skin, &pose)?;
-                let (vertices,min,max)=super::skin::render_skinned_pose(skin,&palette,&mesh.vertices,&mesh.positions,&mesh.normals,&mesh.sources,mesh.transform)?;
-                let vertices = Arc::new(vertices);
+            let meshes = &self.models[&instance.model];
+            let mut frame = instance.skin_frame.borrow_mut();
+            if frame.pose != pose || frame.meshes.len() != meshes.len() {
+                let skinned = meshes.iter().map(|mesh| {
+                    let skin = world.skins[&instance.model].iter()
+                        .find(|skin| skin.block == mesh.block).context("Actor skin disappeared")?;
+                    let palette = super::skin::palette_from_model_pose(skin, &pose)?;
+                    super::skin::render_skinned_pose(skin,&palette,&mesh.vertices,&mesh.positions,&mesh.normals,&mesh.sources,mesh.transform)
+                        .map(super::clip_preview::SkinnedMesh::new)
+                }).collect::<Result<Vec<_>>>()?;
+                frame.pose = pose;
+                frame.meshes = skinned;
+            }
+            for (mesh, skinned) in meshes.iter().zip(&frame.meshes) {
                 for &draw in &runtime.mesh_draws[&(mesh.block as u32)] {
-                    draws[draw].v_data = vertices.clone();
-                    draws[draw].aabb_min = min;
-                    draws[draw].aabb_max = max;
+                    skinned.apply(&mut draws[draw]);
                 }
             }
         }

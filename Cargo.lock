@@ -546,6 +546,7 @@ dependencies = [
  "android-activity",
  "anyhow",
  "async-channel",
+ "bytemuck",
  "cc",
  "dirs",
  "eframe",

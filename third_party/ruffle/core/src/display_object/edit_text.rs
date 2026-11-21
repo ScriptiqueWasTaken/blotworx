@@ -2217,6 +2217,22 @@ impl<'gc> EditText<'gc> {
         self.0.layout.borrow().lines().len()
     }
 
+    /// The Wii HUD uses a two-line presentation mask. Match the editable
+    /// field's scroll bounds to those two actual wrapped lines.
+    pub(crate) fn show_dialogue_page(self, context: &mut UpdateContext<'gc>) {
+        let page_height = {
+            let layout = self.0.layout.borrow();
+            let lines = layout.lines();
+            if lines.len() <= 2 {
+                return;
+            }
+            lines[1].extent_y() + Self::GUTTER * 2
+        };
+        if self.0.bounds.get().height() != page_height {
+            self.set_height(context, page_height.to_pixels());
+        }
+    }
+
     /// Calculate the layout metrics.
     ///
     /// Returns `None` if there is not enough data

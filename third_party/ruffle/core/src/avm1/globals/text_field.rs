@@ -69,6 +69,8 @@ const PROTO_DECLS: StaticDeclarations = declare_static_properties! {
     "filters" => property(tf_getter!(filters), tf_setter!(set_filters); DONT_DELETE | VERSION_8);
     "scroll" => property(tf_getter!(scroll), tf_setter!(set_scroll));
     "maxscroll" => property(tf_getter!(maxscroll));
+    "numLines" => property(tf_getter!(num_lines));
+    "__bwxLimitDialogueLines" => method(tf_method!(limit_dialogue_lines); DONT_ENUM | DONT_DELETE);
     "borderColor" => property(tf_getter!(border_color), tf_setter!(set_border_color));
     "backgroundColor" => property(tf_getter!(background_color), tf_setter!(set_background_color));
     "textColor" => property(tf_getter!(text_color), tf_setter!(set_text_color));
@@ -697,6 +699,22 @@ pub fn maxscroll<'gc>(
     _activation: &mut Activation<'_, 'gc>,
 ) -> Result<Value<'gc>, Error<'gc>> {
     Ok(Value::from_usize_lossy(this.maxscroll()))
+}
+
+fn num_lines<'gc>(
+    this: EditText<'gc>,
+    _activation: &mut Activation<'_, 'gc>,
+) -> Result<Value<'gc>, Error<'gc>> {
+    Ok(Value::from_usize_lossy(this.layout_lines()))
+}
+
+fn limit_dialogue_lines<'gc>(
+    this: EditText<'gc>,
+    activation: &mut Activation<'_, 'gc>,
+    _args: &[Value<'gc>],
+) -> Result<Value<'gc>, Error<'gc>> {
+    this.show_dialogue_page(activation.context);
+    Ok(Value::Undefined)
 }
 
 pub fn set_max_chars<'gc>(

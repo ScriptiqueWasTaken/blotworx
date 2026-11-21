@@ -56,6 +56,7 @@ const GETTER: &str = "__bwx_read_property";
 const SETTER: &str = "__bwx_write_property";
 const CAN_SCROLL_DIALOGUE: &str = "__bwx_can_scroll_dialogue";
 const SCROLL_DIALOGUE: &str = "__bwx_scroll_dialogue";
+const LIMIT_DIALOGUE_LINES: &str = "__bwx_limit_dialogue_lines";
 const LOAD_DIALOGUE_PORTRAIT: &str = "__bwx_load_dialogue_portrait";
 const LOAD_POPUP_ICON: &str = "__bwx_load_popup_icon";
 const PORTRAIT_SUFFIX: &str = ".bwx-portrait.png";
@@ -622,11 +623,15 @@ fn bridge_with_methods(version: u8, methods: &[&str]) -> Result<Vec<u8>> {
         params: vec![swf::SwfStr::from_utf8_str("path"), swf::SwfStr::from_utf8_str("value")],
         actions: &setter,
     }))?;
-    for (callback, method) in [(CAN_SCROLL_DIALOGUE, "CanScrollText"), (SCROLL_DIALOGUE, "ScrollText")] {
+    for (callback, target, method) in [
+        (CAN_SCROLL_DIALOGUE, "_root.GENERIC_DIALOG", "CanScrollText"),
+        (SCROLL_DIALOGUE, "_root.GENERIC_DIALOG", "ScrollText"),
+        (LIMIT_DIALOGUE_LINES, "_root.GENERIC_DIALOG.dialogBox", "__bwxLimitDialogueLines"),
+    ] {
         let mut actions = Vec::new();
         let mut child = Writer::new(&mut actions, version);
         push(&mut child, StackValue::Int(0))?;
-        variable(&mut child, "_root.GENERIC_DIALOG")?;
+        variable(&mut child, target)?;
         string(&mut child, method)?;
         child.write_action(&Action::CallMethod)?;
         child.write_action(&Action::Return)?;
@@ -663,7 +668,10 @@ fn bridge_with_methods(version: u8, methods: &[&str]) -> Result<Vec<u8>> {
             params: vec![swf::SwfStr::from_utf8_str("url")], actions: &bitmap,
         }))?;
     }
-    for method in METHODS.into_iter().chain(methods.iter().copied()).chain([GETTER, SETTER, CAN_SCROLL_DIALOGUE, SCROLL_DIALOGUE, LOAD_DIALOGUE_PORTRAIT, LOAD_POPUP_ICON]) {
+    for method in METHODS.into_iter().chain(methods.iter().copied()).chain([
+        GETTER, SETTER, CAN_SCROLL_DIALOGUE, SCROLL_DIALOGUE, LIMIT_DIALOGUE_LINES,
+        LOAD_DIALOGUE_PORTRAIT, LOAD_POPUP_ICON,
+    ]) {
         // Arguments are popped by AVM1 in source order: name, this, method.
         variable(&mut w, "this")?;
         string(&mut w, method)?;
@@ -718,6 +726,7 @@ fn snapshot(player: &mut ruffle_core::Player) -> serde_json::Value {
         "_root.GENERIC_DIALOG._visible",
         "_root.GENERIC_DIALOG.dialogBox.text",
         "_root.GENERIC_DIALOG.dialogBox.maxscroll",
+        "_root.GENERIC_DIALOG.dialogBox.numLines",
         "_root.GENERIC_DIALOG.Portrait._url",
         "_root.GENERIC_DIALOG.Portrait._width",
         "_root.GENERIC_DIALOG.Portrait._visible",

@@ -86,6 +86,8 @@ fn publish_dialogue_text(view: &mut NativeView<'_>, dialogue: &DialogueHud) -> R
     if !dialogue.interactive {
         write(view.player, "_root.GENERIC_DIALOG.AButton._visible", Value::Bool(false));
     }
+    view.player.call_internal_interface(&format!("__bwx_{LIMIT_DIALOGUE_LINES}"), []);
+    write(view.player, "_root.GENERIC_DIALOG.dialogBox.scroll", Value::Number(1.));
     Ok(())
 }
 #[cfg(feature="blotworx-ui-render")]
@@ -183,6 +185,13 @@ pub(super) fn validate_pause_menu() -> Result<()> {
     for tick in 27..=40 {
         input.tick = tick;
         hud.render_frame(&input, &mut Vec::new())?;
+    }
+    {
+        let mut player = lock(&hud.handle)?;
+        ensure!(matches!(read(&mut player, "_root.GENERIC_DIALOG.dialogBox.numLines"),
+            Value::Number(lines) if lines > 2.), "The movie could not count wrapped lines");
+        ensure!(read(&mut player, "_root.GENERIC_DIALOG.dialogBox.bottomScroll") == Value::Number(2.),
+            "The first dialogue page did not contain two lines");
     }
     ensure!(hud.scroll_dialogue()?, "A did not scroll a long line");
     {
@@ -493,6 +502,12 @@ impl Gameplay {
         Ok(Self{handle,executor,host,root,resources,images,initialized:false,last_tick:0,aspect:0.,visible:None,raster_height:480,movie_time:None,skip_duration:None,pause_time:None,pause_page:PausePage::Main,pause_map_shown:false,pause_options:PauseOptions::Closed,cursor:None,ticket_hud_gain:None,ticket_dropdown_updates:0,ticket_hide_tick:None,dialogue:None,dialogue_updates:0,dialogue_reveal_tick:None,portrait_anchor:None,popups:Default::default(),popup_active:false,popup_icon:None,popup_icon_attempt:None,values:Default::default(),texture:None,errors:Default::default(),frames:0,delivered_ability_messages:0,timings:Default::default(),graphics})
     }
     fn scroll_dialogue(&mut self) -> Result<bool> {
+        if !self.dialogue.as_ref().is_some_and(|dialogue| dialogue.interactive) {
+            return Ok(false);
+        }
+        if self.dialogue_reveal_tick.is_some() {
+            return Ok(true);
+        }
         let mut player = lock(&self.handle)?;
         let path = "_root.GENERIC_DIALOG.dialogBox.scroll";
         let (Value::Number(current), Value::Number(end)) = (
@@ -932,11 +947,11 @@ impl Gameplay {
                 let image=ruffle_render_wgpu::utils::capture_image(backend.inner.device(),buffer,dimensions,None,|rgba,stride| {
                     let width = target.size.width as usize;
                     let height = target.size.height as usize;
-                    let mut pixels = Vec::with_capacity(width * height);
-                    for row in rgba.chunks_exact(stride as usize).take(height) {
-                        pixels.extend(row[..width * 4].as_chunks::<4>().0.iter().map(
-                            |&[r, g, b, a]| egui::Color32::from_rgba_premultiplied(r, g, b, a),
-                        ));
+                    let mut pixels = vec![egui::Color32::TRANSPARENT; width * height];
+                    let row_bytes = width * 4;
+                    let bytes: &mut [u8] = bytemuck::cast_slice_mut(&mut pixels);
+                    for (output, input) in bytes.chunks_exact_mut(row_bytes).zip(rgba.chunks_exact(stride as usize)) {
+                        output.copy_from_slice(&input[..row_bytes]);
                     }
                     egui::ColorImage::new([width, height], pixels)
                 });

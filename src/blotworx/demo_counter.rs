@@ -65,7 +65,9 @@ impl World {
                 if let Some(material) = self.counter_materials.get_mut(&entity) {
                     material.invulnerable_remaining = duration;
                 }
-                self.advance_demo_counter_states()?;
+                let previous = self.demo_story.counters.states[&entity];
+                let current = self.paint_counters[&entity].status();
+                self.publish_demo_counter_state(entity, previous, current)?;
             }
         }
         Ok(())
@@ -117,67 +119,72 @@ impl World {
             })
             .collect::<Vec<_>>();
         for (entity, previous, current) in changes {
-            if self.removed_entities.contains(&entity) {
-                continue;
-            }
-            self.demo_story.counters.states.insert(entity, current);
-            self.paint_counters
-                .get_mut(&entity)
-                .unwrap()
-                .published_status = current;
-            self.demo_story.counters.changes += 1;
-            // Remove the converted-team outcome before publishing a death.
-            // GV's death callback immediately checks the encounter count;
-            // reversing these events briefly counts the same enemy twice.
-            if (previous == 1) != (current == 1) && self.ai_brains.contains_key(&entity) {
-                self.emit_entity_output(entity, "OnTeamChanged", entity);
-            }
-            if current == 2 {
-                self.counter_actor_effect(entity, &["blotlingpuddle_fx_small", "puddlesplash"], true);
-                self.emit_entity_output(entity, "OnFullySketched", self.player_entity);
-                self.emit_entity_output(entity, "OnCharacterPuddled", self.player_entity);
-                let zero = self.entities[entity]
-                    .components
-                    .iter()
-                    .filter(|c| c.class_name == "PaintThinnerCounterComponent")
-                    .any(|c| {
-                        c.properties
-                            .iter()
-                            .any(|p| p.name == "SendZeroHPEvent" && p.value.as_bool() == Some(true))
-                    });
-                if zero {
-                    let actions = self.component_events.receive_zero_health(
-                        entity,
-                        true,
-                        self.animation_time,
-                    )?;
-                    self.execute_component_events(actions)?;
-                    // The existing playable defeat bridge already publishes
-                    // a logical death here. Route its reward receiver as well;
-                    // native AI death-animation/event timing remains separate.
-                    if let Err(error)=self.receive_death_rewards(entity,2) {
-                        self.report.unsupported.push(format!("Death reward counter receiver {}: {error:#}",self.entities[entity].name));
-                    }
-                    self.emit_entity_output(entity, "OnDeath", self.player_entity);
+            self.publish_demo_counter_state(entity, previous, current)?;
+        }
+        Ok(())
+    }
+
+    fn publish_demo_counter_state(&mut self, entity: usize, previous: u32, current: u32) -> Result<()> {
+        if previous == current || !self.demo_story.enabled || self.removed_entities.contains(&entity) {
+            return Ok(());
+        }
+        self.demo_story.counters.states.insert(entity, current);
+        self.paint_counters
+            .get_mut(&entity)
+            .unwrap()
+            .published_status = current;
+        self.demo_story.counters.changes += 1;
+        // Remove the converted-team outcome before publishing a death.
+        // GV's death callback immediately checks the encounter count;
+        // reversing these events briefly counts the same enemy twice.
+        if (previous == 1) != (current == 1) && self.ai_brains.contains_key(&entity) {
+            self.emit_entity_output(entity, "OnTeamChanged", entity);
+        }
+        if current == 2 {
+            self.counter_actor_effect(entity, &["blotlingpuddle_fx_small", "puddlesplash"], true);
+            self.emit_entity_output(entity, "OnFullySketched", self.player_entity);
+            self.emit_entity_output(entity, "OnCharacterPuddled", self.player_entity);
+            let zero = self.entities[entity]
+                .components
+                .iter()
+                .filter(|c| c.class_name == "PaintThinnerCounterComponent")
+                .any(|c| {
+                    c.properties
+                        .iter()
+                        .any(|p| p.name == "SendZeroHPEvent" && p.value.as_bool() == Some(true))
+                });
+            if zero {
+                let actions = self.component_events.receive_zero_health(
+                    entity,
+                    true,
+                    self.animation_time,
+                )?;
+                self.execute_component_events(actions)?;
+                // The existing playable defeat bridge already publishes
+                // a logical death here. Route its reward receiver as well;
+                // native AI death-animation/event timing remains separate.
+                if let Err(error)=self.receive_death_rewards(entity,2) {
+                    self.report.unsupported.push(format!("Death reward counter receiver {}: {error:#}",self.entities[entity].name));
                 }
-                // Puddle animation is deferred; defeated actors leave the demo
-                // collision/render worlds while their authored outputs run.
+                self.emit_entity_output(entity, "OnDeath", self.player_entity);
+            }
+            // Puddle animation is deferred; defeated actors leave the demo
+            // collision/render worlds while their authored outputs run.
+            if self.ai_brains.contains_key(&entity) {
+                self.set_entity_hidden(entity, true)?;
+            }
+        } else {
+            if previous == 2 {
                 if self.ai_brains.contains_key(&entity) {
-                    self.set_entity_hidden(entity, true)?;
+                    self.set_entity_hidden(entity, false)?;
                 }
-            } else {
-                if previous == 2 {
-                    if self.ai_brains.contains_key(&entity) {
-                        self.set_entity_hidden(entity, false)?;
-                    }
-                    self.emit_entity_output(entity, "OnCharacterRestored", self.player_entity);
-                }
-                if current == 1 {
-                    self.counter_actor_effect(entity,
-                        &["fx_turn_good_gremlin", "fx_turn_good_seer", "fx_turn_good", "fx_turn_good_shared"], false);
-                    self.emit_entity_output(entity, "OnFullyPainted", self.player_entity);
-                    self.emit_entity_output(entity, "OnCharacterPainted", self.player_entity);
-                }
+                self.emit_entity_output(entity, "OnCharacterRestored", self.player_entity);
+            }
+            if current == 1 {
+                self.counter_actor_effect(entity,
+                    &["fx_turn_good_gremlin", "fx_turn_good_seer", "fx_turn_good", "fx_turn_good_shared"], false);
+                self.emit_entity_output(entity, "OnFullyPainted", self.player_entity);
+                self.emit_entity_output(entity, "OnCharacterPainted", self.player_entity);
             }
         }
         Ok(())

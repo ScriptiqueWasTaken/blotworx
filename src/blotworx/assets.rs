@@ -2440,14 +2440,10 @@ impl World {
         contact: &super::brush_preview::Contact,
     ) -> Result<()> {
         use super::projectile_stimulus::{Contact, Delivery, Emitter};
-        let Some(entity) = self.collision_entity(contact.hit.owner) else {
+        let Some(target) = self.collision_entity_index(contact.hit.owner) else {
             return Ok(());
         };
-        let target = self
-            .entities
-            .iter()
-            .position(|e| std::ptr::eq(e, entity))
-            .context("Stimulus target identity disappeared")?;
+        let entity = &self.entities[target];
         let body = entity.projectile_target_body();
         let settings = self
             .report

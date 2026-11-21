@@ -407,7 +407,9 @@ impl World {
                 draw.material_registers = Some(registers);
             }
         }
-        if completed {
+        // A counter on this same entity publishes the logical transition.
+        // The visual transition finishing must not pulse that IO again.
+        if completed && !self.paint_counters.contains_key(&entity) {
             let output = if *painted { "OnFullyPainted" } else { "OnFullySketched" };
             self.emit_entity_output(entity, output, self.player_entity);
         }

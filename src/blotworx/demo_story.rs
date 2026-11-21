@@ -323,12 +323,18 @@ mod tests {
                 for &owner in &world.model_paint[&gear].owners {
                     assert!(world.collision.owner_is_solid(owner),"Painted gear collision remained absent");
                 }
-                advance(&mut world, 30)?;
+                // Wait through the visual paint effect as well as the counter.
+                // Both completing on one gear must count as only one gear.
+                advance(&mut world, 90)?;
                 assert_eq!(
                     world.globals.get("GV_ZoneA_Door01"),
                     Some(index as i16 + 1),
                     "Gear output did not reach authored door logic"
                 );
+                if index == 0 {
+                    assert_ne!(world.globals.get("GV_ZoneA_FrontDoorBlocker"), Some(1),
+                        "Front door opened after only one gear");
+                }
             }
             advance(&mut world, 180)?;
         }

@@ -29,6 +29,8 @@ pub struct State {
     steering: BTreeMap<usize, Steering>,
     attacking: BTreeMap<usize, Attack>,
     detonations: BTreeMap<usize, bool>,
+    perception_profiles: BTreeMap<String, Perception>,
+    last_seen: BTreeMap<usize, ([f32; 3], f32)>,
     pub attacks: u64,
     pub charge_windups: u64,
     pub charge_rolls: u64,
@@ -40,6 +42,45 @@ pub struct State {
 impl State {
     pub(super) fn set_patrol_destination(&mut self,owner:usize,target:Option<usize>) {
         if let Some(target)=target {self.patrol.insert(owner,target);}else{self.patrol.remove(&owner);}
+    }
+}
+
+#[derive(Clone, Copy)]
+struct Perception {
+    cones: [(f32, f32); 3],
+    memory: f32,
+}
+
+impl Perception {
+    fn from_settings(settings: &BTreeMap<String, String>, sensor: &str, kind: &str) -> Self {
+        let read = |property: &str, fallback| {
+            let mut scope = kind;
+            loop {
+                let key = format!("SENS_{sensor}_{scope}_{property}");
+                if let Some(value) = settings.get(&key) {
+                    if let Ok(value) = super::config_value::decimal_float(value) {
+                        if value.is_finite() { return value; }
+                    }
+                }
+                let Some((parent, _)) = scope.rsplit_once(':') else { break; };
+                scope = parent;
+            }
+            settings.get(&format!("SENS_{sensor}_Default_{property}"))
+                .and_then(|value| super::config_value::decimal_float(value).ok())
+                .filter(|value| value.is_finite()).unwrap_or(fallback)
+        };
+        let cone = |distance, angle, range, degrees| {
+            let angle = read(angle, degrees).clamp(0., 360.);
+            (read(distance, range), (angle.to_radians() * 0.5).cos())
+        };
+        Self {
+            cones: [
+                cone("ViewConeDistance", "ViewConeAngle", 15., 155.),
+                cone("ViewConeDistance1", "ViewConeAngle1", 0., 0.),
+                cone("ViewConeDistance2", "ViewConeAngle2", 0., 0.),
+            ],
+            memory: read("FactExistsDuration", 4.).max(0.),
+        }
     }
 }
 
@@ -243,6 +284,7 @@ impl World {
         };
         brain.combat_target = None;
         self.demo_story.ai.steering.remove(&entity);
+        self.demo_story.ai.last_seen.remove(&entity);
         if self.demo_story.ai.attacking.remove(&entity).is_some() {
             let _ = self.authored_havok.send_event(entity, "EVENT_ForceNormalIdle");
         }
@@ -946,6 +988,9 @@ impl World {
         let melee_slots = attack_cap("AttackConfig_MaxConcurrentMeleeAttackers", 1);
         let ranged_slots = attack_cap("AttackConfig_MaxConcurrentRangedAttackers", 2);
         self.demo_story.ai.detonations.retain(|entity, _| !self.removed_entities.contains(entity));
+        self.demo_story.ai.last_seen.retain(|entity, (_, expiry)| {
+            *expiry >= self.animation_time && !self.removed_entities.contains(entity)
+        });
         let ids = self
             .ai_brains
             .iter()
@@ -1015,13 +1060,34 @@ impl World {
             let navigation_floor=self.npc_relocations.get(&entity).and_then(|state|state.navigation_floor);
             let player = self.player_entity;
             let player_position: [f32; 3] = self.entities[player].transform[12..15].try_into()?;
-            let player_distance = (player_position[0] - source[0]).hypot(player_position[2] - source[2]);
-            let in_range = player_distance < 18. && (player_position[1] - source[1]).abs() < 4.;
+            let player_dx = player_position[0] - source[0];
+            let player_dz = player_position[2] - source[2];
+            let player_distance = player_dx.hypot(player_dz);
+            let rotation = self.entities[entity].runtime_rotation;
+            let facing = [rotation[2], rotation[8]];
+            let ai_type = self.ai_brains[&entity].ai_type.as_str();
+            let stationary = ai_type.eq_ignore_ascii_case("KamikazeBlotlingStationary");
+            let profiles = &mut self.demo_story.ai.perception_profiles;
+            if !profiles.contains_key(ai_type) {
+                let sensor = if stationary { "SeePlayer" } else { "SeeEnemy" };
+                profiles.insert(ai_type.to_owned(), Perception::from_settings(&self.runtime_settings, sensor, ai_type));
+            }
+            let profile = profiles[ai_type];
+            let dot = (facing[0] * player_dx + facing[1] * player_dz) / player_distance.max(0.001);
+            let close = player_distance <= 1.5;
+            let in_range = (player_position[1] - source[1]).abs() < 4.
+                && (close || profile.cones.iter().any(|&(range, cosine)| player_distance <= range && dot >= cosine));
             let previous_target = self.ai_brains[&entity].combat_target;
-            let hostile = status != 1 && !dead && !paused
-                && self.music_team(entity).is_none_or(|(team, _)| team == 2)
-                && (in_range || previous_target == Some(player) && self.demo_story.ai.attacking.contains_key(&entity))
-                && (previous_target == Some(player) || self.demo_melee_clear(shape, source, player_position, player)?);
+            let can_attack = status != 1 && !dead && !paused
+                && self.music_team(entity).is_none_or(|(team, _)| team == 2);
+            let sees_player = can_attack && in_range
+                && self.demo_melee_clear(shape, source, player_position, player)?;
+            if sees_player {
+                self.demo_story.ai.last_seen.insert(entity, (player_position, self.animation_time + profile.memory));
+            }
+            let remembered = self.demo_story.ai.last_seen.get(&entity).map(|&(position, _)| position);
+            let hostile = can_attack && (remembered.is_some()
+                || previous_target == Some(player) && self.demo_story.ai.attacking.contains_key(&entity));
             self.ai_brains.get_mut(&entity).unwrap().combat_target = hostile.then_some(player);
             if hostile && previous_target != Some(player) {
                 self.emit_entity_output(entity, "OnPlayerSighted", player);
@@ -1031,18 +1097,22 @@ impl World {
             let patrol_target = (!hostile).then(|| self.demo_story.ai.patrol.get(&entity).copied()).flatten()
                 .filter(|&id| id < self.entities.len() && !self.removed_entities.contains(&id));
             let target = patrol_target.unwrap_or(player);
-            let destination: [f32; 3] = self.entities[target].transform[12..15].try_into()?;
+            let destination: [f32; 3] = if hostile {
+                remembered.unwrap_or(player_position)
+            } else {
+                self.entities[target].transform[12..15].try_into()?
+            };
             let dx = destination[0] - source[0];
             let dz = destination[2] - source[2];
             let distance = dx.hypot(dz);
             let ai_type = &self.ai_brains[&entity].ai_type;
             let family = ai_type.split([':', '_']).next().unwrap_or(ai_type);
             let melee_spatter = family.eq_ignore_ascii_case("SpatterMelee");
-            let stationary = family.eq_ignore_ascii_case("KamikazeBlotlingStationary");
+            let stationary = stationary || family.eq_ignore_ascii_case("KamikazeBlotlingStationary");
             let kamikaze = ai_type.to_ascii_lowercase().contains("kamikaze")
                 && self.entities[entity].components.iter().any(|c| c.class_name == "ExplodeComponent")
                 && self.authored_havok.has_event(entity, "EVENT_Start_Explode");
-            if kamikaze && hostile && distance <= kamikaze_reach
+            if kamikaze && sees_player && distance <= kamikaze_reach
                 && (destination[1] - source[1]).abs() < 1.5
                 && !self.demo_story.ai.detonations.contains_key(&entity)
                 && self.demo_melee_clear(shape, source, destination, target)?
@@ -1058,7 +1128,7 @@ impl World {
                 continue;
             }
             let follows_mickey = status == 1 && !stationary && patrol_target.is_none()
-                && ai_type.to_ascii_lowercase().starts_with("spatter") && in_range;
+                && ai_type.to_ascii_lowercase().starts_with("spatter") && player_distance < 18.;
             if paused || dead || !hostile {
                 if self.demo_story.ai.attacking.remove(&entity).is_some()
                     && !dead && self.authored_havok.contains(entity)
@@ -1111,7 +1181,7 @@ impl World {
             }
             let attacking = self.demo_story.ai.attacking.contains_key(&entity);
             let mut selected = None;
-            if hostile && !attacking
+            if sees_player && !attacking
                 && self.authored_havok.contains(entity) && self.prepare_child_slots(entity)?
             {
                 let reach = if melee_spatter { melee_radius } else { f32::INFINITY };
@@ -1129,13 +1199,8 @@ impl World {
                     selected = self.demo_weapon(entity, distance, f32::INFINITY, WeaponKind::Charge)
                         .map(|v| (v, WeaponKind::Charge));
                 }
-                if selected.is_some() && !self.demo_melee_clear(shape, source, destination, target)? {
-                    selected = None;
-                }
             }
             let target_heading = (distance > 0.001).then(|| [dx / distance, dz / distance]);
-            let rotation = self.entities[entity].runtime_rotation;
-            let facing = [rotation[2], rotation[8]];
             let facing_target = target_heading.is_some_and(|heading| {
                 facing[0] * heading[0] + facing[1] * heading[1] >= 0.9
             });
